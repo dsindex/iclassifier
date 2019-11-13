@@ -23,5 +23,12 @@ reference pytorch code for intent classification
   - snips
     - from https://github.com/lytum/joint-intent-classification-and-slot-filling-based-on-BERT
 
+## usage
+
+- train
+```
+$ python preprocess.py
+```
+
 
 
