@@ -22,6 +22,7 @@ reference pytorch code for intent classification
 - data
   - snips
     - from https://github.com/lytum/joint-intent-classification-and-slot-filling-based-on-BERT
+    - paper : https://arxiv.org/pdf/1902.10909.pdf
 
 ## usage
 
