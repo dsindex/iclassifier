@@ -14,7 +14,6 @@ from tokenizer import Tokenizer
 def build_vocab_from_embedding(input_path, config):
     print("\n[Building vocab from pretrained embedding]")
     vocab = {'<pad>':0, '<unk>':1}
-    vocab_size = max(len(vocab), config['vocab_size']-len(vocab))
     embedding = []
     # <pad>
     vector = [float(0) for i in range(config['token_emb_dim'])]

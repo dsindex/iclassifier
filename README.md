@@ -28,6 +28,7 @@ reference pytorch code for intent classification
 - train
 ```
 $ python preprocess.py
+$ python train.py
 ```
 
 

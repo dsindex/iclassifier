@@ -51,30 +51,29 @@ class SnipsDataset(Dataset):
     def __getitem__(self, idx):
         return self.x[idx], self.y[idx]
 
-def train_epoch(model, config, train_loader, val_loader, epoch_i, device, optimizer, scheduler, writer, opt):
-    n_ctx = config['n_ctx']
-    n_vocab = config['vocab_size']
-    past = None
-    total_loss = 0.
-    final_val_loss = 0.
-    total_batch_num = 0
+def train_epoch(model, config, train_loader, val_loader, epoch_i):
+    device = config['device']
+    optimizer = config['optimizer']
+    scheduler = config['scheduler']
+    writer = config['writer']
+    opt = config['opt']
 
     local_rank = opt.local_rank
     use_amp = opt.use_amp
+    criterion = nn.CrossEntropyLoss()
 
-    criterion = nn.BCELoss()
-
+    # train one epoch
+    total_loss = 0.
+    final_val_loss = 0.
+    total_examples = 0
     st_time = time.time()
-    for batch_i, (x,y) in tqdm(enumerate(train_loader), total=len(train_loader)):
-        global_step_idx = (len(train_loader) * (epoch_i-1)) + batch_i
-
+    for local_step, (x,y) in tqdm(enumerate(train_loader), total=len(train_loader)):
+        global_step = (len(train_loader) * (epoch_i-1)) + local_step
         model.train()
         x = x.to(device)
         y = y.to(device)
-        
         output = model(x) 
         loss = criterion(output, y)
-
         optimizer.zero_grad()
         if use_amp:
             with amp.scale_loss(loss, optimizer) as scaled_loss:
@@ -84,58 +83,49 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, device, optimi
         optimizer.step()
         if scheduler:
             scheduler.step()
-
-        total_loss += (loss.item()*x.size(0))
-        total_batch_num += x.size(0)
-        
+        cur_examples = x.size(0)
+        total_examples += cur_examples
+        total_loss += (loss.item() * cur_examples)
         if local_rank == 0 and writer:
-            writer.add_scalar('Loss/train', loss.item(), global_step_idx)
-        
-        
-    cur_loss = total_loss / total_batch_num
+            writer.add_scalar('Loss/train', loss.item(), global_step)
+    cur_loss = total_loss / total_examples
+
+    # evaluate
     eval_loss, eval_acc = evaluate(model, config, val_loader, device)
     curr_time = time.time()
     elapsed_time = (curr_time - st_time) / 60
     st_time = curr_time
     curr_lr = scheduler.get_lr()[0] if scheduler else optimizer.param_groups[0]['lr']
     if local_rank == 0:
-        print ('{:3d} epoch | {:5d}/{:5d} | train loss : {:6.3f}, valid loss {:6.3f}, valid acc {:.3f}| lr :{:7.6f} | {:5.2f} min elapsed'.\
-                format(epoch_i, batch_i+1, len(train_loader), cur_loss, eval_loss, eval_acc, curr_lr, elapsed_time)) 
+        print('{:3d} epoch | {:5d}/{:5d} | train loss : {:6.3f}, valid loss {:6.3f}, valid acc {:.3f}| lr :{:7.6f} | {:5.2f} min elapsed'.\
+                format(epoch_i, local_step+1, len(train_loader), cur_loss, eval_loss, eval_acc, curr_lr, elapsed_time)) 
         if writer:
-            writer.add_scalar('Loss/valid', eval_loss, global_step_idx)
-        
-    
+            writer.add_scalar('Loss/valid', eval_loss, global_step)
     return eval_loss
  
 def evaluate(model, config, val_loader, device):
     model.eval()
-    n_ctx = config['n_ctx']
-    n_vocab = config['vocab_size']
     total_loss = 0.
-    total_batch_num = 0 
-
-    criterion = nn.BCELoss()
-
-    accurate = 0
+    total_examples = 0 
+    criterion = nn.CrossEntropyLoss()
+    correct = 0
     with torch.no_grad():
         for i, (x,y) in enumerate(val_loader):
             x = x.to(device)
             y = y.to(device)
-
-            output = model(x) 
+            output = model(x)
             loss = criterion(output, y)
-
-            pred = (output >= 0.5).int()
+            _, predicted = torch.max(output.data, 1)
             y_int = y.int()
-            accurate += torch.sum(pred == y_int).item()
-
-            total_loss += (loss.item()*x.size(0)) 
-            total_batch_num += x.size(0)
-
-    return total_loss / total_batch_num,  accurate / total_batch_num
+            correct += (predicted == y_int).sum().item()
+            cur_examples = x.size(0)
+            total_loss += (loss.item() * cur_examples) 
+            total_examples += cur_examples
+    cur_loss = total_loss / total_examples
+    cur_acc  = correct / total_examples
+    return cur_loss, cur_acc
 
 def save_model(model, opt, config):
-    # Model Checkpoint 저장
     checkpoint_path = opt.save_path
     with open(checkpoint_path, 'wb') as f:
         if opt.use_amp:
@@ -159,7 +149,7 @@ def main():
     parser.add_argument('--batch_size', type=int, default=64)
     parser.add_argument('--epoch', type=int, default=3)
     parser.add_argument('--lr', type=float, default=2.5e-4)
-    parser.add_argument('--save_path', type=str, default='output/pytorch-model.pt')
+    parser.add_argument('--save_path', type=str, default='pytorch-model.pt')
     parser.add_argument('--l2norm', type=float, default=1e-6)
     parser.add_argument('--tmax',type=int, default=-1)
     parser.add_argument('--opt-level', type=str, default='O1')
@@ -170,6 +160,7 @@ def main():
 
     # training default device : GPU
     device = torch.device("cuda")
+
     # random seed
     random.seed(5)
     np.random.seed(5)
@@ -201,7 +192,7 @@ def main():
         train_sampler = DistributedSampler(train_dataset)
     train_loader = DataLoader(train_dataset, batch_size=opt.batch_size, \
             shuffle=False, num_workers=2, sampler=train_sampler)
-    print("Train data loaded")
+    print("[Train data loaded]")
     opt.valid_data_path = os.path.join(opt.data_dir, 'valid.txt.ids')
     valid_dataset = SnipsDataset(opt.valid_data_path)
     valid_sampler = None
@@ -209,7 +200,7 @@ def main():
         valid_sampler = DistributedSampler(valid_dataset)
     valid_loader = DataLoader(valid_dataset, batch_size=opt.batch_size, \
             shuffle=False, num_workers=2, sampler=valid_sampler)
-    print("Valid data loaded")
+    print("[Valid data loaded]")
 
     # create model, optimizer, scheduler, summary writer
     model = TextCNN(config, opt.embedding_path, opt.label_path)
@@ -226,17 +217,18 @@ def main():
     except:
         writer = None
     print (opt)
-    print("Model, optimizer, scheduler, summary writer ready!")
+    print("[Model, optimizer, scheduler, summary writer ready!]")
 
-    sys.exit(0)
-    
     # training
+    config['device'] = device
+    config['optimizer'] = optimizer
+    config['scheduler'] = scheduler
+    config['writer'] = writer
+    config['opt'] = opt
     best_val_loss = float('inf')
     for epoch_i in range(opt.epoch):
         epoch_st_time = time.time()
-        eval_loss = train_epoch(model, config, train_loader, valid_loader, \
-                                epoch_i+1, device, optimizer, scheduler, writer, opt)
-    
+        eval_loss = train_epoch(model, config, train_loader, valid_loader, epoch_i+1)
         if opt.local_rank == 0 and eval_loss < best_val_loss:
             best_val_loss = eval_loss
             if opt.save_path:
