@@ -1,0 +1,246 @@
+import sys
+import os
+import argparse
+import time
+import pdb
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+from torch.utils.data import DataLoader
+from torch.utils.data.dataset import Dataset
+from torch.utils.data.distributed import DistributedSampler
+import numpy as np
+import random
+import json
+from tqdm import tqdm
+from model import TextCNN
+
+try:
+    from apex.parallel import DistributedDataParallel as DDP
+    from apex.fp16_utils import *
+    from apex import amp, optimizers
+    from apex.multi_tensor_apply import multi_tensor_applier
+    APEX_AVAILABLE = True
+except ImportError:
+    APEX_AVAILABLE = False
+
+try:
+    from torch.utils.tensorboard import SummaryWriter
+except ImportError:
+    pass
+
+class SnipsDataset(Dataset):
+    def __init__(self, path):
+        x,y = [],[]
+        with open(path,'r',encoding='utf-8') as f:
+            for line in f:
+                items = line.strip().split()
+                yi = [float(items[0])]
+                xi = [int(d) for d in items[1:]]
+                x.append(xi)
+                y.append(yi)
+        
+        self.x = torch.tensor(x) 
+        self.y = torch.tensor(y)
+ 
+    def __len__(self):
+        return self.x.size(0)
+
+    def __getitem__(self, idx):
+        return self.x[idx], self.y[idx]
+
+def train_epoch(model, config, train_loader, val_loader, epoch_i, device, optimizer, scheduler, writer, opt):
+    n_ctx = config['n_ctx']
+    n_vocab = config['vocab_size']
+    past = None
+    total_loss = 0.
+    final_val_loss = 0.
+    total_batch_num = 0
+
+    local_rank = opt.local_rank
+    use_amp = opt.use_amp
+
+    criterion = nn.BCELoss()
+
+    st_time = time.time()
+    for batch_i, (x,y) in tqdm(enumerate(train_loader), total=len(train_loader)):
+        global_step_idx = (len(train_loader) * (epoch_i-1)) + batch_i
+
+        model.train()
+        x = x.to(device)
+        y = y.to(device)
+        
+        output = model(x) 
+        loss = criterion(output, y)
+
+        optimizer.zero_grad()
+        if use_amp:
+            with amp.scale_loss(loss, optimizer) as scaled_loss:
+                scaled_loss.backward()
+        else:
+            loss.backward()
+        optimizer.step()
+        if scheduler:
+            scheduler.step()
+
+        total_loss += (loss.item()*x.size(0))
+        total_batch_num += x.size(0)
+        
+        if local_rank == 0 and writer:
+            writer.add_scalar('Loss/train', loss.item(), global_step_idx)
+        
+        
+    cur_loss = total_loss / total_batch_num
+    eval_loss, eval_acc = evaluate(model, config, val_loader, device)
+    curr_time = time.time()
+    elapsed_time = (curr_time - st_time) / 60
+    st_time = curr_time
+    curr_lr = scheduler.get_lr()[0] if scheduler else optimizer.param_groups[0]['lr']
+    if local_rank == 0:
+        print ('{:3d} epoch | {:5d}/{:5d} | train loss : {:6.3f}, valid loss {:6.3f}, valid acc {:.3f}| lr :{:7.6f} | {:5.2f} min elapsed'.\
+                format(epoch_i, batch_i+1, len(train_loader), cur_loss, eval_loss, eval_acc, curr_lr, elapsed_time)) 
+        if writer:
+            writer.add_scalar('Loss/valid', eval_loss, global_step_idx)
+        
+    
+    return eval_loss
+ 
+def evaluate(model, config, val_loader, device):
+    model.eval()
+    n_ctx = config['n_ctx']
+    n_vocab = config['vocab_size']
+    total_loss = 0.
+    total_batch_num = 0 
+
+    criterion = nn.BCELoss()
+
+    accurate = 0
+    with torch.no_grad():
+        for i, (x,y) in enumerate(val_loader):
+            x = x.to(device)
+            y = y.to(device)
+
+            output = model(x) 
+            loss = criterion(output, y)
+
+            pred = (output >= 0.5).int()
+            y_int = y.int()
+            accurate += torch.sum(pred == y_int).item()
+
+            total_loss += (loss.item()*x.size(0)) 
+            total_batch_num += x.size(0)
+
+    return total_loss / total_batch_num,  accurate / total_batch_num
+
+def save_model(model, opt, config):
+    # Model Checkpoint 저장
+    checkpoint_path = opt.save_path
+    with open(checkpoint_path, 'wb') as f:
+        if opt.use_amp:
+            checkpoint = {
+                    'model': model.state_dict(),
+                    'optimizer': optimizer.state_dict(),
+                    'amp': amp.state_dict()
+                    }
+        else:
+            checkpoint = model.state_dict()
+        torch.save(checkpoint,f)
+
+def main():
+    parser = argparse.ArgumentParser()
+    
+    parser.add_argument('--data_dir', type=str, default='data/snips')
+    parser.add_argument('--embedding_path', type=str, default='data/snips/embedding.txt')
+    parser.add_argument('--label_path', type=str, default='data/snips/label.txt')
+    parser.add_argument('--config', type=str, default='config.json')
+    parser.add_argument('--use_amp', type=bool, default=False)
+    parser.add_argument('--batch_size', type=int, default=64)
+    parser.add_argument('--epoch', type=int, default=3)
+    parser.add_argument('--lr', type=float, default=2.5e-4)
+    parser.add_argument('--save_path', type=str, default='output/pytorch-model.pt')
+    parser.add_argument('--l2norm', type=float, default=1e-6)
+    parser.add_argument('--tmax',type=int, default=-1)
+    parser.add_argument('--opt-level', type=str, default='O1')
+    parser.add_argument("--local_rank", default=0, type=int)
+    parser.add_argument("--world_size", default=1, type=int)
+
+    opt = parser.parse_args()
+
+    # training default device : GPU
+    device = torch.device("cuda")
+    # random seed
+    random.seed(5)
+    np.random.seed(5)
+    torch.manual_seed(5)
+    torch.cuda.manual_seed(5)
+
+    # APEX and distributed setting
+    if not APEX_AVAILABLE: opt.use_amp = False
+    opt.distributed = False
+    if 'WORLD_SIZE' in os.environ and opt.use_amp:
+        opt.world_size = int(os.environ['WORLD_SIZE'])
+        opt.distributed = int(os.environ['WORLD_SIZE']) > 1
+    if opt.distributed:
+        torch.cuda.set_device(opt.local_rank)
+        torch.distributed.init_process_group(backend='nccl', init_method='env://')
+        opt.word_size = torch.distributed.get_world_size()
+
+    try:
+        with open(opt.config, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+    except Exception as e:
+        config = dict()
+   
+    # prepare train, valid dataset
+    opt.train_data_path = os.path.join(opt.data_dir, 'train.txt.ids')
+    train_dataset = SnipsDataset(opt.train_data_path)
+    train_sampler = None
+    if opt.distributed:
+        train_sampler = DistributedSampler(train_dataset)
+    train_loader = DataLoader(train_dataset, batch_size=opt.batch_size, \
+            shuffle=False, num_workers=2, sampler=train_sampler)
+    print("Train data loaded")
+    opt.valid_data_path = os.path.join(opt.data_dir, 'valid.txt.ids')
+    valid_dataset = SnipsDataset(opt.valid_data_path)
+    valid_sampler = None
+    if opt.distributed:
+        valid_sampler = DistributedSampler(valid_dataset)
+    valid_loader = DataLoader(valid_dataset, batch_size=opt.batch_size, \
+            shuffle=False, num_workers=2, sampler=valid_sampler)
+    print("Valid data loaded")
+
+    # create model, optimizer, scheduler, summary writer
+    model = TextCNN(config, opt.embedding_path, opt.label_path)
+    model.to(device)
+    opt.one_epoch_step = (len(train_dataset) // (opt.batch_size*opt.world_size))
+    optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr, weight_decay=opt.l2norm)
+    if opt.use_amp:
+        model, optimizer = amp.initialize(model, optimizer, opt_level=opt.opt_level)
+    if opt.distributed:
+        model = DDP(model, delay_allreduce=True)
+    scheduler = None
+    try:
+        writer = SummaryWriter()
+    except:
+        writer = None
+    print (opt)
+    print("Model, optimizer, scheduler, summary writer ready!")
+
+    sys.exit(0)
+    
+    # training
+    best_val_loss = float('inf')
+    for epoch_i in range(opt.epoch):
+        epoch_st_time = time.time()
+        eval_loss = train_epoch(model, config, train_loader, valid_loader, \
+                                epoch_i+1, device, optimizer, scheduler, writer, opt)
+    
+        if opt.local_rank == 0 and eval_loss < best_val_loss:
+            best_val_loss = eval_loss
+            if opt.save_path:
+                save_model(model, opt, config)   
+   
+if __name__ == '__main__':
+    main()

@@ -11,12 +11,6 @@ import pdb
 from tqdm import tqdm
 from tokenizer import Tokenizer
 
-_TRAIN_FILE = 'train.txt'
-_VALID_FILE = 'valid.txt'
-_SUFFIX = '.ids'
-_VOCAB_FILE = 'vocab.txt'
-_EMBED_FILE = 'embedding.txt'
-
 def build_vocab_from_embedding(input_path, config):
     print("\n[Building vocab from pretrained embedding]")
     vocab = {'<pad>':0, '<unk>':1}
@@ -32,7 +26,7 @@ def build_vocab_from_embedding(input_path, config):
     tid = len(vocab)
     with open(input_path, 'r', encoding='utf-8') as f:
         for idx, line in enumerate(tqdm(f, total=tot_num_line)):
-            toks = line.split()
+            toks = line.strip().split()
             word = toks[0]
             vector = toks[1:]
             assert(config['token_emb_dim'] == len(vector))
@@ -52,7 +46,7 @@ def build_data(input_path, tokenizer, vocab, config):
     tot_num_line = sum(1 for line in open(input_path, 'r')) 
     with open(input_path, 'r', encoding='utf-8') as f:
         for idx, line in enumerate(tqdm(f, total=tot_num_line)):
-            sent, label = line.split('\t')
+            sent, label = line.strip().split('\t')
             tokens = tokenizer.tokenize(sent)
             if len(tokens) > config['n_ctx']:
                 tokens = tokens[:config['n_ctx']]
@@ -112,12 +106,30 @@ def write_vocab(vocab, output_path):
 def write_embedding(embedding, output_path):
     print("\n[Writing embedding]")
     f_write = open(output_path, 'w', encoding='utf-8')
-    for tok_id, vector in enumerate(embedding):
+    for tok_id, vector in enumerate(tqdm(embedding)):
         f_write.write(str(tok_id))
         for v in vector:
             f_write.write(' '+str(v))
         f_write.write('\n')
     f_write.close()
+
+def write_label(labels, output_path):
+    print("\n[Writing label]")
+    f_write = open(output_path, 'w', encoding='utf-8')
+    for idx, item in enumerate(tqdm(labels.items())):
+        label = item[0]
+        label_id = item[1]
+        f_write.write(label + ' ' + str(label_id))
+        f_write.write('\n')
+    f_write.close()
+
+
+_TRAIN_FILE = 'train.txt'
+_VALID_FILE = 'valid.txt'
+_SUFFIX = '.ids'
+_VOCAB_FILE = 'vocab.txt'
+_EMBED_FILE = 'embedding.txt'
+_LABEL_FILE = 'label.txt'
 
 def main():
     parser = argparse.ArgumentParser()
@@ -152,6 +164,8 @@ def main():
     write_vocab(vocab, path)
     path = os.path.join(options.data_dir, _EMBED_FILE)
     write_embedding(embedding, path)
+    path = os.path.join(options.data_dir, _LABEL_FILE)
+    write_label(labels, path)
 
 
 if __name__ == '__main__':
