@@ -9,13 +9,13 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from torch.utils.data.dataset import Dataset
 from torch.utils.data.distributed import DistributedSampler
 import numpy as np
 import random
 import json
 from tqdm import tqdm
 from model import TextCNN
+from dataset import SnipsDataset
 
 try:
     from apex.parallel import DistributedDataParallel as DDP
@@ -30,26 +30,6 @@ try:
     from torch.utils.tensorboard import SummaryWriter
 except ImportError:
     pass
-
-class SnipsDataset(Dataset):
-    def __init__(self, path):
-        x,y = [],[]
-        with open(path,'r',encoding='utf-8') as f:
-            for line in f:
-                items = line.strip().split()
-                yi = float(items[0])
-                xi = [int(d) for d in items[1:]]
-                x.append(xi)
-                y.append(yi)
-        
-        self.x = torch.tensor(x) 
-        self.y = torch.tensor(y).long()
- 
-    def __len__(self):
-        return self.x.size(0)
-
-    def __getitem__(self, idx):
-        return self.x[idx], self.y[idx]
 
 def train_epoch(model, config, train_loader, val_loader, epoch_i):
     device = config['device']
@@ -147,7 +127,7 @@ def main():
     parser.add_argument('--config', type=str, default='config.json')
     parser.add_argument('--use_amp', type=bool, default=False)
     parser.add_argument('--batch_size', type=int, default=64)
-    parser.add_argument('--epoch', type=int, default=3)
+    parser.add_argument('--epoch', type=int, default=10)
     parser.add_argument('--lr', type=float, default=2.5e-4)
     parser.add_argument('--save_path', type=str, default='pytorch-model.pt')
     parser.add_argument('--l2norm', type=float, default=1e-6)
@@ -203,6 +183,7 @@ def main():
     print("[Valid data loaded]")
 
     # create model, optimizer, scheduler, summary writer
+    print("[Creating Model, optimizer, scheduler, summary writer...]")
     model = TextCNN(config, opt.embedding_path, opt.label_path)
     model.to(device)
     opt.one_epoch_step = (len(train_dataset) // (opt.batch_size*opt.world_size))
@@ -217,7 +198,7 @@ def main():
     except:
         writer = None
     print (opt)
-    print("[Model, optimizer, scheduler, summary writer ready!]")
+    print("[Ready]")
 
     # training
     config['device'] = device

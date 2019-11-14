@@ -125,6 +125,7 @@ def write_label(labels, output_path):
 
 _TRAIN_FILE = 'train.txt'
 _VALID_FILE = 'valid.txt'
+_TEST_FILE  = 'test.txt'
 _SUFFIX = '.ids'
 _VOCAB_FILE = 'vocab.txt'
 _EMBED_FILE = 'embedding.txt'
@@ -153,12 +154,16 @@ def main():
     train_data, labels = build_data(path, tokenizer, vocab, config)
     path = os.path.join(options.data_dir, _VALID_FILE)
     valid_data, _ = build_data(path, tokenizer, vocab, config)
+    path = os.path.join(options.data_dir, _TEST_FILE)
+    test_data, _ = build_data(path, tokenizer, vocab, config)
 
     # write data, vocab, embedding, labels
     path = os.path.join(options.data_dir, _TRAIN_FILE + _SUFFIX)
     write_data(train_data, path, vocab, labels, config)
     path = os.path.join(options.data_dir, _VALID_FILE + _SUFFIX)
     write_data(valid_data, path, vocab, labels, config)
+    path = os.path.join(options.data_dir, _TEST_FILE + _SUFFIX)
+    write_data(test_data, path, vocab, labels, config)
     path = os.path.join(options.data_dir, _VOCAB_FILE)
     write_vocab(vocab, path)
     path = os.path.join(options.data_dir, _EMBED_FILE)

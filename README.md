@@ -27,8 +27,18 @@ reference pytorch code for intent classification
 
 - train
 ```
+* train, valid data
 $ python preprocess.py
 $ python train.py
+```
+
+- evaluation
+```
+* test data
+$ python evaluate.py
+...
+[Accuracy] : 0.97, 679/700
+[Elapsed Time] : 1197ms, 1.71ms on average
 ```
 
 
