@@ -37,13 +37,13 @@ class SnipsDataset(Dataset):
         with open(path,'r',encoding='utf-8') as f:
             for line in f:
                 items = line.strip().split()
-                yi = [float(items[0])]
+                yi = float(items[0])
                 xi = [int(d) for d in items[1:]]
                 x.append(xi)
                 y.append(yi)
         
         self.x = torch.tensor(x) 
-        self.y = torch.tensor(y)
+        self.y = torch.tensor(y).long()
  
     def __len__(self):
         return self.x.size(0)
@@ -60,7 +60,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
 
     local_rank = opt.local_rank
     use_amp = opt.use_amp
-    criterion = nn.CrossEntropyLoss()
+    criterion = torch.nn.CrossEntropyLoss().to(device)
 
     # train one epoch
     total_loss = 0.
@@ -72,7 +72,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
         model.train()
         x = x.to(device)
         y = y.to(device)
-        output = model(x) 
+        output = model(x)
         loss = criterion(output, y)
         optimizer.zero_grad()
         if use_amp:
@@ -107,17 +107,17 @@ def evaluate(model, config, val_loader, device):
     model.eval()
     total_loss = 0.
     total_examples = 0 
-    criterion = nn.CrossEntropyLoss()
     correct = 0
+    criterion = torch.nn.CrossEntropyLoss().to(device)
+
     with torch.no_grad():
         for i, (x,y) in enumerate(val_loader):
             x = x.to(device)
             y = y.to(device)
             output = model(x)
             loss = criterion(output, y)
-            _, predicted = torch.max(output.data, 1)
-            y_int = y.int()
-            correct += (predicted == y_int).sum().item()
+            predicted = output.argmax(1)
+            correct += (predicted == y).sum().item()
             cur_examples = x.size(0)
             total_loss += (loss.item() * cur_examples) 
             total_examples += cur_examples
