@@ -154,6 +154,7 @@ def preprocess_glove(config, options):
     write_label(labels, path)
 
 def proprocess_bert(config, options):
+    return None
 
 def main():
     parser = argparse.ArgumentParser()
