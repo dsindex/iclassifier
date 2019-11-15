@@ -28,14 +28,13 @@ reference pytorch code for intent classification
 
 - train
 ```
-* train, valid data
+* token_emb_dim in config.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py
 $ python train.py
 ```
 
 - evaluation
 ```
-* test data
 $ python evaluate.py
 ...
 [Accuracy] : 0.97, 679/700

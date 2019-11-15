@@ -1,6 +1,6 @@
 {
-	"n_ctx": 100,
-	"token_emb_dim": 300,
+    "n_ctx": 100,
+    "token_emb_dim": 300,
     "num_filters": 100,
     "dropout": 0.2,
     "kernel_sizes": [2,3,4]
