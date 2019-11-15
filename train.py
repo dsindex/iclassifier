@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function
+
 import sys
 import os
 import argparse
@@ -30,6 +32,12 @@ try:
     from torch.utils.tensorboard import SummaryWriter
 except ImportError:
     pass
+
+def set_seed(opt):
+    random.seed(opt.seed)
+    np.random.seed(opt.seed)
+    torch.manual_seed(opt.seed)
+    torch.cuda.manual_seed(opt.seed)
 
 def train_epoch(model, config, train_loader, val_loader, epoch_i):
     device = config['device']
@@ -138,17 +146,14 @@ def main():
     parser.add_argument("--local_rank", default=0, type=int)
     parser.add_argument("--world_size", default=1, type=int)
     parser.add_argument('--log_dir', type=str, default='runs')
+    parser.add_argument("--seed", default=5, type=int)
 
     opt = parser.parse_args()
 
     # training default device : GPU
     device = torch.device("cuda")
 
-    # random seed
-    random.seed(5)
-    np.random.seed(5)
-    torch.manual_seed(5)
-    torch.cuda.manual_seed(5)
+    set_seed(opt)
 
     # APEX and distributed setting
     if not APEX_AVAILABLE: opt.use_amp = False

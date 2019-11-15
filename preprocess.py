@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function
+
 import sys
 import os
 import argparse
@@ -22,7 +24,7 @@ def build_vocab_from_embedding(input_path, config):
     # <unk>
     vector = np.array([random.random() for i in range(config['token_emb_dim'])]).astype(np.float)
     embedding.append(vector)
-    tot_num_line = sum(1 for line in open(input_path, 'r'))
+    tot_num_line = sum(1 for _ in open(input_path, 'r'))
     tid = len(vocab)
     with open(input_path, 'r', encoding='utf-8') as f:
         for idx, line in enumerate(tqdm(f, total=tot_num_line)):
@@ -43,7 +45,7 @@ def build_data(input_path, tokenizer, vocab, config):
     labels = {}
     label_id = 0
     _long_data = 0
-    tot_num_line = sum(1 for line in open(input_path, 'r')) 
+    tot_num_line = sum(1 for _ in open(input_path, 'r')) 
     with open(input_path, 'r', encoding='utf-8') as f:
         for idx, line in enumerate(tqdm(f, total=tot_num_line)):
             sent, label = line.strip().split('\t')
@@ -124,20 +126,7 @@ _VOCAB_FILE = 'vocab.txt'
 _EMBED_FILE = 'embedding.npy'
 _LABEL_FILE = 'label.txt'
 
-def main():
-    parser = argparse.ArgumentParser()
-    
-    parser.add_argument('--data_dir', type=str, default='data/snips')
-    parser.add_argument('--embedding_path', type=str, default='embeddings/glove.6B.300d.txt')
-    parser.add_argument('--config_path', type=str, default='config.json')
-    options = parser.parse_args()
-
-    try:
-        with open(options.config_path, 'r', encoding='utf-8') as f:
-            config = json.load(f)
-    except:
-        config = dict()
-
+def preprocess_glove(config, options):
     # vocab, embedding
     vocab, embedding = build_vocab_from_embedding(options.embedding_path, config)
 
@@ -163,6 +152,26 @@ def main():
     write_embedding(embedding, path)
     path = os.path.join(options.data_dir, _LABEL_FILE)
     write_label(labels, path)
+
+def proprocess_bert(config, options):
+
+def main():
+    parser = argparse.ArgumentParser()
+    
+    parser.add_argument('--data_dir', type=str, default='data/snips')
+    parser.add_argument('--embedding_path', type=str, default='embeddings/glove.6B.300d.txt')
+    parser.add_argument('--config_path', type=str, default='config.json')
+    parser.add_argument('--emb_class', type=str, default='glove', help='glove | bert')
+    options = parser.parse_args()
+
+    try:
+        with open(options.config_path, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+    except:
+        config = dict()
+
+    if options.emb_class == 'glove': preprocess_glove(config, options)
+    if options.emb_class == 'bert' : preprocess_bert(config, options)
 
 
 if __name__ == '__main__':
