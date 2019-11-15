@@ -24,6 +24,12 @@ reference pytorch code for intent classification
     - from https://github.com/lytum/joint-intent-classification-and-slot-filling-based-on-BERT
     - paper : https://arxiv.org/pdf/1902.10909.pdf
 
+- additional requirements for BERT
+```
+$ pip install tensorflow-gpu==2.0
+$ pip install git+https://github.com/huggingface/transformers.git
+```
+
 ## usage
 
 - train
@@ -31,6 +37,10 @@ reference pytorch code for intent classification
 * token_emb_dim in config.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py
 $ python train.py
+
+* for emb_class=bert
+$ python preprocess.py --emb_class=bert --model_name_or_path=bert-base-uncased --do_lower_case
+$ python train.py --emb_class=bert --model_name_or_path=bert-base-uncased --do_lower_case
 
 * tensorboardX
 $ run -rf runs

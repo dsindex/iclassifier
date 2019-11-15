@@ -9,12 +9,51 @@ import math
 import json
 from collections import Counter 
 import pdb
+import logging
 
 from tqdm import tqdm
-from tokenizer import Tokenizer
+
+logger = logging.getLogger(__name__)
+
+_TRAIN_FILE = 'train.txt'
+_VALID_FILE = 'valid.txt'
+_TEST_FILE  = 'test.txt'
+_SUFFIX = '.ids'
+_VOCAB_FILE = 'vocab.txt'
+_EMBED_FILE = 'embedding.npy'
+_LABEL_FILE = 'label.txt'
+_FSUFFIX = '.fs'
+
+def build_label(input_path):
+    logger.info("\n[building labels]")
+    labels = {}
+    label_id = 0
+    tot_num_line = sum(1 for _ in open(input_path, 'r')) 
+    with open(input_path, 'r', encoding='utf-8') as f:
+        for idx, line in enumerate(tqdm(f, total=tot_num_line)):
+            sent, label = line.strip().split('\t')
+            if label not in labels:
+                labels[label] = label_id
+                label_id += 1
+    logger.info("\nUnique labels : {}".format(len(labels)))
+    return labels
+
+def write_label(labels, output_path):
+    logger.info("\n[Writing label]")
+    f_write = open(output_path, 'w', encoding='utf-8')
+    for idx, item in enumerate(tqdm(labels.items())):
+        label = item[0]
+        label_id = item[1]
+        f_write.write(label + ' ' + str(label_id))
+        f_write.write('\n')
+    f_write.close()
+
+# ---------------------------------------------------------------------------- #
+# Glove
+# ---------------------------------------------------------------------------- #
 
 def build_vocab_from_embedding(input_path, config):
-    print("\n[Building vocab from pretrained embedding]")
+    logger.info("\n[Building vocab from pretrained embedding]")
     vocab = {'<pad>':0, '<unk>':1}
     # build embedding as numpy array
     embedding = []
@@ -39,11 +78,9 @@ def build_vocab_from_embedding(input_path, config):
     return vocab, embedding
     
 def build_data(input_path, tokenizer, vocab, config):
-    print("\n[Tokenizing and building data]")
+    logger.info("\n[Tokenizing and building data]")
     data = []
     all_tokens = Counter()
-    labels = {}
-    label_id = 0
     _long_data = 0
     tot_num_line = sum(1 for _ in open(input_path, 'r')) 
     with open(input_path, 'r', encoding='utf-8') as f:
@@ -56,24 +93,20 @@ def build_data(input_path, tokenizer, vocab, config):
             for token in tokens:
                 all_tokens[token] += 1
             data.append((tokens, label))
-            if label not in labels:
-                labels[label] = label_id
-                label_id += 1
-    print("\n# Data over text length limit : {:,}".format(_long_data))
-    print("\nTotal unique tokens : {:,}".format(len(all_tokens)))
-    print("Vocab size : {:,}".format(len(vocab)))
+    logger.info("\n# Data over text length limit : {:,}".format(_long_data))
+    logger.info("\nTotal unique tokens : {:,}".format(len(all_tokens)))
+    logger.info("Vocab size : {:,}".format(len(vocab)))
     total_token_cnt = sum(all_tokens.values())
     cover_token_cnt = 0
     for item in all_tokens.most_common():
         if item[0] in vocab:
             cover_token_cnt += item[1]
-    print("Total tokens : {:,}".format(total_token_cnt))
-    print("Vocab coverage : {:.2f}%\n".format(cover_token_cnt/total_token_cnt*100.0))
-    print("\nUnique labels : {}".format(len(labels)))
-    return data, labels
+    logger.info("Total tokens : {:,}".format(total_token_cnt))
+    logger.info("Vocab coverage : {:.2f}%\n".format(cover_token_cnt/total_token_cnt*100.0))
+    return data
 
 def write_data(data, output_path, vocab, labels, config):
-    print("\n[Writing data]")
+    logger.info("\n[Writing data]")
     unk, pad = vocab['<unk>'], vocab['<pad>']
     num_tok_per_sent = []
     f_write = open(output_path, 'w', encoding='utf-8')
@@ -91,11 +124,11 @@ def write_data(data, output_path, vocab, labels, config):
         f_write.write('\n')
     f_write.close()
     ntps = np.array(num_tok_per_sent)
-    print("\nMEAN : {:.2f}, MAX:{}, MIN:{}, MEDIAN:{}\n".format(\
+    logger.info("\nMEAN : {:.2f}, MAX:{}, MIN:{}, MEDIAN:{}\n".format(\
             np.mean(ntps), int(np.max(ntps)), int(np.min(ntps)), int(np.median(ntps))))
 
 def write_vocab(vocab, output_path):
-    print("\n[Writing vocab]")
+    logger.info("\n[Writing vocab]")
     f_write = open(output_path, 'w', encoding='utf-8')
     for idx, item in enumerate(tqdm(vocab.items())):
         tok = item[0]
@@ -105,39 +138,27 @@ def write_vocab(vocab, output_path):
     f_write.close()
 
 def write_embedding(embedding, output_path):
-    print("\n[Writing embedding]")
+    logger.info("\n[Writing embedding]")
     np.save(output_path, embedding)
 
-def write_label(labels, output_path):
-    print("\n[Writing label]")
-    f_write = open(output_path, 'w', encoding='utf-8')
-    for idx, item in enumerate(tqdm(labels.items())):
-        label = item[0]
-        label_id = item[1]
-        f_write.write(label + ' ' + str(label_id))
-        f_write.write('\n')
-    f_write.close()
-
-_TRAIN_FILE = 'train.txt'
-_VALID_FILE = 'valid.txt'
-_TEST_FILE  = 'test.txt'
-_SUFFIX = '.ids'
-_VOCAB_FILE = 'vocab.txt'
-_EMBED_FILE = 'embedding.npy'
-_LABEL_FILE = 'label.txt'
-
 def preprocess_glove(config, options):
+    from tokenizer import Tokenizer
+
     # vocab, embedding
     vocab, embedding = build_vocab_from_embedding(options.embedding_path, config)
 
-    # read data, labels
+    # build data
     tokenizer = Tokenizer(config)
     path = os.path.join(options.data_dir, _TRAIN_FILE)
-    train_data, labels = build_data(path, tokenizer, vocab, config)
+    train_data = build_data(path, tokenizer, vocab, config)
     path = os.path.join(options.data_dir, _VALID_FILE)
-    valid_data, _ = build_data(path, tokenizer, vocab, config)
+    valid_data = build_data(path, tokenizer, vocab, config)
     path = os.path.join(options.data_dir, _TEST_FILE)
-    test_data, _ = build_data(path, tokenizer, vocab, config)
+    test_data = build_data(path, tokenizer, vocab, config)
+
+    # build labels
+    path = os.path.join(options.data_dir, _TRAIN_FILE)
+    labels = build_label(path)
 
     # write data, vocab, embedding, labels
     path = os.path.join(options.data_dir, _TRAIN_FILE + _SUFFIX)
@@ -153,8 +174,59 @@ def preprocess_glove(config, options):
     path = os.path.join(options.data_dir, _LABEL_FILE)
     write_label(labels, path)
 
-def proprocess_bert(config, options):
-    return None
+# ---------------------------------------------------------------------------- #
+# BERT
+#   reference
+#     https://github.com/huggingface/transformers/blob/master/examples/run_ner.py
+# ---------------------------------------------------------------------------- #
+
+def build_features(input_path, tokenizer, labels, config, options):
+    from util import read_examples_from_file
+    from util import convert_examples_to_features
+
+    logger.info("Creating features from file %s", input_path)
+    examples = read_examples_from_file(input_path, mode='train')
+    features = convert_examples_to_features(examples, labels, config['n_ctx'], tokenizer,
+                                            cls_token=tokenizer.cls_token,
+                                            cls_token_segment_id=0,
+                                            sep_token=tokenizer.sep_token,
+                                            pad_token=tokenizer.convert_tokens_to_ids([tokenizer.pad_token])[0],
+                                            pad_token_segment_id=0,
+                                            sequence_a_segment_id=0)
+    return features
+
+def write_features(features, output_path):
+    logger.info("Saving features into file %s", output_path)
+    torch.save(features, output_path)
+   
+def preprocess_bert(config, options):
+    from transformers import BertTokenizer
+
+    tokenizer = BertTokenizer.from_pretrained(options.model_name_or_path,
+                                              do_lower_case=options.do_lower_case)
+    # build labels
+    path = os.path.join(options.data_dir, _TRAIN_FILE)
+    labels = build_label(path)
+
+    # build features
+    path = os.path.join(options.data_dir, _TRAIN_FILE)
+    features = build_features(path, tokenizer, labels, config, options)
+    path = os.path.join(options.data_dir, _VALID_FILE)
+    features = build_features(path, tokenizer, labels, config, options)
+    path = os.path.join(options.data_dir, _TEST_FILE)
+    features = build_features(path, tokenizer, labels, config, options)
+
+    # write features
+    path = os.path.join(options.data_dir, _TRAIN_FILE + _FSUFFIX)
+    write_features(features, path)
+    path = os.path.join(options.data_dir, _VALID_FILE + _FSUFFIX)
+    write_features(features, path)
+    path = os.path.join(options.data_dir, _TEST_FILE + _FSUFFIX)
+    write_features(features, path)
+
+    # write labels
+    path = os.path.join(options.data_dir, _LABEL_FILE)
+    write_label(labels, path)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -163,6 +235,11 @@ def main():
     parser.add_argument('--embedding_path', type=str, default='embeddings/glove.6B.300d.txt')
     parser.add_argument('--config_path', type=str, default='config.json')
     parser.add_argument('--emb_class', type=str, default='glove', help='glove | bert')
+    # for BERT
+    parser.add_argument("--model_name_or_path", type=str, default='bert-base-uncased',
+                        help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
+    parser.add_argument("--do_lower_case", action="store_true",
+                        help="Set this flag if you are using an uncased model.")
     options = parser.parse_args()
 
     try:
@@ -171,8 +248,10 @@ def main():
     except:
         config = dict()
 
-    if options.emb_class == 'glove': preprocess_glove(config, options)
-    if options.emb_class == 'bert' : preprocess_bert(config, options)
+    if options.emb_class == 'glove':
+        preprocess_glove(config, options)
+    if options.emb_class == 'bert' :
+        preprocess_bert(config, options)
 
 
 if __name__ == '__main__':

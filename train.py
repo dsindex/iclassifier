@@ -5,6 +5,7 @@ import os
 import argparse
 import time
 import pdb
+import logging
 
 import torch
 import torch.nn as nn
@@ -18,6 +19,8 @@ import json
 from tqdm import tqdm
 from model import TextCNN
 from dataset import SnipsDataset
+
+logger = logging.getLogger(__name__)
 
 try:
     from apex.parallel import DistributedDataParallel as DDP
@@ -85,7 +88,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
     st_time = curr_time
     curr_lr = scheduler.get_lr()[0] if scheduler else optimizer.param_groups[0]['lr']
     if local_rank == 0:
-        print('{:3d} epoch | {:5d}/{:5d} | train loss : {:6.3f}, valid loss {:6.3f}, valid acc {:.3f}| lr :{:7.6f} | {:5.2f} min elapsed'.\
+        logger.info('{:3d} epoch | {:5d}/{:5d} | train loss : {:6.3f}, valid loss {:6.3f}, valid acc {:.3f}| lr :{:7.6f} | {:5.2f} min elapsed'.\
                 format(epoch_i, local_step+1, len(train_loader), cur_loss, eval_loss, eval_acc, curr_lr, elapsed_time)) 
         if writer:
             writer.add_scalar('Loss/valid', eval_loss, global_step)
@@ -180,7 +183,7 @@ def main():
         train_sampler = DistributedSampler(train_dataset)
     train_loader = DataLoader(train_dataset, batch_size=opt.batch_size, \
             shuffle=False, num_workers=2, sampler=train_sampler)
-    print("[Train data loaded]")
+    logger.info("[Train data loaded]")
     opt.valid_data_path = os.path.join(opt.data_dir, 'valid.txt.ids')
     valid_dataset = SnipsDataset(opt.valid_data_path)
     valid_sampler = None
@@ -188,10 +191,10 @@ def main():
         valid_sampler = DistributedSampler(valid_dataset)
     valid_loader = DataLoader(valid_dataset, batch_size=opt.batch_size, \
             shuffle=False, num_workers=2, sampler=valid_sampler)
-    print("[Valid data loaded]")
+    logger.info("[Valid data loaded]")
 
     # create model, optimizer, scheduler, summary writer
-    print("[Creating Model, optimizer, scheduler, summary writer...]")
+    logger.info("[Creating Model, optimizer, scheduler, summary writer...]")
     model = TextCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=False) # set embedding trainable
     model.to(device)
     opt.one_epoch_step = (len(train_dataset) // (opt.batch_size*opt.world_size))
@@ -205,8 +208,8 @@ def main():
         writer = SummaryWriter(log_dir=opt.log_dir)
     except:
         writer = None
-    print (opt)
-    print("[Ready]")
+    logger.info(str(opt))
+    logger.info("[Ready]")
 
     # training
     config['device'] = device

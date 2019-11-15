@@ -6,11 +6,14 @@ import argparse
 import json
 import time
 import pdb
+import logging
 
 import torch
 from model import TextCNN
 from dataset import SnipsDataset
 from torch.utils.data import DataLoader
+
+logger = logging.getLogger(__name__)
 
 def evaluate(opt):
     test_data_path = opt.data_path
@@ -28,7 +31,7 @@ def evaluate(opt):
         config = dict()
  
     # load pytorch model
-    print("[Loading model...]")
+    logger.info("[Loading model...]")
     if device == 'cpu':
         checkpoint = torch.load(model_path, map_location=lambda storage, loc: storage)
     else:
@@ -37,13 +40,13 @@ def evaluate(opt):
     model.load_state_dict(checkpoint)
     model = model.to(device)
     model = model.eval()
-    print ("[Loaded]")
+    logger.info("[Loaded]")
  
     # prepare test dataset
     test_dataset = SnipsDataset(test_data_path)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, \
             shuffle=False, num_workers=1, sampler=None)
-    print("[Test data loaded]")
+    logger.info("[Test data loaded]")
 
     # setting
     torch.set_num_threads(opt.num_thread)
@@ -64,8 +67,8 @@ def evaluate(opt):
     whole_time = int((time.time()-whole_st_time)*1000)
     avg_time = whole_time / total_examples
 
-    print("[Accuracy] : {}, {}/{}".format(acc, correct, total_examples))
-    print("[Elapsed Time] : {}ms, {}ms on average".format(whole_time, avg_time))
+    logger.info("[Accuracy] : {}, {}/{}".format(acc, correct, total_examples))
+    logger.info("[Elapsed Time] : {}ms, {}ms on average".format(whole_time, avg_time))
 
 def main():
     parser = argparse.ArgumentParser()
