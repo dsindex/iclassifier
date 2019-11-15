@@ -7,7 +7,7 @@ import torch.nn.functional as F
 import numpy as np
 
 class TextCNN(nn.Module):
-    def __init__(self, config, embedding_path, label_path):
+    def __init__(self, config, embedding_path, label_path, emb_non_trainable=False):
         super(TextCNN, self).__init__()
 
         token_emb_dim = config['token_emb_dim']
@@ -17,7 +17,7 @@ class TextCNN(nn.Module):
 
         # embeddig
         weights_matrix = self.__load_embedding(embedding_path)
-        self.embed = self.__create_embedding_layer(weights_matrix, non_trainable=True)
+        self.embed = self.__create_embedding_layer(weights_matrix, non_trainable=emb_non_trainable)
 
         # convolution
         convs = []

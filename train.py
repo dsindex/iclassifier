@@ -187,7 +187,7 @@ def main():
 
     # create model, optimizer, scheduler, summary writer
     print("[Creating Model, optimizer, scheduler, summary writer...]")
-    model = TextCNN(config, opt.embedding_path, opt.label_path)
+    model = TextCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=False) # set embedding trainable
     model.to(device)
     opt.one_epoch_step = (len(train_dataset) // (opt.batch_size*opt.world_size))
     optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr, weight_decay=opt.l2norm)

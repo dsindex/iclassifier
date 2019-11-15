@@ -40,9 +40,11 @@ $ tensorboard --logdir runs/ --port port-number --bind_all
 - evaluation
 ```
 $ python evaluate.py
-...
-[Accuracy] : 0.97, 679/700
-[Elapsed Time] : 1197ms, 1.71ms on average
+[Loading model...]
+[Loaded]
+[Test data loaded]
+[Accuracy] : 0.9771428571428571, 684/700
+[Elapsed Time] : 1327ms, 1.8957142857142857ms on average
 ```
 
 
