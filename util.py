@@ -101,7 +101,7 @@ def convert_single_example_to_feature(example,
         logger.info("segment_ids: %s", " ".join([str(x) for x in segment_ids]))
         logger.info("label_id: %s", label)
 
-    feature = InputFeatures(input_ids=input_ids,
+    feature = InputFeature(input_ids=input_ids,
                             input_mask=input_mask,
                             segment_ids=segment_ids,
                             label_id=label_id)

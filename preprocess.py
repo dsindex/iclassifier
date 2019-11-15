@@ -13,6 +13,7 @@ import logging
 
 from tqdm import tqdm
 
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 _TRAIN_FILE = 'train.txt'
@@ -184,7 +185,7 @@ def build_features(input_path, tokenizer, labels, config, options):
     from util import read_examples_from_file
     from util import convert_examples_to_features
 
-    logger.info("Creating features from file %s", input_path)
+    logger.info("[Creating features from file] %s", input_path)
     examples = read_examples_from_file(input_path, mode='train')
     features = convert_examples_to_features(examples, labels, config['n_ctx'], tokenizer,
                                             cls_token=tokenizer.cls_token,
@@ -196,7 +197,9 @@ def build_features(input_path, tokenizer, labels, config, options):
     return features
 
 def write_features(features, output_path):
-    logger.info("Saving features into file %s", output_path)
+    import torch
+
+    logger.info("[Saving features into file] %s", output_path)
     torch.save(features, output_path)
    
 def preprocess_bert(config, options):

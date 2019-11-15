@@ -13,6 +13,7 @@ from model import TextCNN
 from dataset import SnipsDataset
 from torch.utils.data import DataLoader
 
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def evaluate(opt):

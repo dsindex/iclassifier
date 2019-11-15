@@ -20,6 +20,7 @@ from tqdm import tqdm
 from model import TextCNN
 from dataset import SnipsDataset
 
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 try:
@@ -208,7 +209,7 @@ def main():
         writer = SummaryWriter(log_dir=opt.log_dir)
     except:
         writer = None
-    logger.info(str(opt))
+    logger.info("%s", opt)
     logger.info("[Ready]")
 
     # training
