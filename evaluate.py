@@ -69,7 +69,7 @@ def main():
     parser = argparse.ArgumentParser()
     
     parser.add_argument('--data_path', type=str, default='data/snips/test.txt.ids')
-    parser.add_argument('--embedding_path', type=str, default='data/snips/embedding.txt')
+    parser.add_argument('--embedding_path', type=str, default='data/snips/embedding.npy')
     parser.add_argument('--label_path', type=str, default='data/snips/label.txt')
     parser.add_argument('--config', type=str, default='config.json')
     parser.add_argument('--model_path', type=str, default='pytorch-model.pt')

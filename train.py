@@ -124,7 +124,7 @@ def main():
     parser = argparse.ArgumentParser()
     
     parser.add_argument('--data_dir', type=str, default='data/snips')
-    parser.add_argument('--embedding_path', type=str, default='data/snips/embedding.txt')
+    parser.add_argument('--embedding_path', type=str, default='data/snips/embedding.npy')
     parser.add_argument('--label_path', type=str, default='data/snips/label.txt')
     parser.add_argument('--config', type=str, default='config.json')
     parser.add_argument('--use_amp', type=bool, default=False)

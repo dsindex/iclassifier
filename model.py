@@ -16,7 +16,7 @@ class TextCNN(nn.Module):
         num_filters = config['num_filters']
 
         # embeddig
-        weights_matrix = self.__load_embedding(embedding_path, token_emb_dim)
+        weights_matrix = self.__load_embedding(embedding_path)
         self.embed = self.__create_embedding_layer(weights_matrix, non_trainable=True)
 
         # convolution
@@ -32,15 +32,8 @@ class TextCNN(nn.Module):
         label_size = len(self.labels)
         self.fc = nn.Linear(len(kernel_sizes) * num_filters, label_size)
 
-    def __load_embedding(self, input_path, token_emb_dim):
-        vocab_size = sum(1 for line in open(input_path, 'r'))
-        weights_matrix = np.zeros((vocab_size, token_emb_dim))
-        with open(input_path, 'r', encoding='utf-8') as f:
-            for idx, line in enumerate(f):
-                toks = line.strip().split()
-                tok_id = int(toks[0])
-                vector = np.array(toks[1:]).astype(np.float)
-                weights_matrix[tok_id] = vector
+    def __load_embedding(self, input_path):
+        weights_matrix = np.load(input_path)
         weights_matrix = torch.tensor(weights_matrix)
         return weights_matrix
 

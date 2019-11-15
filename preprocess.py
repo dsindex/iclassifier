@@ -14,12 +14,13 @@ from tokenizer import Tokenizer
 def build_vocab_from_embedding(input_path, config):
     print("\n[Building vocab from pretrained embedding]")
     vocab = {'<pad>':0, '<unk>':1}
+    # build embedding as numpy array
     embedding = []
     # <pad>
-    vector = [float(0) for i in range(config['token_emb_dim'])]
+    vector = np.array([float(0) for i in range(config['token_emb_dim'])]).astype(np.float)
     embedding.append(vector)
     # <unk>
-    vector = [random.random() for i in range(config['token_emb_dim'])]
+    vector = np.array([random.random() for i in range(config['token_emb_dim'])]).astype(np.float)
     embedding.append(vector)
     tot_num_line = sum(1 for line in open(input_path, 'r'))
     tid = len(vocab)
@@ -27,14 +28,14 @@ def build_vocab_from_embedding(input_path, config):
         for idx, line in enumerate(tqdm(f, total=tot_num_line)):
             toks = line.strip().split()
             word = toks[0]
-            vector = toks[1:]
+            vector = np.array(toks[1:]).astype(np.float)
             assert(config['token_emb_dim'] == len(vector))
             vocab[word] = tid
             embedding.append(vector)
             tid += 1
+    embedding = np.array(embedding)
     return vocab, embedding
     
-
 def build_data(input_path, tokenizer, vocab, config):
     print("\n[Tokenizing and building data]")
     data = []
@@ -68,7 +69,6 @@ def build_data(input_path, tokenizer, vocab, config):
     print("Vocab coverage : {:.2f}%\n".format(cover_token_cnt/total_token_cnt*100.0))
     print("\nUnique labels : {}".format(len(labels)))
     return data, labels
-
 
 def write_data(data, output_path, vocab, labels, config):
     print("\n[Writing data]")
@@ -104,13 +104,7 @@ def write_vocab(vocab, output_path):
 
 def write_embedding(embedding, output_path):
     print("\n[Writing embedding]")
-    f_write = open(output_path, 'w', encoding='utf-8')
-    for tok_id, vector in enumerate(tqdm(embedding)):
-        f_write.write(str(tok_id))
-        for v in vector:
-            f_write.write(' '+str(v))
-        f_write.write('\n')
-    f_write.close()
+    np.save(output_path, embedding)
 
 def write_label(labels, output_path):
     print("\n[Writing label]")
@@ -122,13 +116,12 @@ def write_label(labels, output_path):
         f_write.write('\n')
     f_write.close()
 
-
 _TRAIN_FILE = 'train.txt'
 _VALID_FILE = 'valid.txt'
 _TEST_FILE  = 'test.txt'
 _SUFFIX = '.ids'
 _VOCAB_FILE = 'vocab.txt'
-_EMBED_FILE = 'embedding.txt'
+_EMBED_FILE = 'embedding.npy'
 _LABEL_FILE = 'label.txt'
 
 def main():
