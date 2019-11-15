@@ -81,6 +81,8 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
                 format(epoch_i, local_step+1, len(train_loader), cur_loss, eval_loss, eval_acc, curr_lr, elapsed_time)) 
         if writer:
             writer.add_scalar('Loss/valid', eval_loss, global_step)
+            writer.add_scalar('Acc/valid', eval_acc, global_step)
+            writer.add_scalar('LearningRate/train', curr_lr, global_step)
     return eval_loss
  
 def evaluate(model, config, val_loader, device):
@@ -135,6 +137,7 @@ def main():
     parser.add_argument('--opt-level', type=str, default='O1')
     parser.add_argument("--local_rank", default=0, type=int)
     parser.add_argument("--world_size", default=1, type=int)
+    parser.add_argument('--log_dir', type=str, default='runs')
 
     opt = parser.parse_args()
 
@@ -194,7 +197,7 @@ def main():
         model = DDP(model, delay_allreduce=True)
     scheduler = None
     try:
-        writer = SummaryWriter()
+        writer = SummaryWriter(log_dir=opt.log_dir)
     except:
         writer = None
     print (opt)

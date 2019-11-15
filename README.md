@@ -31,6 +31,10 @@ reference pytorch code for intent classification
 * token_emb_dim in config.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py
 $ python train.py
+
+* tensorboardX
+$ run -rf runs
+$ tensorboard --logdir runs/ --port port-number --bind_all
 ```
 
 - evaluation
