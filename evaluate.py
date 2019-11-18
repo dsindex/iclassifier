@@ -10,11 +10,27 @@ import logging
 
 import torch
 from model import TextCNN
-from dataset import SnipsDataset
+from dataset import SnipsGloveDataset
 from torch.utils.data import DataLoader
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+def load_config(opt):
+    try:
+        with open(opt.config, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+    except Exception as e:
+        config = dict()
+    return config
+
+def prepare_dataset(opt, filepath, DatasetClass, shuffle=False, num_workers=1):
+    dataset = DatasetClass(filepath)
+    sampler = None
+    loader = DataLoader(dataset, batch_size=opt.batch_size, \
+            shuffle=shuffle, num_workers=num_workers, sampler=sampler)
+    logger.info("[{} data loaded]".format(filepath))
+    return loader
 
 def evaluate(opt):
     test_data_path = opt.data_path
@@ -23,13 +39,8 @@ def evaluate(opt):
     model_path = opt.model_path
     batch_size = opt.batch_size
     device = opt.device
-    config_path = opt.config
 
-    try:
-        with open(config_path, 'r', encoding='utf-8') as f:
-            config = json.load(f)
-    except Exception as e:
-        config = dict()
+    config = load_config(opt)
  
     # load pytorch model
     logger.info("[Loading model...]")
@@ -44,10 +55,7 @@ def evaluate(opt):
     logger.info("[Loaded]")
  
     # prepare test dataset
-    test_dataset = SnipsDataset(test_data_path)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, \
-            shuffle=False, num_workers=1, sampler=None)
-    logger.info("[Test data loaded]")
+    test_loader = prepare_dataset(opt, test_data_path, SnipsGloveDataset, shuffle=False, num_workers=1)
 
     # setting
     torch.set_num_threads(opt.num_thread)

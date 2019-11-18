@@ -53,9 +53,17 @@ def write_label(labels, output_path):
 # Glove
 # ---------------------------------------------------------------------------- #
 
-def build_vocab_from_embedding(input_path, config):
+def build_init_vocab(Tokenizer):
+    init_vocab = {}
+    init_vocab[Tokenizer.get_pad_token()] = Tokenizer.get_pad_id()
+    init_vocab[Tokenizer.get_unk_token()] = Tokenizer.get_unk_id()
+    return init_vocab
+
+def build_vocab_from_embedding(input_path, vocab, config):
+    """Build vocab from embedding file and init vocab(contains pad token and unk token only)
+    """
+
     logger.info("\n[Building vocab from pretrained embedding]")
-    vocab = {'<pad>':0, '<unk>':1}
     # build embedding as numpy array
     embedding = []
     # <pad>
@@ -78,8 +86,10 @@ def build_vocab_from_embedding(input_path, config):
     embedding = np.array(embedding)
     return vocab, embedding
     
-def build_data(input_path, tokenizer, vocab, config):
+def build_data(input_path, tokenizer):
     logger.info("\n[Tokenizing and building data]")
+    vocab = tokenizer.vocab
+    config = tokenizer.config
     data = []
     all_tokens = Counter()
     _long_data = 0
@@ -106,22 +116,22 @@ def build_data(input_path, tokenizer, vocab, config):
     logger.info("Vocab coverage : {:.2f}%\n".format(cover_token_cnt/total_token_cnt*100.0))
     return data
 
-def write_data(data, output_path, vocab, labels, config):
+def write_data(data, output_path, tokenizer, labels):
     logger.info("\n[Writing data]")
-    unk, pad = vocab['<unk>'], vocab['<pad>']
+    config = tokenizer.config
+    pad_id = tokenizer.pad_id
     num_tok_per_sent = []
     f_write = open(output_path, 'w', encoding='utf-8')
     for idx, item in enumerate(tqdm(data)):
-        sent, label = item[0], item[1]
-        if len(sent) < 1: continue
+        tokens, label = item[0], item[1]
+        if len(tokens) < 1: continue
         label_id = labels[label]
-        f_write.write(str(label_id))
-        for tok in sent:
-            tok_id = unk if tok not in vocab else vocab[tok]
-            f_write.write(' '+str(tok_id))
-        num_tok_per_sent.append(len(sent))
-        for _ in range(config['n_ctx'] - len(sent)):
-            f_write.write(' '+str(pad))
+        ids = tokenizer.convert_tokens_to_ids(tokens)
+        ids_str = ' '.join([str(d) for d in ids])
+        f_write.write(str(label_id) + ' ' + ids_str)
+        num_tok_per_sent.append(len(tokens))
+        for _ in range(config['n_ctx'] - len(tokens)):
+            f_write.write(' '+str(pad_id))
         f_write.write('\n')
     f_write.close()
     ntps = np.array(num_tok_per_sent)
@@ -146,16 +156,17 @@ def preprocess_glove(config, options):
     from tokenizer import Tokenizer
 
     # vocab, embedding
-    vocab, embedding = build_vocab_from_embedding(options.embedding_path, config)
+    init_vocab = build_init_vocab(Tokenizer)
+    vocab, embedding = build_vocab_from_embedding(options.embedding_path, init_vocab, config)
 
     # build data
-    tokenizer = Tokenizer(config)
+    tokenizer = Tokenizer(vocab, config)
     path = os.path.join(options.data_dir, _TRAIN_FILE)
-    train_data = build_data(path, tokenizer, vocab, config)
+    train_data = build_data(path, tokenizer)
     path = os.path.join(options.data_dir, _VALID_FILE)
-    valid_data = build_data(path, tokenizer, vocab, config)
+    valid_data = build_data(path, tokenizer)
     path = os.path.join(options.data_dir, _TEST_FILE)
-    test_data = build_data(path, tokenizer, vocab, config)
+    test_data = build_data(path, tokenizer)
 
     # build labels
     path = os.path.join(options.data_dir, _TRAIN_FILE)
@@ -163,11 +174,11 @@ def preprocess_glove(config, options):
 
     # write data, vocab, embedding, labels
     path = os.path.join(options.data_dir, _TRAIN_FILE + _SUFFIX)
-    write_data(train_data, path, vocab, labels, config)
+    write_data(train_data, path, tokenizer, labels)
     path = os.path.join(options.data_dir, _VALID_FILE + _SUFFIX)
-    write_data(valid_data, path, vocab, labels, config)
+    write_data(valid_data, path, tokenizer, labels)
     path = os.path.join(options.data_dir, _TEST_FILE + _SUFFIX)
-    write_data(test_data, path, vocab, labels, config)
+    write_data(test_data, path, tokenizer, labels)
     path = os.path.join(options.data_dir, _VOCAB_FILE)
     write_vocab(vocab, path)
     path = os.path.join(options.data_dir, _EMBED_FILE)
@@ -182,8 +193,8 @@ def preprocess_glove(config, options):
 # ---------------------------------------------------------------------------- #
 
 def build_features(input_path, tokenizer, labels, config, options):
-    from util import read_examples_from_file
-    from util import convert_examples_to_features
+    from util_bert import read_examples_from_file
+    from util_bert import convert_examples_to_features
 
     logger.info("[Creating features from file] %s", input_path)
     examples = read_examples_from_file(input_path, mode='train')

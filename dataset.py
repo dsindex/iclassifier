@@ -6,7 +6,7 @@ import pdb
 import torch
 from torch.utils.data.dataset import Dataset
 
-class SnipsDataset(Dataset):
+class SnipsGloveDataset(Dataset):
     def __init__(self, path):
         x,y = [],[]
         with open(path,'r',encoding='utf-8') as f:

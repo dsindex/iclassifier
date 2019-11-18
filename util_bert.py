@@ -6,6 +6,7 @@ import pdb
 from tqdm import tqdm
 
 import logging
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------- #
@@ -120,7 +121,7 @@ def convert_examples_to_features(examples,
 
     features = []
     for (ex_index, example) in enumerate(tqdm(examples)):
-        if ex_index % 10000 == 0:
+        if ex_index % 1000 == 0:
             logger.info("Writing example %d of %d", ex_index, len(examples))
 
         feature = convert_single_example_to_feature(example,
@@ -132,6 +133,7 @@ def convert_examples_to_features(examples,
                                                     sep_token=sep_token,
                                                     pad_token=pad_token,
                                                     pad_token_segment_id=pad_token_segment_id,
-                                                    sequence_a_segment_id=0)
+                                                    sequence_a_segment_id=sequence_a_segment_id,
+                                                    ex_index=ex_index)
         features.append(feature)
     return features

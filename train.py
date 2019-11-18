@@ -13,16 +13,6 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
-import numpy as np
-import random
-import json
-from tqdm import tqdm
-from model import TextCNN
-from dataset import SnipsDataset
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 try:
     from apex.parallel import DistributedDataParallel as DDP
     from apex.fp16_utils import *
@@ -36,12 +26,50 @@ try:
     from torch.utils.tensorboard import SummaryWriter
 except ImportError:
     pass
+import numpy as np
+import random
+import json
+from tqdm import tqdm
+from model import TextCNN
+from dataset import SnipsGloveDataset
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def set_seed(opt):
     random.seed(opt.seed)
     np.random.seed(opt.seed)
     torch.manual_seed(opt.seed)
     torch.cuda.manual_seed(opt.seed)
+
+def set_apex_and_distributed(opt):
+    if not APEX_AVAILABLE: opt.use_amp = False
+    opt.distributed = False
+    if 'WORLD_SIZE' in os.environ and opt.use_amp:
+        opt.world_size = int(os.environ['WORLD_SIZE'])
+        opt.distributed = int(os.environ['WORLD_SIZE']) > 1
+    if opt.distributed:
+        torch.cuda.set_device(opt.local_rank)
+        torch.distributed.init_process_group(backend='nccl', init_method='env://')
+        opt.word_size = torch.distributed.get_world_size()
+
+def load_config(opt):
+    try:
+        with open(opt.config, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+    except Exception as e:
+        config = dict()
+    return config
+
+def prepare_dataset(opt, filepath, DatasetClass, shuffle=False, num_workers=2):
+    dataset = DatasetClass(filepath)
+    sampler = None
+    if opt.distributed:
+        sampler = DistributedSampler(dataset)
+    loader = DataLoader(dataset, batch_size=opt.batch_size, \
+            shuffle=shuffle, num_workers=num_workers, sampler=sampler)
+    logger.info("[{} data loaded]".format(filepath))
+    return loader
 
 def train_epoch(model, config, train_loader, val_loader, epoch_i):
     device = config['device']
@@ -154,51 +182,22 @@ def main():
 
     opt = parser.parse_args()
 
-    # training default device : GPU
     device = torch.device("cuda")
-
     set_seed(opt)
-
-    # APEX and distributed setting
-    if not APEX_AVAILABLE: opt.use_amp = False
-    opt.distributed = False
-    if 'WORLD_SIZE' in os.environ and opt.use_amp:
-        opt.world_size = int(os.environ['WORLD_SIZE'])
-        opt.distributed = int(os.environ['WORLD_SIZE']) > 1
-    if opt.distributed:
-        torch.cuda.set_device(opt.local_rank)
-        torch.distributed.init_process_group(backend='nccl', init_method='env://')
-        opt.word_size = torch.distributed.get_world_size()
-
-    try:
-        with open(opt.config, 'r', encoding='utf-8') as f:
-            config = json.load(f)
-    except Exception as e:
-        config = dict()
-   
+    set_apex_and_distributed(opt)
+    config = load_config(opt)
+  
     # prepare train, valid dataset
-    opt.train_data_path = os.path.join(opt.data_dir, 'train.txt.ids')
-    train_dataset = SnipsDataset(opt.train_data_path)
-    train_sampler = None
-    if opt.distributed:
-        train_sampler = DistributedSampler(train_dataset)
-    train_loader = DataLoader(train_dataset, batch_size=opt.batch_size, \
-            shuffle=False, num_workers=2, sampler=train_sampler)
-    logger.info("[Train data loaded]")
-    opt.valid_data_path = os.path.join(opt.data_dir, 'valid.txt.ids')
-    valid_dataset = SnipsDataset(opt.valid_data_path)
-    valid_sampler = None
-    if opt.distributed:
-        valid_sampler = DistributedSampler(valid_dataset)
-    valid_loader = DataLoader(valid_dataset, batch_size=opt.batch_size, \
-            shuffle=False, num_workers=2, sampler=valid_sampler)
-    logger.info("[Valid data loaded]")
+    filepath = os.path.join(opt.data_dir, 'train.txt.ids')
+    train_loader = prepare_dataset(opt, filepath, SnipsGloveDataset, shuffle=True, num_workers=2)
+    filepath = os.path.join(opt.data_dir, 'valid.txt.ids')
+    valid_loader = prepare_dataset(opt, filepath, SnipsGloveDataset, shuffle=False, num_workers=2)
 
     # create model, optimizer, scheduler, summary writer
     logger.info("[Creating Model, optimizer, scheduler, summary writer...]")
     model = TextCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=False) # set embedding trainable
     model.to(device)
-    opt.one_epoch_step = (len(train_dataset) // (opt.batch_size*opt.world_size))
+    opt.one_epoch_step = (len(train_loader) // (opt.batch_size*opt.world_size))
     optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr, weight_decay=opt.l2norm)
     if opt.use_amp:
         model, optimizer = amp.initialize(model, optimizer, opt_level=opt.opt_level)
