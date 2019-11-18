@@ -40,8 +40,8 @@ $ python preprocess.py
 $ python train.py
 
 2. emb_class=bert
-$ python preprocess.py --emb_class=bert --model_name_or_path=bert-base-uncased --do_lower_case
-$ python train.py --emb_class=bert --model_name_or_path=bert-base-uncased --do_lower_case
+$ python preprocess.py --emb_class=bert --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case
+$ python train.py --emb_class=bert --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case
 
 * tensorboardX
 $ run -rf runs

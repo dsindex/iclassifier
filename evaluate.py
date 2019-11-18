@@ -10,7 +10,7 @@ import logging
 
 import torch
 from model import TextCNN
-from dataset import SnipsGloveDataset
+from dataset import SnipsGLOVEDataset, SnipsBERTDataset
 from torch.utils.data import DataLoader
 
 logging.basicConfig(level=logging.INFO)
@@ -57,7 +57,7 @@ def evaluate(opt):
     logger.info("[Loaded]")
  
     # prepare test dataset
-    test_loader = prepare_dataset(opt, test_data_path, SnipsGloveDataset, shuffle=False, num_workers=1)
+    test_loader = prepare_dataset(opt, test_data_path, SnipsGLOVEDataset, shuffle=False, num_workers=1)
 
     # setting
     torch.set_num_threads(opt.num_thread)

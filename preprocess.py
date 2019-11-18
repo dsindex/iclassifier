@@ -25,6 +25,14 @@ _EMBED_FILE = 'embedding.npy'
 _LABEL_FILE = 'label.txt'
 _FSUFFIX = '.fs'
 
+def load_config(opt):
+    try:
+        with open(opt.config, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+    except Exception as e:
+        config = dict()
+    return config
+
 def build_label(input_path):
     logger.info("\n[building labels]")
     labels = {}
@@ -152,38 +160,38 @@ def write_embedding(embedding, output_path):
     logger.info("\n[Writing embedding]")
     np.save(output_path, embedding)
 
-def preprocess_glove(config, options):
+def preprocess_glove(config, opt):
     from tokenizer import Tokenizer
 
     # vocab, embedding
     init_vocab = build_init_vocab(Tokenizer)
-    vocab, embedding = build_vocab_from_embedding(options.embedding_path, init_vocab, config)
+    vocab, embedding = build_vocab_from_embedding(opt.embedding_path, init_vocab, config)
 
     # build data
     tokenizer = Tokenizer(vocab, config)
-    path = os.path.join(options.data_dir, _TRAIN_FILE)
+    path = os.path.join(opt.data_dir, _TRAIN_FILE)
     train_data = build_data(path, tokenizer)
-    path = os.path.join(options.data_dir, _VALID_FILE)
+    path = os.path.join(opt.data_dir, _VALID_FILE)
     valid_data = build_data(path, tokenizer)
-    path = os.path.join(options.data_dir, _TEST_FILE)
+    path = os.path.join(opt.data_dir, _TEST_FILE)
     test_data = build_data(path, tokenizer)
 
     # build labels
-    path = os.path.join(options.data_dir, _TRAIN_FILE)
+    path = os.path.join(opt.data_dir, _TRAIN_FILE)
     labels = build_label(path)
 
     # write data, vocab, embedding, labels
-    path = os.path.join(options.data_dir, _TRAIN_FILE + _SUFFIX)
+    path = os.path.join(opt.data_dir, _TRAIN_FILE + _SUFFIX)
     write_data(train_data, path, tokenizer, labels)
-    path = os.path.join(options.data_dir, _VALID_FILE + _SUFFIX)
+    path = os.path.join(opt.data_dir, _VALID_FILE + _SUFFIX)
     write_data(valid_data, path, tokenizer, labels)
-    path = os.path.join(options.data_dir, _TEST_FILE + _SUFFIX)
+    path = os.path.join(opt.data_dir, _TEST_FILE + _SUFFIX)
     write_data(test_data, path, tokenizer, labels)
-    path = os.path.join(options.data_dir, _VOCAB_FILE)
+    path = os.path.join(opt.data_dir, _VOCAB_FILE)
     write_vocab(vocab, path)
-    path = os.path.join(options.data_dir, _EMBED_FILE)
+    path = os.path.join(opt.data_dir, _EMBED_FILE)
     write_embedding(embedding, path)
-    path = os.path.join(options.data_dir, _LABEL_FILE)
+    path = os.path.join(opt.data_dir, _LABEL_FILE)
     write_label(labels, path)
 
 # ---------------------------------------------------------------------------- #
@@ -192,7 +200,7 @@ def preprocess_glove(config, options):
 #     https://github.com/huggingface/transformers/blob/master/examples/run_ner.py
 # ---------------------------------------------------------------------------- #
 
-def build_features(input_path, tokenizer, labels, config, options):
+def build_features(input_path, tokenizer, labels, config, opt):
     from util_bert import read_examples_from_file
     from util_bert import convert_examples_to_features
 
@@ -213,33 +221,33 @@ def write_features(features, output_path):
     logger.info("[Saving features into file] %s", output_path)
     torch.save(features, output_path)
    
-def preprocess_bert(config, options):
+def preprocess_bert(config, opt):
     from transformers import BertTokenizer
 
-    tokenizer = BertTokenizer.from_pretrained(options.model_name_or_path,
-                                              do_lower_case=options.do_lower_case)
+    tokenizer = BertTokenizer.from_pretrained(opt.bert_model_name_or_path,
+                                              do_lower_case=opt.bert_do_lower_case)
     # build labels
-    path = os.path.join(options.data_dir, _TRAIN_FILE)
+    path = os.path.join(opt.data_dir, _TRAIN_FILE)
     labels = build_label(path)
 
     # build features
-    path = os.path.join(options.data_dir, _TRAIN_FILE)
-    features = build_features(path, tokenizer, labels, config, options)
-    path = os.path.join(options.data_dir, _VALID_FILE)
-    features = build_features(path, tokenizer, labels, config, options)
-    path = os.path.join(options.data_dir, _TEST_FILE)
-    features = build_features(path, tokenizer, labels, config, options)
+    path = os.path.join(opt.data_dir, _TRAIN_FILE)
+    features = build_features(path, tokenizer, labels, config, opt)
+    path = os.path.join(opt.data_dir, _VALID_FILE)
+    features = build_features(path, tokenizer, labels, config, opt)
+    path = os.path.join(opt.data_dir, _TEST_FILE)
+    features = build_features(path, tokenizer, labels, config, opt)
 
     # write features
-    path = os.path.join(options.data_dir, _TRAIN_FILE + _FSUFFIX)
+    path = os.path.join(opt.data_dir, _TRAIN_FILE + _FSUFFIX)
     write_features(features, path)
-    path = os.path.join(options.data_dir, _VALID_FILE + _FSUFFIX)
+    path = os.path.join(opt.data_dir, _VALID_FILE + _FSUFFIX)
     write_features(features, path)
-    path = os.path.join(options.data_dir, _TEST_FILE + _FSUFFIX)
+    path = os.path.join(opt.data_dir, _TEST_FILE + _FSUFFIX)
     write_features(features, path)
 
     # write labels
-    path = os.path.join(options.data_dir, _LABEL_FILE)
+    path = os.path.join(opt.data_dir, _LABEL_FILE)
     write_label(labels, path)
 
 def main():
@@ -247,25 +255,21 @@ def main():
     
     parser.add_argument('--data_dir', type=str, default='data/snips')
     parser.add_argument('--embedding_path', type=str, default='embeddings/glove.6B.300d.txt')
-    parser.add_argument('--config_path', type=str, default='config.json')
+    parser.add_argument('--config', type=str, default='config.json')
     parser.add_argument('--emb_class', type=str, default='glove', help='glove | bert')
     # for BERT
-    parser.add_argument("--model_name_or_path", type=str, default='bert-base-uncased',
+    parser.add_argument("--bert_model_name_or_path", type=str, default='bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
-    parser.add_argument("--do_lower_case", action="store_true",
+    parser.add_argument("--bert_do_lower_case", action="store_true",
                         help="Set this flag if you are using an uncased model.")
-    options = parser.parse_args()
+    opt = parser.parse_args()
 
-    try:
-        with open(options.config_path, 'r', encoding='utf-8') as f:
-            config = json.load(f)
-    except:
-        config = dict()
+    config = load_config(opt)
 
-    if options.emb_class == 'glove':
-        preprocess_glove(config, options)
-    if options.emb_class == 'bert' :
-        preprocess_bert(config, options)
+    if opt.emb_class == 'glove':
+        preprocess_glove(config, opt)
+    if opt.emb_class == 'bert' :
+        preprocess_bert(config, opt)
 
 
 if __name__ == '__main__':

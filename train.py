@@ -31,7 +31,7 @@ import random
 import json
 from tqdm import tqdm
 from model import TextCNN
-from dataset import SnipsGloveDataset
+from dataset import SnipsGLOVEDataset, SnipsBERTDataset
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -179,6 +179,12 @@ def main():
     parser.add_argument("--world_size", default=1, type=int)
     parser.add_argument('--log_dir', type=str, default='runs')
     parser.add_argument("--seed", default=5, type=int)
+    parser.add_argument('--emb_class', type=str, default='glove', help='glove | bert')
+    # for BERT
+    parser.add_argument("--bert_model_name_or_path", type=str, default='bert-base-uncased',
+                        help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
+    parser.add_argument("--bert_do_lower_case", action="store_true",
+                        help="Set this flag if you are using an uncased model.")
 
     opt = parser.parse_args()
 
@@ -188,14 +194,30 @@ def main():
     config = load_config(opt)
   
     # prepare train, valid dataset
-    filepath = os.path.join(opt.data_dir, 'train.txt.ids')
-    train_loader = prepare_dataset(opt, filepath, SnipsGloveDataset, shuffle=True, num_workers=2)
-    filepath = os.path.join(opt.data_dir, 'valid.txt.ids')
-    valid_loader = prepare_dataset(opt, filepath, SnipsGloveDataset, shuffle=False, num_workers=2)
+    if opt.emb_class == 'glove':
+        filepath = os.path.join(opt.data_dir, 'train.txt.ids')
+        train_loader = prepare_dataset(opt, filepath, SnipsGLOVEDataset, shuffle=True, num_workers=2)
+        filepath = os.path.join(opt.data_dir, 'valid.txt.ids')
+        valid_loader = prepare_dataset(opt, filepath, SnipsGLOVEDataset, shuffle=False, num_workers=2)
+    if opt.emb_class == 'bert':
+        filepath = os.path.join(opt.data_dir, 'train.txt.fs')
+        train_loader = prepare_dataset(opt, filepath, SnipsBERTDataset, shuffle=True, num_workers=2)
+        filepath = os.path.join(opt.data_dir, 'valid.txt.fs')
+        valid_loader = prepare_dataset(opt, filepath, SnipsBERTDataset, shuffle=False, num_workers=2)
 
     # create model, optimizer, scheduler, summary writer
     logger.info("[Creating Model, optimizer, scheduler, summary writer...]")
-    model = TextCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=False) # set embedding trainable
+    if opt.emb_class == 'glove':
+        model = TextCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=False) # set embedding trainable
+    if opt.emb_class == 'bert':
+        from transformers import BertConfig, BertForSequenceClassification
+        bert_config = BertConfig.from_pretrained(opt.bert_model_name_or_path,
+                                                 do_lower_case=opt.bert_do_lower_case)
+        bert_model = BertForSequenceClassification.from_pretrained(opt.bert_model_name_or_path,
+                                                                   from_tf=bool(".ckpt" in opt.bert_model_name_or_path),
+                                                                   config=bert_config)
+        sys.exit(0)
+
     model.to(device)
     opt.one_epoch_step = (len(train_loader) // (opt.batch_size*opt.world_size))
     optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr, weight_decay=opt.l2norm)
