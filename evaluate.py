@@ -48,6 +48,8 @@ def evaluate(opt):
         checkpoint = torch.load(model_path, map_location=lambda storage, loc: storage)
     else:
         checkpoint = torch.load(model_path)
+
+    # create model and load parameters
     model = TextCNN(config, embedding_path, label_path, emb_non_trainable=True)
     model.load_state_dict(checkpoint)
     model = model.to(device)
