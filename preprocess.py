@@ -169,10 +169,13 @@ def preprocess_glove(config, opt):
 
     # build data
     tokenizer = Tokenizer(vocab, config)
+
     path = os.path.join(opt.data_dir, _TRAIN_FILE)
     train_data = build_data(path, tokenizer)
+
     path = os.path.join(opt.data_dir, _VALID_FILE)
     valid_data = build_data(path, tokenizer)
+
     path = os.path.join(opt.data_dir, _TEST_FILE)
     test_data = build_data(path, tokenizer)
 
@@ -183,14 +186,19 @@ def preprocess_glove(config, opt):
     # write data, vocab, embedding, labels
     path = os.path.join(opt.data_dir, _TRAIN_FILE + _SUFFIX)
     write_data(train_data, path, tokenizer, labels)
+
     path = os.path.join(opt.data_dir, _VALID_FILE + _SUFFIX)
     write_data(valid_data, path, tokenizer, labels)
+
     path = os.path.join(opt.data_dir, _TEST_FILE + _SUFFIX)
     write_data(test_data, path, tokenizer, labels)
+
     path = os.path.join(opt.data_dir, _VOCAB_FILE)
     write_vocab(vocab, path)
+
     path = os.path.join(opt.data_dir, _EMBED_FILE)
     write_embedding(embedding, path)
+
     path = os.path.join(opt.data_dir, _LABEL_FILE)
     write_label(labels, path)
 
@@ -230,19 +238,23 @@ def preprocess_bert(config, opt):
 
     # build features
     path = os.path.join(opt.data_dir, _TRAIN_FILE)
-    features = build_features(path, tokenizer, labels, config, opt)
+    train_features = build_features(path, tokenizer, labels, config, opt)
+
     path = os.path.join(opt.data_dir, _VALID_FILE)
-    features = build_features(path, tokenizer, labels, config, opt)
+    valid_features = build_features(path, tokenizer, labels, config, opt)
+
     path = os.path.join(opt.data_dir, _TEST_FILE)
-    features = build_features(path, tokenizer, labels, config, opt)
+    test_features = build_features(path, tokenizer, labels, config, opt)
 
     # write features
     path = os.path.join(opt.data_dir, _TRAIN_FILE + _FSUFFIX)
-    write_features(features, path)
+    write_features(train_features, path)
+
     path = os.path.join(opt.data_dir, _VALID_FILE + _FSUFFIX)
-    write_features(features, path)
+    write_features(valid_features, path)
+
     path = os.path.join(opt.data_dir, _TEST_FILE + _FSUFFIX)
-    write_features(features, path)
+    write_features(test_features, path)
 
     # write labels
     path = os.path.join(opt.data_dir, _LABEL_FILE)

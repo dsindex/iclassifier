@@ -48,7 +48,7 @@ $ python train.py
 * ignore token_emb_dim in config.json
 * n_ctx size should be less than 512
 $ python preprocess.py --emb_class=bert --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case
-$ python train.py --emb_class=bert --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint
+$ python train.py --emb_class=bert --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3
 
 * tensorboardX
 $ tensorboard --logdir runs/ --port port-number --bind_all
@@ -65,8 +65,8 @@ $ python evaluate.py
 2. emb_class=bert
 $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/snips/test.txt.fs
 ...
-INFO:__main__:[Accuracy] : 0.9942857142857143, 696/700
-INFO:__main__:[Elapsed Time] : 10691ms, 15.272857142857143ms on average
+INFO:__main__:[Accuracy] : 0.97, 679/700
+INFO:__main__:[Elapsed Time] : 11456ms, 16.365714285714287ms on average
 ```
 
 ## references
