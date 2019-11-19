@@ -69,8 +69,8 @@ $ python evaluate.py
 $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/snips/test.txt.fs
 * fine-tuning
 ...
-INFO:__main__:[Accuracy] : 0.9785714285714285, 685/700
-INFO:__main__:[Elapsed Time] : 10920ms, 15.6ms on average
+INFO:__main__:[Accuracy] : 0.9828571428571429, 688/700
+INFO:__main__:[Elapsed Time] : 10772ms, 15.388571428571428ms on average
 * feature-based
 ...
 INFO:__main__:[Accuracy] : 0.96, 672/700
