@@ -133,7 +133,7 @@ class TextBertCNN(nn.Module):
                                            token_type_ids=x[2])
             embedded = bert_outputs[0]
             # [batch_size, seq_size, hidden_size]
-            # [batch_size, seq_size, 0] corresponding to [CLS]
+            # [batch_size, 0, hidden_size] corresponding to [CLS]
         return embedded
 
     def forward(self, x):
