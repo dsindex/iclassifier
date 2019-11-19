@@ -195,6 +195,7 @@ def main():
                         help="Set this flag if you are using an uncased model.")
     parser.add_argument("--bert_output_dir", type=str, default='bert-checkpoint',
                         help="The output directory where the model predictions and checkpoints will be written.")
+    parser.add_argument('--bert_use_feature_based', type=bool, default=False)
 
     opt = parser.parse_args()
 
@@ -226,7 +227,7 @@ def main():
         bert_model = BertModel.from_pretrained(opt.bert_model_name_or_path,
                                                from_tf=bool(".ckpt" in opt.bert_model_name_or_path))
         bert_config = bert_model.config
-        model = TextBertCNN(config, bert_config, bert_model, opt.label_path)
+        model = TextBertCNN(config, bert_config, bert_model, opt.label_path, feature_based=opt.bert_use_feature_based)
     model.to(device)
     logger.info("[Model prepared]")
 

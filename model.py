@@ -17,11 +17,11 @@ class TextGloveCNN(nn.Module):
         kernel_sizes = config['kernel_sizes']
         num_filters = config['num_filters']
 
-        # embeddig
+        # 1. glove embeddig
         weights_matrix = self.__load_embedding(embedding_path)
         self.embed = self.__create_embedding_layer(weights_matrix, non_trainable=emb_non_trainable)
 
-        # convolution
+        # 2. convolution
         convs = []
         for ks in kernel_sizes:
             convs.append(nn.Conv1d(in_channels=token_emb_dim, out_channels=num_filters, kernel_size=ks))
@@ -29,7 +29,7 @@ class TextGloveCNN(nn.Module):
 
         self.dropout = nn.Dropout(config['dropout'])
 
-        # fully connected
+        # 3. fully connected
         self.labels = self.__load_label(label_path)
         label_size = len(self.labels)
         self.fc = nn.Linear(len(kernel_sizes) * num_filters, label_size)
@@ -58,10 +58,12 @@ class TextGloveCNN(nn.Module):
         return labels
 
     def forward(self, x):
+        # 1. glove embedding
         # [batch_size, seq_size]
         embedded = self.embed(x)
         # [batch_size, seq_size, token_emb_dim]  
 
+        # 2. convolution
         embedded = embedded.permute(0, 2, 1)
         # [batch_size, token_emb_dim, seq_size]
         conved = [F.relu(conv(embedded)) for conv in self.convs]
@@ -73,24 +75,26 @@ class TextGloveCNN(nn.Module):
         cat = self.dropout(torch.cat(pooled, dim = 1))
         # [batch_size, len(kernel_sizes) * num_filters]
 
+        # 3. fully connected
         output = torch.sigmoid(self.fc(cat))
         # [batch_size, label_size]
         return output
 
 class TextBertCNN(nn.Module):
-    def __init__(self, config, bert_config, bert_model, label_path):
+    def __init__(self, config, bert_config, bert_model, label_path, feature_based=False):
         super(TextBertCNN, self).__init__()
 
         seq_size = config['n_ctx']
         kernel_sizes = config['kernel_sizes']
         num_filters = config['num_filters']
 
-        # bert embedding
+        # 1. bert embedding
         self.bert_config = bert_config
         self.bert_model = bert_model
         hidden_size = bert_config.hidden_size
+        self.feature_based = feature_based
 
-        # convolution
+        # 2. convolution
         convs = []
         for ks in kernel_sizes:
             convs.append(nn.Conv1d(in_channels=hidden_size, out_channels=num_filters, kernel_size=ks))
@@ -98,7 +102,7 @@ class TextBertCNN(nn.Module):
 
         self.dropout = nn.Dropout(config['dropout'])
 
-        # fully connected
+        # 3. fully connected
         self.labels = self.__load_label(label_path)
         label_size = len(self.labels)
         self.fc = nn.Linear(len(kernel_sizes) * num_filters, label_size)
@@ -113,15 +117,31 @@ class TextBertCNN(nn.Module):
                 labels[label_id] = label
         return labels
 
-    def forward(self, x):
-        # x[0], x[1], x[2] : [batch_size, seq_size]
-        bert_outputs = self.bert_model(input_ids=x[0],
-                                       attention_mask=x[1],
-                                       token_type_ids=x[2])
-        embedded = bert_outputs[0]
-        # [batch_size, seq_size, hidden_size]
-        # [batch_size, seq_size, 0] corresponding to [CLS]
+    def __compute_bert_embedding(self, x):
+        if self.feature_based:
+            # feature-based
+            with torch.no_grad():
+                bert_outputs = self.bert_model(input_ids=x[0],
+                                               attention_mask=x[1],
+                                               token_type_ids=x[2])
+                embedded = bert_outputs[0]
+        else:
+            # fine-tuning
+            # x[0], x[1], x[2] : [batch_size, seq_size]
+            bert_outputs = self.bert_model(input_ids=x[0],
+                                           attention_mask=x[1],
+                                           token_type_ids=x[2])
+            embedded = bert_outputs[0]
+            # [batch_size, seq_size, hidden_size]
+            # [batch_size, seq_size, 0] corresponding to [CLS]
+        return embedded
 
+    def forward(self, x):
+        # 1. bert embedding
+        embedded = self.__compute_bert_embedding(x)
+        embedded = self.dropout(embedded)
+
+        # 2. convolution
         embedded = embedded.permute(0, 2, 1)
         # [batch_size, hidden_size, seq_size]
         conved = [F.relu(conv(embedded)) for conv in self.convs]
@@ -133,6 +153,7 @@ class TextBertCNN(nn.Module):
         cat = self.dropout(torch.cat(pooled, dim = 1))
         # [batch_size, len(kernel_sizes) * num_filters]
 
+        # 3. fully connected
         output = torch.sigmoid(self.fc(cat))
         # [batch_size, label_size]
         return output
