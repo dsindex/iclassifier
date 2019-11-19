@@ -68,10 +68,10 @@ def evaluate(opt):
         model = TextBertCNN(config, bert_config, bert_model, opt.label_path)
     model.load_state_dict(checkpoint)
     model = model.to(device)
-    model = model.eval()
     logger.info("[Loaded]")
  
     # evaluation
+    model = model.eval()
     correct = 0
     total_examples = 0
     whole_st_time = time.time()
