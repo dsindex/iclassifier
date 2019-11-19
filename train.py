@@ -30,8 +30,8 @@ import numpy as np
 import random
 import json
 from tqdm import tqdm
-from model import TextCNN
-from dataset import SnipsGLOVEDataset, SnipsBERTDataset
+from model import TextGloveCNN, TextBertCNN
+from dataset import SnipsGloveDataset, SnipsBertDataset
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -90,7 +90,11 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
     for local_step, (x,y) in tqdm(enumerate(train_loader), total=len(train_loader)):
         global_step = (len(train_loader) * (epoch_i-1)) + local_step
         model.train()
-        x = x.to(device)
+        if type(x) != list: # torch.tensor
+            x = x.to(device)
+        else:               # list of torch.tensor
+            for i in range(len(x)):
+                x[i] = x[i].to(device)
         y = y.to(device)
         output = model(x)
         loss = criterion(output, y)
@@ -103,7 +107,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
         optimizer.step()
         if scheduler:
             scheduler.step()
-        cur_examples = x.size(0)
+        cur_examples = y.size(0)
         total_examples += cur_examples
         total_loss += (loss.item() * cur_examples)
         if local_rank == 0 and writer:
@@ -134,13 +138,17 @@ def evaluate(model, config, val_loader, device):
 
     with torch.no_grad():
         for i, (x,y) in enumerate(val_loader):
-            x = x.to(device)
+            if type(x) != list: # torch.tensor
+                x = x.to(device)
+            else:               # list of torch.tensor
+                for i in range(len(x)):
+                    x[i] = x[i].to(device)
             y = y.to(device)
             output = model(x)
             loss = criterion(output, y)
             predicted = output.argmax(1)
             correct += (predicted == y).sum().item()
-            cur_examples = x.size(0)
+            cur_examples = y.size(0)
             total_loss += (loss.item() * cur_examples) 
             total_examples += cur_examples
     cur_loss = total_loss / total_examples
@@ -185,6 +193,8 @@ def main():
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
     parser.add_argument("--bert_do_lower_case", action="store_true",
                         help="Set this flag if you are using an uncased model.")
+    parser.add_argument("--bert_output_dir", type=str, default='bert-checkpoint',
+                        help="The output directory where the model predictions and checkpoints will be written.")
 
     opt = parser.parse_args()
 
@@ -196,29 +206,32 @@ def main():
     # prepare train, valid dataset
     if opt.emb_class == 'glove':
         filepath = os.path.join(opt.data_dir, 'train.txt.ids')
-        train_loader = prepare_dataset(opt, filepath, SnipsGLOVEDataset, shuffle=True, num_workers=2)
+        train_loader = prepare_dataset(opt, filepath, SnipsGloveDataset, shuffle=True, num_workers=2)
         filepath = os.path.join(opt.data_dir, 'valid.txt.ids')
-        valid_loader = prepare_dataset(opt, filepath, SnipsGLOVEDataset, shuffle=False, num_workers=2)
+        valid_loader = prepare_dataset(opt, filepath, SnipsGloveDataset, shuffle=False, num_workers=2)
     if opt.emb_class == 'bert':
         filepath = os.path.join(opt.data_dir, 'train.txt.fs')
-        train_loader = prepare_dataset(opt, filepath, SnipsBERTDataset, shuffle=True, num_workers=2)
+        train_loader = prepare_dataset(opt, filepath, SnipsBertDataset, shuffle=True, num_workers=2)
         filepath = os.path.join(opt.data_dir, 'valid.txt.fs')
-        valid_loader = prepare_dataset(opt, filepath, SnipsBERTDataset, shuffle=False, num_workers=2)
+        valid_loader = prepare_dataset(opt, filepath, SnipsBertDataset, shuffle=False, num_workers=2)
 
-    # create model, optimizer, scheduler, summary writer
-    logger.info("[Creating Model, optimizer, scheduler, summary writer...]")
+    # prepare model
     if opt.emb_class == 'glove':
-        model = TextCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=False) # set embedding trainable
+        # set embedding as trainable
+        model = TextGloveCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=False)
     if opt.emb_class == 'bert':
-        from transformers import BertConfig, BertForSequenceClassification
-        bert_config = BertConfig.from_pretrained(opt.bert_model_name_or_path,
-                                                 do_lower_case=opt.bert_do_lower_case)
-        bert_model = BertForSequenceClassification.from_pretrained(opt.bert_model_name_or_path,
-                                                                   from_tf=bool(".ckpt" in opt.bert_model_name_or_path),
-                                                                   config=bert_config)
-        sys.exit(0)
-
+        from transformers import BertTokenizer, BertConfig, BertModel
+        bert_tokenizer = BertTokenizer.from_pretrained(opt.bert_model_name_or_path,
+                                                       do_lower_case=opt.bert_do_lower_case)
+        bert_model = BertModel.from_pretrained(opt.bert_model_name_or_path,
+                                               from_tf=bool(".ckpt" in opt.bert_model_name_or_path))
+        bert_config = bert_model.config
+        model = TextBertCNN(config, bert_config, bert_model, opt.label_path)
     model.to(device)
+    logger.info("[Model prepared]")
+
+    # create optimizer, scheduler, summary writer
+    logger.info("[Creating optimizer, scheduler, summary writer...]")
     opt.one_epoch_step = (len(train_loader) // (opt.batch_size*opt.world_size))
     optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr, weight_decay=opt.l2norm)
     if opt.use_amp:
@@ -246,7 +259,12 @@ def main():
         if opt.local_rank == 0 and eval_loss < best_val_loss:
             best_val_loss = eval_loss
             if opt.save_path:
-                save_model(model, opt, config)   
+                save_model(model, opt, config)
+                if opt.emb_class == 'bert':
+                    if not os.path.exists(opt.bert_output_dir):
+                        os.makedirs(opt.bert_output_dir)
+                    bert_tokenizer.save_pretrained(opt.bert_output_dir)
+                    bert_model.save_pretrained(opt.bert_output_dir)
    
 if __name__ == '__main__':
     main()

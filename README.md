@@ -24,7 +24,7 @@ reference pytorch code for intent classification
     - from https://github.com/lytum/joint-intent-classification-and-slot-filling-based-on-BERT
     - paper : https://arxiv.org/pdf/1902.10909.pdf
 
-- additional requirements for BERT
+- additional requirements for BERT(huggingface's transformers)
 ```
 $ pip install tensorflow-gpu==2.0
 $ pip install git+https://github.com/huggingface/transformers.git
@@ -34,17 +34,20 @@ $ pip install git+https://github.com/huggingface/transformers.git
 
 - train
 ```
+$ rm -rf runs bert-checkpoint
+
 1. emb_class=glove
 * token_emb_dim in config.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py
 $ python train.py
 
 2. emb_class=bert
+* ignore token_emb_dim in config.json
+* n_ctx size should be less than 512
 $ python preprocess.py --emb_class=bert --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case
-$ python train.py --emb_class=bert --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case
+$ python train.py --emb_class=bert --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint
 
 * tensorboardX
-$ run -rf runs
 $ tensorboard --logdir runs/ --port port-number --bind_all
 ```
 
@@ -52,13 +55,13 @@ $ tensorboard --logdir runs/ --port port-number --bind_all
 ```
 1. emb_class=glove
 $ python evaluate.py
-[Loading model...]
-[Loaded]
-[Test data loaded]
+...
 [Accuracy] : 0.9771428571428571, 684/700
 [Elapsed Time] : 1327ms, 1.8957142857142857ms on average
 
 2. emb_class=bert
+$ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --bert_do_lower_case
+
 ```
 
 

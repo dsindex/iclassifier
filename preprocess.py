@@ -196,8 +196,6 @@ def preprocess_glove(config, opt):
 
 # ---------------------------------------------------------------------------- #
 # BERT
-#   reference
-#     https://github.com/huggingface/transformers/blob/master/examples/run_ner.py
 # ---------------------------------------------------------------------------- #
 
 def build_features(input_path, tokenizer, labels, config, opt):

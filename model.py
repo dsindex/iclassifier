@@ -8,9 +8,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 
-class TextCNN(nn.Module):
+class TextGloveCNN(nn.Module):
     def __init__(self, config, embedding_path, label_path, emb_non_trainable=False):
-        super(TextCNN, self).__init__()
+        super(TextGloveCNN, self).__init__()
 
         token_emb_dim = config['token_emb_dim']
         seq_size = config['n_ctx']
@@ -77,4 +77,63 @@ class TextCNN(nn.Module):
         # [batch_size, label_size]
         return output
 
+class TextBertCNN(nn.Module):
+    def __init__(self, config, bert_config, bert_model, label_path):
+        super(TextBertCNN, self).__init__()
+
+        seq_size = config['n_ctx']
+        kernel_sizes = config['kernel_sizes']
+        num_filters = config['num_filters']
+
+        # bert embedding
+        self.bert_config = bert_config
+        self.bert_model = bert_model
+        hidden_size = bert_config.hidden_size
+
+        # convolution
+        convs = []
+        for ks in kernel_sizes:
+            convs.append(nn.Conv1d(in_channels=hidden_size, out_channels=num_filters, kernel_size=ks))
+        self.convs = nn.ModuleList(convs)
+
+        self.dropout = nn.Dropout(config['dropout'])
+
+        # fully connected
+        self.labels = self.__load_label(label_path)
+        label_size = len(self.labels)
+        self.fc = nn.Linear(len(kernel_sizes) * num_filters, label_size)
+
+    def __load_label(self, input_path):
+        labels = {}
+        with open(input_path, 'r', encoding='utf-8') as f:
+            for idx, line in enumerate(f):
+                toks = line.strip().split()
+                label = toks[0]
+                label_id = toks[1]
+                labels[label_id] = label
+        return labels
+
+    def forward(self, x):
+        # x[0], x[1], x[2] : [batch_size, seq_size]
+        bert_outputs = self.bert_model(input_ids=x[0],
+                                       attention_mask=x[1],
+                                       token_type_ids=x[2])
+        embedded = bert_outputs[0]
+        # [batch_size, seq_size, hidden_size]
+        # [batch_size, seq_size, 0] corresponding to [CLS]
+
+        embedded = embedded.permute(0, 2, 1)
+        # [batch_size, hidden_size, seq_size]
+        conved = [F.relu(conv(embedded)) for conv in self.convs]
+        # [ [batch_size, num_filters, *], [batch_size, num_filters, *], [batch_size, num_filters, *] ]
+        
+        pooled = [F.max_pool1d(conv, int(conv.size(2))).squeeze(2) for conv in conved]
+        # [ [batch_size, num_filters], [batch_size, num_filters], [batch_size, num_filters] ]
+
+        cat = self.dropout(torch.cat(pooled, dim = 1))
+        # [batch_size, len(kernel_sizes) * num_filters]
+
+        output = torch.sigmoid(self.fc(cat))
+        # [batch_size, label_size]
+        return output
 
