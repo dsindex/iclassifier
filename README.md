@@ -24,7 +24,7 @@ reference pytorch code for intent classification
     - from [joint-intent-classification-and-slot-filling-based-on-BERT](https://github.com/lytum/joint-intent-classification-and-slot-filling-based-on-BERT)
     - paper : [BERT for Joint Intent Classification and Slot Filling](https://arxiv.org/pdf/1902.10909.pdf)
     - intent classification accuracy : 98.6%
-    - [SOTA on SNIPS data](https://paperswithcode.com/sota/intent-detection-on-snips)
+    - [previous SOTA on SNIPS data](https://paperswithcode.com/sota/intent-detection-on-snips)
 
 
 - additional requirements for BERT(huggingface's transformers)
