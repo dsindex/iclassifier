@@ -60,8 +60,10 @@ $ python evaluate.py
 [Elapsed Time] : 1327ms, 1.8957142857142857ms on average
 
 2. emb_class=bert
-$ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --bert_do_lower_case
-
+$ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/snips/test.txt.fs
+...
+INFO:__main__:[Accuracy] : 0.9942857142857143, 696/700
+INFO:__main__:[Elapsed Time] : 10691ms, 15.272857142857143ms on average
 ```
 
 
