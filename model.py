@@ -24,7 +24,12 @@ class TextGloveCNN(nn.Module):
         # 2. convolution
         convs = []
         for ks in kernel_sizes:
+            # normal convolution
             convs.append(nn.Conv1d(in_channels=token_emb_dim, out_channels=num_filters, kernel_size=ks))
+            '''
+            # depthwise convolution, 'out_channels' should be 'K * in_channels'
+            convs.append(nn.Conv1d(in_channels=token_emb_dim, out_channels=num_filters, kernel_size=ks, groups=token_emb_dim))
+            '''
         self.convs = nn.ModuleList(convs)
 
         self.dropout = nn.Dropout(config['dropout'])
@@ -61,7 +66,7 @@ class TextGloveCNN(nn.Module):
         # 1. glove embedding
         # [batch_size, seq_size]
         embedded = self.embed(x)
-        # [batch_size, seq_size, token_emb_dim]  
+        # [batch_size, seq_size, token_emb_dim]
 
         # 2. convolution
         embedded = embedded.permute(0, 2, 1)
