@@ -28,6 +28,7 @@ class TextGloveCNN(nn.Module):
             convs.append(nn.Conv1d(in_channels=token_emb_dim, out_channels=num_filters, kernel_size=ks))
             '''
             # depthwise convolution, 'out_channels' should be 'K * in_channels'
+            # see https://pytorch.org/docs/stable/nn.html#torch.nn.Conv1d , https://towardsdatascience.com/a-basic-introduction-to-separable-convolutions-b99ec3102728
             convs.append(nn.Conv1d(in_channels=token_emb_dim, out_channels=num_filters, kernel_size=ks, groups=token_emb_dim))
             '''
         self.convs = nn.ModuleList(convs)
