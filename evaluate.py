@@ -9,7 +9,7 @@ import pdb
 import logging
 
 import torch
-from model import TextGloveCNN, TextBertCNN
+from model import TextGloveCNN, TextBertCNN, TextBertCLS
 from dataset import SnipsGloveDataset, SnipsBertDataset
 from torch.utils.data import DataLoader
 
@@ -65,7 +65,9 @@ def evaluate(opt):
                                                        do_lower_case=opt.bert_do_lower_case)
         bert_model = BertModel.from_pretrained(opt.bert_output_dir)
         bert_config = bert_model.config
-        model = TextBertCNN(config, bert_config, bert_model, opt.label_path)
+        ModelClass = TextBertCNN
+        if opt.bert_model_class == 'TextBertCLS': ModelClass = TextBertCLS
+        model = ModelClass(config, bert_config, bert_model, opt.label_path)
     model.load_state_dict(checkpoint)
     model = model.to(device)
     logger.info("[Loaded]")
@@ -112,6 +114,8 @@ def main():
                         help="Set this flag if you are using an uncased model.")
     parser.add_argument("--bert_output_dir", type=str, default='bert-checkpoint',
                         help="The output directory where the model predictions and checkpoints will be written.")
+    parser.add_argument('--bert_model_class', type=str, default='TextBertCNN',
+                        help="model class, TextBertCNN | TextBertCLS")
     opt = parser.parse_args()
 
     evaluate(opt) 

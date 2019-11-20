@@ -133,7 +133,7 @@ class TextBertCNN(nn.Module):
                                            token_type_ids=x[2])
             embedded = bert_outputs[0]
             # [batch_size, seq_size, hidden_size]
-            # [batch_size, 0, hidden_size] corresponding to [CLS]
+            # [batch_size, 0, hidden_size] corresponding to [CLS] == 'embedded[:, 0]'
         return embedded
 
     def forward(self, x):
@@ -155,6 +155,67 @@ class TextBertCNN(nn.Module):
 
         # 3. fully connected
         output = torch.sigmoid(self.fc(cat))
+        # [batch_size, label_size]
+        return output
+
+class TextBertCLS(nn.Module):
+    def __init__(self, config, bert_config, bert_model, label_path, feature_based=False):
+        super(TextBertCLS, self).__init__()
+
+        seq_size = config['n_ctx']
+        kernel_sizes = config['kernel_sizes']
+        num_filters = config['num_filters']
+
+        # 1. bert embedding
+        self.bert_config = bert_config
+        self.bert_model = bert_model
+        hidden_size = bert_config.hidden_size
+        self.feature_based = feature_based
+
+        self.dropout = nn.Dropout(config['dropout'])
+
+        # 2. fully connected
+        self.labels = self.__load_label(label_path)
+        label_size = len(self.labels)
+        self.fc = nn.Linear(hidden_size, label_size)
+
+    def __load_label(self, input_path):
+        labels = {}
+        with open(input_path, 'r', encoding='utf-8') as f:
+            for idx, line in enumerate(f):
+                toks = line.strip().split()
+                label = toks[0]
+                label_id = toks[1]
+                labels[label_id] = label
+        return labels
+
+    def __compute_bert_embedding(self, x):
+        if self.feature_based:
+            # feature-based
+            with torch.no_grad():
+                bert_outputs = self.bert_model(input_ids=x[0],
+                                               attention_mask=x[1],
+                                               token_type_ids=x[2])
+                pooled = bert_outputs[1]
+        else:
+            # fine-tuning
+            # x[0], x[1], x[2] : [batch_size, seq_size]
+            bert_outputs = self.bert_model(input_ids=x[0],
+                                           attention_mask=x[1],
+                                           token_type_ids=x[2])
+            pooled = bert_outputs[1] # first token embedding([CLS]), see BertPooler
+            # [batch_size, hidden_size]
+        embedded = pooled
+        return embedded
+
+    def forward(self, x):
+        # 1. bert embedding
+        embedded = self.__compute_bert_embedding(x)
+        embedded = self.dropout(embedded)
+        # [batch_size, hidden_size]
+
+        # 2. fully connected
+        output = torch.sigmoid(self.fc(embedded))
         # [batch_size, label_size]
         return output
 

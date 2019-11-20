@@ -30,7 +30,7 @@ import numpy as np
 import random
 import json
 from tqdm import tqdm
-from model import TextGloveCNN, TextBertCNN
+from model import TextGloveCNN, TextBertCNN, TextBertCLS
 from dataset import SnipsGloveDataset, SnipsBertDataset
 
 logging.basicConfig(level=logging.INFO)
@@ -98,6 +98,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
         y = y.to(device)
         output = model(x)
         loss = criterion(output, y)
+        # back-propagation - begin
         optimizer.zero_grad()
         if use_amp:
             with amp.scale_loss(loss, optimizer) as scaled_loss:
@@ -107,6 +108,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
         optimizer.step()
         if scheduler:
             scheduler.step()
+        # back-propagation - end
         cur_examples = y.size(0)
         total_examples += cur_examples
         total_loss += (loss.item() * cur_examples)
@@ -195,7 +197,10 @@ def main():
                         help="Set this flag if you are using an uncased model.")
     parser.add_argument("--bert_output_dir", type=str, default='bert-checkpoint',
                         help="The output directory where the model predictions and checkpoints will be written.")
-    parser.add_argument('--bert_use_feature_based', type=bool, default=False)
+    parser.add_argument('--bert_use_feature_based', action="store_true",
+                        help="use BERT as feature-based, default fine-tuning")
+    parser.add_argument('--bert_model_class', type=str, default='TextBertCNN',
+                        help="model class, TextBertCNN | TextBertCLS")
 
     opt = parser.parse_args()
 
@@ -227,7 +232,9 @@ def main():
         bert_model = BertModel.from_pretrained(opt.bert_model_name_or_path,
                                                from_tf=bool(".ckpt" in opt.bert_model_name_or_path))
         bert_config = bert_model.config
-        model = TextBertCNN(config, bert_config, bert_model, opt.label_path, feature_based=opt.bert_use_feature_based)
+        ModelClass = TextBertCNN
+        if opt.bert_model_class == 'TextBertCLS': ModelClass = TextBertCLS
+        model = ModelClass(config, bert_config, bert_model, opt.label_path, feature_based=opt.bert_use_feature_based)
     model.to(device)
     logger.info("[Model prepared]")
 
