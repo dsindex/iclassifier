@@ -81,6 +81,9 @@ $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --bert_d
 1) --bert_model_class=TextBertCNN
 
 * fine-tuning
+INFO:__main__:[Accuracy] : 0.9785714285714285, 685/700
+INFO:__main__:[Elapsed Time] : 11805ms, 16.864285714285714ms on average
+~ 
 INFO:__main__:[Accuracy] : 0.9828571428571429, 688/700
 INFO:__main__:[Elapsed Time] : 10772ms, 15.388571428571428ms on average
 
