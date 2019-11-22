@@ -27,7 +27,7 @@ reference pytorch code for intent classification
     - [previous SOTA on SNIPS data](https://paperswithcode.com/sota/intent-detection-on-snips)
 
 
-- additional requirements for BERT(huggingface's transformers)
+- additional requirements for BERT(huggingface's [transformers](https://github.com/huggingface/transformers.git))
 ```
 $ pip install tensorflow-gpu==2.0
 $ pip install git+https://github.com/huggingface/transformers.git
