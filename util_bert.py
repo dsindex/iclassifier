@@ -35,6 +35,7 @@ def read_examples_from_file(file_path, mode='train'):
     with open(file_path, encoding="utf-8") as f:
         for idx, line in enumerate(tqdm(f, total=tot_num_line)):
             toks = line.strip().split()
+            assert(len(toks) >= 2)
             words = toks[:-1]
             label = toks[-1]
             examples.append(InputExample(guid="{}-{}".format(mode, guid_index),

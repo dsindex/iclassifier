@@ -40,7 +40,9 @@ def build_label(input_path):
     tot_num_line = sum(1 for _ in open(input_path, 'r')) 
     with open(input_path, 'r', encoding='utf-8') as f:
         for idx, line in enumerate(tqdm(f, total=tot_num_line)):
-            sent, label = line.strip().split('\t')
+            toks = line.strip().split('\t')
+            assert(len(toks) >= 2)
+            label = toks[-1]
             if label not in labels:
                 labels[label] = label_id
                 label_id += 1
