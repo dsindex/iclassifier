@@ -208,12 +208,12 @@ def preprocess_glove(config, opt):
 # BERT
 # ---------------------------------------------------------------------------- #
 
-def build_features(input_path, tokenizer, labels, config, opt):
+def build_features(input_path, tokenizer, labels, config, opt, mode='train'):
     from util_bert import read_examples_from_file
     from util_bert import convert_examples_to_features
 
     logger.info("[Creating features from file] %s", input_path)
-    examples = read_examples_from_file(input_path, mode='train')
+    examples = read_examples_from_file(input_path, mode=mode)
     features = convert_examples_to_features(examples, labels, config['n_ctx'], tokenizer,
                                             cls_token=tokenizer.cls_token,
                                             cls_token_segment_id=0,
@@ -240,13 +240,13 @@ def preprocess_bert(config, opt):
 
     # build features
     path = os.path.join(opt.data_dir, _TRAIN_FILE)
-    train_features = build_features(path, tokenizer, labels, config, opt)
+    train_features = build_features(path, tokenizer, labels, config, opt, mode='train')
 
     path = os.path.join(opt.data_dir, _VALID_FILE)
-    valid_features = build_features(path, tokenizer, labels, config, opt)
+    valid_features = build_features(path, tokenizer, labels, config, opt, mode='valid')
 
     path = os.path.join(opt.data_dir, _TEST_FILE)
-    test_features = build_features(path, tokenizer, labels, config, opt)
+    test_features = build_features(path, tokenizer, labels, config, opt, mode='test')
 
     # write features
     path = os.path.join(opt.data_dir, _TRAIN_FILE + _FSUFFIX)
