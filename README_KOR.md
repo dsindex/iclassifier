@@ -15,3 +15,7 @@
   2 epoch |  1172/ 1172 | train loss :  1.236, valid loss  1.253, valid acc 0.883
   3 epoch |  1172/ 1172 | train loss :  1.227, valid loss  1.255, valid acc 0.881
   ```
+  - evaluation
+  ```
+  $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --data_path=data/clova_sentiments/test.txt.fs --batch_size=128 --bert_model_class=TextBertCLS
+  ```
