@@ -10,4 +10,8 @@
   $ python preprocess.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.bpe.4.8m_step --data_dir=./data/clova_sentiments
   $ python train.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --data_dir=./data/clova_sentiments/ --batch_size=128 --bert_model_class=TextBertCLS
   * bert_model_class를 TextBertCNN으로 하는 경우, 성능이 낮게 나오는 문제.
+  ...
+  1 epoch |  1172/ 1172 | train loss :  1.267, valid loss  1.251, valid acc 0.868|
+  2 epoch |  1172/ 1172 | train loss :  1.236, valid loss  1.253, valid acc 0.883
+  3 epoch |  1172/ 1172 | train loss :  1.227, valid loss  1.255, valid acc 0.881
   ```
