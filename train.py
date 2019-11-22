@@ -83,13 +83,13 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
     criterion = torch.nn.CrossEntropyLoss().to(device)
 
     # train one epoch
+    model.train()
     total_loss = 0.
     final_val_loss = 0.
     total_examples = 0
     st_time = time.time()
     for local_step, (x,y) in tqdm(enumerate(train_loader), total=len(train_loader)):
         global_step = (len(train_loader) * (epoch_i-1)) + local_step
-        model.train()
         if type(x) != list: # torch.tensor
             x = x.to(device)
         else:               # list of torch.tensor

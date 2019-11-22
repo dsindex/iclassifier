@@ -73,7 +73,7 @@ def evaluate(opt):
     logger.info("[Loaded]")
  
     # evaluation
-    model = model.eval()
+    model.eval()
     correct = 0
     total_examples = 0
     whole_st_time = time.time()
