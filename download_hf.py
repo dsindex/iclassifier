@@ -17,8 +17,6 @@ def main():
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
     parser.add_argument("--bert_do_lower_case", action="store_true",
                         help="Set this flag if you are using an uncased model.")
-    parser.add_argument("--bert_output_dir", type=str, default='bert-checkpoint',
-                        help="The output directory where the model predictions and checkpoints will be written.")
 
     opt = parser.parse_args()
 
@@ -32,11 +30,12 @@ def main():
     bert_config = bert_model.config
     logger.info("[Done]")
     # save
-    if not os.path.exists(opt.bert_output_dir):
-        os.makedirs(opt.bert_output_dir)
-    bert_tokenizer.save_pretrained(opt.bert_output_dir)
-    bert_model.save_pretrained(opt.bert_output_dir)
-    logger.info("[Saved to {}]".format(opt.bert_output_dir)
+    bert_output_dir = opt.bert_model_name_or_path
+    if not os.path.exists(bert_output_dir):
+        os.makedirs(bert_output_dir)
+    bert_tokenizer.save_pretrained(bert_output_dir)
+    bert_model.save_pretrained(bert_output_dir)
+    logger.info("[Saved to {}]".format(bert_output_dir))
  
 if __name__ == '__main__':
     main()
