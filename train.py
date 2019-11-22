@@ -177,6 +177,7 @@ def main():
     parser.add_argument('--embedding_path', type=str, default='data/snips/embedding.npy')
     parser.add_argument('--label_path', type=str, default='data/snips/label.txt')
     parser.add_argument('--config', type=str, default='config.json')
+    parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--use_amp', type=bool, default=False)
     parser.add_argument('--batch_size', type=int, default=64)
     parser.add_argument('--epoch', type=int, default=10)
@@ -204,7 +205,7 @@ def main():
 
     opt = parser.parse_args()
 
-    device = torch.device("cuda")
+    device = torch.device(opt.device)
     set_seed(opt)
     set_apex_and_distributed(opt)
     config = load_config(opt)
