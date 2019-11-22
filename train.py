@@ -137,7 +137,6 @@ def evaluate(model, config, val_loader, device):
     total_examples = 0 
     correct = 0
     criterion = torch.nn.CrossEntropyLoss().to(device)
-
     with torch.no_grad():
         for i, (x,y) in enumerate(val_loader):
             if type(x) != list: # torch.tensor
