@@ -20,15 +20,15 @@
   $ python train.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=3 --data_dir=./data/clova_sentiments/ --batch_size=128 --bert_model_class=TextBertCLS
   * bert_model_class를 TextBertCNN으로 하는 경우, 성능이 낮게 나오는 문제가 있음.
   ...
-  1 epoch |  1172/ 1172 | train loss :  1.275, valid loss  1.246, valid acc 0.8841| lr :0.000020
-  2 epoch |  1172/ 1172 | train loss :  1.233, valid loss  1.239, valid acc 0.8909| lr :0.000020
-  3 epoch |  1172/ 1172 | train loss :  1.223, valid loss  1.242, valid acc 0.8881| lr :0.000020
+  1 epoch |  1172/ 1172 | train loss :  0.441, valid loss  0.419, valid acc 0.8887| lr :0.000020
+  2 epoch |  1172/ 1172 | train loss :  0.401, valid loss  0.415, valid acc 0.8931| lr :0.000020
+  3 epoch |  1172/ 1172 | train loss :  0.385, valid loss  0.417, valid acc 0.8913| lr :0.000020
   ```
   - evaluation
   ```
   $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --data_path=data/clova_sentiments/test.txt.fs --label_path=data/clova_sentiments/label.txt --batch_size=128 --bert_model_class=TextBertCLS
-  INFO:__main__:[Accuracy] : 0.8909, 44540/49997
-  INFO:__main__:[Elapsed Time] : 89786ms, 1.79582774966498ms on average
+  INFO:__main__:[Accuracy] : 0.8931, 44653/49997
+  INFO:__main__:[Elapsed Time] : 89785ms, 1.795807748464908ms on average
   ```
 
 - glove
