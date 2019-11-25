@@ -123,7 +123,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
     st_time = curr_time
     curr_lr = scheduler.get_lr()[0] if scheduler else optimizer.param_groups[0]['lr']
     if local_rank == 0:
-        logger.info('{:3d} epoch | {:5d}/{:5d} | train loss : {:6.3f}, valid loss {:6.3f}, valid acc {:.3f}| lr :{:7.6f} | {:5.2f} min elapsed'.\
+        logger.info('{:3d} epoch | {:5d}/{:5d} | train loss : {:6.3f}, valid loss {:6.3f}, valid acc {:.4f}| lr :{:7.6f} | {:5.2f} min elapsed'.\
                 format(epoch_i, local_step+1, len(train_loader), cur_loss, eval_loss, eval_acc, curr_lr, elapsed_time)) 
         if writer:
             writer.add_scalar('Loss/valid', eval_loss, global_step)

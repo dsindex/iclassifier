@@ -94,7 +94,7 @@ def evaluate(opt):
     whole_time = int((time.time()-whole_st_time)*1000)
     avg_time = whole_time / total_examples
 
-    logger.info("[Accuracy] : {}, {}/{}".format(acc, correct, total_examples))
+    logger.info("[Accuracy] : {:.4f}, {:5d}/{:5d}".format(acc, correct, total_examples))
     logger.info("[Elapsed Time] : {}ms, {}ms on average".format(whole_time, avg_time))
 
 def main():
