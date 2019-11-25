@@ -50,6 +50,7 @@
 
 - glove
   - 위 한글 BERT 학습에 사용한 데이터를 그대로 이용해서 생성한 한글 glove 사용
+  - 학습 데이터는 형태소분석기를 사용해서 tokenizing 필요
   - train
   ```
   $ python preprocess.py --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
