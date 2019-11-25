@@ -34,9 +34,6 @@ def prepare_dataset(opt, filepath, DatasetClass, shuffle=False, num_workers=1):
 
 def evaluate(opt):
     test_data_path = opt.data_path
-    embedding_path = opt.embedding_path
-    label_path = opt.label_path
-    model_path = opt.model_path
     batch_size = opt.batch_size
     device = opt.device
 
@@ -52,13 +49,13 @@ def evaluate(opt):
     # load pytorch model checkpoint
     logger.info("[Loading model...]")
     if device == 'cpu':
-        checkpoint = torch.load(model_path, map_location=lambda storage, loc: storage)
+        checkpoint = torch.load(opt.model_path, map_location=lambda storage, loc: storage)
     else:
-        checkpoint = torch.load(model_path)
+        checkpoint = torch.load(opt.model_path)
 
     # prepare model and load parameters
     if opt.emb_class == 'glove':
-        model = TextGloveCNN(config, embedding_path, label_path, emb_non_trainable=True)
+        model = TextGloveCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
     if opt.emb_class == 'bert':
         from transformers import BertTokenizer, BertConfig, BertModel
         bert_tokenizer = BertTokenizer.from_pretrained(opt.bert_output_dir,

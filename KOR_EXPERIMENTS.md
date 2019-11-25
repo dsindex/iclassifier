@@ -7,7 +7,7 @@
   - '*.txt' 데이터의 포맷은 './data/snips'의 데이터 포맷과 동일.
 
 - bert
-  - 한글 문서 데이터에 대해 [google original tf code](https://github.com/google-research/bert)로 학습한 결과물을 huggingface에서 제공하는 [convert_bert_orignal_tf_checkpoint_to_pytorch.py](https://github.com/huggingface/transformers/blob/master/transformers/convert_bert_original_tf_checkpoint_to_pytorch.py) 스크립트를 이용해서 변환.
+  - 한글 문서 데이터를 [google original tf code](https://github.com/google-research/bert)로 학습한 결과물을 huggingface에서 제공하는 [convert_bert_orignal_tf_checkpoint_to_pytorch.py](https://github.com/huggingface/transformers/blob/master/transformers/convert_bert_original_tf_checkpoint_to_pytorch.py) 스크립트를 이용해서 변환.
   ```
   $ python convert_bert_original_tf_checkpoint_to_pytorch.py --tf_checkpoint_path=all.bpe.4.8m_step/model.ckpt-4780000 --bert_config_file=all.bpe.4.8m_step/bert_config.json --pytorch_dump_path=pytorch_model.bin
   * 나머지 필요한 파일들은 huggingface에서 배포된 bert-base-cased에 있는 파일들을 복사해서 사용.
@@ -26,10 +26,19 @@
   ```
   - evaluation
   ```
-  $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --data_path=data/clova_sentiments/test.txt.fs --batch_size=128 --bert_model_class=TextBertCLS
+  $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --data_path=data/clova_sentiments/test.txt.fs --label_path=data/clova_sentiments/label.txt --batch_size=128 --bert_model_class=TextBertCLS
   INFO:__main__:[Accuracy] : 0.8909, 44540/49997
   INFO:__main__:[Elapsed Time] : 89786ms, 1.79582774966498ms on average
   ```
 
 - glove
-
+  - 위 한글 BERT 학습에 사용한 데이터를 그대로 이용해서 생성한 한글 glove 사용
+  - train
+  ```
+  $ python preprocess.py --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
+  $ python train.py --data_dir=data/clova_sentiments_morph
+  ```
+  - evaluation
+  ```
+  $ python evaluate.py --data_path=data/clova_sentiments_morph/test.txt.fs --label_path=data/clova_sentiments/label.txt
+  ```

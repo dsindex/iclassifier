@@ -173,8 +173,8 @@ def main():
     parser = argparse.ArgumentParser()
     
     parser.add_argument('--data_dir', type=str, default='data/snips')
-    parser.add_argument('--embedding_path', type=str, default='data/snips/embedding.npy')
-    parser.add_argument('--label_path', type=str, default='data/snips/label.txt')
+    parser.add_argument('--embedding_filename', type=str, default='embedding.npy')
+    parser.add_argument('--label_filename', type=str, default='label.txt')
     parser.add_argument('--config', type=str, default='config.json')
     parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--use_amp', type=bool, default=False)
@@ -224,7 +224,9 @@ def main():
     # prepare model
     if opt.emb_class == 'glove':
         # set embedding as trainable
-        model = TextGloveCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=False)
+        embedding_path = os.path.join(opt.data_dir, opt.embedding_filename)
+        label_path = os.path.join(opt.data_dir, opt.label_filename)
+        model = TextGloveCNN(config, embedding_path, label_path, emb_non_trainable=False)
     if opt.emb_class == 'bert':
         from transformers import BertTokenizer, BertConfig, BertModel
         bert_tokenizer = BertTokenizer.from_pretrained(opt.bert_model_name_or_path,
@@ -234,7 +236,8 @@ def main():
         bert_config = bert_model.config
         ModelClass = TextBertCNN
         if opt.bert_model_class == 'TextBertCLS': ModelClass = TextBertCLS
-        model = ModelClass(config, bert_config, bert_model, opt.label_path, feature_based=opt.bert_use_feature_based)
+        label_path = os.path.join(opt.data_dir, opt.label_filename)
+        model = ModelClass(config, bert_config, bert_model, label_path, feature_based=opt.bert_use_feature_based)
     model.to(device)
     logger.info("[Model prepared]")
 
