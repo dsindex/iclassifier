@@ -74,7 +74,7 @@ class TextGloveCNN(nn.Module):
         # [batch_size, token_emb_dim, seq_size]
         conved = [F.relu(conv(embedded)) for conv in self.convs]
         # [ [batch_size, num_filters, *], [batch_size, num_filters, *], [batch_size, num_filters, *] ]
-        
+
         pooled = [F.max_pool1d(conv, int(conv.size(2))).squeeze(2) for conv in conved]
         # [ [batch_size, num_filters], [batch_size, num_filters], [batch_size, num_filters] ]
 
