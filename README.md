@@ -23,7 +23,7 @@ reference pytorch code for intent classification
   - snips
     - from [joint-intent-classification-and-slot-filling-based-on-BERT](https://github.com/lytum/joint-intent-classification-and-slot-filling-based-on-BERT)
     - paper : [BERT for Joint Intent Classification and Slot Filling](https://arxiv.org/pdf/1902.10909.pdf)
-    - intent classification accuracy : 98.6%
+    - intent classification accuracy : **98.6%**
     - [previous SOTA on SNIPS data](https://paperswithcode.com/sota/intent-detection-on-snips)
 
 
@@ -52,6 +52,8 @@ $ python evaluate.py
 [Accuracy] : 0.9771428571428571, 684/700
 [Elapsed Time] : 1327ms, 1.8957142857142857ms on average
 ```
+
+- best : **97.71%**
 
 ## usage, emb_class=bert
 
@@ -106,6 +108,8 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 INFO:__main__:[Accuracy] : 0.8871428571428571, 621/700
 INFO:__main__:[Elapsed Time] : 11323ms, 16.175714285714285ms on average
 ```
+
+- best : **98.00%**
 
 ## experiments for Korean
 
