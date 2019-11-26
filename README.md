@@ -104,7 +104,7 @@ INFO:__main__:[Elapsed Time] : 11323ms, 16.175714285714285ms on average
 
 ## experiments for Korean
 
-- [KOR_README.md](/KOR_README.md)
+- [KOR_EXPERIMENTS.md](/KOR_EXPERIMENTS.md)
 
 ## references
 
