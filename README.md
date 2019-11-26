@@ -63,9 +63,11 @@ $ python preprocess.py --emb_class=bert --bert_model_name_or_path=bert-base-unca
 
 * fine-tuning
 $ python train.py --emb_class=bert --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3
+$ python train.py --emb_class=bert --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --bert_model_class=TextBertCLS
 
 * feature-based
 $ python train.py --emb_class=bert --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --bert_use_feature_based
+$ python train.py --emb_class=bert --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --bert_use_feature_based --bert_model_class=TextBertCLS
 
 * default model class is TextBertCNN, possible to set --bert_model_class=TextBertCLS
 
@@ -76,26 +78,29 @@ $ tensorboard --logdir runs/ --port port-number --bind_all
 
 - evaluation
 ```
+1) --bert_model_class=TextBertCNN
 $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/snips/test.txt.fs
 
-1) --bert_model_class=TextBertCNN
-
 * fine-tuning
-INFO:__main__:[Accuracy] : 0.9785714285714285, 685/700
-INFO:__main__:[Elapsed Time] : 11805ms, 16.864285714285714ms on average
-~ 
-INFO:__main__:[Accuracy] : 0.9828571428571429, 688/700
-INFO:__main__:[Elapsed Time] : 10772ms, 15.388571428571428ms on average
+INFO:__main__:[Accuracy] : 0.9743,   682/  700
+INFO:__main__:[Elapsed Time] : 9353ms, 13.361428571428572ms on average
+  ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5
+  INFO:__main__:[Accuracy] : 0.9800,   686/  700
+  INFO:__main__:[Elapsed Time] : 16994ms, 24.277142857142856ms on average
 
 * feature-based, --epoch=30
 INFO:__main__:[Accuracy] : 0.9628571428571429, 674/700
 INFO:__main__:[Elapsed Time] : 11480ms, 16.4ms on average
 
 2) --bert_model_class=TextBertCLS
+$ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/snips/test.txt.fs --bert_model_class=TextBertCLS
 
 * fine-tuning
-INFO:__main__:[Accuracy] : 0.9785714285714285, 685/700
-INFO:__main__:[Elapsed Time] : 11864ms, 16.94857142857143ms on average
+INFO:__main__:[Accuracy] : 0.9743,   682/  700
+INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
+  ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5
+  INFO:__main__:[Accuracy] : 0.9786,   685/  700
+  INFO:__main__:[Elapsed Time] : 16480ms, 23.542857142857144ms on average
 
 * feature-based, --epoch=100
 INFO:__main__:[Accuracy] : 0.8871428571428571, 621/700
