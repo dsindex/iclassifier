@@ -18,11 +18,13 @@
   * 단, vocab.txt는 tf에 있는 것을 그대로 활용.
   * config.json의 vocab_size 설정 필요.
   ```
+
+- experiments with bert
   - train
   ```
   1) --bert_model_class=TextBertCNN
   $ python preprocess.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.bpe.4.8m_step --data_dir=./data/clova_sentiments
-  $ python train.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=10 --data_dir=./data/clova_sentiments/ --batch_size=128
+  $ python train.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=3 --data_dir=./data/clova_sentiments/ --batch_size=128
   ...
   1 epoch |  1172/ 1172 | train loss :  0.442, valid loss  0.423, valid acc 0.8851| lr :0.000020
   2 epoch |  1172/ 1172 | train loss :  0.401, valid loss  0.415, valid acc 0.8938| lr :0.000020
@@ -47,8 +49,8 @@
   INFO:__main__:[Elapsed Time] : 89785ms, 1.795807748464908ms on average
   ```
 
-- glove
-  - 위 한글 BERT 학습에 사용한 데이터를 그대로 이용해서 생성한 한글 glove 사용
+- experiments with glove
+  - 위 한국어 BERT 학습에 사용한 데이터를 그대로 이용해서 생성한 한국어 glove 사용
   - 학습 데이터는 형태소분석기를 사용해서 tokenizing 필요
   - train
   ```
@@ -59,7 +61,29 @@
   ```
   - evaluation
   ```
-  $ python evaluate.py --data_path=data/clova_sentiments_morph/test.txt.ids --embedding_path=data/clova_sentiments_morph/embedding.npy --label_path=data/clova_sentiments/label.txt
+  $ python evaluate.py --data_path=data/clova_sentiments_morph/test.txt.ids --embedding_path=data/clova_sentiments_morph/embedding.npy --label_path=data/clova_sentiments_morph/label.txt
   INFO:__main__:[Accuracy] : 0.8676, 43377/49997
   INFO:__main__:[Elapsed Time] : 78819ms, 1.5764745884753084ms on average
   ```
+
+- extra
+  - 기왕 테스트하는 김에, 형태소분석된 결과를 가지고 학습된 한국어 BERT를 사용하는 경우 성능도 평가
+  - train
+  ```
+  1) --bert_model_class=TextBertCNN
+  $ python preprocess.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.dha.2.5m_step --data_dir=./data/clova_sentiments_morph
+  $ python train.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.dha.2.5m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=3 --data_dir=./data/clova_sentiments_morph/ --batch_size=128
+
+  2) --bert_model_class=TextBertCLS
+  $ python train.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.dha.2.5m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=3 --data_dir=./data/clova_sentiments_morph/ --batch_size=128 --bert_model_class=TextBertCLS
+
+  ```
+  - evaluation
+  ```
+  1) --bert_model_class=TextBertCNN
+  $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --data_path=data/clova_sentiments_morph/test.txt.fs --label_path=data/clova_sentiments_morph/label.txt --batch_size=128
+
+  2) --bert_model_class=TextBertCLS
+  $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --data_path=data/clova_sentiments_morph/test.txt.fs --label_path=data/clova_sentiments_morph/label.txt --batch_size=128 --bert_model_class=TextBertCLS
+  ```
+
