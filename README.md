@@ -102,6 +102,10 @@ INFO:__main__:[Accuracy] : 0.8871428571428571, 621/700
 INFO:__main__:[Elapsed Time] : 11323ms, 16.175714285714285ms on average
 ```
 
+## experiments for Korean
+
+- [KOR_README.md](/KOR_README.md)
+
 ## references
 
 - [Intent Detection](https://paperswithcode.com/task/intent-detection)
