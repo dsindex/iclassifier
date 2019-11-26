@@ -2,7 +2,7 @@
 
 ### Data
 
-- [clova sentiment analysis data](https://github.com/e9t/nsmc)
+- [Naver sentiment movie corpus](https://github.com/e9t/nsmc)
   - setup
     - 데이터를 다운받아서 './data/clova_sentiments/' 디렉토리 아래
       - 'train.txt', 'valid.txt', 'test.txt' 생성.
@@ -10,6 +10,7 @@
       - '*.txt' 데이터의 포맷은 './data/snips'의 데이터 포맷과 동일.
     - `형태소분석기 tokenizer`를 적용한 데이터도 './data/clova_sentiments_morph' 디렉토리 아래 생성.
       - 'train.txt', 'valid.txt', 'test.txt'.
+      - 형태소분석기는 [khaiii](https://github.com/kakao/khaiii) 등 사용 가능.
   - previous result
     - [SKT Brain에서 공개한 KoBERT를 적용한 성능](https://github.com/SKTBrain/KoBERT#naver-sentiment-analysis)
       - valid acc : **90.1%**
@@ -21,9 +22,9 @@
 
 - [google original tf code](https://github.com/google-research/bert)를 이용해서 학습
   - [sentencepiece](https://github.com/google/sentencepiece) tokenizer 기반
-    - all.bpe.4.8m_step
+    - ex) all.bpe.4.8m_step
   - `형태소분석기 tokenizer` 기반
-    - all.dha.2.5m_step
+    - ex) all.dha.2.5m_step
 
 - huggingface 포맷으로 변환
   - [convert_bert_orignal_tf_checkpoint_to_pytorch.py](https://github.com/huggingface/transformers/blob/master/transformers/convert_bert_original_tf_checkpoint_to_pytorch.py) 스크립트를 이용해서 변환.
@@ -40,7 +41,7 @@
   - 위 한국어 BERT 학습에 사용한 데이터를 그대로 이용(형태소분석기 tokenizer 사용).
 
 - [Standford Glove code](https://github.com/stanfordnlp/GloVe)를 이용해서 한국어 Glove 학습
-  - kor.glove.300k.300d.txt
+  - ex) kor.glove.300k.300d.txt
 
 ### Experiments with BERT(pytorch.all.bpe.4.8m_step)
 
