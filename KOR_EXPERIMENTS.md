@@ -66,7 +66,7 @@
   INFO:__main__:[Elapsed Time] : 78819ms, 1.5764745884753084ms on average
   ```
 
-- extra
+- experiments with bert(tokenized by morphological analyzer)
   - 기왕 테스트하는 김에, 형태소분석된 결과를 가지고 학습된 한국어 BERT를 사용하는 경우 성능도 평가
   - train
   ```
