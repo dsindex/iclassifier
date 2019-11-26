@@ -22,11 +22,11 @@
   ```
   1) --bert_model_class=TextBertCNN
   $ python preprocess.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.bpe.4.8m_step --data_dir=./data/clova_sentiments
-  $ python train.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=3 --data_dir=./data/clova_sentiments/ --batch_size=128
+  $ python train.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=10 --data_dir=./data/clova_sentiments/ --batch_size=128
   ...
-  1 epoch |  1172/ 1172 | train loss :  0.441, valid loss  0.433, valid acc 0.8734| lr :0.000020
-  2 epoch |  1172/ 1172 | train loss :  0.401, valid loss  0.416, valid acc 0.8936| lr :0.000020
-  3 epoch |  1172/ 1172 | train loss :  0.384, valid loss  0.415, valid acc 0.8941| lr :0.000020
+  1 epoch |  1172/ 1172 | train loss :  0.442, valid loss  0.423, valid acc 0.8851| lr :0.000020
+  2 epoch |  1172/ 1172 | train loss :  0.401, valid loss  0.415, valid acc 0.8938| lr :0.000020
+  3 epoch |  1172/ 1172 | train loss :  0.386, valid loss  0.415, valid acc 0.8945| lr :0.000020
 
   2) --bert_model_class=TextBertCLS
   $ python train.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=3 --data_dir=./data/clova_sentiments/ --batch_size=128 --bert_model_class=TextBertCLS
@@ -39,9 +39,8 @@
   ```
   1) --bert_model_class=TextBertCNN
   $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --data_path=data/clova_sentiments/test.txt.fs --label_path=data/clova_sentiments/label.txt --batch_size=128
-  INFO:__main__:[Accuracy] : 0.8941, 44702/49997
-  INFO:__main__:[Elapsed Time] : 90577ms, 1.8116486989219354ms on average
-
+  INFO:__main__:[Accuracy] : 0.8945, 44723/49997
+  INFO:__main__:[Elapsed Time] : 90526ms, 1.810628637718263ms on average
   2) --bert_model_class=TextBertCLS
   $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --data_path=data/clova_sentiments/test.txt.fs --label_path=data/clova_sentiments/label.txt --batch_size=128 --bert_model_class=TextBertCLS
   INFO:__main__:[Accuracy] : 0.8931, 44653/49997
