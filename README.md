@@ -151,7 +151,6 @@ $ python preprocess.py --emb_class=bert --data_dir=data/sst2 --bert_model_name_o
 $ python train.py --emb_class=bert --data_dir=data/sst2 --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3
 $ python train.py --emb_class=bert --data_dir=data/sst2 --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --bert_model_class=TextBertCLS
 
-
 ```
 
 - evaluation
@@ -170,6 +169,7 @@ $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --bert_d
 * fine-tuning
 
   ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5
+```
 
 - best : **%**
 
