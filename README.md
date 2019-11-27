@@ -19,6 +19,12 @@ reference pytorch code for intent classification
   $ unzip glove.6B.zip 
   ```
 
+- additional requirements for BERT(huggingface's [transformers](https://github.com/huggingface/transformers.git))
+```
+$ pip install tensorflow-gpu==2.0
+$ pip install git+https://github.com/huggingface/transformers.git
+```
+
 - data
   - snips
     - from [joint-intent-classification-and-slot-filling-based-on-BERT](https://github.com/lytum/joint-intent-classification-and-slot-filling-based-on-BERT)
@@ -27,13 +33,9 @@ reference pytorch code for intent classification
     - [previous SOTA on SNIPS data](https://paperswithcode.com/sota/intent-detection-on-snips)
 
 
-- additional requirements for BERT(huggingface's [transformers](https://github.com/huggingface/transformers.git))
-```
-$ pip install tensorflow-gpu==2.0
-$ pip install git+https://github.com/huggingface/transformers.git
-```
+## Snips data
 
-## usage, emb_class=glove
+### emb_class=glove
 
 - train
 ```
@@ -55,7 +57,7 @@ $ python evaluate.py
 
 - best : **97.71%**
 
-## usage, emb_class=bert
+### emb_class=bert
 
 - train
 ```
@@ -119,4 +121,5 @@ INFO:__main__:[Elapsed Time] : 11323ms, 16.175714285714285ms on average
 
 - [Intent Detection](https://paperswithcode.com/task/intent-detection)
 - [Intent Classification](https://paperswithcode.com/task/intent-classification)
+- [A Visual Guide to Using BERT for the First Time](https://jalammar.github.io/a-visual-guide-to-using-bert-for-the-first-time/)
 
