@@ -161,17 +161,24 @@ $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --bert_d
 * fine-tuning
 INFO:__main__:[Accuracy] : 0.9143,  1665/ 1821
 INFO:__main__:[Elapsed Time] : 25373ms, 13.933552992861065ms on average
+
   ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5
+  INFO:__main__:[Accuracy] : 0.9253,  1685/ 1821
+  INFO:__main__:[Elapsed Time] : 55444ms, 30.44700713893465ms on average
 
 2) --bert_model_class=TextBertCLS
 $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/sst2/test.txt.fs --label_path=data/sst2/label.txt --bert_model_class=TextBertCLS
 
 * fine-tuning
+INFO:__main__:[Accuracy] : 0.8929,  1626/ 1821
+INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
 
   ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5
+  INFO:__main__:[Accuracy] : 0.9385,  1709/ 1821
+  INFO:__main__:[Elapsed Time] : 50982ms, 27.99670510708402ms on average
 ```
 
-- best : **%**
+- best : **93.85%**
 
 ## experiments for Korean
 
