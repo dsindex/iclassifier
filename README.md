@@ -30,15 +30,15 @@ $ pip install git+https://github.com/huggingface/transformers.git
     - `data/snips`
     - from [joint-intent-classification-and-slot-filling-based-on-BERT](https://github.com/lytum/joint-intent-classification-and-slot-filling-based-on-BERT)
     - paper : [BERT for Joint Intent Classification and Slot Filling](https://arxiv.org/pdf/1902.10909.pdf)
-      - intent classification accuracy : **98.6%**
+      - intent classification accuracy : **98.6%** (test set)
     - [previous SOTA on SNIPS data](https://paperswithcode.com/sota/intent-detection-on-snips)
-      - intent classification accuracy : 97.7%
+      - intent classification accuracy : 97.7% (test set)
   - SST-2
     - `data/sst2`
     - from [GLUE benchmark data](https://github.com/nyu-mll/GLUE-baselines/blob/master/download_glue_data.py)
       - `test.txt` from [pytorch-sentiment-classification](https://github.com/clairett/pytorch-sentiment-classification)
     - [SOTA on SST2 data](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
-      - sentence classification accuracy : **97.4%**
+      - sentence classification accuracy : **97.4%** (valid set)
       - [GLUE leaderboard](https://gluebenchmark.com/leaderboard/)
 
 ## Snips data
@@ -63,7 +63,7 @@ $ python evaluate.py
 [Elapsed Time] : 1327ms, 1.8957142857142857ms on average
 ```
 
-- best : **97.71%**
+- best : **97.71%** (test set)
 
 ### emb_class=bert
 
@@ -117,7 +117,7 @@ INFO:__main__:[Accuracy] : 0.8871428571428571, 621/700
 INFO:__main__:[Elapsed Time] : 11323ms, 16.175714285714285ms on average
 ```
 
-- best : **98.00%**
+- best : **98.00%** (test set)
 
 ## SST-2 data
 
@@ -137,7 +137,7 @@ INFO:__main__:[Accuracy] : 0.8155,  1485/ 1821
 INFO:__main__:[Elapsed Time] : 2908ms, 1.5969247666117519ms on average
 ```
 
-- best : **81.55%**
+- best : **81.55%** (test set)
 
 ### emb_class=bert
 
@@ -190,7 +190,7 @@ INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
   INFO:__main__:[Elapsed Time] : 45190ms, 24.816035145524438ms on average
 ```
 
-- best : **93.85%**
+- best : **93.85%** (test set)
 
 ## experiments for Korean
 
