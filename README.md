@@ -166,6 +166,10 @@ INFO:__main__:[Elapsed Time] : 25373ms, 13.933552992861065ms on average
   INFO:__main__:[Accuracy] : 0.9253,  1685/ 1821
   INFO:__main__:[Elapsed Time] : 55444ms, 30.44700713893465ms on average
 
+  ** --bert_model_name_or_path=bert-large-uncased --lr=1e-5
+  INFO:__main__:[Accuracy] : 0.9308,  1695/ 1821
+  INFO:__main__:[Elapsed Time] : 52170ms, 28.649093904448105ms on average
+
 2) --bert_model_class=TextBertCLS
 $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/sst2/test.txt.fs --label_path=data/sst2/label.txt --bert_model_class=TextBertCLS
 
@@ -176,6 +180,14 @@ INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
   ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5
   INFO:__main__:[Accuracy] : 0.9385,  1709/ 1821
   INFO:__main__:[Elapsed Time] : 50982ms, 27.99670510708402ms on average
+
+  ** --bert_model_name_or_path=bert-large-uncased --lr=1e-5
+  INFO:__main__:[Accuracy] : 0.9292,  1692/ 1821
+  INFO:__main__:[Elapsed Time] : 48522ms, 26.645799011532127ms on average
+
+  ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5 --batch_size=32
+  INFO:__main__:[Accuracy] : 0.9116,  1660/ 1821
+  INFO:__main__:[Elapsed Time] : 45190ms, 24.816035145524438ms on average
 ```
 
 - best : **93.85%**
