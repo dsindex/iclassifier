@@ -40,6 +40,8 @@ $ pip install git+https://github.com/huggingface/transformers.git
     - [SOTA on SST2 data](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
       - sentence classification accuracy : **97.4%** (valid set)
       - [GLUE leaderboard](https://gluebenchmark.com/leaderboard/)
+  - TCCC
+    - [Toxic Comment Classification Challenge](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge/overview)
 
 ## Snips data
 
@@ -201,4 +203,5 @@ INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
 - [Intent Detection](https://paperswithcode.com/task/intent-detection)
 - [Intent Classification](https://paperswithcode.com/task/intent-classification)
 - [A Visual Guide to Using BERT for the First Time](https://jalammar.github.io/a-visual-guide-to-using-bert-for-the-first-time/)
+- [Identifying Hate Speech with BERT and CNN](https://towardsdatascience.com/identifying-hate-speech-with-bert-and-cnn-b7aa2cddd60d)
 
