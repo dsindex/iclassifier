@@ -17,7 +17,7 @@ class TextGloveCNN(nn.Module):
         kernel_sizes = config['kernel_sizes']
         num_filters = config['num_filters']
 
-        # 1. glove embeddig
+        # 1. glove embedding
         weights_matrix = self.__load_embedding(embedding_path)
         self.embed = self.__create_embedding_layer(weights_matrix, non_trainable=emb_non_trainable)
 
