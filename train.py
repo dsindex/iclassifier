@@ -177,7 +177,7 @@ def main():
     parser.add_argument('--label_filename', type=str, default='label.txt')
     parser.add_argument('--config', type=str, default='config.json')
     parser.add_argument('--device', type=str, default='cuda')
-    parser.add_argument('--use_amp', type=bool, default=False)
+    parser.add_argument('--use_amp', action="store_true")
     parser.add_argument('--batch_size', type=int, default=64)
     parser.add_argument('--epoch', type=int, default=10)
     parser.add_argument('--lr', type=float, default=2e-4)
