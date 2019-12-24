@@ -7,35 +7,48 @@ import time
 import pdb
 import logging
 
+from transformers import BertConfig, BertTokenizer, BertModel
+from transformers import AlbertConfig, AlbertTokenizer, AlbertModel
+MODEL_CLASSES = {
+    "bert": (BertConfig, BertTokenizer, BertModel),
+    "albert": (AlbertConfig, AlbertTokenizer, AlbertModel)
+}
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def main():
     parser = argparse.ArgumentParser()
     
-    parser.add_argument("--bert_model_name_or_path", type=str, default='bert-base-uncased',
-                        help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
-    parser.add_argument("--bert_do_lower_case", action="store_true",
+    parser.add_argument("--model_type", type=str, default='bert',
+                        help="Model type selected in the list: " + ", ".join(MODEL_CLASSES.keys()))
+    parser.add_argument("--model_name_or_path", type=str, default='bert-base-cased',
+                        help="Path to pre-trained model or shortcut name(ex, bert-base-cased)")
+    parser.add_argument("--do_lower_case", action="store_true",
                         help="Set this flag if you are using an uncased model.")
 
     opt = parser.parse_args()
 
-    from transformers import BertTokenizer, BertConfig, BertModel
+    # mapping config, tokenizer, model class for model_type
+    Config    = MODEL_CLASSES[opt.model_type][0]
+    Tokenizer = MODEL_CLASSES[opt.model_type][1]
+    Model     = MODEL_CLASSES[opt.model_type][2]
+
     # download
     logger.info("[Downloading transformers...]")
-    bert_tokenizer = BertTokenizer.from_pretrained(opt.bert_model_name_or_path,
-                                                   do_lower_case=opt.bert_do_lower_case)
-    bert_model = BertModel.from_pretrained(opt.bert_model_name_or_path,
-                                           from_tf=bool(".ckpt" in opt.bert_model_name_or_path))
-    bert_config = bert_model.config
+    tokenizer = Tokenizer.from_pretrained(opt.model_name_or_path,
+                                          do_lower_case=opt.do_lower_case)
+    model = Model.from_pretrained(opt.model_name_or_path,
+                                  from_tf=bool(".ckpt" in opt.model_name_or_path))
+    config = model.config
     logger.info("[Done]")
     # save
-    bert_output_dir = opt.bert_model_name_or_path
-    if not os.path.exists(bert_output_dir):
-        os.makedirs(bert_output_dir)
-    bert_tokenizer.save_pretrained(bert_output_dir)
-    bert_model.save_pretrained(bert_output_dir)
-    logger.info("[Saved to {}]".format(bert_output_dir))
+    output_dir = opt.model_name_or_path
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    tokenizer.save_pretrained(output_dir)
+    model.save_pretrained(output_dir)
+    logger.info("[Saved to {}]".format(output_dir))
  
 if __name__ == '__main__':
     main()
