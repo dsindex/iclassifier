@@ -279,7 +279,7 @@ def main():
             best_val_loss = eval_loss
             if opt.save_path:
                 save_model(model, opt, config)
-                if opt.emb_class == 'bert':
+                if 'bert' in opt.emb_class:
                     if not os.path.exists(opt.bert_output_dir):
                         os.makedirs(opt.bert_output_dir)
                     bert_tokenizer.save_pretrained(opt.bert_output_dir)
