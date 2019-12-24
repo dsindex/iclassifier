@@ -231,9 +231,15 @@ def write_features(features, output_path):
    
 def preprocess_bert(config, opt):
     from transformers import BertTokenizer
+    from transformers import AlbertTokenizer
+    TOKENIZER_CLASSES = {
+        "bert": BertTokenizer,
+        "albert": AlbertTokenizer
+    }
+    Tokenizer = TOKENIZER_CLASSES[opt.emb_class]
 
-    tokenizer = BertTokenizer.from_pretrained(opt.bert_model_name_or_path,
-                                              do_lower_case=opt.bert_do_lower_case)
+    tokenizer = Tokenizer.from_pretrained(opt.bert_model_name_or_path,
+                                          do_lower_case=opt.bert_do_lower_case)
     # build labels
     path = os.path.join(opt.data_dir, _TRAIN_FILE)
     labels = build_label(path)
@@ -268,8 +274,8 @@ def main():
     parser.add_argument('--data_dir', type=str, default='data/snips')
     parser.add_argument('--embedding_path', type=str, default='embeddings/glove.6B.300d.txt')
     parser.add_argument('--config', type=str, default='config.json')
-    parser.add_argument('--emb_class', type=str, default='glove', help='glove | bert')
-    # for BERT
+    parser.add_argument('--emb_class', type=str, default='glove', help='glove | bert | albert')
+    # for BERT, ALBERT
     parser.add_argument("--bert_model_name_or_path", type=str, default='bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
     parser.add_argument("--bert_do_lower_case", action="store_true",
@@ -280,7 +286,7 @@ def main():
 
     if opt.emb_class == 'glove':
         preprocess_glove(config, opt)
-    if opt.emb_class == 'bert' :
+    if opt.emb_class == 'bert' or opt.emb_class == 'albert':
         preprocess_bert(config, opt)
 
 

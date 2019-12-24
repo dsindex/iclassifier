@@ -189,7 +189,7 @@ def main():
     parser.add_argument("--world_size", default=1, type=int)
     parser.add_argument('--log_dir', type=str, default='runs')
     parser.add_argument("--seed", default=5, type=int)
-    parser.add_argument('--emb_class', type=str, default='glove', help='glove | bert')
+    parser.add_argument('--emb_class', type=str, default='glove', help='glove | bert | albert')
     # for BERT
     parser.add_argument("--bert_model_name_or_path", type=str, default='bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
@@ -215,7 +215,7 @@ def main():
         train_loader = prepare_dataset(opt, filepath, SnipsGloveDataset, shuffle=True, num_workers=2)
         filepath = os.path.join(opt.data_dir, 'valid.txt.ids')
         valid_loader = prepare_dataset(opt, filepath, SnipsGloveDataset, shuffle=False, num_workers=2)
-    if opt.emb_class == 'bert':
+    if 'bert' in opt.emb_class:
         filepath = os.path.join(opt.data_dir, 'train.txt.fs')
         train_loader = prepare_dataset(opt, filepath, SnipsBertDataset, shuffle=True, num_workers=2)
         filepath = os.path.join(opt.data_dir, 'valid.txt.fs')
@@ -227,12 +227,20 @@ def main():
         embedding_path = os.path.join(opt.data_dir, opt.embedding_filename)
         label_path = os.path.join(opt.data_dir, opt.label_filename)
         model = TextGloveCNN(config, embedding_path, label_path, emb_non_trainable=False)
-    if opt.emb_class == 'bert':
+    if 'bert' in opt.emb_class:
         from transformers import BertTokenizer, BertConfig, BertModel
-        bert_tokenizer = BertTokenizer.from_pretrained(opt.bert_model_name_or_path,
-                                                       do_lower_case=opt.bert_do_lower_case)
-        bert_model = BertModel.from_pretrained(opt.bert_model_name_or_path,
-                                               from_tf=bool(".ckpt" in opt.bert_model_name_or_path))
+        from transformers import AlbertTokenizer, AlbertConfig, AlbertModel
+        MODEL_CLASSES = {
+            "bert": (BertConfig, BertTokenizer, BertModel),
+            "albert": (AlbertConfig, AlbertTokenizer, AlbertModel)
+        }
+        Config    = MODEL_CLASSES[opt.emb_class][0]
+        Tokenizer = MODEL_CLASSES[opt.emb_class][1]
+        Model     = MODEL_CLASSES[opt.emb_class][2]
+        bert_tokenizer = Tokenizer.from_pretrained(opt.bert_model_name_or_path,
+                                                   do_lower_case=opt.bert_do_lower_case)
+        bert_model = Model.from_pretrained(opt.bert_model_name_or_path,
+                                           from_tf=bool(".ckpt" in opt.bert_model_name_or_path))
         bert_config = bert_model.config
         ModelClass = TextBertCNN
         if opt.bert_model_class == 'TextBertCLS': ModelClass = TextBertCLS

@@ -43,7 +43,7 @@ def evaluate(opt):
     # prepare test dataset
     if opt.emb_class == 'glove':
         test_loader = prepare_dataset(opt, test_data_path, SnipsGloveDataset, shuffle=False, num_workers=1)
-    if opt.emb_class == 'bert':
+    if 'bert' in opt.emb_class:
         test_loader = prepare_dataset(opt, test_data_path, SnipsBertDataset, shuffle=False, num_workers=1)
  
     # load pytorch model checkpoint
@@ -56,11 +56,20 @@ def evaluate(opt):
     # prepare model and load parameters
     if opt.emb_class == 'glove':
         model = TextGloveCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
-    if opt.emb_class == 'bert':
+    if 'bert' in opt.emb_class:
         from transformers import BertTokenizer, BertConfig, BertModel
-        bert_tokenizer = BertTokenizer.from_pretrained(opt.bert_output_dir,
-                                                       do_lower_case=opt.bert_do_lower_case)
-        bert_model = BertModel.from_pretrained(opt.bert_output_dir)
+        from transformers import AlbertTokenizer, AlbertConfig, AlbertModel
+        MODEL_CLASSES = {
+            "bert": (BertConfig, BertTokenizer, BertModel),
+            "albert": (AlbertConfig, AlbertTokenizer, AlbertModel)
+        }
+        Config    = MODEL_CLASSES[opt.emb_class][0]
+        Tokenizer = MODEL_CLASSES[opt.emb_class][1]
+        Model     = MODEL_CLASSES[opt.emb_class][2]
+
+        bert_tokenizer = Tokenizer.from_pretrained(opt.bert_output_dir,
+                                                   do_lower_case=opt.bert_do_lower_case)
+        bert_model = Model.from_pretrained(opt.bert_output_dir)
         bert_config = bert_model.config
         ModelClass = TextBertCNN
         if opt.bert_model_class == 'TextBertCLS': ModelClass = TextBertCLS
@@ -105,7 +114,7 @@ def main():
     parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--num_thread', type=int, default=1)
     parser.add_argument('--batch_size', type=int, default=1)
-    parser.add_argument('--emb_class', type=str, default='glove', help='glove | bert')
+    parser.add_argument('--emb_class', type=str, default='glove', help='glove | bert | albert')
     # for BERT
     parser.add_argument("--bert_do_lower_case", action="store_true",
                         help="Set this flag if you are using an uncased model.")

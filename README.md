@@ -194,6 +194,36 @@ INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
 
 - best : **93.85%** (test set)
 
+### emb_class=albert
+
+- train
+```
+* ignore token_emb_dim in config.json
+* n_ctx size should be less than 512
+$ python preprocess.py --emb_class=albert --data_dir=data/sst2 --bert_model_name_or_path=./albert-large-v2
+
+* fine-tuning
+$ python train.py --emb_class=albert --data_dir=data/sst2 --bert_model_name_or_path=./albert-large-v2 --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3
+$ python train.py --emb_class=albert --data_dir=data/sst2 --bert_model_name_or_path=./albert-large-v2 --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --bert_model_class=TextBertCLS
+
+```
+
+- evaluation
+```
+1) --bert_model_class=TextBertCNN
+$ python evaluate.py --emb_class=albert --bert_output_dir=bert-checkpoint --data_path=data/sst2/test.txt.fs --label_path=data/sst2/label.txt
+
+* fine-tuning
+
+2) --bert_model_class=TextBertCLS
+$ python evaluate.py --emb_class=albert --bert_output_dir=bert-checkpoint --data_path=data/sst2/test.txt.fs --label_path=data/sst2/label.txt --bert_model_class=TextBertCLS
+
+* fine-tuning
+
+```
+
+- best : **%** (test set)
+
 ## experiments for Korean
 
 - [KOR_EXPERIMENTS.md](/KOR_EXPERIMENTS.md)
