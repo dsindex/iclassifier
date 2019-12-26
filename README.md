@@ -206,6 +206,9 @@ $ python preprocess.py --emb_class=albert --data_dir=data/sst2 --bert_model_name
 $ python train.py --emb_class=albert --data_dir=data/sst2 --bert_model_name_or_path=./albert-large-v2 --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3
 $ python train.py --emb_class=albert --data_dir=data/sst2 --bert_model_name_or_path=./albert-large-v2 --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --bert_model_class=TextBertCLS
 
+# test
+$ python train.py --emb_class=albert --data_dir=data/sst2 --bert_model_name_or_path=./albert-large-v2 --bert_output_dir=bert-checkpoint --lr=5e-4 --epoch=15 --bert_model_class=TextBertCLS
+
 ```
 
 - evaluation
@@ -219,10 +222,12 @@ $ python evaluate.py --emb_class=albert --bert_output_dir=bert-checkpoint --data
 $ python evaluate.py --emb_class=albert --bert_output_dir=bert-checkpoint --data_path=data/sst2/test.txt.fs --label_path=data/sst2/label.txt --bert_model_class=TextBertCLS
 
 * fine-tuning
+INFO:__main__:[Accuracy] : 0.5008,   912/ 1821
+INFO:__main__:[Elapsed Time] : 51536ms, 28.300933552992863ms on average
 
 ```
 
-- best : **%** (test set)
+- best : **50.08%** (test set)
 
 ## experiments for Korean
 
