@@ -200,14 +200,10 @@ INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
 ```
 * ignore token_emb_dim in config.json
 * n_ctx size should be less than 512
-$ python preprocess.py --emb_class=albert --data_dir=data/sst2 --bert_model_name_or_path=./albert-large-v2
+$ python preprocess.py --emb_class=albert --data_dir=data/sst2 --bert_model_name_or_path=./albert-xlarge-v2
 
-* fine-tuning
-$ python train.py --emb_class=albert --data_dir=data/sst2 --bert_model_name_or_path=./albert-large-v2 --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3
-$ python train.py --emb_class=albert --data_dir=data/sst2 --bert_model_name_or_path=./albert-large-v2 --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --bert_model_class=TextBertCLS
-
-# test
-$ python train.py --emb_class=albert --data_dir=data/sst2 --bert_model_name_or_path=./albert-large-v2 --bert_output_dir=bert-checkpoint --lr=5e-4 --epoch=15 --bert_model_class=TextBertCLS
+* feature-based
+$ python train.py --emb_class=albert --data_dir=data/sst2 --bert_model_name_or_path=./albert-xlarge-v2 --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=5 --bert_use_feature_based
 
 ```
 
@@ -215,19 +211,11 @@ $ python train.py --emb_class=albert --data_dir=data/sst2 --bert_model_name_or_p
 ```
 1) --bert_model_class=TextBertCNN
 $ python evaluate.py --emb_class=albert --bert_output_dir=bert-checkpoint --data_path=data/sst2/test.txt.fs --label_path=data/sst2/label.txt
-
-* fine-tuning
-
-2) --bert_model_class=TextBertCLS
-$ python evaluate.py --emb_class=albert --bert_output_dir=bert-checkpoint --data_path=data/sst2/test.txt.fs --label_path=data/sst2/label.txt --bert_model_class=TextBertCLS
-
-* fine-tuning
-INFO:__main__:[Accuracy] : 0.5008,   912/ 1821
-INFO:__main__:[Elapsed Time] : 51536ms, 28.300933552992863ms on average
-
+INFO:__main__:[Accuracy] : 0.8429,  1535/ 1821
+INFO:__main__:[Elapsed Time] : 60409ms, 33.17353102690829ms on average
 ```
 
-- best : **50.08%** (test set)
+- best : **84.29%** (test set)
 
 ## experiments for Korean
 
