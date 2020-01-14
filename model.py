@@ -59,7 +59,7 @@ class TextGloveCNN(nn.Module):
             for idx, line in enumerate(f):
                 toks = line.strip().split()
                 label = toks[0]
-                label_id = toks[1]
+                label_id = int(toks[1])
                 labels[label_id] = label
         return labels
 
@@ -119,7 +119,7 @@ class TextBertCNN(nn.Module):
             for idx, line in enumerate(f):
                 toks = line.strip().split()
                 label = toks[0]
-                label_id = toks[1]
+                label_id = int(toks[1])
                 labels[label_id] = label
         return labels
 
@@ -191,7 +191,7 @@ class TextBertCLS(nn.Module):
             for idx, line in enumerate(f):
                 toks = line.strip().split()
                 label = toks[0]
-                label_id = toks[1]
+                label_id = int(toks[1])
                 labels[label_id] = label
         return labels
 

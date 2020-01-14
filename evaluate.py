@@ -96,6 +96,10 @@ def evaluate(opt):
             correct += (predicted == y).sum().item()
             cur_examples = y.size(0)
             total_examples += cur_examples
+            if opt.print_predicted_label:
+                for p in predicted.cpu().numpy():
+                    predicted_label = model.labels[p]
+                    sys.stdout.write(predicted_label + '\n')
     acc  = correct / total_examples
     whole_time = int((time.time()-whole_st_time)*1000)
     avg_time = whole_time / total_examples
@@ -115,6 +119,7 @@ def main():
     parser.add_argument('--num_thread', type=int, default=1)
     parser.add_argument('--batch_size', type=int, default=1)
     parser.add_argument('--emb_class', type=str, default='glove', help='glove | bert | albert')
+    parser.add_argument("--print_predicted_label", action="store_true", help="Print predicted label out.")
     # for BERT
     parser.add_argument("--bert_do_lower_case", action="store_true",
                         help="Set this flag if you are using an uncased model.")
