@@ -179,7 +179,7 @@ def main():
     parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--use_amp', action="store_true")
     parser.add_argument('--batch_size', type=int, default=64)
-    parser.add_argument('--epoch', type=int, default=10)
+    parser.add_argument('--epoch', type=int, default=32)
     parser.add_argument('--lr', type=float, default=2e-4)
     parser.add_argument('--save_path', type=str, default='pytorch-model.pt')
     parser.add_argument('--l2norm', type=float, default=1e-6)

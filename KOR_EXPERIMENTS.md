@@ -128,8 +128,8 @@ $ python train.py --data_dir=data/clova_sentiments_morph
 - evaluation
 ```
 $ python evaluate.py --data_path=data/clova_sentiments_morph/test.txt.ids --embedding_path=data/clova_sentiments_morph/embedding.npy --label_path=data/clova_sentiments_morph/label.txt
-INFO:__main__:[Accuracy] : 0.8676, 43377/49997
-INFO:__main__:[Elapsed Time] : 78819ms, 1.5764745884753084ms on average
+INFO:__main__:[Accuracy] : 0.8723, 43613/49997
+INFO:__main__:[Elapsed Time] : 112638ms, 2.2528951737104226ms on average
 ```
 
-- best : **86.76%**
+- best : **87.23%**

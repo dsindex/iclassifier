@@ -100,10 +100,6 @@ INFO:__main__:[Elapsed Time] : 9353ms, 13.361428571428572ms on average
   INFO:__main__:[Accuracy] : 0.9800,   686/  700
   INFO:__main__:[Elapsed Time] : 16994ms, 24.277142857142856ms on average
 
-* feature-based, --epoch=30
-INFO:__main__:[Accuracy] : 0.9628571428571429, 674/700
-INFO:__main__:[Elapsed Time] : 11480ms, 16.4ms on average
-
 2) --bert_model_class=TextBertCLS
 $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/snips/test.txt.fs --bert_model_class=TextBertCLS
 
@@ -113,10 +109,6 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
   ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5
   INFO:__main__:[Accuracy] : 0.9786,   685/  700
   INFO:__main__:[Elapsed Time] : 16480ms, 23.542857142857144ms on average
-
-* feature-based, --epoch=100
-INFO:__main__:[Accuracy] : 0.8871428571428571, 621/700
-INFO:__main__:[Elapsed Time] : 11323ms, 16.175714285714285ms on average
 ```
 
 - best : **98.00%** (test set)
@@ -129,17 +121,17 @@ INFO:__main__:[Elapsed Time] : 11323ms, 16.175714285714285ms on average
 ```
 * token_emb_dim in config.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py --data_dir=data/sst2
-$ python train.py --data_dir=data/sst2 --lr=0.001
+$ python train.py --data_dir=data/sst2
 ```
 
 - evaluation
 ```
 $ python evaluate.py --data_path=data/sst2/test.txt.ids --embedding_path=data/sst2/embedding.npy --label_path=data/sst2/label.txt
-INFO:__main__:[Accuracy] : 0.8155,  1485/ 1821
-INFO:__main__:[Elapsed Time] : 2908ms, 1.5969247666117519ms on average
+INFO:__main__:[Accuracy] : 0.8364,  1523/ 1821
+INFO:__main__:[Elapsed Time] : 4300ms, 2.361339923119165ms on average
 ```
 
-- best : **81.55%** (test set)
+- best : **83.64%** (test set)
 
 ### emb_class=bert
 

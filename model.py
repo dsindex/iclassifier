@@ -12,10 +12,11 @@ class TextGloveCNN(nn.Module):
     def __init__(self, config, embedding_path, label_path, emb_non_trainable=False):
         super(TextGloveCNN, self).__init__()
 
-        token_emb_dim = config['token_emb_dim']
         seq_size = config['n_ctx']
-        kernel_sizes = config['kernel_sizes']
+        token_emb_dim = config['token_emb_dim']
         num_filters = config['num_filters']
+        kernel_sizes = config['kernel_sizes']
+        fc_hidden_size = config['fc_hidden_size']
 
         # 1. glove embedding
         weights_matrix = self.__load_embedding(embedding_path)
@@ -38,7 +39,8 @@ class TextGloveCNN(nn.Module):
         # 3. fully connected
         self.labels = self.__load_label(label_path)
         label_size = len(self.labels)
-        self.fc = nn.Linear(len(kernel_sizes) * num_filters, label_size)
+        self.fc1 = nn.Linear(len(kernel_sizes) * num_filters, fc_hidden_size)
+        self.fc2 = nn.Linear(fc_hidden_size, label_size)
 
     def __load_embedding(self, input_path):
         weights_matrix = np.load(input_path)
@@ -66,7 +68,7 @@ class TextGloveCNN(nn.Module):
     def forward(self, x):
         # 1. glove embedding
         # [batch_size, seq_size]
-        embedded = self.embed(x)
+        embedded = self.dropout(self.embed(x))
         # [batch_size, seq_size, token_emb_dim]
 
         # 2. convolution
@@ -74,16 +76,18 @@ class TextGloveCNN(nn.Module):
         # [batch_size, token_emb_dim, seq_size]
         conved = [F.relu(conv(embedded)) for conv in self.convs]
         # [ [batch_size, num_filters, *], [batch_size, num_filters, *], [batch_size, num_filters, *] ]
-
         pooled = [F.max_pool1d(conv, int(conv.size(2))).squeeze(2) for conv in conved]
         # [ [batch_size, num_filters], [batch_size, num_filters], [batch_size, num_filters] ]
-
         cat = self.dropout(torch.cat(pooled, dim = 1))
         # [batch_size, len(kernel_sizes) * num_filters]
 
         # 3. fully connected
-        output = torch.sigmoid(self.fc(cat))
+        fc_hidden = self.dropout(self.fc1(cat))
+        # [batch_size, fc_hidden_size]
+        fc_out = self.fc2(fc_hidden)
         # [batch_size, label_size]
+
+        output = torch.softmax(fc_out, dim=-1)
         return output
 
 class TextBertCNN(nn.Module):
@@ -91,8 +95,9 @@ class TextBertCNN(nn.Module):
         super(TextBertCNN, self).__init__()
 
         seq_size = config['n_ctx']
-        kernel_sizes = config['kernel_sizes']
         num_filters = config['num_filters']
+        kernel_sizes = config['kernel_sizes']
+        fc_hidden_size = config['fc_hidden_size']
 
         # 1. bert embedding
         self.bert_config = bert_config
@@ -111,7 +116,8 @@ class TextBertCNN(nn.Module):
         # 3. fully connected
         self.labels = self.__load_label(label_path)
         label_size = len(self.labels)
-        self.fc = nn.Linear(len(kernel_sizes) * num_filters, label_size)
+        self.fc1 = nn.Linear(len(kernel_sizes) * num_filters, fc_hidden_size)
+        self.fc2 = nn.Linear(fc_hidden_size, label_size)
 
     def __load_label(self, input_path):
         labels = {}
@@ -152,15 +158,18 @@ class TextBertCNN(nn.Module):
         # [batch_size, hidden_size, seq_size]
         conved = [F.relu(conv(embedded)) for conv in self.convs]
         # [ [batch_size, num_filters, *], [batch_size, num_filters, *], [batch_size, num_filters, *] ]
-        
         pooled = [F.max_pool1d(conv, int(conv.size(2))).squeeze(2) for conv in conved]
         # [ [batch_size, num_filters], [batch_size, num_filters], [batch_size, num_filters] ]
-
         cat = self.dropout(torch.cat(pooled, dim = 1))
         # [batch_size, len(kernel_sizes) * num_filters]
 
         # 3. fully connected
-        output = torch.sigmoid(self.fc(cat))
+        fc_hidden = self.dropout(self.fc1(cat))
+        # [batch_size, fc_hidden_size]
+        fc_out = self.fc2(fc_hidden)
+        # [batch_size, label_size]
+
+        output = torch.softmax(fc_out, dim=-1)
         # [batch_size, label_size]
         return output
 
@@ -169,8 +178,8 @@ class TextBertCLS(nn.Module):
         super(TextBertCLS, self).__init__()
 
         seq_size = config['n_ctx']
-        kernel_sizes = config['kernel_sizes']
         num_filters = config['num_filters']
+        kernel_sizes = config['kernel_sizes']
 
         # 1. bert embedding
         self.bert_config = bert_config
@@ -221,7 +230,7 @@ class TextBertCLS(nn.Module):
         # [batch_size, hidden_size]
 
         # 2. fully connected
-        output = torch.sigmoid(self.fc(embedded))
+        output = torch.softmax(self.fc(embedded), dim=-1)
         # [batch_size, label_size]
         return output
 
