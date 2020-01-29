@@ -59,8 +59,8 @@ $ python train.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.bpe.4
 ```
 1) --bert_model_class=TextBertCNN
 $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --data_path=data/clova_sentiments/test.txt.fs --label_path=data/clova_sentiments/label.txt --batch_size=128
-INFO:__main__:[Accuracy] : 0.8996, 44976/49997
-INFO:__main__:[Elapsed Time] : 94477ms, 1.8896533792027521ms on average
+INFO:__main__:[Accuracy] : 0.8945, 44723/49997
+INFO:__main__:[Elapsed Time] : 90526ms, 1.810628637718263ms on average
 
 2) --bert_model_class=TextBertCLS
 $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --data_path=data/clova_sentiments/test.txt.fs --label_path=data/clova_sentiments/label.txt --batch_size=128 --bert_model_class=TextBertCLS --print_predicted_label > data/clova_sentiments/test.txt.predicted
@@ -69,7 +69,7 @@ INFO:__main__:[Elapsed Time] : 89785ms, 1.795807748464908ms on average
 $ paste data/clova_sentiments/test.txt data/clova_sentiments/test.txt.predicted | more
 ```
 
-- best : **89.96%**
+- best : **89.45%**
 
 ### Experiments with BERT(pytorch.all.dha.2.5m_step)
  
@@ -87,8 +87,8 @@ $ python train.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.dha.2
 ```
 1) --bert_model_class=TextBertCNN
 $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --data_path=data/clova_sentiments_morph/test.txt.fs --label_path=data/clova_sentiments_morph/label.txt --batch_size=128 --print_predicted_label > data/clova_sentiments_morph/test.txt.predicted
-INFO:__main__:[Accuracy] : 0.8974, 44865/49997
-INFO:__main__:[Elapsed Time] : 90662ms, 1.8133488009280556ms on average
+INFO:__main__:[Accuracy] : 0.8996, 44976/49997
+INFO:__main__:[Elapsed Time] : 94477ms, 1.8896533792027521ms on average
 $ paste data/clova_sentiments_morph/test.txt data/clova_sentiments_morph/test.txt.predicted | more
 
 2) --bert_model_class=TextBertCLS
@@ -97,7 +97,7 @@ INFO:__main__:[Accuracy] : 0.8941, 44701/49997
 INFO:__main__:[Elapsed Time] : 89692ms, 1.7939476368582115ms on average
 ```
 
-- best : **89.74%**
+- best : **89.96%**
 
 ### Experiments with Glove
 
