@@ -49,26 +49,18 @@
 ```
 1) --bert_model_class=TextBertCNN
 $ python preprocess.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.bpe.4.8m_step --data_dir=./data/clova_sentiments
-$ python train.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=3 --data_dir=./data/clova_sentiments/ --batch_size=128
-...
-1 epoch |  1172/ 1172 | train loss :  0.442, valid loss  0.423, valid acc 0.8851| lr :0.000020
-2 epoch |  1172/ 1172 | train loss :  0.401, valid loss  0.415, valid acc 0.8938| lr :0.000020
-3 epoch |  1172/ 1172 | train loss :  0.386, valid loss  0.415, valid acc 0.8945| lr :0.000020
+$ python train.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --data_dir=./data/clova_sentiments/ --batch_size=128
 
 2) --bert_model_class=TextBertCLS
-$ python train.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=3 --data_dir=./data/clova_sentiments/ --batch_size=128 --bert_model_class=TextBertCLS
-...
-1 epoch |  1172/ 1172 | train loss :  0.441, valid loss  0.419, valid acc 0.8887| lr :0.000020
-2 epoch |  1172/ 1172 | train loss :  0.401, valid loss  0.415, valid acc 0.8931| lr :0.000020
-3 epoch |  1172/ 1172 | train loss :  0.385, valid loss  0.417, valid acc 0.8913| lr :0.000020
+$ python train.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --data_dir=./data/clova_sentiments/ --batch_size=128 --bert_model_class=TextBertCLS
 ```
 
 - evaluation
 ```
 1) --bert_model_class=TextBertCNN
 $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --data_path=data/clova_sentiments/test.txt.fs --label_path=data/clova_sentiments/label.txt --batch_size=128
-INFO:__main__:[Accuracy] : 0.8945, 44723/49997
-INFO:__main__:[Elapsed Time] : 90526ms, 1.810628637718263ms on average
+INFO:__main__:[Accuracy] : 0.8996, 44976/49997
+INFO:__main__:[Elapsed Time] : 94477ms, 1.8896533792027521ms on average
 
 2) --bert_model_class=TextBertCLS
 $ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --data_path=data/clova_sentiments/test.txt.fs --label_path=data/clova_sentiments/label.txt --batch_size=128 --bert_model_class=TextBertCLS --print_predicted_label > data/clova_sentiments/test.txt.predicted
@@ -77,7 +69,7 @@ INFO:__main__:[Elapsed Time] : 89785ms, 1.795807748464908ms on average
 $ paste data/clova_sentiments/test.txt data/clova_sentiments/test.txt.predicted | more
 ```
 
-- best : **89.45%**
+- best : **89.96%**
 
 ### Experiments with BERT(pytorch.all.dha.2.5m_step)
  
@@ -85,18 +77,10 @@ $ paste data/clova_sentiments/test.txt data/clova_sentiments/test.txt.predicted 
 ```
 1) --bert_model_class=TextBertCNN
 $ python preprocess.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.dha.2.5m_step --data_dir=./data/clova_sentiments_morph
-$ python train.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.dha.2.5m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=3 --data_dir=./data/clova_sentiments_morph/ --batch_size=128
-...
- 1 epoch |  1172/ 1172 | train loss :  0.444, valid loss  0.418, valid acc 0.8889| lr :0.000020
- 2 epoch |  1172/ 1172 | train loss :  0.405, valid loss  0.413, valid acc 0.8957| lr :0.000020
- 3 epoch |  1172/ 1172 | train loss :  0.388, valid loss  0.411, valid acc 0.8974| lr :0.000020
+$ python train.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.dha.2.5m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --data_dir=./data/clova_sentiments_morph/ --batch_size=128
 
 2) --bert_model_class=TextBertCLS
 $ python train.py --emb_class=bert --bert_model_name_or_path=./pytorch.all.dha.2.5m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=3 --data_dir=./data/clova_sentiments_morph/ --batch_size=128 --bert_model_class=TextBertCLS
-...
-1 epoch |  1172/ 1172 | train loss :  0.446, valid loss  0.419, valid acc 0.8892| lr :0.000020
-2 epoch |  1172/ 1172 | train loss :  0.407, valid loss  0.414, valid acc 0.8941| lr :0.000020
-3 epoch |  1172/ 1172 | train loss :  0.392, valid loss  0.418, valid acc 0.8908| lr :0.000020
 ```
 
 - evaluation
@@ -121,15 +105,13 @@ INFO:__main__:[Elapsed Time] : 89692ms, 1.7939476368582115ms on average
 ```
 $ python preprocess.py --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
 $ python train.py --data_dir=data/clova_sentiments_morph
-...
-5 epoch |  2344/ 2344 | train loss :  0.394, valid loss  0.439, valid acc 0.8676| lr :0.000250
 ```
 
 - evaluation
 ```
 $ python evaluate.py --data_path=data/clova_sentiments_morph/test.txt.ids --embedding_path=data/clova_sentiments_morph/embedding.npy --label_path=data/clova_sentiments_morph/label.txt
-INFO:__main__:[Accuracy] : 0.8723, 43613/49997
-INFO:__main__:[Elapsed Time] : 112638ms, 2.2528951737104226ms on average
+INFO:__main__:[Accuracy] : 0.8728, 43637/49997
+INFO:__main__:[Elapsed Time] : 123460ms, 2.4693481608896533ms on average
 ```
 
-- best : **87.23%**
+- best : **87.28%**

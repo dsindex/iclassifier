@@ -39,7 +39,9 @@ class TextGloveCNN(nn.Module):
         # 3. fully connected
         self.labels = self.__load_label(label_path)
         label_size = len(self.labels)
+        self.layernorm1 = nn.LayerNorm(len(kernel_sizes) * num_filters)
         self.fc1 = nn.Linear(len(kernel_sizes) * num_filters, fc_hidden_size)
+        self.layernorm2 = nn.LayerNorm(fc_hidden_size)
         self.fc2 = nn.Linear(fc_hidden_size, label_size)
 
     def __load_embedding(self, input_path):
@@ -78,12 +80,16 @@ class TextGloveCNN(nn.Module):
         # [ [batch_size, num_filters, *], [batch_size, num_filters, *], [batch_size, num_filters, *] ]
         pooled = [F.max_pool1d(conv, int(conv.size(2))).squeeze(2) for conv in conved]
         # [ [batch_size, num_filters], [batch_size, num_filters], [batch_size, num_filters] ]
-        cat = self.dropout(torch.cat(pooled, dim = 1))
+        cat = torch.cat(pooled, dim = 1)
         # [batch_size, len(kernel_sizes) * num_filters]
+        cat = self.layernorm1(cat)
+        cat = self.dropout(cat)
 
         # 3. fully connected
-        fc_hidden = self.dropout(self.fc1(cat))
+        fc_hidden = self.fc1(cat)
         # [batch_size, fc_hidden_size]
+        fc_hidden = self.layernorm2(fc_hidden)
+        fc_hidden = self.dropout(fc_hidden)
         fc_out = self.fc2(fc_hidden)
         # [batch_size, label_size]
 
@@ -116,7 +122,9 @@ class TextBertCNN(nn.Module):
         # 3. fully connected
         self.labels = self.__load_label(label_path)
         label_size = len(self.labels)
+        self.layernorm1 = nn.LayerNorm(len(kernel_sizes) * num_filters)
         self.fc1 = nn.Linear(len(kernel_sizes) * num_filters, fc_hidden_size)
+        self.layernorm2 = nn.LayerNorm(fc_hidden_size)
         self.fc2 = nn.Linear(fc_hidden_size, label_size)
 
     def __load_label(self, input_path):
@@ -160,12 +168,16 @@ class TextBertCNN(nn.Module):
         # [ [batch_size, num_filters, *], [batch_size, num_filters, *], [batch_size, num_filters, *] ]
         pooled = [F.max_pool1d(conv, int(conv.size(2))).squeeze(2) for conv in conved]
         # [ [batch_size, num_filters], [batch_size, num_filters], [batch_size, num_filters] ]
-        cat = self.dropout(torch.cat(pooled, dim = 1))
+        cat = torch.cat(pooled, dim = 1)
         # [batch_size, len(kernel_sizes) * num_filters]
+        cat = self.layernorm1(cat)
+        cat = self.dropout(cat)
 
         # 3. fully connected
-        fc_hidden = self.dropout(self.fc1(cat))
+        fc_hidden = self.fc1(cat)
         # [batch_size, fc_hidden_size]
+        fc_hidden = self.layernorm2(fc_hidden)
+        fc_hidden = self.dropout(fc_hidden)
         fc_out = self.fc2(fc_hidden)
         # [batch_size, label_size]
 
