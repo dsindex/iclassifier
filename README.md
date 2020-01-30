@@ -127,8 +127,11 @@ $ python train.py --data_dir=data/sst2
 - evaluation
 ```
 $ python evaluate.py --data_path=data/sst2/test.txt.ids --embedding_path=data/sst2/embedding.npy --label_path=data/sst2/label.txt
-INFO:__main__:[Accuracy] : 0.8364,  1523/ 1821
-INFO:__main__:[Elapsed Time] : 4300ms, 2.361339923119165ms on average
+INFO:__main__:[Accuracy] : 0.8248,  1502/ 1821
+INFO:__main__:[Elapsed Time] : 4627ms, 2.540911587040088ms on average
+  * single layer fc, no layernorm 
+  INFO:__main__:[Accuracy] : 0.8364,  1523/ 1821
+  INFO:__main__:[Elapsed Time] : 4300ms, 2.361339923119165ms on average
 ```
 
 - best : **83.64%** (test set)
