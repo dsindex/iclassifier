@@ -45,6 +45,14 @@ $ pip install git+https://github.com/huggingface/transformers.git
 
 ## Snips data
 
+### experiments summary
+
+|                   | F1 (%) |
+| ----------------- | ----------- |
+| Glove, CNN        | 97.71       |
+| BERT, CNN         | **98.00**   |
+| BERT, CLS         | 97.86       |
+
 ### emb_class=glove
 
 - train
@@ -64,8 +72,6 @@ $ python evaluate.py
 [Accuracy] : 0.9771428571428571, 684/700
 [Elapsed Time] : 1327ms, 1.8957142857142857ms on average
 ```
-
-- best : **97.71%** (test set)
 
 ### emb_class=bert
 
@@ -111,9 +117,16 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
   INFO:__main__:[Elapsed Time] : 16480ms, 23.542857142857144ms on average
 ```
 
-- best : **98.00%** (test set)
-
 ## SST-2 data
+
+### experiments summary
+
+|                   | F1 (%) |
+| ----------------- | ----------- |
+| Glove, CNN        | 83.64       |
+| BERT, CNN         | 93.08       |
+| BERT, CLS         | **93.85**   |
+| ALBERT, CNN       | 86.66       |
 
 ### emb_class=glove
 
@@ -133,8 +146,6 @@ INFO:__main__:[Elapsed Time] : 4627ms, 2.540911587040088ms on average
   INFO:__main__:[Accuracy] : 0.8364,  1523/ 1821
   INFO:__main__:[Elapsed Time] : 4300ms, 2.361339923119165ms on average
 ```
-
-- best : **83.64%** (test set)
 
 ### emb_class=bert
 
@@ -187,8 +198,6 @@ INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
   INFO:__main__:[Elapsed Time] : 45190ms, 24.816035145524438ms on average
 ```
 
-- best : **93.85%** (test set)
-
 ### emb_class=albert
 
 - train
@@ -211,8 +220,6 @@ $ python train.py --emb_class=albert --data_dir=data/sst2 --bert_model_name_or_p
   INFO:__main__:[Elapsed Time] : 30896ms, 16.966501922020868ms on average
   
 ```
-
-- best : **86.66%** (test set)
 
 ## experiments for Korean
 

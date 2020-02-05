@@ -43,6 +43,16 @@
 - [Standford Glove code](https://github.com/stanfordnlp/GloVe)를 이용해서 한국어 Glove 학습
   - ex) kor.glove.300k.300d.txt
 
+### Experiments summary
+
+|                   | Accuracy (%) |
+| ----------------- | ----------- |
+| bpe BERT, CNN     | 89.45       |
+| bpe BERT, CLS     | 89.31       |
+| dha BERT, CNN     | **89.96**   |
+| dha BERT, CLS     | 89.41       |
+| Glove, CNN        | 87.27       |
+
 ### Experiments with BERT(pytorch.all.bpe.4.8m_step)
 
 - train
@@ -68,8 +78,6 @@ INFO:__main__:[Accuracy] : 0.8931, 44653/49997
 INFO:__main__:[Elapsed Time] : 89785ms, 1.795807748464908ms on average
 $ paste data/clova_sentiments/test.txt data/clova_sentiments/test.txt.predicted | more
 ```
-
-- best : **89.45%**
 
 ### Experiments with BERT(pytorch.all.dha.2.5m_step)
  
@@ -97,8 +105,6 @@ INFO:__main__:[Accuracy] : 0.8941, 44701/49997
 INFO:__main__:[Elapsed Time] : 89692ms, 1.7939476368582115ms on average
 ```
 
-- best : **89.96%**
-
 ### Experiments with Glove
 
 - train
@@ -113,5 +119,3 @@ $ python evaluate.py --data_path=data/clova_sentiments_morph/test.txt.ids --embe
 INFO:__main__:[Accuracy] : 0.8727, 43631/49997
 INFO:__main__:[Elapsed Time] : 122452ms, 2.449186951217073ms on average
 ```
-
-- best : **87.27%**
