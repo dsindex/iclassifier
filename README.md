@@ -47,7 +47,7 @@ $ pip install git+https://github.com/huggingface/transformers.git
 
 ### experiments summary
 
-|                   | F1 (%) |
+|                   | Accuracy (%)|
 | ----------------- | ----------- |
 | Glove, CNN        | 97.71       |
 | BERT, CNN         | **98.00**   |
@@ -121,7 +121,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 
 ### experiments summary
 
-|                   | F1 (%) |
+|                   | Accuracy (%)|
 | ----------------- | ----------- |
 | Glove, CNN        | 83.64       |
 | BERT, CNN         | 93.08       |
