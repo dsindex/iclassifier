@@ -59,6 +59,7 @@ $ pip install git+https://github.com/huggingface/transformers.git
 ```
 * token_emb_dim in config.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py
+* embedding trainable
 $ python train.py
 
 * tensorboardX
@@ -134,6 +135,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 ```
 * token_emb_dim in config.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py --data_dir=data/sst2
+* embedding trainable
 $ python train.py --data_dir=data/sst2
 ```
 

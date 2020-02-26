@@ -110,6 +110,7 @@ INFO:__main__:[Elapsed Time] : 89692ms, 1.7939476368582115ms on average
 - train
 ```
 $ python preprocess.py --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
+* embedding trainable
 $ python train.py --data_dir=data/clova_sentiments_morph
 ```
 
