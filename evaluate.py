@@ -80,13 +80,16 @@ def evaluate(opt):
             correct += (predicted == y).sum().item()
             cur_examples = y.size(0)
             total_examples += cur_examples
+            if i == 0: # first one may takes longer time, so ignore in computing duration.
+                first_time = int((time.time()-whole_st_time)*1000)
+                first_examples = cur_examples
             if opt.print_predicted_label:
                 for p in predicted.cpu().numpy():
                     predicted_label = model.labels[p]
                     sys.stdout.write(predicted_label + '\n')
     acc  = correct / total_examples
     whole_time = int((time.time()-whole_st_time)*1000)
-    avg_time = whole_time / total_examples
+    avg_time = (whole_time - first_time) / (total_examples - first_examples)
 
     logger.info("[Accuracy] : {:.4f}, {:5d}/{:5d}".format(acc, correct, total_examples))
     logger.info("[Elapsed Time] : {}ms, {}ms on average".format(whole_time, avg_time))
