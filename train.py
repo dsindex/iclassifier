@@ -11,8 +11,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from torch.utils.data import DataLoader
-from torch.utils.data.distributed import DistributedSampler
 try:
     from apex.parallel import DistributedDataParallel as DDP
     from apex.fp16_utils import *
@@ -30,8 +28,10 @@ import numpy as np
 import random
 import json
 from tqdm import tqdm
-from model import TextGloveCNN, TextBertCNN, TextBertCLS
-from dataset import SnipsGloveDataset, SnipsBertDataset
+
+from util    import load_config, to_device, to_numpy
+from model   import TextGloveCNN, TextBertCNN, TextBertCLS
+from dataset import prepare_dataset, SnipsGloveDataset, SnipsBertDataset
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -52,24 +52,6 @@ def set_apex_and_distributed(opt):
         torch.cuda.set_device(opt.local_rank)
         torch.distributed.init_process_group(backend='nccl', init_method='env://')
         opt.word_size = torch.distributed.get_world_size()
-
-def load_config(opt):
-    try:
-        with open(opt.config, 'r', encoding='utf-8') as f:
-            config = json.load(f)
-    except Exception as e:
-        config = dict()
-    return config
-
-def prepare_dataset(opt, filepath, DatasetClass, shuffle=False, num_workers=2):
-    dataset = DatasetClass(filepath)
-    sampler = None
-    if opt.distributed:
-        sampler = DistributedSampler(dataset)
-    loader = DataLoader(dataset, batch_size=opt.batch_size, \
-            shuffle=shuffle, num_workers=num_workers, sampler=sampler)
-    logger.info("[{} data loaded]".format(filepath))
-    return loader
 
 def train_epoch(model, config, train_loader, val_loader, epoch_i):
     device = config['device']

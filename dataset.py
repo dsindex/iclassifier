@@ -6,6 +6,25 @@ import pdb
 import torch
 from torch.utils.data.dataset import Dataset
 from torch.utils.data import TensorDataset
+from torch.utils.data import DataLoader
+from torch.utils.data.distributed import DistributedSampler
+
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+def prepare_dataset(opt, filepath, DatasetClass, shuffle=False, num_workers=1):
+    dataset = DatasetClass(filepath)
+    sampler = None
+    try:
+        if opt.distributed:
+            sampler = DistributedSampler(dataset)
+    except Exception as e:
+        sampler = None
+    loader = DataLoader(dataset, batch_size=opt.batch_size, \
+            shuffle=shuffle, num_workers=num_workers, sampler=sampler, pin_memory=True)
+    logger.info("[{} data loaded]".format(filepath))
+    return loader
 
 class SnipsGloveDataset(Dataset):
     def __init__(self, path):

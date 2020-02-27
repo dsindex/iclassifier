@@ -12,6 +12,7 @@ import pdb
 import logging
 
 from tqdm import tqdm
+from util import load_config
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -24,14 +25,6 @@ _VOCAB_FILE = 'vocab.txt'
 _EMBED_FILE = 'embedding.npy'
 _LABEL_FILE = 'label.txt'
 _FSUFFIX = '.fs'
-
-def load_config(opt):
-    try:
-        with open(opt.config, 'r', encoding='utf-8') as f:
-            config = json.load(f)
-    except Exception as e:
-        config = dict()
-    return config
 
 def build_label(input_path):
     logger.info("\n[building labels]")

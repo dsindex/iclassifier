@@ -8,9 +8,36 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 
-class TextGloveCNN(nn.Module):
+class BaseModel(nn.Module):
+    def __init__(self):
+        super(BaseModel, self).__init__()
+
+    def load_embedding(self, input_path):
+        weights_matrix = np.load(input_path)
+        weights_matrix = torch.tensor(weights_matrix)
+        return weights_matrix
+
+    def create_embedding_layer(self, weights_matrix, non_trainable=False):
+        vocab_size, emb_dim = weights_matrix.size()
+        emb_layer = nn.Embedding(vocab_size, emb_dim)
+        emb_layer.load_state_dict({'weight': weights_matrix})
+        if non_trainable:
+            emb_layer.weight.requires_grad = False
+        return emb_layer
+
+    def load_label(self, input_path):
+        labels = {}
+        with open(input_path, 'r', encoding='utf-8') as f:
+            for idx, line in enumerate(f):
+                toks = line.strip().split()
+                label = toks[0]
+                label_id = int(toks[1])
+                labels[label_id] = label
+        return labels
+
+class TextGloveCNN(BaseModel):
     def __init__(self, config, embedding_path, label_path, emb_non_trainable=False):
-        super(TextGloveCNN, self).__init__()
+        super().__init__()
 
         seq_size = config['n_ctx']
         token_emb_dim = config['token_emb_dim']
@@ -19,8 +46,8 @@ class TextGloveCNN(nn.Module):
         fc_hidden_size = config['fc_hidden_size']
 
         # 1. glove embedding
-        weights_matrix = self.__load_embedding(embedding_path)
-        self.embed = self.__create_embedding_layer(weights_matrix, non_trainable=emb_non_trainable)
+        weights_matrix = super().load_embedding(embedding_path)
+        self.embed = super().create_embedding_layer(weights_matrix, non_trainable=emb_non_trainable)
 
         # 2. convolution
         convs = []
@@ -37,35 +64,12 @@ class TextGloveCNN(nn.Module):
         self.dropout = nn.Dropout(config['dropout'])
 
         # 3. fully connected
-        self.labels = self.__load_label(label_path)
+        self.labels = super().load_label(label_path)
         label_size = len(self.labels)
         self.layernorm1 = nn.LayerNorm(len(kernel_sizes) * num_filters)
         self.fc1 = nn.Linear(len(kernel_sizes) * num_filters, fc_hidden_size)
         self.layernorm2 = nn.LayerNorm(fc_hidden_size)
         self.fc2 = nn.Linear(fc_hidden_size, label_size)
-
-    def __load_embedding(self, input_path):
-        weights_matrix = np.load(input_path)
-        weights_matrix = torch.tensor(weights_matrix)
-        return weights_matrix
-
-    def __create_embedding_layer(self, weights_matrix, non_trainable=False):
-        vocab_size, emb_dim = weights_matrix.size()
-        emb_layer = nn.Embedding(vocab_size, emb_dim)
-        emb_layer.load_state_dict({'weight': weights_matrix})
-        if non_trainable:
-            emb_layer.weight.requires_grad = False
-        return emb_layer
-
-    def __load_label(self, input_path):
-        labels = {}
-        with open(input_path, 'r', encoding='utf-8') as f:
-            for idx, line in enumerate(f):
-                toks = line.strip().split()
-                label = toks[0]
-                label_id = int(toks[1])
-                labels[label_id] = label
-        return labels
 
     def forward(self, x):
         # 1. glove embedding
@@ -96,9 +100,9 @@ class TextGloveCNN(nn.Module):
         output = torch.softmax(fc_out, dim=-1)
         return output
 
-class TextBertCNN(nn.Module):
+class TextBertCNN(BaseModel):
     def __init__(self, config, bert_config, bert_model, label_path, feature_based=False):
-        super(TextBertCNN, self).__init__()
+        super().__init__()
 
         seq_size = config['n_ctx']
         num_filters = config['num_filters']
@@ -120,22 +124,12 @@ class TextBertCNN(nn.Module):
         self.dropout = nn.Dropout(config['dropout'])
 
         # 3. fully connected
-        self.labels = self.__load_label(label_path)
+        self.labels = super().load_label(label_path)
         label_size = len(self.labels)
         self.layernorm1 = nn.LayerNorm(len(kernel_sizes) * num_filters)
         self.fc1 = nn.Linear(len(kernel_sizes) * num_filters, fc_hidden_size)
         self.layernorm2 = nn.LayerNorm(fc_hidden_size)
         self.fc2 = nn.Linear(fc_hidden_size, label_size)
-
-    def __load_label(self, input_path):
-        labels = {}
-        with open(input_path, 'r', encoding='utf-8') as f:
-            for idx, line in enumerate(f):
-                toks = line.strip().split()
-                label = toks[0]
-                label_id = int(toks[1])
-                labels[label_id] = label
-        return labels
 
     def __compute_bert_embedding(self, x):
         if self.feature_based:
@@ -185,9 +179,9 @@ class TextBertCNN(nn.Module):
         # [batch_size, label_size]
         return output
 
-class TextBertCLS(nn.Module):
+class TextBertCLS(BaseModel):
     def __init__(self, config, bert_config, bert_model, label_path, feature_based=False):
-        super(TextBertCLS, self).__init__()
+        super().__init__()
 
         seq_size = config['n_ctx']
         num_filters = config['num_filters']
@@ -202,19 +196,9 @@ class TextBertCLS(nn.Module):
         self.dropout = nn.Dropout(config['dropout'])
 
         # 2. fully connected
-        self.labels = self.__load_label(label_path)
+        self.labels = super().load_label(label_path)
         label_size = len(self.labels)
         self.fc = nn.Linear(hidden_size, label_size)
-
-    def __load_label(self, input_path):
-        labels = {}
-        with open(input_path, 'r', encoding='utf-8') as f:
-            for idx, line in enumerate(f):
-                toks = line.strip().split()
-                label = toks[0]
-                label_id = int(toks[1])
-                labels[label_id] = label
-        return labels
 
     def __compute_bert_embedding(self, x):
         if self.feature_based:

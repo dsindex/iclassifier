@@ -10,27 +10,11 @@ import logging
 
 import torch
 from model import TextGloveCNN, TextBertCNN, TextBertCLS
-from dataset import SnipsGloveDataset, SnipsBertDataset
-from torch.utils.data import DataLoader
+from util import load_config, to_device, to_numpy
+from dataset import prepare_dataset, SnipsGloveDataset, SnipsBertDataset
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-def load_config(opt):
-    try:
-        with open(opt.config, 'r', encoding='utf-8') as f:
-            config = json.load(f)
-    except Exception as e:
-        config = dict()
-    return config
-
-def prepare_dataset(opt, filepath, DatasetClass, shuffle=False, num_workers=1):
-    dataset = DatasetClass(filepath)
-    sampler = None
-    loader = DataLoader(dataset, batch_size=opt.batch_size, \
-            shuffle=shuffle, num_workers=num_workers, sampler=sampler)
-    logger.info("[{} data loaded]".format(filepath))
-    return loader
 
 def evaluate(opt):
     test_data_path = opt.data_path
