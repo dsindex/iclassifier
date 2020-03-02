@@ -229,7 +229,7 @@ def preprocess_bert(config, opt):
         "bert": BertTokenizer,
         "albert": AlbertTokenizer
     }
-    Tokenizer = TOKENIZER_CLASSES[opt.emb_class]
+    Tokenizer = TOKENIZER_CLASSES[config['emb_class']]
 
     tokenizer = Tokenizer.from_pretrained(opt.bert_model_name_or_path,
                                           do_lower_case=opt.bert_do_lower_case)
@@ -266,8 +266,7 @@ def main():
     
     parser.add_argument('--data_dir', type=str, default='data/snips')
     parser.add_argument('--embedding_path', type=str, default='embeddings/glove.6B.300d.txt')
-    parser.add_argument('--config', type=str, default='config.json')
-    parser.add_argument('--emb_class', type=str, default='glove', help='glove | bert | albert')
+    parser.add_argument('--config', type=str, default='config-glove.json')
     # for BERT, ALBERT
     parser.add_argument("--bert_model_name_or_path", type=str, default='bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
@@ -275,11 +274,14 @@ def main():
                         help="Set this flag if you are using an uncased model.")
     opt = parser.parse_args()
 
+    # set config
     config = load_config(opt)
+    config['opt'] = opt
+    logger.info("%s", config)
 
-    if opt.emb_class == 'glove':
+    if config['emb_class'] == 'glove':
         preprocess_glove(config, opt)
-    if opt.emb_class == 'bert' or opt.emb_class == 'albert':
+    if 'bert' in config['emb_class']:
         preprocess_bert(config, opt)
 
 

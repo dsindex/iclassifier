@@ -1,6 +1,15 @@
 ## iclassifier
 
-reference pytorch code for intent(sentence) classification
+reference pytorch code for intent(sentence) classification.
+- embedding
+  - Glove, BERT, ALBERT
+- encoding
+  - CNN
+  - DenseNet
+    - [Dynamic Self-Attention: Computing Attention over Words Dynamically for Sentence Embedding](https://arxiv.org/pdf/1808.07383.pdf)
+    - implementation from [ntagger](https://github.com/dsindex/ntagger/blob/master/model.py#L43)
+- decoding
+  - Softmax
 
 ## requirements
 
@@ -18,12 +27,11 @@ reference pytorch code for intent(sentence) classification
   glove.6B.zip
   $ unzip glove.6B.zip 
   ```
-
-- additional requirements for BERT(huggingface's [transformers](https://github.com/huggingface/transformers.git))
-```
-$ pip install tensorflow-gpu==2.0
-$ pip install git+https://github.com/huggingface/transformers.git
-```
+  - BERT(huggingface's [transformers](https://github.com/huggingface/transformers.git))
+  ```
+  $ pip install tensorflow-gpu==2.0
+  $ pip install git+https://github.com/huggingface/transformers.git
+  ```
 
 - data
   - Snips
@@ -57,7 +65,7 @@ $ pip install git+https://github.com/huggingface/transformers.git
 
 - train
 ```
-* token_emb_dim in config.json == 300 (ex, glove.6B.300d.txt )
+* token_emb_dim in config-glove.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py
 * embedding trainable
 $ python train.py
@@ -78,17 +86,16 @@ $ python evaluate.py
 
 - train
 ```
-* ignore token_emb_dim in config.json
 * n_ctx size should be less than 512
-$ python preprocess.py --emb_class=bert --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case
+$ python preprocess.py --config=config-bert.json --emb_class=bert --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
 
 * fine-tuning
-$ python train.py --emb_class=bert --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3
-$ python train.py --emb_class=bert --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --bert_model_class=TextBertCLS
+$ python train.py --config=config-bert.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3
+$ python train.py --config=config-bert.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --bert_model_class=TextBertCLS
 
 * feature-based
-$ python train.py --emb_class=bert --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --bert_use_feature_based
-$ python train.py --emb_class=bert --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --bert_use_feature_based --bert_model_class=TextBertCLS
+$ python train.py --config=config-bert.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --bert_use_feature_based
+$ python train.py --config=config-bert.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --bert_use_feature_based --bert_model_class=TextBertCLS
 
 * tensorboardX
 $ rm -rf runs
@@ -98,7 +105,7 @@ $ tensorboard --logdir runs/ --port port-number --bind_all
 - evaluation
 ```
 1) --bert_model_class=TextBertCNN
-$ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/snips/test.txt.fs
+$ python evaluate.py --config=config-bert.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/snips/test.txt.fs
 
 * fine-tuning
 INFO:__main__:[Accuracy] : 0.9743,   682/  700
@@ -108,7 +115,7 @@ INFO:__main__:[Elapsed Time] : 9353ms, 13.361428571428572ms on average
   INFO:__main__:[Elapsed Time] : 16994ms, 24.277142857142856ms on average
 
 2) --bert_model_class=TextBertCLS
-$ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/snips/test.txt.fs --bert_model_class=TextBertCLS
+$ python evaluate.py --config=config-bert.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/snips/test.txt.fs --bert_model_class=TextBertCLS
 
 * fine-tuning
 INFO:__main__:[Accuracy] : 0.9743,   682/  700
@@ -133,7 +140,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 
 - train
 ```
-* token_emb_dim in config.json == 300 (ex, glove.6B.300d.txt )
+* token_emb_dim in config-glove.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py --data_dir=data/sst2
 * embedding trainable
 $ python train.py --data_dir=data/sst2
@@ -153,20 +160,19 @@ INFO:__main__:[Elapsed Time] : 4627ms, 2.540911587040088ms on average
 
 - train
 ```
-* ignore token_emb_dim in config.json
 * n_ctx size should be less than 512
-$ python preprocess.py --emb_class=bert --data_dir=data/sst2 --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case
+$ python preprocess.py --config=config-bert.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
 
 * fine-tuning
-$ python train.py --emb_class=bert --data_dir=data/sst2 --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3
-$ python train.py --emb_class=bert --data_dir=data/sst2 --bert_model_name_or_path=bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --bert_model_class=TextBertCLS
+$ python train.py --config=config-bert.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3
+$ python train.py --config=config-bert.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --bert_model_class=TextBertCLS
 
 ```
 
 - evaluation
 ```
 1) --bert_model_class=TextBertCNN
-$ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/sst2/test.txt.fs --label_path=data/sst2/label.txt
+$ python evaluate.py --config=config-bert.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/sst2/test.txt.fs --label_path=data/sst2/label.txt
 
 * fine-tuning
 INFO:__main__:[Accuracy] : 0.9143,  1665/ 1821
@@ -181,7 +187,7 @@ INFO:__main__:[Elapsed Time] : 25373ms, 13.933552992861065ms on average
   INFO:__main__:[Elapsed Time] : 52170ms, 28.649093904448105ms on average
 
 2) --bert_model_class=TextBertCLS
-$ python evaluate.py --emb_class=bert --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/sst2/test.txt.fs --label_path=data/sst2/label.txt --bert_model_class=TextBertCLS
+$ python evaluate.py --config=config-bert.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/sst2/test.txt.fs --label_path=data/sst2/label.txt --bert_model_class=TextBertCLS
 
 * fine-tuning
 INFO:__main__:[Accuracy] : 0.8929,  1626/ 1821
@@ -204,12 +210,11 @@ INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
 
 - train
 ```
-* ignore token_emb_dim in config.json
 * n_ctx size should be less than 512
-$ python preprocess.py --emb_class=albert --data_dir=data/sst2 --bert_model_name_or_path=./albert-base-v2
+$ python preprocess.py --config=config-albert.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2
 
 * feature-based
-$ python train.py --emb_class=albert --data_dir=data/sst2 --bert_model_name_or_path=./albert-base-v2 --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=15 --bert_use_feature_based
+$ python train.py --config=config-albert.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2 --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=15 --bert_use_feature_based
 
 ```
 
@@ -217,7 +222,7 @@ $ python train.py --emb_class=albert --data_dir=data/sst2 --bert_model_name_or_p
 ```
 1) --bert_model_class=TextBertCNN
   * albert-base-v2
-  $ python evaluate.py --emb_class=albert --bert_output_dir=bert-checkpoint --data_path=data/sst2/test.txt.fs --label_path=data/sst2/label.txt
+  $ python evaluate.py --config=config-albert.json --bert_output_dir=bert-checkpoint --data_path=data/sst2/test.txt.fs --label_path=data/sst2/label.txt
   INFO:__main__:[Accuracy] : 0.8666,  1578/ 1821
   INFO:__main__:[Elapsed Time] : 30896ms, 16.966501922020868ms on average
   
@@ -231,6 +236,5 @@ $ python train.py --emb_class=albert --data_dir=data/sst2 --bert_model_name_or_p
 
 - [Intent Detection](https://paperswithcode.com/task/intent-detection)
 - [Intent Classification](https://paperswithcode.com/task/intent-classification)
-- [A Visual Guide to Using BERT for the First Time](https://jalammar.github.io/a-visual-guide-to-using-bert-for-the-first-time/)
 - [Identifying Hate Speech with BERT and CNN](https://towardsdatascience.com/identifying-hate-speech-with-bert-and-cnn-b7aa2cddd60d)
 

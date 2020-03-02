@@ -32,6 +32,7 @@ from tqdm import tqdm
 from util    import load_config, to_device, to_numpy
 from model   import TextGloveCNN, TextBertCNN, TextBertCLS
 from dataset import prepare_dataset, SnipsGloveDataset, SnipsBertDataset
+from early_stopping import EarlyStopping
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -71,7 +72,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
     total_examples = 0
     st_time = time.time()
     for local_step, (x,y) in tqdm(enumerate(train_loader), total=len(train_loader)):
-        global_step = (len(train_loader) * (epoch_i-1)) + local_step
+        global_step = (len(train_loader) * epoch_i) + local_step
         if type(x) != list: # torch.tensor
             x = x.to(device)
         else:               # list of torch.tensor
@@ -88,7 +89,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
         else:
             loss.backward()
         optimizer.step()
-        if scheduler:
+        if scheduler and epoch_i > opt.warmup_epoch and local_step == 0: # after warmup, for every epoch
             scheduler.step()
         # back-propagation - end
         cur_examples = y.size(0)
@@ -151,18 +152,112 @@ def save_model(model, opt, config):
             checkpoint = model.state_dict()
         torch.save(checkpoint,f)
 
+def train(opt):
+    device = torch.device(opt.device)
+    set_seed(opt)
+    set_apex_and_distributed(opt)
+
+    # set config
+    config = load_config(opt)
+    config['device'] = device
+    config['opt'] = opt
+    logger.info("%s", config)
+  
+    # prepare train, valid dataset
+    if config['emb_class'] == 'glove':
+        filepath = os.path.join(opt.data_dir, 'train.txt.ids')
+        train_loader = prepare_dataset(opt, filepath, SnipsGloveDataset, shuffle=True, num_workers=2)
+        filepath = os.path.join(opt.data_dir, 'valid.txt.ids')
+        valid_loader = prepare_dataset(opt, filepath, SnipsGloveDataset, shuffle=False, num_workers=2)
+    if 'bert' in config['emb_class']:
+        filepath = os.path.join(opt.data_dir, 'train.txt.fs')
+        train_loader = prepare_dataset(opt, filepath, SnipsBertDataset, shuffle=True, num_workers=2)
+        filepath = os.path.join(opt.data_dir, 'valid.txt.fs')
+        valid_loader = prepare_dataset(opt, filepath, SnipsBertDataset, shuffle=False, num_workers=2)
+
+    # prepare model
+    if config['emb_class'] == 'glove':
+        # set embedding as trainable
+        embedding_path = os.path.join(opt.data_dir, opt.embedding_filename)
+        label_path = os.path.join(opt.data_dir, opt.label_filename)
+        model = TextGloveCNN(config, embedding_path, label_path, emb_non_trainable=False)
+    if 'bert' in config['emb_class']:
+        from transformers import BertTokenizer, BertConfig, BertModel
+        from transformers import AlbertTokenizer, AlbertConfig, AlbertModel
+        MODEL_CLASSES = {
+            "bert": (BertConfig, BertTokenizer, BertModel),
+            "albert": (AlbertConfig, AlbertTokenizer, AlbertModel)
+        }
+        Config    = MODEL_CLASSES[config['emb_class']][0]
+        Tokenizer = MODEL_CLASSES[config['emb_class']][1]
+        Model     = MODEL_CLASSES[config['emb_class']][2]
+        bert_tokenizer = Tokenizer.from_pretrained(opt.bert_model_name_or_path,
+                                                   do_lower_case=opt.bert_do_lower_case)
+        bert_model = Model.from_pretrained(opt.bert_model_name_or_path,
+                                           from_tf=bool(".ckpt" in opt.bert_model_name_or_path))
+        bert_config = bert_model.config
+        ModelClass = TextBertCNN
+        if opt.bert_model_class == 'TextBertCLS': ModelClass = TextBertCLS
+        label_path = os.path.join(opt.data_dir, opt.label_filename)
+        model = ModelClass(config, bert_config, bert_model, label_path, feature_based=opt.bert_use_feature_based)
+    model.to(device)
+    print(model)
+    logger.info("[Model prepared]")
+
+    # create optimizer, scheduler, summary writer
+    logger.info("[Creating optimizer, scheduler, summary writer...]")
+    opt.one_epoch_step = (len(train_loader) // (opt.batch_size*opt.world_size))
+    optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr, weight_decay=opt.l2norm)
+    if opt.use_amp:
+        model, optimizer = amp.initialize(model, optimizer, opt_level=opt.opt_level)
+    if opt.distributed:
+        model = DDP(model, delay_allreduce=True)
+    scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer=optimizer, gamma=opt.decay_rate)
+    try:
+        writer = SummaryWriter(log_dir=opt.log_dir)
+    except:
+        writer = None
+    logger.info("[Ready]")
+
+    # training
+
+    # additional config setting for parameter passing
+    config['optimizer'] = optimizer
+    config['scheduler'] = scheduler
+    config['writer'] = writer
+
+    early_stopping = EarlyStopping(logger, patience=10, measure='loss', verbose=1)
+    best_val_loss = float('inf')
+    for epoch_i in range(opt.epoch):
+        epoch_st_time = time.time()
+        eval_loss = train_epoch(model, config, train_loader, valid_loader, epoch_i)
+        if early_stopping.validate(eval_loss, measure='loss'): break
+        if opt.local_rank == 0 and eval_loss < best_val_loss:
+            best_val_loss = eval_loss
+            if opt.save_path:
+                save_model(model, opt, config)
+                if 'bert' in config['emb_class']:
+                    if not os.path.exists(opt.bert_output_dir):
+                        os.makedirs(opt.bert_output_dir)
+                    bert_tokenizer.save_pretrained(opt.bert_output_dir)
+                    bert_model.save_pretrained(opt.bert_output_dir)
+            early_stopping.reset(best_val_loss)
+        early_stopping.status()
+
 def main():
     parser = argparse.ArgumentParser()
     
     parser.add_argument('--data_dir', type=str, default='data/snips')
     parser.add_argument('--embedding_filename', type=str, default='embedding.npy')
     parser.add_argument('--label_filename', type=str, default='label.txt')
-    parser.add_argument('--config', type=str, default='config.json')
+    parser.add_argument('--config', type=str, default='config-glove.json')
     parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--use_amp', action="store_true")
     parser.add_argument('--batch_size', type=int, default=64)
     parser.add_argument('--epoch', type=int, default=32)
     parser.add_argument('--lr', type=float, default=2e-4)
+    parser.add_argument('--decay_rate', type=float, default=1.0)
+    parser.add_argument('--warmup_epoch', type=int, default=4)
     parser.add_argument('--save_path', type=str, default='pytorch-model.pt')
     parser.add_argument('--l2norm', type=float, default=1e-6)
     parser.add_argument('--tmax',type=int, default=-1)
@@ -171,9 +266,8 @@ def main():
     parser.add_argument("--world_size", default=1, type=int)
     parser.add_argument('--log_dir', type=str, default='runs')
     parser.add_argument("--seed", default=5, type=int)
-    parser.add_argument('--emb_class', type=str, default='glove', help='glove | bert | albert')
     # for BERT
-    parser.add_argument("--bert_model_name_or_path", type=str, default='bert-base-uncased',
+    parser.add_argument("--bert_model_name_or_path", type=str, default='embeddings/bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
     parser.add_argument("--bert_do_lower_case", action="store_true",
                         help="Set this flag if you are using an uncased model.")
@@ -186,86 +280,7 @@ def main():
 
     opt = parser.parse_args()
 
-    device = torch.device(opt.device)
-    set_seed(opt)
-    set_apex_and_distributed(opt)
-    config = load_config(opt)
-  
-    # prepare train, valid dataset
-    if opt.emb_class == 'glove':
-        filepath = os.path.join(opt.data_dir, 'train.txt.ids')
-        train_loader = prepare_dataset(opt, filepath, SnipsGloveDataset, shuffle=True, num_workers=2)
-        filepath = os.path.join(opt.data_dir, 'valid.txt.ids')
-        valid_loader = prepare_dataset(opt, filepath, SnipsGloveDataset, shuffle=False, num_workers=2)
-    if 'bert' in opt.emb_class:
-        filepath = os.path.join(opt.data_dir, 'train.txt.fs')
-        train_loader = prepare_dataset(opt, filepath, SnipsBertDataset, shuffle=True, num_workers=2)
-        filepath = os.path.join(opt.data_dir, 'valid.txt.fs')
-        valid_loader = prepare_dataset(opt, filepath, SnipsBertDataset, shuffle=False, num_workers=2)
-
-    # prepare model
-    if opt.emb_class == 'glove':
-        # set embedding as trainable
-        embedding_path = os.path.join(opt.data_dir, opt.embedding_filename)
-        label_path = os.path.join(opt.data_dir, opt.label_filename)
-        model = TextGloveCNN(config, embedding_path, label_path, emb_non_trainable=False)
-    if 'bert' in opt.emb_class:
-        from transformers import BertTokenizer, BertConfig, BertModel
-        from transformers import AlbertTokenizer, AlbertConfig, AlbertModel
-        MODEL_CLASSES = {
-            "bert": (BertConfig, BertTokenizer, BertModel),
-            "albert": (AlbertConfig, AlbertTokenizer, AlbertModel)
-        }
-        Config    = MODEL_CLASSES[opt.emb_class][0]
-        Tokenizer = MODEL_CLASSES[opt.emb_class][1]
-        Model     = MODEL_CLASSES[opt.emb_class][2]
-        bert_tokenizer = Tokenizer.from_pretrained(opt.bert_model_name_or_path,
-                                                   do_lower_case=opt.bert_do_lower_case)
-        bert_model = Model.from_pretrained(opt.bert_model_name_or_path,
-                                           from_tf=bool(".ckpt" in opt.bert_model_name_or_path))
-        bert_config = bert_model.config
-        ModelClass = TextBertCNN
-        if opt.bert_model_class == 'TextBertCLS': ModelClass = TextBertCLS
-        label_path = os.path.join(opt.data_dir, opt.label_filename)
-        model = ModelClass(config, bert_config, bert_model, label_path, feature_based=opt.bert_use_feature_based)
-    model.to(device)
-    logger.info("[Model prepared]")
-
-    # create optimizer, scheduler, summary writer
-    logger.info("[Creating optimizer, scheduler, summary writer...]")
-    opt.one_epoch_step = (len(train_loader) // (opt.batch_size*opt.world_size))
-    optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr, weight_decay=opt.l2norm)
-    if opt.use_amp:
-        model, optimizer = amp.initialize(model, optimizer, opt_level=opt.opt_level)
-    if opt.distributed:
-        model = DDP(model, delay_allreduce=True)
-    scheduler = None
-    try:
-        writer = SummaryWriter(log_dir=opt.log_dir)
-    except:
-        writer = None
-    logger.info("%s", opt)
-    logger.info("[Ready]")
-
-    # training
-    config['device'] = device
-    config['optimizer'] = optimizer
-    config['scheduler'] = scheduler
-    config['writer'] = writer
-    config['opt'] = opt
-    best_val_loss = float('inf')
-    for epoch_i in range(opt.epoch):
-        epoch_st_time = time.time()
-        eval_loss = train_epoch(model, config, train_loader, valid_loader, epoch_i+1)
-        if opt.local_rank == 0 and eval_loss < best_val_loss:
-            best_val_loss = eval_loss
-            if opt.save_path:
-                save_model(model, opt, config)
-                if 'bert' in opt.emb_class:
-                    if not os.path.exists(opt.bert_output_dir):
-                        os.makedirs(opt.bert_output_dir)
-                    bert_tokenizer.save_pretrained(opt.bert_output_dir)
-                    bert_model.save_pretrained(opt.bert_output_dir)
+    train(opt)
    
 if __name__ == '__main__':
     main()
