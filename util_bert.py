@@ -122,9 +122,10 @@ def convert_examples_to_features(examples,
 
     features = []
     for (ex_index, example) in enumerate(tqdm(examples)):
+        '''
         if ex_index % 1000 == 0:
             logger.info("Writing example %d of %d", ex_index, len(examples))
-
+        '''
         feature = convert_single_example_to_feature(example,
                                                     label_map,
                                                     max_seq_length,
