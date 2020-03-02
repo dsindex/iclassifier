@@ -136,6 +136,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | ALBERT, CNN       | 86.66       |
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
+
 |                   | Accuracy (%)|
 | ----------------- | ----------- |
 | T5-3B             | 97.4        |
