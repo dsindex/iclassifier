@@ -68,15 +68,16 @@ $ python train.py --config=config-bert.json --bert_model_name_or_path=./embeddin
 - evaluation
 ```
 * --bert_model_class=TextBertCNN
-$ python evaluate.py --config=config-bert.json --bert_output_dir=bert-checkpoint --data_path=data/clova_sentiments/test.txt.fs --label_path=data/clova_sentiments/label.txt --batch_size=128
+$ python evaluate.py --config=config-bert.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint --batch_size=128
+
 INFO:__main__:[Accuracy] : 0.8945, 44723/49997
 INFO:__main__:[Elapsed Time] : 90526ms, 1.810628637718263ms on average
 
 * --bert_model_class=TextBertCLS
-$ python evaluate.py --config=config-bert.json --bert_output_dir=bert-checkpoint --data_path=data/clova_sentiments/test.txt.fs --label_path=data/clova_sentiments/label.txt --batch_size=128 --bert_model_class=TextBertCLS --print_predicted_label > data/clova_sentiments/test.txt.predicted
+$ python evaluate.py --config=config-bert.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint --batch_size=128 --bert_model_class=TextBertCLS
+
 INFO:__main__:[Accuracy] : 0.8931, 44653/49997
 INFO:__main__:[Elapsed Time] : 89785ms, 1.795807748464908ms on average
-$ paste data/clova_sentiments/test.txt data/clova_sentiments/test.txt.predicted | more
 ```
 
 ### Experiments with BERT(pytorch.all.dha.2.5m_step)
@@ -94,13 +95,14 @@ $ python train.py --config=config-bert.json --bert_model_name_or_path=./embeddin
 - evaluation
 ```
 * --bert_model_class=TextBertCNN
-$ python evaluate.py --config=config-bert.json --bert_output_dir=bert-checkpoint --data_path=data/clova_sentiments_morph/test.txt.fs --label_path=data/clova_sentiments_morph/label.txt --batch_size=128 --print_predicted_label > data/clova_sentiments_morph/test.txt.predicted
+$ python evaluate.py --config=config-bert.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint --batch_size=128
+
 INFO:__main__:[Accuracy] : 0.8996, 44976/49997
 INFO:__main__:[Elapsed Time] : 94477ms, 1.8896533792027521ms on average
-$ paste data/clova_sentiments_morph/test.txt data/clova_sentiments_morph/test.txt.predicted | more
 
 * --bert_model_class=TextBertCLS
-$ python evaluate.py --config=config-bert.json --bert_output_dir=bert-checkpoint --data_path=data/clova_sentiments_morph/test.txt.fs --label_path=data/clova_sentiments_morph/label.txt --batch_size=128 --bert_model_class=TextBertCLS --print_predicted_label > data/clova_sentiments_morph/test.txt.predicted
+$ python evaluate.py --config=config-bert.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint --batch_size=128 --bert_model_class=TextBertCLS 
+
 INFO:__main__:[Accuracy] : 0.8941, 44701/49997
 INFO:__main__:[Elapsed Time] : 89692ms, 1.7939476368582115ms on average
 ```
@@ -116,7 +118,8 @@ $ python train.py --data_dir=data/clova_sentiments_morph
 
 - evaluation
 ```
-$ python evaluate.py --data_path=data/clova_sentiments_morph/test.txt.ids --embedding_path=data/clova_sentiments_morph/embedding.npy --label_path=data/clova_sentiments_morph/label.txt
+$ python evaluate.py --data_dir=./data/clova_sentiments_morph 
+
 INFO:__main__:[Accuracy] : 0.8727, 43631/49997
 INFO:__main__:[Elapsed Time] : 122452ms, 2.449186951217073ms on average
 ```
