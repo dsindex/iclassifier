@@ -9,6 +9,7 @@ import pdb
 import logging
 
 import torch
+import numpy as np
 
 from tqdm import tqdm
 from model import TextGloveCNN, TextBertCNN, TextBertCLS
@@ -18,16 +19,46 @@ from dataset import prepare_dataset, SnipsGloveDataset, SnipsBertDataset
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def evaluate(opt):
-    test_data_path = opt.data_path
-    device = torch.device(opt.device)
+def write_prediction(opt, preds, labels):
+    # load test data
+    tot_num_line = sum(1 for _ in open(opt.test_path, 'r')) 
+    with open(opt.test_path, 'r', encoding='utf-8') as f:
+        data = []
+        bucket = []
+        for idx, line in enumerate(tqdm(f, total=tot_num_line)):
+            line = line.strip()
+            sent, label = line.split('\t')
+            data.append((sent, label))
+    # write prediction
+    try:
+        pred_path = opt.test_path + '.pred'
+        with open(pred_path, 'w', encoding='utf-8') as f:
+            for entry, pred in zip(data, preds):
+                sent, label = entry
+                pred_id = np.argmax(pred)
+                pred_label = labels[pred_id]
+                f.write(sent + '\t' + label + '\t' + pred_label + '\n')
+    except Exception as e:
+        logger.warn(str(e))
 
+def evaluate(opt):
     # set config
     config = load_config(opt)
+    device = torch.device(opt.device)
     config['device'] = opt.device
     config['opt'] = opt
     logger.info("%s", config)
 
+    # set path
+    if config['emb_class'] == 'glove':
+        opt.data_path = os.path.join(opt.data_dir, 'test.txt.ids')
+    if 'bert' in config['emb_class']:
+        opt.data_path = os.path.join(opt.data_dir, 'test.txt.fs')
+    opt.embedding_path = os.path.join(opt.data_dir, 'embedding.npy')
+    opt.label_path = os.path.join(opt.data_dir, 'label.txt')
+    opt.test_path = os.path.join(opt.data_dir, 'test.txt')
+
+    test_data_path = opt.data_path
     torch.set_num_threads(opt.num_thread)
 
     # prepare test dataset
@@ -70,6 +101,7 @@ def evaluate(opt):
  
     # evaluation
     model.eval()
+    preds = None
     correct = 0
     n_batches = len(test_loader)
     total_examples = 0
@@ -82,37 +114,36 @@ def evaluate(opt):
                 for i in range(len(x)):
                     x[i] = x[i].to(device)
             y = y.to(device)
-            output = model(x)
-            predicted = output.argmax(1)
+            logits = model(x)
+            if preds is None:
+                preds = to_numpy(logits)
+            else:
+                preds = np.append(preds, to_numpy(logits), axis=0)
+            predicted = logits.argmax(1)
             correct += (predicted == y).sum().item()
             cur_examples = y.size(0)
             total_examples += cur_examples
             if i == 0: # first one may takes longer time, so ignore in computing duration.
                 first_time = int((time.time()-whole_st_time)*1000)
                 first_examples = cur_examples
-            if opt.print_predicted_label:
-                for p in predicted.cpu().numpy():
-                    predicted_label = model.labels[p]
-                    sys.stdout.write(predicted_label + '\n')
     acc  = correct / total_examples
     whole_time = int((time.time()-whole_st_time)*1000)
     avg_time = (whole_time - first_time) / (total_examples - first_examples)
-
+    # write predictions to file
+    labels = model.labels
+    write_prediction(opt, preds, labels)
     logger.info("[Accuracy] : {:.4f}, {:5d}/{:5d}".format(acc, correct, total_examples))
     logger.info("[Elapsed Time] : {}ms, {}ms on average".format(whole_time, avg_time))
 
 def main():
     parser = argparse.ArgumentParser()
     
-    parser.add_argument('--data_path', type=str, default='data/snips/test.txt.ids')
-    parser.add_argument('--embedding_path', type=str, default='data/snips/embedding.npy')
-    parser.add_argument('--label_path', type=str, default='data/snips/label.txt')
+    parser.add_argument('--data_dir', type=str, default='data/snips')
     parser.add_argument('--config', type=str, default='config-glove.json')
     parser.add_argument('--model_path', type=str, default='pytorch-model.pt')
     parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--num_thread', type=int, default=1)
     parser.add_argument('--batch_size', type=int, default=1)
-    parser.add_argument("--print_predicted_label", action="store_true", help="Print predicted label out.")
     # for BERT
     parser.add_argument("--bert_do_lower_case", action="store_true",
                         help="Set this flag if you are using an uncased model.")
