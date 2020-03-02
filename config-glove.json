@@ -1,5 +1,6 @@
 {
     "emb_class": "glove",
+    "enc_class": "cnn",
     "n_ctx": 100,
     "token_emb_dim": 300,
     "num_filters": 256,

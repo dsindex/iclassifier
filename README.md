@@ -8,6 +8,8 @@ reference pytorch code for intent(sentence) classification.
   - DenseNet
     - [Dynamic Self-Attention: Computing Attention over Words Dynamically for Sentence Embedding](https://arxiv.org/pdf/1808.07383.pdf)
     - implementation from [ntagger](https://github.com/dsindex/ntagger/blob/master/model.py#L43)
+  - CLS
+    - classified by '[CLS]' only for BERT-like architectures. 
 - decoding
   - Softmax
 
@@ -61,7 +63,7 @@ reference pytorch code for intent(sentence) classification.
 | BERT, CNN         | **98.00**   |
 | BERT, CLS         | 97.86       |
 
-### emb_class=glove
+### emb_class=glove, enc_class=cnn
 
 - train
 ```
@@ -82,15 +84,16 @@ $ python evaluate.py
 [Elapsed Time] : 1327ms, 1.8957142857142857ms on average
 ```
 
-### emb_class=bert
+### emb_class=bert, enc_class=cnn | cls
 
 - train
 ```
 * n_ctx size should be less than 512
 $ python preprocess.py --config=config-bert.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
 $ python train.py --config=config-bert.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3
-* --bert_model_class=TextBertCLS for 'CLS' classification
-$ python train.py --config=config-bert.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --bert_model_class=TextBertCLS
+
+$ python preprocess.py --config=config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
+$ python train.py --config=config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3
 
 * --bert_use_feature_based for feature-based
 
@@ -101,7 +104,7 @@ $ tensorboard --logdir runs/ --port port-number --bind_all
 
 - evaluation
 ```
-1) --bert_model_class=TextBertCNN
+1) enc_class=cnn
 $ python evaluate.py --config=config-bert.json --bert_output_dir=bert-checkpoint --bert_do_lower_case
 
 INFO:__main__:[Accuracy] : 0.9743,   682/  700
@@ -111,8 +114,8 @@ INFO:__main__:[Elapsed Time] : 9353ms, 13.361428571428572ms on average
   INFO:__main__:[Accuracy] : 0.9800,   686/  700
   INFO:__main__:[Elapsed Time] : 16994ms, 24.277142857142856ms on average
 
-2) --bert_model_class=TextBertCLS
-$ python evaluate.py --config=config-bert.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --bert_model_class=TextBertCLS
+2) enc_class=cls
+$ python evaluate.py --config=config-bert-cls.json --bert_output_dir=bert-checkpoint --bert_do_lower_case
 
 INFO:__main__:[Accuracy] : 0.9743,   682/  700
 INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
@@ -145,7 +148,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | MT-DNN            | 95.6        |
 | DistilBERT        | 92.7        |
 
-### emb_class=glove
+### emb_class=glove, enc_class=cnn
 
 - train
 ```
@@ -167,20 +170,21 @@ INFO:__main__:[Elapsed Time] : 4627ms, 2.540911587040088ms on average
   INFO:__main__:[Elapsed Time] : 4300ms, 2.361339923119165ms on average
 ```
 
-### emb_class=bert
+### emb_class=bert, enc_class=cnn | cls
 
 - train
 ```
 * n_ctx size should be less than 512
 $ python preprocess.py --config=config-bert.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
 $ python train.py --config=config-bert.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3
-* --bert_model_class=TextBertCLS for 'CLS' classification
-$ python train.py --config=config-bert.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --bert_model_class=TextBertCLS
+
+$ python preprocess.py --config=config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
+$ python train.py --config=config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3
 ```
 
 - evaluation
 ```
-1) --bert_model_class=TextBertCNN
+1) enc_class=cnn
 $ python evaluate.py --config=config-bert.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case 
 
 INFO:__main__:[Accuracy] : 0.9143,  1665/ 1821
@@ -194,8 +198,8 @@ INFO:__main__:[Elapsed Time] : 25373ms, 13.933552992861065ms on average
   INFO:__main__:[Accuracy] : 0.9308,  1695/ 1821
   INFO:__main__:[Elapsed Time] : 52170ms, 28.649093904448105ms on average
 
-2) --bert_model_class=TextBertCLS
-$ python evaluate.py --config=config-bert.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case --bert_model_class=TextBertCLS
+2) enc_class=cls
+$ python evaluate.py --config=config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case
 
 INFO:__main__:[Accuracy] : 0.8929,  1626/ 1821
 INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
@@ -213,7 +217,7 @@ INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
   INFO:__main__:[Elapsed Time] : 45190ms, 24.816035145524438ms on average
 ```
 
-### emb_class=albert
+### emb_class=albert, enc_class=cnn | cls
 
 - train
 ```
@@ -228,9 +232,9 @@ $ python train.py --config=config-albert.json --data_dir=data/sst2 --bert_model_
 
 - evaluation
 ```
-  $ python evaluate.py --config=config-albert.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint 
+* enc_class=cnn
+$ python evaluate.py --config=config-albert.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint 
 
-* --bert_model_class=TextBertCNN
 INFO:__main__:[Accuracy] : 0.8666,  1578/ 1821
 INFO:__main__:[Elapsed Time] : 30896ms, 16.966501922020868ms on average
   

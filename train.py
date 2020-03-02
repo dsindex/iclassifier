@@ -197,7 +197,7 @@ def train(opt):
                                            from_tf=bool(".ckpt" in opt.bert_model_name_or_path))
         bert_config = bert_model.config
         ModelClass = TextBertCNN
-        if opt.bert_model_class == 'TextBertCLS': ModelClass = TextBertCLS
+        if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         label_path = os.path.join(opt.data_dir, opt.label_filename)
         model = ModelClass(config, bert_config, bert_model, label_path, feature_based=opt.bert_use_feature_based)
     model.to(device)
@@ -275,8 +275,6 @@ def main():
                         help="The output directory where the model predictions and checkpoints will be written.")
     parser.add_argument('--bert_use_feature_based', action="store_true",
                         help="use BERT as feature-based, default fine-tuning")
-    parser.add_argument('--bert_model_class', type=str, default='TextBertCNN',
-                        help="model class, TextBertCNN | TextBertCLS")
 
     opt = parser.parse_args()
 

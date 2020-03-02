@@ -93,7 +93,7 @@ def evaluate(opt):
         bert_model = Model.from_pretrained(opt.bert_output_dir)
         bert_config = bert_model.config
         ModelClass = TextBertCNN
-        if opt.bert_model_class == 'TextBertCLS': ModelClass = TextBertCLS
+        if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         model = ModelClass(config, bert_config, bert_model, opt.label_path)
     model.load_state_dict(checkpoint)
     model = model.to(device)
@@ -106,6 +106,8 @@ def evaluate(opt):
     n_batches = len(test_loader)
     total_examples = 0
     whole_st_time = time.time()
+    first_time = time.time()
+    first_examples = 0
     with torch.no_grad():
         for i, (x,y) in enumerate(tqdm(test_loader, total=n_batches)):
             if type(x) != list: # torch.tensor
@@ -124,7 +126,7 @@ def evaluate(opt):
             cur_examples = y.size(0)
             total_examples += cur_examples
             if i == 0: # first one may takes longer time, so ignore in computing duration.
-                first_time = int((time.time()-whole_st_time)*1000)
+                first_time = int((time.time()-first_time)*1000)
                 first_examples = cur_examples
     acc  = correct / total_examples
     whole_time = int((time.time()-whole_st_time)*1000)
@@ -149,8 +151,6 @@ def main():
                         help="Set this flag if you are using an uncased model.")
     parser.add_argument("--bert_output_dir", type=str, default='bert-checkpoint',
                         help="The output directory where the model predictions and checkpoints will be written.")
-    parser.add_argument('--bert_model_class', type=str, default='TextBertCNN',
-                        help="model class, TextBertCNN | TextBertCLS")
     opt = parser.parse_args()
 
     evaluate(opt) 
