@@ -45,6 +45,8 @@
 
 ### Experiments summary
 
+- iclassifier
+
 |                   | Accuracy (%) |
 | ----------------- | ----------- |
 | bpe BERT, CNN     | 89.45       |
@@ -52,6 +54,15 @@
 | dha BERT, CNN     | **89.96**   |
 | dha BERT, CLS     | 89.41       |
 | Glove, CNN        | 87.27       |
+
+- [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results)
+
+| HanBert-54kN      | 90.16       |
+| HanBert-54kN-IP   | 88.72       |
+| KoBERT            | 89.63       |
+| DistilKoBERT      | 88.41       |
+| Bert-Multilingual | 87.07       |
+| FastText          | 85.50       |
 
 ### Experiments with BERT(pytorch.all.bpe.4.8m_step)
 

@@ -126,12 +126,23 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 
 ### experiments summary
 
+- iclassifier
+
 |                   | Accuracy (%)|
 | ----------------- | ----------- |
 | Glove, CNN        | 83.64       |
 | BERT, CNN         | 93.08       |
 | BERT, CLS         | **93.85**   |
 | ALBERT, CNN       | 86.66       |
+
+- [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
+|                   | Accuracy (%)|
+| ----------------- | ----------- |
+| T5-3B             | 97.4        |
+| ALBERT            | 97.1        |
+| RoBERTa           | 96.7        |
+| MT-DNN            | 95.6        |
+| DistilBERT        | 92.7        |
 
 ### emb_class=glove
 
