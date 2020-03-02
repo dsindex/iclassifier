@@ -87,15 +87,12 @@ $ python evaluate.py
 - train
 ```
 * n_ctx size should be less than 512
-$ python preprocess.py --config=config-bert.json --emb_class=bert --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
-
-* fine-tuning
+$ python preprocess.py --config=config-bert.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
 $ python train.py --config=config-bert.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3
+* --bert_model_class=TextBertCLS for 'CLS' classification
 $ python train.py --config=config-bert.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --bert_model_class=TextBertCLS
 
-* feature-based
-$ python train.py --config=config-bert.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --bert_use_feature_based
-$ python train.py --config=config-bert.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --bert_use_feature_based --bert_model_class=TextBertCLS
+* --bert_use_feature_based for feature-based
 
 * tensorboardX
 $ rm -rf runs
@@ -107,9 +104,9 @@ $ tensorboard --logdir runs/ --port port-number --bind_all
 1) --bert_model_class=TextBertCNN
 $ python evaluate.py --config=config-bert.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/snips/test.txt.fs
 
-* fine-tuning
 INFO:__main__:[Accuracy] : 0.9743,   682/  700
 INFO:__main__:[Elapsed Time] : 9353ms, 13.361428571428572ms on average
+  
   ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5
   INFO:__main__:[Accuracy] : 0.9800,   686/  700
   INFO:__main__:[Elapsed Time] : 16994ms, 24.277142857142856ms on average
@@ -117,9 +114,9 @@ INFO:__main__:[Elapsed Time] : 9353ms, 13.361428571428572ms on average
 2) --bert_model_class=TextBertCLS
 $ python evaluate.py --config=config-bert.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/snips/test.txt.fs --bert_model_class=TextBertCLS
 
-* fine-tuning
 INFO:__main__:[Accuracy] : 0.9743,   682/  700
 INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
+  
   ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5
   INFO:__main__:[Accuracy] : 0.9786,   685/  700
   INFO:__main__:[Elapsed Time] : 16480ms, 23.542857142857144ms on average
@@ -151,6 +148,7 @@ $ python train.py --data_dir=data/sst2
 $ python evaluate.py --data_path=data/sst2/test.txt.ids --embedding_path=data/sst2/embedding.npy --label_path=data/sst2/label.txt
 INFO:__main__:[Accuracy] : 0.8248,  1502/ 1821
 INFO:__main__:[Elapsed Time] : 4627ms, 2.540911587040088ms on average
+  
   * single layer fc, no layernorm 
   INFO:__main__:[Accuracy] : 0.8364,  1523/ 1821
   INFO:__main__:[Elapsed Time] : 4300ms, 2.361339923119165ms on average
@@ -162,11 +160,9 @@ INFO:__main__:[Elapsed Time] : 4627ms, 2.540911587040088ms on average
 ```
 * n_ctx size should be less than 512
 $ python preprocess.py --config=config-bert.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
-
-* fine-tuning
 $ python train.py --config=config-bert.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3
+* --bert_model_class=TextBertCLS for 'CLS' classification
 $ python train.py --config=config-bert.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --bert_model_class=TextBertCLS
-
 ```
 
 - evaluation
@@ -174,7 +170,6 @@ $ python train.py --config=config-bert.json --data_dir=data/sst2 --bert_model_na
 1) --bert_model_class=TextBertCNN
 $ python evaluate.py --config=config-bert.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/sst2/test.txt.fs --label_path=data/sst2/label.txt
 
-* fine-tuning
 INFO:__main__:[Accuracy] : 0.9143,  1665/ 1821
 INFO:__main__:[Elapsed Time] : 25373ms, 13.933552992861065ms on average
 
@@ -189,7 +184,6 @@ INFO:__main__:[Elapsed Time] : 25373ms, 13.933552992861065ms on average
 2) --bert_model_class=TextBertCLS
 $ python evaluate.py --config=config-bert.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --data_path=data/sst2/test.txt.fs --label_path=data/sst2/label.txt --bert_model_class=TextBertCLS
 
-* fine-tuning
 INFO:__main__:[Accuracy] : 0.8929,  1626/ 1821
 INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
 
@@ -213,6 +207,7 @@ INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
 * n_ctx size should be less than 512
 $ python preprocess.py --config=config-albert.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2
 
+* fine-tuning ALBERT does not work well. i guess that ALBERT needs more data.
 * feature-based
 $ python train.py --config=config-albert.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2 --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=15 --bert_use_feature_based
 
@@ -220,8 +215,9 @@ $ python train.py --config=config-albert.json --data_dir=data/sst2 --bert_model_
 
 - evaluation
 ```
-1) --bert_model_class=TextBertCNN
-  * albert-base-v2
+* --bert_model_class=TextBertCNN
+  
+  ** albert-base-v2
   $ python evaluate.py --config=config-albert.json --bert_output_dir=bert-checkpoint --data_path=data/sst2/test.txt.fs --label_path=data/sst2/label.txt
   INFO:__main__:[Accuracy] : 0.8666,  1578/ 1821
   INFO:__main__:[Elapsed Time] : 30896ms, 16.966501922020868ms on average
