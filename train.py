@@ -30,7 +30,7 @@ import json
 from tqdm import tqdm
 
 from util    import load_config, to_device, to_numpy
-from model   import TextGloveCNN, TextBertCNN, TextBertCLS
+from model   import TextGloveCNN, TextGloveDensenet, TextBertCNN, TextBertCLS
 from dataset import prepare_dataset, SnipsGloveDataset, SnipsBertDataset
 from early_stopping import EarlyStopping
 
@@ -175,12 +175,19 @@ def train(opt):
         filepath = os.path.join(opt.data_dir, 'valid.txt.fs')
         valid_loader = prepare_dataset(opt, filepath, SnipsBertDataset, shuffle=False, num_workers=2)
 
+    label_path = os.path.join(opt.data_dir, opt.label_filename)
     # prepare model
     if config['emb_class'] == 'glove':
-        # set embedding as trainable
-        embedding_path = os.path.join(opt.data_dir, opt.embedding_filename)
-        label_path = os.path.join(opt.data_dir, opt.label_filename)
-        model = TextGloveCNN(config, embedding_path, label_path, emb_non_trainable=False)
+        if config['enc_class'] == 'cnn':
+            # set embedding as trainable
+            embedding_path = os.path.join(opt.data_dir, opt.embedding_filename)
+            emb_non_trainable = not opt.embedding_trainable
+            model = TextGloveCNN(config, embedding_path, label_path, emb_non_trainable=emb_non_trainable)
+        if config['enc_class'] == 'densenet':
+            # set embedding as trainable
+            embedding_path = os.path.join(opt.data_dir, opt.embedding_filename)
+            emb_non_trainable = not opt.embedding_trainable
+            model = TextGloveDensenet(config, embedding_path, label_path, emb_non_trainable=emb_non_trainable)
     if 'bert' in config['emb_class']:
         from transformers import BertTokenizer, BertConfig, BertModel
         from transformers import AlbertTokenizer, AlbertConfig, AlbertModel
@@ -198,7 +205,6 @@ def train(opt):
         bert_config = bert_model.config
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
-        label_path = os.path.join(opt.data_dir, opt.label_filename)
         model = ModelClass(config, bert_config, bert_model, label_path, feature_based=opt.bert_use_feature_based)
     model.to(device)
     print(model)
@@ -226,7 +232,7 @@ def train(opt):
     config['scheduler'] = scheduler
     config['writer'] = writer
 
-    early_stopping = EarlyStopping(logger, patience=10, measure='loss', verbose=1)
+    early_stopping = EarlyStopping(logger, patience=opt.patience, measure='loss', verbose=1)
     best_val_loss = float('inf')
     for epoch_i in range(opt.epoch):
         epoch_st_time = time.time()
@@ -258,6 +264,7 @@ def main():
     parser.add_argument('--lr', type=float, default=2e-4)
     parser.add_argument('--decay_rate', type=float, default=1.0)
     parser.add_argument('--warmup_epoch', type=int, default=4)
+    parser.add_argument("--patience", default=7, type=int)
     parser.add_argument('--save_path', type=str, default='pytorch-model.pt')
     parser.add_argument('--l2norm', type=float, default=1e-6)
     parser.add_argument('--tmax',type=int, default=-1)
@@ -266,6 +273,7 @@ def main():
     parser.add_argument("--world_size", default=1, type=int)
     parser.add_argument('--log_dir', type=str, default='runs')
     parser.add_argument("--seed", default=5, type=int)
+    parser.add_argument('--embedding_trainable', action='store_true')
     # for BERT
     parser.add_argument("--bert_model_name_or_path", type=str, default='embeddings/bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
