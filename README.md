@@ -90,7 +90,7 @@ INFO:__main__:[Elapsed Time] : 1351ms, 1.793991416309013ms on average
 ```
 * token_emb_dim in config-densenet.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py --config=config-densenet.json
-$ python train.py --config=config-densenet.json --lr=0.0002 --decay_rate=0.9 --batch_size=128 --embedding_trainable
+$ python train.py --config=config-densenet.json --decay_rate=0.9 --batch_size=128 --embedding_trainable
 ```
 
 - evaluation

@@ -49,11 +49,12 @@
 
 |                   | Accuracy (%) |
 | ----------------- | ------------ |
+| Glove, CNN        | 87.70        |
+| Glove, DenseNet   | 88.12        |
 | bpe BERT, CNN     | 89.45        |
 | bpe BERT, CLS     | 89.31        |
 | dha BERT, CNN     | **89.96**    |
 | dha BERT, CLS     | 89.41        |
-| Glove, CNN        | 87.27        |
 
 - [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results)
 
@@ -65,6 +66,48 @@
 | DistilKoBERT      | 88.41        |
 | Bert-Multilingual | 87.07        |
 | FastText          | 85.50        |
+
+### Experiments with Glove
+
+#### enc_class=cnn
+
+- train
+```
+$ python preprocess.py --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
+$ python train.py --data_dir=data/clova_sentiments_morph --decay_rate=0.9 --batch_size=128
+```
+
+- evaluation
+```
+$ python evaluate.py --data_dir=./data/clova_sentiments_morph 
+
+INFO:__main__:[Accuracy] : 0.8738, 43686/49997
+INFO:__main__:[Elapsed Time] : 90087ms, 1.8001840147211776ms on average
+
+  * --embedding_trainable
+  INFO:__main__:[Accuracy] : 0.8770, 43848/49997
+  INFO:__main__:[Elapsed Time] : 88100ms, 1.7600408032642612ms on average
+```
+
+#### enc_class=densenet
+
+- train
+```
+$ python preprocess.py --config=config-densenet.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
+$ python train.py --config=config-densenet.json --data_dir=data/clova_sentiments_morph --decay_rate=0.9 --batch_size=128
+```
+
+- evaluation
+```
+$ python evaluate.py --config=config-densenet.json --data_dir=./data/clova_sentiments_morph 
+
+INFO:__main__:[Accuracy] : 0.8812, 44059/49997
+INFO:__main__:[Elapsed Time] : 181131ms, 3.620889671173694ms on average
+
+  * --embedding_trainable
+  INFO:__main__:[Accuracy] : 0.8763, 43810/49997
+  INFO:__main__:[Elapsed Time] : 177254ms, 3.5431834546763743ms on average
+```
 
 ### Experiments with BERT(pytorch.all.bpe.4.8m_step)
 
@@ -120,19 +163,3 @@ INFO:__main__:[Accuracy] : 0.8941, 44701/49997
 INFO:__main__:[Elapsed Time] : 89692ms, 1.7939476368582115ms on average
 ```
 
-### Experiments with Glove
-
-- train
-```
-$ python preprocess.py --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
-* embedding trainable
-$ python train.py --data_dir=data/clova_sentiments_morph
-```
-
-- evaluation
-```
-$ python evaluate.py --data_dir=./data/clova_sentiments_morph 
-
-INFO:__main__:[Accuracy] : 0.8727, 43631/49997
-INFO:__main__:[Elapsed Time] : 122452ms, 2.449186951217073ms on average
-```
