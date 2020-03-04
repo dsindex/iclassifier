@@ -89,17 +89,17 @@ INFO:__main__:[Elapsed Time] : 90087ms, 1.8001840147211776ms on average
   INFO:__main__:[Elapsed Time] : 88100ms, 1.7600408032642612ms on average
 ```
 
-#### enc_class=densenet
+#### enc_class=densenet-cnn
 
 - train
 ```
-$ python preprocess.py --config=config-densenet.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
-$ python train.py --config=config-densenet.json --data_dir=data/clova_sentiments_morph --decay_rate=0.9 --batch_size=128
+$ python preprocess.py --config=config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
+$ python train.py --config=config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --decay_rate=0.9 --batch_size=128
 ```
 
 - evaluation
 ```
-$ python evaluate.py --config=config-densenet.json --data_dir=./data/clova_sentiments_morph 
+$ python evaluate.py --config=config-densenet-cnn.json --data_dir=./data/clova_sentiments_morph 
 
 INFO:__main__:[Accuracy] : 0.8812, 44059/49997
 INFO:__main__:[Elapsed Time] : 181131ms, 3.620889671173694ms on average

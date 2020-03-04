@@ -171,7 +171,7 @@ class TextGloveCNN(BaseModel):
         return output
         '''
 
-class TextGloveDensenet(BaseModel):
+class TextGloveDensenetCNN(BaseModel):
     def __init__(self, config, embedding_path, label_path, emb_non_trainable=True):
         super().__init__()
 

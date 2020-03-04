@@ -84,18 +84,18 @@ INFO:__main__:[Accuracy] : 0.9786,   685/  700
 INFO:__main__:[Elapsed Time] : 1351ms, 1.793991416309013ms on average
 ```
 
-### emb_class=glove, enc_class=densenet
+### emb_class=glove, enc_class=densenet-cnn
 
 - train
 ```
-* token_emb_dim in config-densenet.json == 300 (ex, glove.6B.300d.txt )
-$ python preprocess.py --config=config-densenet.json
-$ python train.py --config=config-densenet.json --decay_rate=0.9 --batch_size=128 --embedding_trainable
+* token_emb_dim in config-densenet-cnn.json == 300 (ex, glove.6B.300d.txt )
+$ python preprocess.py --config=config-densenet-cnn.json
+$ python train.py --config=config-densenet-cnn.json --decay_rate=0.9 --batch_size=128 --embedding_trainable
 ```
 
 - evaluation
 ```
-$ python evaluate.py --config=config-densenet.json
+$ python evaluate.py --config=config-densenet-cnn.json
 INFO:__main__:[Accuracy] : 0.9757,   683/  700
 INFO:__main__:[Elapsed Time] : 2633ms, 3.609442060085837ms on average
 ```
@@ -177,18 +177,18 @@ INFO:__main__:[Accuracy] : 0.8342,  1519/ 1821
 INFO:__main__:[Elapsed Time] : 3161ms, 1.6873626373626374ms on average
 ```
 
-### emb_class=glove, enc_class=densenet
+### emb_class=glove, enc_class=densenet-cnn
 
 - train
 ```
-* token_emb_dim in config-densenet.json == 300 (ex, glove.6B.300d.txt )
-$ python preprocess.py --config=config-densenet.json --data_dir=data/sst2
-$ python train.py --config=config-densenet.json --data_dir=data/sst2 --lr=0.0005 --decay_rate=0.9 --batch_size=128
+* token_emb_dim in config-densenet-cnn.json == 300 (ex, glove.6B.300d.txt )
+$ python preprocess.py --config=config-densenet-cnn.json --data_dir=data/sst2
+$ python train.py --config=config-densenet-cnn.json --data_dir=data/sst2 --lr=0.0005 --decay_rate=0.9 --batch_size=128
 ```
 
 - evaluation
 ```
-$ python evaluate.py --config=config-densenet.json --data_dir=data/sst2
+$ python evaluate.py --config=config-densenet-cnn.json --data_dir=data/sst2
 INFO:__main__:[Accuracy] : 0.8633,  1572/ 1821
 INFO:__main__:[Elapsed Time] : 6646ms, 3.587912087912088ms on average
 ```
