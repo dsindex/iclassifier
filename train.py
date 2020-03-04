@@ -256,7 +256,7 @@ def main():
     parser.add_argument('--data_dir', type=str, default='data/snips')
     parser.add_argument('--embedding_filename', type=str, default='embedding.npy')
     parser.add_argument('--label_filename', type=str, default='label.txt')
-    parser.add_argument('--config', type=str, default='config-glove.json')
+    parser.add_argument('--config', type=str, default='config-glove-cnn.json')
     parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--use_amp', action="store_true")
     parser.add_argument('--batch_size', type=int, default=64)

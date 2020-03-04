@@ -1,6 +1,6 @@
 {
     "emb_class": "bert",
-    "enc_class": "cls",
+    "enc_class": "cnn",
     "n_ctx": 100,
     "num_filters": 256,
     "kernel_sizes": [2,3,4,5,6],

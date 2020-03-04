@@ -252,6 +252,66 @@ class TextGloveDensenetCNN(BaseModel):
         output = torch.softmax(fc_hidden, dim=-1)
         return output
 
+class TextGloveDensenetDSA(BaseModel):
+    def __init__(self, config, embedding_path, label_path, emb_non_trainable=True):
+        super().__init__()
+
+        self.config = config
+        seq_size = config['n_ctx']
+        token_emb_dim = config['token_emb_dim']
+        num_filters = config['num_filters']
+        kernel_sizes = config['kernel_sizes']
+        fc_hidden_size = config['fc_hidden_size']
+
+        # glove embedding layer
+        weights_matrix = super().load_embedding(embedding_path)
+        self.embed = super().create_embedding_layer(weights_matrix, non_trainable=emb_non_trainable)
+        
+        # Densenet layer
+        densenet_depth = config['densenet_depth']
+        densenet_width = config['densenet_width']
+        emb_dim = token_emb_dim
+        densenet_first_num_filters = config['densenet_first_num_filters']
+        densenet_num_filters = config['densenet_num_filters']
+        densenet_last_num_filters = config['densenet_last_num_filters']
+        self.densenet = DenseNet(densenet_depth, densenet_width, emb_dim, densenet_first_num_filters, densenet_num_filters, densenet_last_num_filters)
+       
+        self.layernorm_densenet = nn.LayerNorm(densenet_last_num_filters)
+
+        # DSA(Dynamic Self Attention) layer
+
+        self.dropout = nn.Dropout(config['dropout'])
+
+        # fully connected layer
+        self.labels = super().load_label(label_path)
+        label_size = len(self.labels)
+        self.fc = nn.Linear(len(kernel_sizes) * num_filters, label_size)
+
+    def forward(self, x):
+        # x : [batch_size, seq_size]
+
+        device = self.config['device']
+        mask = torch.sign(torch.abs(x)).to(torch.uint8).to(device)
+        # mask : [batch_size, seq_size]
+
+        # 1. glove embedding
+        embed_out = self.dropout(self.embed(x))
+        # [batch_size, seq_size, token_emb_dim]
+
+        # 2. DenseNet
+        densenet_out = self.densenet(embed_out, mask)
+        # densenet_out : [batch_size, seq_size, last_num_filters]
+        densenet_out = self.layernorm_densenet(densenet_out)
+        densenet_out = self.dropout(densenet_out)
+
+        # 3. DSA(Dynamic Self Attention)
+
+        # 3. fully connected
+        fc_hidden = self.fc(cat)
+        # [batch_size, fc_hidden_size]
+        output = torch.softmax(fc_hidden, dim=-1)
+        return output
+
 class TextBertCNN(BaseModel):
     def __init__(self, config, bert_config, bert_model, label_path, feature_based=False):
         super().__init__()
