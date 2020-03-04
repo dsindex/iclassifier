@@ -114,15 +114,14 @@ class DSA(nn.Module):
         # r    : r iterations
         device = self.config['device']
         # initialize
-        z = torch.zeros(x.shape[0], x.shape[-1], requires_grad=False).to(torch.float).to(device)
         mask = mask.to(torch.float)
-        # z : [batch_size, dsa_dim]
         q = torch.zeros(mask.shape[0], mask.shape[-1], requires_grad=False).to(torch.float).to(device)
         # q : [batch_size, seq_size]
+        z_list = []
         # iterative computing attention
-        for _ in range(r):
+        for idx in range(r):
             # attention weights
-            a = torch.softmax(q, dim=-1)
+            a = torch.softmax(q.detach().clone(), dim=-1) # preventing from unreachable variable at gradient computation. 
             # a : [batch_size, seq_size]
             a *= mask
             a = a.unsqueeze(-1)
@@ -132,12 +131,13 @@ class DSA(nn.Module):
             # s : [batch_size, dsa_dim]
             z = torch.tanh(s)
             # z : [batch_size, dsa_dim]
+            z_list.append(z)
             # update q
             m = z.unsqueeze(-1)
             # m : [batch_size, dsa_dim, 1]
             q += torch.matmul(x, m).squeeze(-1)
             # q : [batch_size, seq_size]
-        return z
+        return z_list[-1]
 
     def forward(self, x, mask):
         # x     : [batch_size, seq_size, dsa_input_dim]
