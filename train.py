@@ -156,6 +156,7 @@ def train(opt):
     device = torch.device(opt.device)
     set_seed(opt)
     set_apex_and_distributed(opt)
+    torch.autograd.set_detect_anomaly(True)
 
     # set config
     config = load_config(opt)

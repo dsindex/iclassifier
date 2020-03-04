@@ -98,6 +98,62 @@ class DenseNet(nn.Module):
         # conv_last : [batch_size, seq_size, last_num_filters]
         return conv_last
 
+class DSA(nn.Module):
+    def __init__(self, config, dsa_num_attentions, dsa_input_dim, dsa_dim, dsa_r=3):
+        super(DSA, self).__init__()
+        self.config = config
+        dsa = []
+        for i in range(dsa_num_attentions):
+            dsa.append(nn.Linear(dsa_input_dim, dsa_dim))
+        self.dsa = nn.ModuleList(dsa)
+        self.dsa_r = dsa_r # r iterations
+
+    def __self_attention(self, x, mask, r=3):
+        # x    : [batch_size, seq_size, dsa_dim]
+        # mask : [batch_size, seq_size]
+        # r    : r iterations
+        device = self.config['device']
+        # initialize
+        z = torch.zeros(x.shape[0], x.shape[-1], requires_grad=False).to(torch.float).to(device)
+        mask = mask.to(torch.float)
+        # z : [batch_size, dsa_dim]
+        q = torch.zeros(mask.shape[0], mask.shape[-1], requires_grad=False).to(torch.float).to(device)
+        # q : [batch_size, seq_size]
+        # iterative computing attention
+        for _ in range(r):
+            # attention weights
+            a = torch.softmax(q, dim=-1)
+            # a : [batch_size, seq_size]
+            a *= mask
+            a = a.unsqueeze(-1)
+            # a : [batch_size, seq_size, 1]
+            # element-wise multiplication and summation along 1 dim
+            s = (a * x).sum(1)
+            # s : [batch_size, dsa_dim]
+            z = torch.tanh(s)
+            # z : [batch_size, dsa_dim]
+            # update q
+            m = z.unsqueeze(-1)
+            # m : [batch_size, dsa_dim, 1]
+            q += torch.matmul(x, m).squeeze(-1)
+            # q : [batch_size, seq_size]
+        return z
+
+    def forward(self, x, mask):
+        # x     : [batch_size, seq_size, dsa_input_dim]
+        # mak   : [batch_size, seq_size]
+        z_list = []
+        for p in self.dsa: # dsa_num_attentions
+            # projection to dsa_dim
+            p_out = F.leaky_relu(p(x))
+            # p_out : [batch_size, seq_size, dsa_dim]
+            z_j = self.__self_attention(p_out, mask, r=self.dsa_r)
+            # z_j : [batch_size, dsa_dim]
+            z_list.append(z_j)
+        z = torch.cat(z_list, dim=-1)
+        # z : [batch_size, dsa_num_attentions * dsa_dim]
+        return z
+
 class TextGloveCNN(BaseModel):
     def __init__(self, config, embedding_path, label_path, emb_non_trainable=True):
         super().__init__()
@@ -128,7 +184,8 @@ class TextGloveCNN(BaseModel):
         # fully connected layer
         self.labels = super().load_label(label_path)
         label_size = len(self.labels)
-        self.fc1 = nn.Linear(len(kernel_sizes) * num_filters, label_size)
+        self.fc = nn.Linear(len(kernel_sizes) * num_filters, label_size)
+
         '''# if you need more layers
         self.layernorm1 = nn.LayerNorm(len(kernel_sizes) * num_filters)
         self.fc1 = nn.Linear(len(kernel_sizes) * num_filters, fc_hidden_size)
@@ -154,10 +211,11 @@ class TextGloveCNN(BaseModel):
         cat = self.dropout(cat)
 
         # 3. fully connected
-        fc_hidden = self.fc1(cat)
+        fc_out = self.fc(cat)
         # [batch_size, label_size]
-        output = torch.softmax(fc_hidden, dim=-1)
+        output = torch.softmax(fc_out, dim=-1)
         return output
+
         '''# if you need more layers
         cat = self.layernorm1(cat)
         cat = self.dropout(cat)
@@ -180,7 +238,6 @@ class TextGloveDensenetCNN(BaseModel):
         token_emb_dim = config['token_emb_dim']
         num_filters = config['num_filters']
         kernel_sizes = config['kernel_sizes']
-        fc_hidden_size = config['fc_hidden_size']
 
         # glove embedding layer
         weights_matrix = super().load_embedding(embedding_path)
@@ -194,7 +251,6 @@ class TextGloveDensenetCNN(BaseModel):
         densenet_num_filters = config['densenet_num_filters']
         densenet_last_num_filters = config['densenet_last_num_filters']
         self.densenet = DenseNet(densenet_depth, densenet_width, emb_dim, densenet_first_num_filters, densenet_num_filters, densenet_last_num_filters)
-       
         self.layernorm_densenet = nn.LayerNorm(densenet_last_num_filters)
 
         # convolution layer
@@ -246,10 +302,10 @@ class TextGloveDensenetCNN(BaseModel):
         # [batch_size, len(kernel_sizes) * num_filters]
         cat = self.dropout(cat)
 
-        # 3. fully connected
-        fc_hidden = self.fc(cat)
-        # [batch_size, fc_hidden_size]
-        output = torch.softmax(fc_hidden, dim=-1)
+        # 4. fully connected
+        fc_out = self.fc(cat)
+        # [batch_size, label_size]
+        output = torch.softmax(fc_out, dim=-1)
         return output
 
 class TextGloveDensenetDSA(BaseModel):
@@ -259,9 +315,6 @@ class TextGloveDensenetDSA(BaseModel):
         self.config = config
         seq_size = config['n_ctx']
         token_emb_dim = config['token_emb_dim']
-        num_filters = config['num_filters']
-        kernel_sizes = config['kernel_sizes']
-        fc_hidden_size = config['fc_hidden_size']
 
         # glove embedding layer
         weights_matrix = super().load_embedding(embedding_path)
@@ -275,17 +328,22 @@ class TextGloveDensenetDSA(BaseModel):
         densenet_num_filters = config['densenet_num_filters']
         densenet_last_num_filters = config['densenet_last_num_filters']
         self.densenet = DenseNet(densenet_depth, densenet_width, emb_dim, densenet_first_num_filters, densenet_num_filters, densenet_last_num_filters)
-       
         self.layernorm_densenet = nn.LayerNorm(densenet_last_num_filters)
 
         # DSA(Dynamic Self Attention) layer
+        dsa_num_attentions = config['dsa_num_attentions']
+        dsa_input_dim = densenet_last_num_filters
+        dsa_dim = config['dsa_dim']
+        dsa_r = config['dsa_r']
+        self.dsa = DSA(config, dsa_num_attentions, dsa_input_dim, dsa_dim, dsa_r=dsa_r)
+        self.layernorm_dsa = nn.LayerNorm(dsa_num_attentions * dsa_dim)
 
         self.dropout = nn.Dropout(config['dropout'])
 
         # fully connected layer
         self.labels = super().load_label(label_path)
         label_size = len(self.labels)
-        self.fc = nn.Linear(len(kernel_sizes) * num_filters, label_size)
+        self.fc = nn.Linear(dsa_num_attentions * dsa_dim, label_size)
 
     def forward(self, x):
         # x : [batch_size, seq_size]
@@ -300,16 +358,20 @@ class TextGloveDensenetDSA(BaseModel):
 
         # 2. DenseNet
         densenet_out = self.densenet(embed_out, mask)
-        # densenet_out : [batch_size, seq_size, last_num_filters]
+        # densenet_out : [batch_size, seq_size, densenet_last_num_filters]
         densenet_out = self.layernorm_densenet(densenet_out)
         densenet_out = self.dropout(densenet_out)
 
         # 3. DSA(Dynamic Self Attention)
+        dsa_out = self.dsa(densenet_out, mask) 
+        # dsa_out : [batch_size, dsa_num_attentions * dsa_dim]
+        dsa_out = self.layernorm_dsa(dsa_out)
+        dsa_out = self.dropout(dsa_out)
 
-        # 3. fully connected
-        fc_hidden = self.fc(cat)
-        # [batch_size, fc_hidden_size]
-        output = torch.softmax(fc_hidden, dim=-1)
+        # 4. fully connected
+        fc_out = self.fc(dsa_out)
+        # [batch_size, label_size]
+        output = torch.softmax(fc_out, dim=-1)
         return output
 
 class TextBertCNN(BaseModel):
