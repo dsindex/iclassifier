@@ -59,12 +59,13 @@ reference pytorch code for intent(sentence) classification.
 
 ### experiments summary
 
-|                   | Accuracy (%)|
-| ----------------- | ----------- |
-| Glove, CNN        | 97.86       |
-| Glove, Densenet   | 97.57       |
-| BERT, CNN         | **98.00**   |
-| BERT, CLS         | 97.86       |
+|                     | Accuracy (%)|
+| ------------------- | ----------- |
+| Glove, CNN          | 97.86       |
+| Glove, Densenet-CNN | 97.57       |
+| Glove, Densenet-DSA | 97.43       |
+| BERT, CNN           | **98.00**   |
+| BERT, CLS           | 97.86       |
 
 ### emb_class=glove, enc_class=cnn
 
@@ -113,7 +114,9 @@ $ python train.py --config=configs/config-densenet-dsa.json --decay_rate=0.9 --b
 
 - evaluation
 ```
-$ python evaluate.py --config=configs/config-densenet-dsajson
+$ python evaluate.py --config=configs/config-densenet-dsa.json
+INFO:__main__:[Accuracy] : 0.9743,   682/  700
+INFO:__main__:[Elapsed Time] : 6545ms, 9.224606580829757ms on average
 ```
 
 ### emb_class=bert, enc_class=cnn | cls
@@ -159,13 +162,14 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 
 - iclassifier
 
-|                   | Accuracy (%)|
-| ----------------- | ----------- |
-| Glove, CNN        | 83.42       |
-| Glove, DenseNet   | 86.33       |
-| BERT, CNN         | 93.08       |
-| BERT, CLS         | **93.85**   |
-| ALBERT, CNN       | 86.66       |
+|                     | Accuracy (%)|
+| ------------------- | ----------- |
+| Glove, CNN          | 83.42       |
+| Glove, DenseNet-CNN | 86.33       |
+| Glove, DenseNet-DSA | 84.84       |
+| BERT, CNN           | 93.08       |
+| BERT, CLS           | **93.85**   |
+| ALBERT, CNN         | 86.66       |
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -207,6 +211,22 @@ $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2
 $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2
 INFO:__main__:[Accuracy] : 0.8633,  1572/ 1821
 INFO:__main__:[Elapsed Time] : 6646ms, 3.587912087912088ms on average
+```
+
+### emb_class=glove, enc_class=densenet-dsa
+
+- train
+```
+* token_emb_dim in configs/config-densenet-dsa.json == 300 (ex, glove.6B.300d.txt )
+$ python preprocess.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2
+$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --lr=0.0005 --decay_rate=0.9 --batch_size=128
+```
+
+- evaluation
+```
+$ python evaluate.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2
+INFO:__main__:[Accuracy] : 0.8484,  1545/ 1821
+INFO:__main__:[Elapsed Time] : 8684ms, 4.707142857142857ms on average
 ```
 
 ### emb_class=bert, enc_class=cnn | cls
