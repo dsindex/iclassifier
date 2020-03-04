@@ -10,6 +10,5 @@
     "densenet_width": 2,
     "num_filters": 256,
     "dropout": 0.3,
-    "kernel_sizes": [2,4],
-    "fc_hidden_size": 256
+    "kernel_sizes": [2,4]
 }
