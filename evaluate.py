@@ -12,7 +12,7 @@ import torch
 import numpy as np
 
 from tqdm import tqdm
-from model import TextGloveCNN, TextGloveDensenetCNN, TextBertCNN, TextBertCLS
+from model import TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
 from util import load_config, to_device, to_numpy
 from dataset import prepare_dataset, SnipsGloveDataset, SnipsBertDataset
 
@@ -80,6 +80,8 @@ def evaluate(opt):
             model = TextGloveCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
         if config['enc_class'] == 'densenet-cnn':
             model = TextGloveDensenetCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
+        if config['enc_class'] == 'densenet-dsa':
+            model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
     if 'bert' in config['emb_class']:
         from transformers import BertTokenizer, BertConfig, BertModel
         from transformers import AlbertTokenizer, AlbertConfig, AlbertModel

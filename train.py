@@ -30,7 +30,7 @@ import json
 from tqdm import tqdm
 
 from util    import load_config, to_device, to_numpy
-from model   import TextGloveCNN, TextGloveDensenetCNN, TextBertCNN, TextBertCLS
+from model   import TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
 from dataset import prepare_dataset, SnipsGloveDataset, SnipsBertDataset
 from early_stopping import EarlyStopping
 
@@ -188,6 +188,11 @@ def train(opt):
             embedding_path = os.path.join(opt.data_dir, opt.embedding_filename)
             emb_non_trainable = not opt.embedding_trainable
             model = TextGloveDensenetCNN(config, embedding_path, label_path, emb_non_trainable=emb_non_trainable)
+        if config['enc_class'] == 'densenet-dsa':
+            # set embedding as trainable
+            embedding_path = os.path.join(opt.data_dir, opt.embedding_filename)
+            emb_non_trainable = not opt.embedding_trainable
+            model = TextGloveDensenetDSA(config, embedding_path, label_path, emb_non_trainable=emb_non_trainable)
     if 'bert' in config['emb_class']:
         from transformers import BertTokenizer, BertConfig, BertModel
         from transformers import AlbertTokenizer, AlbertConfig, AlbertModel
