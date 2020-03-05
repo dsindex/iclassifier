@@ -166,7 +166,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | ------------------- | ----------- |
 | Glove, CNN          | 83.42       |
 | Glove, DenseNet-CNN | 86.33       |
-| Glove, DenseNet-DSA | 84.84       |
+| Glove, DenseNet-DSA | 85.34       |
 | BERT, CNN           | 93.08       |
 | BERT, CLS           | **93.85**   |
 | ALBERT, CNN         | 86.66       |
@@ -219,14 +219,14 @@ INFO:__main__:[Elapsed Time] : 6646ms, 3.587912087912088ms on average
 ```
 * token_emb_dim in configs/config-densenet-dsa.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2
-$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --lr=0.0005 --decay_rate=0.9 --batch_size=128
+$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --lr=0.0002 --decay_rate=0.9 --batch_size=128
 ```
 
 - evaluation
 ```
 $ python evaluate.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2
-INFO:__main__:[Accuracy] : 0.8484,  1545/ 1821
-INFO:__main__:[Elapsed Time] : 8684ms, 4.707142857142857ms on average
+INFO:__main__:[Accuracy] : 0.8534,  1554/ 1821
+INFO:__main__:[Elapsed Time] : 11459ms, 6.245054945054945ms on average
 ```
 
 ### emb_class=bert, enc_class=cnn | cls

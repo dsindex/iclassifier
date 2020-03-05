@@ -184,50 +184,38 @@ class TextGloveCNN(BaseModel):
         # fully connected layer
         self.labels = super().load_label(label_path)
         label_size = len(self.labels)
-        self.fc = nn.Linear(len(kernel_sizes) * num_filters, label_size)
-
-        '''# if you need more layers
         self.layernorm1 = nn.LayerNorm(len(kernel_sizes) * num_filters)
         self.fc1 = nn.Linear(len(kernel_sizes) * num_filters, fc_hidden_size)
         self.layernorm2 = nn.LayerNorm(fc_hidden_size)
         self.fc2 = nn.Linear(fc_hidden_size, label_size)
-        '''
 
     def forward(self, x):
         # 1. glove embedding
-        # [batch_size, seq_size]
+        # x : [batch_size, seq_size]
         embedded = self.dropout(self.embed(x))
-        # [batch_size, seq_size, emb_dim]
+        # embedded : [batch_size, seq_size, emb_dim]
 
         # 2. convolution
         embedded = embedded.permute(0, 2, 1)
-        # [batch_size, emb_dim, seq_size]
+        # embedded : [batch_size, emb_dim, seq_size]
         conved = [F.relu(conv(embedded)) for conv in self.convs]
-        # [ [batch_size, num_filters, *], [batch_size, num_filters, *], [batch_size, num_filters, *] ]
+        # conved : [ [batch_size, num_filters, *], [batch_size, num_filters, *], [batch_size, num_filters, *] ]
         pooled = [F.max_pool1d(conv, int(conv.size(2))).squeeze(2) for conv in conved]
-        # [ [batch_size, num_filters], [batch_size, num_filters], [batch_size, num_filters] ]
+        # pooled : [ [batch_size, num_filters], [batch_size, num_filters], [batch_size, num_filters] ]
         cat = torch.cat(pooled, dim = 1)
-        # [batch_size, len(kernel_sizes) * num_filters]
-        cat = self.dropout(cat)
-
-        # 3. fully connected
-        fc_out = self.fc(cat)
-        # [batch_size, label_size]
-        output = torch.softmax(fc_out, dim=-1)
-        return output
-
-        '''# if you need more layers
+        # cat : [batch_size, len(kernel_sizes) * num_filters]
         cat = self.layernorm1(cat)
         cat = self.dropout(cat)
 
-        # [batch_size, fc_hidden_size]
+        # 3. fully connected
+        fc_hidden = self.fc1(cat)
+        # fc_hidden : [batch_size, fc_hidden_size]
         fc_hidden = self.layernorm2(fc_hidden)
         fc_hidden = self.dropout(fc_hidden)
         fc_out = self.fc2(fc_hidden)
-        # [batch_size, label_size]
+        # fc_out : [batch_size, label_size]
         output = torch.softmax(fc_out, dim=-1)
         return output
-        '''
 
 class TextGloveDensenetCNN(BaseModel):
     def __init__(self, config, embedding_path, label_path, emb_non_trainable=True):
@@ -365,7 +353,9 @@ class TextGloveDensenetDSA(BaseModel):
         # 3. DSA(Dynamic Self Attention)
         dsa_out = self.dsa(densenet_out, mask) 
         # dsa_out : [batch_size, dsa_num_attentions * dsa_dim]
+        '''
         dsa_out = self.layernorm_dsa(dsa_out)
+        '''
         dsa_out = self.dropout(dsa_out)
 
         # 4. fully connected
@@ -429,32 +419,35 @@ class TextBertCNN(BaseModel):
         return embedded
 
     def forward(self, x):
+        # x[0], x[1], x[2] : [batch_size, seq_size]
+
         # 1. bert embedding
         embedded = self.__compute_bert_embedding(x)
+        # embedded : [batch_size, seq_size, hidden_size]
         embedded = self.dropout(embedded)
 
         # 2. convolution
         embedded = embedded.permute(0, 2, 1)
-        # [batch_size, hidden_size, seq_size]
+        # embedded : [batch_size, hidden_size, seq_size]
         conved = [F.relu(conv(embedded)) for conv in self.convs]
-        # [ [batch_size, num_filters, *], [batch_size, num_filters, *], [batch_size, num_filters, *] ]
+        # conved : [ [batch_size, num_filters, *], [batch_size, num_filters, *], [batch_size, num_filters, *] ]
         pooled = [F.max_pool1d(conv, int(conv.size(2))).squeeze(2) for conv in conved]
-        # [ [batch_size, num_filters], [batch_size, num_filters], [batch_size, num_filters] ]
+        # pooled : [ [batch_size, num_filters], [batch_size, num_filters], [batch_size, num_filters] ]
         cat = torch.cat(pooled, dim = 1)
-        # [batch_size, len(kernel_sizes) * num_filters]
+        # cat : [batch_size, len(kernel_sizes) * num_filters]
         cat = self.layernorm1(cat)
         cat = self.dropout(cat)
 
         # 3. fully connected
         fc_hidden = self.fc1(cat)
-        # [batch_size, fc_hidden_size]
+        # fc_hidden : [batch_size, fc_hidden_size]
         fc_hidden = self.layernorm2(fc_hidden)
         fc_hidden = self.dropout(fc_hidden)
         fc_out = self.fc2(fc_hidden)
-        # [batch_size, label_size]
+        # fc_out : [batch_size, label_size]
 
         output = torch.softmax(fc_out, dim=-1)
-        # [batch_size, label_size]
+        # output : [batch_size, label_size]
         return output
 
 class TextBertCLS(BaseModel):
@@ -499,13 +492,14 @@ class TextBertCLS(BaseModel):
         return embedded
 
     def forward(self, x):
+        # x[0], x[1], x[2] : [batch_size, seq_size]
         # 1. bert embedding
         embedded = self.__compute_bert_embedding(x)
+        # embedded : [batch_size, hidden_size]
         embedded = self.dropout(embedded)
-        # [batch_size, hidden_size]
 
         # 2. fully connected
         output = torch.softmax(self.fc(embedded), dim=-1)
-        # [batch_size, label_size]
+        # output : [batch_size, label_size]
         return output
 
