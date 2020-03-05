@@ -51,7 +51,7 @@
 | ------------------- | ------------ |
 | Glove, CNN          | 87.70        |
 | Glove, DenseNet-CNN | 88.12        |
-| Glove, DenseNet-DSA | 87.54        |
+| Glove, DenseNet-DSA | 87.56        |
 | bpe BERT, CNN       | 89.45        |
 | bpe BERT, CLS       | 89.31        |
 | dha BERT, CNN       | **89.96**    |
@@ -121,8 +121,8 @@ $ python train.py --config=configs/config-densenet-dsa-kor.json --data_dir=data/
 - evaluation
 ```
 $ python evaluate.py --config=configs/config-densenet-dsa-kor.json --data_dir=./data/clova_sentiments_morph 
-INFO:__main__:[Accuracy] : 0.8754, 43766/49997
-INFO:__main__:[Elapsed Time] : 273257ms, 5.4637370989679175ms on average
+INFO:__main__:[Accuracy] : 0.8756, 43778/49997
+INFO:__main__:[Elapsed Time] : 212713ms, 4.252640211216898ms on average
 ```
 
 ### Experiments with BERT(pytorch.all.bpe.4.8m_step)
