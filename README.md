@@ -7,7 +7,7 @@ reference pytorch code for intent(sentence) classification.
   - CNN
   - DenseNet
     - [Dynamic Self-Attention: Computing Attention over Words Dynamically for Sentence Embedding](https://arxiv.org/pdf/1808.07383.pdf)
-    - implementation from [ntagger](https://github.com/dsindex/ntagger/blob/master/model.py#L43)
+    - implementation from [ntagger](https://github.com/dsindex/ntagger)
   - DSA(Dynamic Self Attention)
     - [Dynamic Self-Attention: Computing Attention over Words Dynamically for Sentence Embedding](https://arxiv.org/pdf/1808.07383.pdf)
   - CLS
