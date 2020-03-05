@@ -46,6 +46,7 @@ class BaseModel(nn.Module):
 
 class TextCNN(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_sizes):
+        super(TextCNN, self).__init__()
         convs = []
         for ks in kernel_sizes:
             convs.append(nn.Conv1d(in_channels=in_channels, out_channels=out_channels, kernel_size=ks))
