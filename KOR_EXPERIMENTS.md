@@ -96,6 +96,10 @@ INFO:__main__:[Elapsed Time] : 90087ms, 1.8001840147211776ms on average
 ```
 $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
 $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --decay_rate=0.9 --batch_size=128
+
+* iee_corpus_morph
+$ python preprocess.py --config=configs/config-densenet-cnn-iee.json --data_dir=data/iee_corpus_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
+$ python train.py --config=configs/config-densenet-cnn-iee.json --data_dir=data/iee_corpus_morph --decay_rate=0.9 --batch_size=128 --epoch=64
 ```
 
 - evaluation
@@ -108,21 +112,34 @@ INFO:__main__:[Elapsed Time] : 181131ms, 3.620889671173694ms on average
   * --embedding_trainable
   INFO:__main__:[Accuracy] : 0.8763, 43810/49997
   INFO:__main__:[Elapsed Time] : 177254ms, 3.5431834546763743ms on average
+
+* iee_corpus_morph
+$ python evaluate.py --config=configs/config-densenet-cnn-iee.json --data_dir=./data/iee_corpus_morph 
+
 ```
 
 #### enc_class=densenet-dsa
 
 - train
 ```
-$ python preprocess.py --config=configs/config-densenet-dsa-kor.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
-$ python train.py --config=configs/config-densenet-dsa-kor.json --data_dir=data/clova_sentiments_morph --decay_rate=0.9 --batch_size=128
+$ python preprocess.py --config=configs/config-densenet-dsa-clova.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
+$ python train.py --config=configs/config-densenet-dsa-clova.json --data_dir=data/clova_sentiments_morph --decay_rate=0.9 --batch_size=128
+
+* iee_corpus_morph
+$ python preprocess.py --config=configs/config-densenet-dsa-iee.json --data_dir=data/iee_corpus_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
+$ python train.py --config=configs/config-densenet-dsa-iee.json --data_dir=data/iee_corpus_morph --decay_rate=0.9 --batch_size=128
+
 ```
 
 - evaluation
 ```
-$ python evaluate.py --config=configs/config-densenet-dsa-kor.json --data_dir=./data/clova_sentiments_morph 
+$ python evaluate.py --config=configs/config-densenet-dsa-clova.json --data_dir=./data/clova_sentiments_morph
+
 INFO:__main__:[Accuracy] : 0.8756, 43778/49997
 INFO:__main__:[Elapsed Time] : 212713ms, 4.252640211216898ms on average
+
+* iee_corpus_morph
+$ python evaluate.py --config=configs/config-densenet-dsa-iee.json --data_dir=./data/iee_corpus_morph
 ```
 
 ### Experiments with BERT(pytorch.all.bpe.4.8m_step)

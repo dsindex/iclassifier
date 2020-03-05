@@ -356,9 +356,7 @@ class TextGloveDensenetDSA(BaseModel):
         # 3. DSA(Dynamic Self Attention)
         dsa_out = self.dsa(densenet_out, mask) 
         # dsa_out : [batch_size, dsa_num_attentions * dsa_dim]
-        '''
         dsa_out = self.layernorm_dsa(dsa_out)
-        '''
         dsa_out = self.dropout(dsa_out)
 
         # 4. fully connected
