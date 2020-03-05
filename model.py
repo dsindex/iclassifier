@@ -261,6 +261,7 @@ class TextGloveDensenetCNN(BaseModel):
 
         # convolution layer
         self.textcnn = TextCNN(densenet_last_num_filters, num_filters, kernel_sizes)
+        self.layernorm_textcnn = nn.LayerNorm(len(kernel_sizes) * num_filters)
 
         self.dropout = nn.Dropout(config['dropout'])
 
@@ -289,6 +290,7 @@ class TextGloveDensenetCNN(BaseModel):
         # 3. convolution
         textcnn_out = self.textcnn(densenet_out)
         # [batch_size, len(kernel_sizes) * num_filters]
+        textcnn_out = self.layernorm_textcnn(textcnn_out)
         textcnn_out = self.dropout(textcnn_out)
 
         # 4. fully connected
