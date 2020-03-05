@@ -146,7 +146,7 @@ def main():
     parser = argparse.ArgumentParser()
     
     parser.add_argument('--data_dir', type=str, default='data/snips')
-    parser.add_argument('--config', type=str, default='config-glove-cnn.json')
+    parser.add_argument('--config', type=str, default='configs/config-glove-cnn.json')
     parser.add_argument('--model_path', type=str, default='pytorch-model.pt')
     parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--num_thread', type=int, default=1)

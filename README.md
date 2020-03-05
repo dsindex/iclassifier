@@ -99,6 +99,7 @@ $ python train.py --config=configs/config-densenet-cnn.json --decay_rate=0.9 --b
 - evaluation
 ```
 $ python evaluate.py --config=configs/config-densenet-cnn.json
+
 INFO:__main__:[Accuracy] : 0.9757,   683/  700
 INFO:__main__:[Elapsed Time] : 2633ms, 3.609442060085837ms on average
 ```
@@ -115,6 +116,7 @@ $ python train.py --config=configs/config-densenet-dsa.json --decay_rate=0.9 --b
 - evaluation
 ```
 $ python evaluate.py --config=configs/config-densenet-dsa.json
+
 INFO:__main__:[Accuracy] : 0.9743,   682/  700
 INFO:__main__:[Elapsed Time] : 6545ms, 9.224606580829757ms on average
 ```
@@ -193,6 +195,7 @@ $ python train.py --data_dir=data/sst2 --lr=0.0005 --decay_rate=0.9 --batch_size
 - evaluation
 ```
 $ python evaluate.py --data_dir=data/sst2
+
 INFO:__main__:[Accuracy] : 0.8342,  1519/ 1821
 INFO:__main__:[Elapsed Time] : 3161ms, 1.6873626373626374ms on average
 ```
@@ -225,6 +228,7 @@ $ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2
 - evaluation
 ```
 $ python evaluate.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2
+
 INFO:__main__:[Accuracy] : 0.8534,  1554/ 1821
 INFO:__main__:[Elapsed Time] : 11459ms, 6.245054945054945ms on average
 ```
