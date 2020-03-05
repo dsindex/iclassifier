@@ -272,24 +272,24 @@ def main():
     parser.add_argument('--lr', type=float, default=2e-4)
     parser.add_argument('--decay_rate', type=float, default=1.0)
     parser.add_argument('--warmup_epoch', type=int, default=4)
-    parser.add_argument("--patience", default=7, type=int)
+    parser.add_argument('--patience', default=7, type=int)
     parser.add_argument('--save_path', type=str, default='pytorch-model.pt')
     parser.add_argument('--l2norm', type=float, default=1e-6)
     parser.add_argument('--tmax',type=int, default=-1)
     parser.add_argument('--opt-level', type=str, default='O1')
-    parser.add_argument("--local_rank", default=0, type=int)
-    parser.add_argument("--world_size", default=1, type=int)
+    parser.add_argument('--local_rank', default=0, type=int)
+    parser.add_argument('--world_size', default=1, type=int)
     parser.add_argument('--log_dir', type=str, default='runs')
-    parser.add_argument("--seed", default=5, type=int)
+    parser.add_argument('--seed', default=5, type=int)
     parser.add_argument('--embedding_trainable', action='store_true')
     # for BERT
-    parser.add_argument("--bert_model_name_or_path", type=str, default='embeddings/bert-base-uncased',
+    parser.add_argument('--bert_model_name_or_path', type=str, default='embeddings/bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
-    parser.add_argument("--bert_do_lower_case", action="store_true",
+    parser.add_argument('--bert_do_lower_case', action='store_true',
                         help="Set this flag if you are using an uncased model.")
-    parser.add_argument("--bert_output_dir", type=str, default='bert-checkpoint',
+    parser.add_argument('--bert_output_dir', type=str, default='bert-checkpoint',
                         help="The output directory where the model predictions and checkpoints will be written.")
-    parser.add_argument('--bert_use_feature_based', action="store_true",
+    parser.add_argument('--bert_use_feature_based', action='store_true',
                         help="use BERT as feature-based, default fine-tuning")
 
     opt = parser.parse_args()
