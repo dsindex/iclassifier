@@ -47,14 +47,15 @@
 
 - iclassifier
 
-|                   | Accuracy (%) |
-| ----------------- | ------------ |
-| Glove, CNN        | 87.70        |
-| Glove, DenseNet   | 88.12        |
-| bpe BERT, CNN     | 89.45        |
-| bpe BERT, CLS     | 89.31        |
-| dha BERT, CNN     | **89.96**    |
-| dha BERT, CLS     | 89.41        |
+|                     | Accuracy (%) |
+| ------------------- | ------------ |
+| Glove, CNN          | 87.70        |
+| Glove, DenseNet-CNN | 88.12        |
+| Glove, DenseNet-DSA | 87.54        |
+| bpe BERT, CNN       | 89.45        |
+| bpe BERT, CLS       | 89.31        |
+| dha BERT, CNN       | **89.96**    |
+| dha BERT, CLS       | 89.41        |
 
 - [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results)
 
@@ -107,6 +108,21 @@ INFO:__main__:[Elapsed Time] : 181131ms, 3.620889671173694ms on average
   * --embedding_trainable
   INFO:__main__:[Accuracy] : 0.8763, 43810/49997
   INFO:__main__:[Elapsed Time] : 177254ms, 3.5431834546763743ms on average
+```
+
+#### enc_class=densenet-dsa
+
+- train
+```
+$ python preprocess.py --config=configs/config-densenet-dsa-kor.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
+$ python train.py --config=configs/config-densenet-dsa-kor.json --data_dir=data/clova_sentiments_morph --decay_rate=0.9 --batch_size=128
+```
+
+- evaluation
+```
+$ python evaluate.py --config=configs/config-densenet-dsa-kor.json --data_dir=./data/clova_sentiments_morph 
+INFO:__main__:[Accuracy] : 0.8754, 43766/49997
+INFO:__main__:[Elapsed Time] : 273257ms, 5.4637370989679175ms on average
 ```
 
 ### Experiments with BERT(pytorch.all.bpe.4.8m_step)
