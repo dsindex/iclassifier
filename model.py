@@ -289,10 +289,10 @@ class TextGloveDensenetCNN(BaseModel):
         # 3. convolution
         textcnn_out = self.textcnn(densenet_out)
         # [batch_size, len(kernel_sizes) * num_filters]
-        textcnn = self.dropout(textcnn)
+        textcnn_out = self.dropout(textcnn_out)
 
         # 4. fully connected
-        fc_out = self.fc(textcnn)
+        fc_out = self.fc(textcnn_out)
         # [batch_size, label_size]
         output = torch.softmax(fc_out, dim=-1)
         return output
