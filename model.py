@@ -158,7 +158,7 @@ class DSA(nn.Module):
             a *= mask
             a = a.unsqueeze(-1)
             # a : [batch_size, seq_size, 1]
-            # element-wise multiplication and summation along 1 dim
+            # element-wise multiplication(broadcasting) and summation along 1 dim
             s = (a * x).sum(1)
             # s : [batch_size, dsa_dim]
             z = torch.tanh(s)
