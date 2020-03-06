@@ -127,7 +127,7 @@ $ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/clov
 
 * iee_corpus_morph
 $ python preprocess.py --config=configs/config-densenet-dsa-iee.json --data_dir=data/iee_corpus_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
-$ python train.py --config=configs/config-densenet-dsa-iee.json --data_dir=data/iee_corpus_morph --warmup_epoch=5 --decay_rate=0.9 --batch_size=128 --lr=0.001 --epoch=64 --patience=10
+$ python train.py --config=configs/config-densenet-dsa-iee.json --data_dir=data/iee_corpus_morph --decay_rate=0.9 --batch_size=256 --epoch=64
 ```
 
 - evaluation
