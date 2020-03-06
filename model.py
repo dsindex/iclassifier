@@ -257,7 +257,7 @@ class TextGloveDensenetCNN(BaseModel):
         densenet_first_num_filters = config['densenet_first_num_filters']
         densenet_num_filters = config['densenet_num_filters']
         densenet_last_num_filters = config['densenet_last_num_filters']
-        self.densenet = DenseNet(densenet_depth, densenet_width, emb_dim, densenet_first_num_filters, densenet_num_filters, densenet_last_num_filters)
+        self.densenet = DenseNet(densenet_depth, densenet_width, emb_dim, densenet_first_num_filters, densenet_num_filters, densenet_last_num_filters, activation=F.relu)
         self.layernorm_densenet = nn.LayerNorm(densenet_last_num_filters)
 
         # convolution layer
