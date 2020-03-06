@@ -2,8 +2,5 @@
     "emb_class": "bert",
     "enc_class": "cls",
     "n_ctx": 100,
-    "num_filters": 256,
-    "kernel_sizes": [2,3,4,5,6],
-    "fc_hidden_size": 256,
     "dropout": 0.2
 }

@@ -192,9 +192,6 @@ class TextGloveCNN(BaseModel):
         self.config = config
         seq_size = config['n_ctx']
         token_emb_dim = config['token_emb_dim']
-        num_filters = config['num_filters']
-        kernel_sizes = config['kernel_sizes']
-        fc_hidden_size = config['fc_hidden_size']
 
         # glove embedding layer
         weights_matrix = super().load_embedding(embedding_path)
@@ -202,17 +199,20 @@ class TextGloveCNN(BaseModel):
         emb_dim = token_emb_dim 
 
         # convolution layer
+        num_filters = config['num_filters']
+        kernel_sizes = config['kernel_sizes']
         self.textcnn = TextCNN(emb_dim, num_filters, kernel_sizes)
+        self.layernorm_textcnn = nn.LayerNorm(len(kernel_sizes) * num_filters)
 
         self.dropout = nn.Dropout(config['dropout'])
 
         # fully connected layer
+        fc_hidden_size = config['fc_hidden_size']
         self.labels = super().load_label(label_path)
         label_size = len(self.labels)
-        self.layernorm1 = nn.LayerNorm(len(kernel_sizes) * num_filters)
-        self.fc1 = nn.Linear(len(kernel_sizes) * num_filters, fc_hidden_size)
-        self.layernorm2 = nn.LayerNorm(fc_hidden_size)
-        self.fc2 = nn.Linear(fc_hidden_size, label_size)
+        self.fc_hidden = nn.Linear(len(kernel_sizes) * num_filters, fc_hidden_size)
+        self.layernorm_fc_hidden = nn.LayerNorm(fc_hidden_size)
+        self.fc = nn.Linear(fc_hidden_size, label_size)
 
     def forward(self, x):
         # 1. glove embedding
@@ -223,15 +223,15 @@ class TextGloveCNN(BaseModel):
         # 2. convolution
         textcnn_out = self.textcnn(embedded)
         # textcnn_out : [batch_size, len(kernel_sizes) * num_filters]
-        textcnn_out = self.layernorm1(textcnn_out)
+        textcnn_out = self.layernorm_textcnn(textcnn_out)
         textcnn_out = self.dropout(textcnn_out)
 
         # 3. fully connected
-        fc_hidden = self.fc1(textcnn_out)
+        fc_hidden = self.fc_hidden(textcnn_out)
         # fc_hidden : [batch_size, fc_hidden_size]
-        fc_hidden = self.layernorm2(fc_hidden)
+        fc_hidden = self.layernorm_fc_hidden(fc_hidden)
         fc_hidden = self.dropout(fc_hidden)
-        fc_out = self.fc2(fc_hidden)
+        fc_out = self.fc(fc_hidden)
         # fc_out : [batch_size, label_size]
         output = torch.softmax(fc_out, dim=-1)
         return output
@@ -243,8 +243,6 @@ class TextGloveDensenetCNN(BaseModel):
         self.config = config
         seq_size = config['n_ctx']
         token_emb_dim = config['token_emb_dim']
-        num_filters = config['num_filters']
-        kernel_sizes = config['kernel_sizes']
 
         # glove embedding layer
         weights_matrix = super().load_embedding(embedding_path)
@@ -261,6 +259,8 @@ class TextGloveDensenetCNN(BaseModel):
         self.layernorm_densenet = nn.LayerNorm(densenet_last_num_filters)
 
         # convolution layer
+        num_filters = config['num_filters']
+        kernel_sizes = config['kernel_sizes']
         self.textcnn = TextCNN(densenet_last_num_filters, num_filters, kernel_sizes)
         self.layernorm_textcnn = nn.LayerNorm(len(kernel_sizes) * num_filters)
 
@@ -335,7 +335,14 @@ class TextGloveDensenetDSA(BaseModel):
         # fully connected layer
         self.labels = super().load_label(label_path)
         label_size = len(self.labels)
-        self.fc = nn.Linear(dsa_num_attentions * dsa_dim, label_size)
+        fc_hidden_size = config['fc_hidden_size']
+        if fc_hidden_size > 0:
+            self.fc_hidden = nn.Linear(dsa_num_attentions * dsa_dim, fc_hidden_size)
+            self.layernorm_fc_hidden = nn.LayerNorm(fc_hidden_size)
+            self.fc = nn.Linear(fc_hidden_size, label_size)
+        else:
+            self.fc_hidden = None
+            self.fc = nn.Linear(dsa_num_attentions * dsa_dim, label_size)
 
     def forward(self, x):
         # x : [batch_size, seq_size]
@@ -361,8 +368,16 @@ class TextGloveDensenetDSA(BaseModel):
         dsa_out = self.dropout(dsa_out)
 
         # 4. fully connected
-        fc_out = self.fc(dsa_out)
-        # [batch_size, label_size]
+        if self.fc_hidden:
+            fc_hidden_out = self.fc_hidden(dsa_out)
+            # fc_hidden_out : [batch_size, fc_hidden_size]
+            fc_hidden_out = self.layernorm_fc_hidden(fc_hidden_out)
+            fc_hidden_out = self.dropout(fc_hidden_out)
+            fc_out = self.fc(fc_hidden_out)
+            # fc_out : [batch_size, label_size]
+        else:
+            fc_out = self.fc(dsa_out)
+            # fc_out : [batch_size, label_size]
         output = torch.softmax(fc_out, dim=-1)
         return output
 
@@ -372,9 +387,6 @@ class TextBertCNN(BaseModel):
 
         self.config = config
         seq_size = config['n_ctx']
-        num_filters = config['num_filters']
-        kernel_sizes = config['kernel_sizes']
-        fc_hidden_size = config['fc_hidden_size']
 
         # bert embedding layer
         self.bert_config = bert_config
@@ -384,17 +396,20 @@ class TextBertCNN(BaseModel):
         emb_dim = hidden_size
 
         # convolution layer
+        num_filters = config['num_filters']
+        kernel_sizes = config['kernel_sizes']
         self.textcnn = TextCNN(emb_dim, num_filters, kernel_sizes)
+        self.layernorm_textcnn = nn.LayerNorm(len(kernel_sizes) * num_filters)
 
         self.dropout = nn.Dropout(config['dropout'])
 
         # fully connected layer
+        fc_hidden_size = config['fc_hidden_size']
         self.labels = super().load_label(label_path)
         label_size = len(self.labels)
-        self.layernorm1 = nn.LayerNorm(len(kernel_sizes) * num_filters)
-        self.fc1 = nn.Linear(len(kernel_sizes) * num_filters, fc_hidden_size)
-        self.layernorm2 = nn.LayerNorm(fc_hidden_size)
-        self.fc2 = nn.Linear(fc_hidden_size, label_size)
+        self.fc_hidden = nn.Linear(len(kernel_sizes) * num_filters, fc_hidden_size)
+        self.layernorm_fc_hidden = nn.LayerNorm(fc_hidden_size)
+        self.fc = nn.Linear(fc_hidden_size, label_size)
 
     def __compute_bert_embedding(self, x):
         if self.feature_based:
@@ -425,15 +440,15 @@ class TextBertCNN(BaseModel):
 
         # 2. convolution
         textcnn_out = self.textcnn(embedded)
-        textcnn_out = self.layernorm1(textcnn_out)
+        textcnn_out = self.layernorm_textcnn(textcnn_out)
         textcnn_out = self.dropout(textcnn_out)
 
         # 3. fully connected
-        fc_hidden = self.fc1(textcnn_out)
-        # fc_hidden : [batch_size, fc_hidden_size]
-        fc_hidden = self.layernorm2(fc_hidden)
-        fc_hidden = self.dropout(fc_hidden)
-        fc_out = self.fc2(fc_hidden)
+        fc_hidden_out = self.fc_hidden(textcnn_out)
+        # fc_hidden_out : [batch_size, fc_hidden_size]
+        fc_hidden_out = self.layernorm_hidden(fc_hidden_out)
+        fc_hidden_out = self.dropout(fc_hidden_out)
+        fc_out = self.fc(fc_hidden)
         # fc_out : [batch_size, label_size]
 
         output = torch.softmax(fc_out, dim=-1)
@@ -446,8 +461,6 @@ class TextBertCLS(BaseModel):
 
         self.config = config
         seq_size = config['n_ctx']
-        num_filters = config['num_filters']
-        kernel_sizes = config['kernel_sizes']
 
         # bert embedding layer
         self.bert_config = bert_config

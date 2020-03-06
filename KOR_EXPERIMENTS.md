@@ -51,7 +51,7 @@
 | ------------------- | ------------ |
 | Glove, CNN          | 87.70        |
 | Glove, DenseNet-CNN | 88.12        |
-| Glove, DenseNet-DSA | 87.56        |
+| Glove, DenseNet-DSA | 87.70        |
 | bpe BERT, CNN       | 89.45        |
 | bpe BERT, CLS       | 89.31        |
 | dha BERT, CNN       | **89.96**    |
@@ -127,16 +127,15 @@ $ python train.py --config=configs/config-densenet-dsa-clova.json --data_dir=dat
 
 * iee_corpus_morph
 $ python preprocess.py --config=configs/config-densenet-dsa-iee.json --data_dir=data/iee_corpus_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
-$ python train.py --config=configs/config-densenet-dsa-iee.json --data_dir=data/iee_corpus_morph --batch_size=128 --epoch=64
-
+$ python train.py --config=configs/config-densenet-dsa-iee.json --data_dir=data/iee_corpus_morph --warmup_epoch=5 --decay_rate=0.9 --batch_size=128 --lr=0.001 --epoch=64 --patience=10
 ```
 
 - evaluation
 ```
 $ python evaluate.py --config=configs/config-densenet-dsa-clova.json --data_dir=./data/clova_sentiments_morph
 
-INFO:__main__:[Accuracy] : 0.8756, 43778/49997
-INFO:__main__:[Elapsed Time] : 212713ms, 4.252640211216898ms on average
+INFO:__main__:[Accuracy] : 0.8770, 43847/49997
+INFO:__main__:[Elapsed Time] : 362727ms, 7.252920233618689ms on average
 
 * iee_corpus_morph
 $ python evaluate.py --config=configs/config-densenet-dsa-iee.json --data_dir=./data/iee_corpus_morph

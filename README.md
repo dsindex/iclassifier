@@ -110,7 +110,7 @@ INFO:__main__:[Elapsed Time] : 2633ms, 3.609442060085837ms on average
 ```
 * token_emb_dim in configs/config-densenet-dsa.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py --config=configs/config-densenet-dsa.json
-$ python train.py --config=configs/config-densenet-dsa.json --decay_rate=0.9 --batch_size=128 --embedding_trainable
+$ python train.py --config=configs/config-densenet-dsa.json --decay_rate=0.9 --batch_size=128
 ```
 
 - evaluation
@@ -118,7 +118,7 @@ $ python train.py --config=configs/config-densenet-dsa.json --decay_rate=0.9 --b
 $ python evaluate.py --config=configs/config-densenet-dsa.json
 
 INFO:__main__:[Accuracy] : 0.9743,   682/  700
-INFO:__main__:[Elapsed Time] : 6545ms, 9.224606580829757ms on average
+INFO:__main__:[Elapsed Time] : 5367ms, 7.500715307582261ms on average
 ```
 
 ### emb_class=bert, enc_class=cnn | cls
@@ -222,7 +222,7 @@ INFO:__main__:[Elapsed Time] : 6646ms, 3.587912087912088ms on average
 ```
 * token_emb_dim in configs/config-densenet-dsa.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2
-$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --lr=0.0002 --decay_rate=0.9 --batch_size=128
+$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --decay_rate=0.9 --batch_size=128
 ```
 
 - evaluation
