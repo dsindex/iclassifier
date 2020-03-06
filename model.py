@@ -71,22 +71,22 @@ class TextCNN(nn.Module):
         return cat
 
 class DenseNet(nn.Module):
-    def __init__(self, densenet_depth, densenet_width, emb_dim, first_num_filters, num_filters, last_num_filters, activation=F.relu):
+    def __init__(self, densenet_kernels, emb_dim, first_num_filters, num_filters, last_num_filters, activation=F.relu):
         super(DenseNet, self).__init__()
         self.activation = activation
-        self.densenet_depth = densenet_depth
-        self.densenet_width = densenet_width
+        self.densenet_kernels = densenet_kernels
+        self.densenet_width = len(densenet_kernels[0])
         self.densenet_block = []
-        for i, ks in enumerate(self.densenet_depth):
+        for i, kss in enumerate(self.densenet_kernels): # densenet depth
             if i == 0:
                 in_channels = emb_dim
                 out_channels = first_num_filters
             else:
                 in_channels = first_num_filters + num_filters * (i-1)
                 out_channels = num_filters
-            padding = (ks - 1)//2
             convs = []
-            for _ in range(self.densenet_width):
+            for j, ks in enumerate(kss):                # densenet width
+                padding = (ks - 1)//2
                 conv = nn.Conv1d(in_channels=in_channels, out_channels=out_channels, kernel_size=ks, padding=padding)
                 convs.append(conv)
             convs = nn.ModuleList(convs)
@@ -111,7 +111,7 @@ class DenseNet(nn.Module):
         merge_list = []
         for j in range(self.densenet_width):
             conv_results = []
-            for i, ks in enumerate(self.densenet_depth):
+            for i, kss in enumerate(self.densenet_kernels):
                 if i == 0: conv_in = x
                 else: conv_in  = torch.cat(conv_results, dim=-2)
                 conv_out = self.densenet_block[i][j](conv_in)
@@ -120,7 +120,8 @@ class DenseNet(nn.Module):
                 conv_out *= masks # masking, auto broadcasting along with second dimension
                 conv_out = self.activation(conv_out)
                 conv_results.append(conv_out)
-            merge_list.append(conv_results[-1]) # last one only 
+            merge_list.append(conv_results[-1]) # last one only
+
         conv_last = self.conv_last(torch.cat([x] + merge_list, dim=-2))
         conv_last *= masks
         conv_last = F.relu(conv_last)
@@ -249,13 +250,12 @@ class TextGloveDensenetCNN(BaseModel):
         self.embed = super().create_embedding_layer(weights_matrix, non_trainable=emb_non_trainable)
         
         # Densenet layer
-        densenet_depth = config['densenet_depth']
-        densenet_width = config['densenet_width']
+        densenet_kernels = config['densenet_kernels']
         emb_dim = token_emb_dim
         densenet_first_num_filters = config['densenet_first_num_filters']
         densenet_num_filters = config['densenet_num_filters']
         densenet_last_num_filters = config['densenet_last_num_filters']
-        self.densenet = DenseNet(densenet_depth, densenet_width, emb_dim, densenet_first_num_filters, densenet_num_filters, densenet_last_num_filters, activation=F.relu)
+        self.densenet = DenseNet(densenet_kernels, emb_dim, densenet_first_num_filters, densenet_num_filters, densenet_last_num_filters, activation=F.relu)
         self.layernorm_densenet = nn.LayerNorm(densenet_last_num_filters)
 
         # convolution layer
@@ -313,13 +313,12 @@ class TextGloveDensenetDSA(BaseModel):
         self.embed = super().create_embedding_layer(weights_matrix, non_trainable=emb_non_trainable)
         
         # Densenet layer
-        densenet_depth = config['densenet_depth']
-        densenet_width = config['densenet_width']
+        densenet_kernels = config['densenet_kernels']
         emb_dim = token_emb_dim
         densenet_first_num_filters = config['densenet_first_num_filters']
         densenet_num_filters = config['densenet_num_filters']
         densenet_last_num_filters = config['densenet_last_num_filters']
-        self.densenet = DenseNet(densenet_depth, densenet_width, emb_dim, densenet_first_num_filters, densenet_num_filters, densenet_last_num_filters, activation=F.leaky_relu)
+        self.densenet = DenseNet(densenet_kernels, emb_dim, densenet_first_num_filters, densenet_num_filters, densenet_last_num_filters, activation=F.leaky_relu)
         self.layernorm_densenet = nn.LayerNorm(densenet_last_num_filters)
 
         # DSA(Dynamic Self Attention) layer
