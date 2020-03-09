@@ -50,7 +50,7 @@
 |                     | Accuracy (%) |
 | ------------------- | ------------ |
 | Glove, CNN          | 87.70        |
-| Glove, DenseNet-CNN | 88.12        |
+| Glove, DenseNet-CNN | 88.18        |
 | Glove, DenseNet-DSA | 87.70        |
 | bpe BERT, CNN       | 89.45        |
 | bpe BERT, CLS       | 89.31        |
@@ -106,12 +106,8 @@ $ python train.py --config=configs/config-densenet-cnn-iee.json --data_dir=data/
 ```
 $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/clova_sentiments_morph 
 
-INFO:__main__:[Accuracy] : 0.8812, 44059/49997
-INFO:__main__:[Elapsed Time] : 181131ms, 3.620889671173694ms on average
-
-  * --embedding_trainable
-  INFO:__main__:[Accuracy] : 0.8763, 43810/49997
-  INFO:__main__:[Elapsed Time] : 177254ms, 3.5431834546763743ms on average
+INFO:__main__:[Accuracy] : 0.8818, 44087/49997
+INFO:__main__:[Elapsed Time] : 173152ms, 3.4614969197535803ms on average
 
 * iee_corpus_morph
 $ python evaluate.py --config=configs/config-densenet-cnn-iee.json --data_dir=./data/iee_corpus_morph 
