@@ -89,8 +89,6 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
         else:
             loss.backward()
         optimizer.step()
-        if scheduler and epoch_i > opt.warmup_epoch and local_step == 0: # after warmup, for every epoch
-            scheduler.step()
         # back-propagation - end
         cur_examples = y.size(0)
         total_examples += cur_examples
@@ -245,6 +243,7 @@ def train(opt):
     for epoch_i in range(opt.epoch):
         epoch_st_time = time.time()
         eval_loss = train_epoch(model, config, train_loader, valid_loader, epoch_i)
+        # early stopping
         if early_stopping.validate(eval_loss, measure='loss'): break
         if opt.local_rank == 0 and eval_loss < best_val_loss:
             best_val_loss = eval_loss
@@ -257,6 +256,9 @@ def train(opt):
                     bert_model.save_pretrained(opt.bert_output_dir)
             early_stopping.reset(best_val_loss)
         early_stopping.status()
+        # scheduling: apply rate decay at the measure(ex, loss) getting worse for the number of deacy epoch.
+        if epoch_i > opt.warmup_epoch and early_stopping.step() >= opt.decay_epoch: # after warmup
+            scheduler.step()
 
 def main():
     parser = argparse.ArgumentParser()
@@ -267,10 +269,11 @@ def main():
     parser.add_argument('--config', type=str, default='configs/config-glove-cnn.json')
     parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--use_amp', action="store_true")
-    parser.add_argument('--batch_size', type=int, default=64)
-    parser.add_argument('--epoch', type=int, default=32)
+    parser.add_argument('--batch_size', type=int, default=128)
+    parser.add_argument('--epoch', type=int, default=64)
     parser.add_argument('--lr', type=float, default=2e-4)
     parser.add_argument('--decay_rate', type=float, default=1.0)
+    parser.add_argument('--decay_epoch', type=float, default=2)
     parser.add_argument('--warmup_epoch', type=int, default=4)
     parser.add_argument('--patience', default=7, type=int)
     parser.add_argument('--save_path', type=str, default='pytorch-model.pt')
