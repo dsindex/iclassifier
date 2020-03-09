@@ -189,7 +189,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 ```
 * token_emb_dim in configs/config-glove-cnn.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py --data_dir=data/sst2
-$ python train.py --data_dir=data/sst2 --lr=0.0005 --decay_rate=0.9 
+$ python train.py --data_dir=data/sst2 --decay_rate=0.9 
 ```
 
 - evaluation
