@@ -33,7 +33,7 @@ reference pytorch code for intent(sentence) classification.
   ```
   - BERT(huggingface's [transformers](https://github.com/huggingface/transformers.git))
   ```
-  $ pip install tensorflow-gpu==2.0
+  $ pip install tensorflow-gpu==2.0.0
   $ pip install git+https://github.com/huggingface/transformers.git
   ```
 
@@ -294,7 +294,7 @@ $ python train.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 -
 
 * albert-xxlarge-v2
 $ python preprocess.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-xxlarge-v2
-$ python train.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-xxlarge-v2 --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=32
+$ python train.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-xxlarge-v2 --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=15 --batch_size=32 --bert_use_feature_based
 
 ```
 
