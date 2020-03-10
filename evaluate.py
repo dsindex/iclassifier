@@ -96,7 +96,7 @@ def load_model(config, checkpoint):
         bert_config = bert_model.config
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
-        model = ModelClass(config, bert_config, bert_model, opt.label_path)
+        model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path)
     model.load_state_dict(checkpoint)
     model = model.to(device)
     logger.info("[Model loaded]")

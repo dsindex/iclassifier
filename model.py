@@ -381,7 +381,7 @@ class TextGloveDensenetDSA(BaseModel):
         return output
 
 class TextBertCNN(BaseModel):
-    def __init__(self, config, bert_config, bert_model, label_path, feature_based=False):
+    def __init__(self, config, bert_config, bert_model, bert_tokenizer, label_path, feature_based=False):
         super().__init__(config=config)
 
         self.config = config
@@ -390,6 +390,7 @@ class TextBertCNN(BaseModel):
         # bert embedding layer
         self.bert_config = bert_config
         self.bert_model = bert_model
+        self.bert_tokenizer = bert_tokenizer
         hidden_size = bert_config.hidden_size
         self.feature_based = feature_based
         emb_dim = hidden_size
@@ -455,7 +456,7 @@ class TextBertCNN(BaseModel):
         return output
 
 class TextBertCLS(BaseModel):
-    def __init__(self, config, bert_config, bert_model, label_path, feature_based=False):
+    def __init__(self, config, bert_config, bert_model, bert_tokenizer, label_path, feature_based=False):
         super().__init__(config=config)
 
         self.config = config
@@ -464,6 +465,7 @@ class TextBertCLS(BaseModel):
         # bert embedding layer
         self.bert_config = bert_config
         self.bert_model = bert_model
+        self.bert_tokenizer = bert_tokenizer
         hidden_size = bert_config.hidden_size
         self.feature_based = feature_based
 
