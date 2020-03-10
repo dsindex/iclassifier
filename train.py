@@ -150,21 +150,8 @@ def save_model(model, opt, config):
             checkpoint = model.state_dict()
         torch.save(checkpoint,f)
 
-def train(opt):
-    device = torch.device(opt.device)
-
-    # set seed, distributed setting, etc
-    set_seed(opt)
-    set_apex_and_distributed(opt)
-    torch.autograd.set_detect_anomaly(True)
-
-    # set config
-    config = load_config(opt)
-    config['device'] = device
-    config['opt'] = opt
-    logger.info("%s", config)
-  
-    # prepare train, valid dataset
+def prepare_datasets(config):
+    opt = config['opt']
     if config['emb_class'] == 'glove':
         filepath = os.path.join(opt.data_dir, 'train.txt.ids')
         train_loader = prepare_dataset(opt, filepath, SnipsGloveDataset, shuffle=True, num_workers=2)
@@ -175,7 +162,11 @@ def train(opt):
         train_loader = prepare_dataset(opt, filepath, SnipsBertDataset, shuffle=True, num_workers=2)
         filepath = os.path.join(opt.data_dir, 'valid.txt.fs')
         valid_loader = prepare_dataset(opt, filepath, SnipsBertDataset, shuffle=False, num_workers=2)
+    return train_loader, valid_loader
 
+def prepare_model(config):
+    device = config['device']
+    opt = config['opt']
     label_path = os.path.join(opt.data_dir, opt.label_filename)
     # prepare model
     if config['emb_class'] == 'glove':
@@ -214,11 +205,11 @@ def train(opt):
         model = ModelClass(config, bert_config, bert_model, label_path, feature_based=opt.bert_use_feature_based)
     model.to(device)
     print(model)
-    logger.info("[Model prepared]")
+    logger.info("[model prepared]")
+    return model
 
-    # create optimizer, scheduler, summary writer
-    logger.info("[Creating optimizer, scheduler, summary writer...]")
-    opt.one_epoch_step = (len(train_loader) // (opt.batch_size*opt.world_size))
+def prepare_osw(config, model):
+    opt = config['opt']
     optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr, weight_decay=opt.l2norm)
     if opt.use_amp:
         model, optimizer = amp.initialize(model, optimizer, opt_level=opt.opt_level)
@@ -229,15 +220,38 @@ def train(opt):
         writer = SummaryWriter(log_dir=opt.log_dir)
     except:
         writer = None
-    logger.info("[Ready]")
+    logger.info("[Creating optimizer, scheduler, summary writer...]")
+    return optimizer, scheduler, writer
 
-    # training
+def train(opt):
+    device = torch.device(opt.device)
+    if torch.cuda.is_available():
+        logger.info("%s", torch.cuda.get_device_name(0))
 
-    # additional config setting for parameter passing
+    # set seed, distributed setting, etc
+    set_seed(opt)
+    set_apex_and_distributed(opt)
+    torch.autograd.set_detect_anomaly(True)
+
+    # set config
+    config = load_config(opt)
+    config['device'] = device
+    config['opt'] = opt
+    logger.info("%s", config)
+  
+    # prepare train, valid dataset
+    train_loader, valid_loader = prepare_datasets(config)
+
+    # prepare model
+    model = prepare_model(config)
+
+    # create optimizer, scheduler, summary writer
+    optimizer, scheduler, writer = prepare_osw(config, model)
     config['optimizer'] = optimizer
     config['scheduler'] = scheduler
     config['writer'] = writer
 
+    # training
     early_stopping = EarlyStopping(logger, patience=opt.patience, measure='loss', verbose=1)
     local_worse_steps = 0
     prev_eval_loss = float('inf')
@@ -258,7 +272,7 @@ def train(opt):
                     bert_model.save_pretrained(opt.bert_output_dir)
             early_stopping.reset(best_eval_loss)
         early_stopping.status()
-        # begin: scheduling, apply rate decay at the measure(ex, loss) getting worse for the number of deacy epoch.
+        # begin: scheduling, apply rate decay at the measure(ex, loss) getting worse for the number of deacy epoch steps.
         if prev_eval_loss <= eval_loss:
             local_worse_steps += 1
         else:
@@ -282,8 +296,8 @@ def main():
     parser.add_argument('--epoch', type=int, default=64)
     parser.add_argument('--lr', type=float, default=2e-4)
     parser.add_argument('--decay_rate', type=float, default=1.0)
-    parser.add_argument('--decay_steps', type=float, default=2)
-    parser.add_argument('--warmup_steps', type=int, default=4)
+    parser.add_argument('--decay_steps', type=float, default=2, help="number of decay epoch steps to be paitent")
+    parser.add_argument('--warmup_steps', type=int, default=4,  help="number of warmup epoch steps")
     parser.add_argument('--patience', default=7, type=int)
     parser.add_argument('--save_path', type=str, default='pytorch-model.pt')
     parser.add_argument('--l2norm', type=float, default=1e-6)
