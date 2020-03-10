@@ -309,7 +309,7 @@ INFO:__main__:[Elapsed Time] : 30896ms, 16.966501922020868ms on average
  
 * albert-xxlarge-v2
 INFO:__main__:[Accuracy] : 0.9132,  1663/ 1821
-INFO:__main__:[Elapsed Time] : 102140ms, -869730.8810676163ms on average
+INFO:__main__:[Elapsed Time] : 102140ms, 56.090060406370127ms on average
 ```
 
 ## experiments for Korean
