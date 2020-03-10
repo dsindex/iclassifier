@@ -445,9 +445,9 @@ class TextBertCNN(BaseModel):
         # 3. fully connected
         fc_hidden_out = self.fc_hidden(textcnn_out)
         # fc_hidden_out : [batch_size, fc_hidden_size]
-        fc_hidden_out = self.layernorm_hidden(fc_hidden_out)
+        fc_hidden_out = self.layernorm_fc_hidden(fc_hidden_out)
         fc_hidden_out = self.dropout(fc_hidden_out)
-        fc_out = self.fc(fc_hidden)
+        fc_out = self.fc(fc_hidden_out)
         # fc_out : [batch_size, label_size]
 
         output = torch.softmax(fc_out, dim=-1)
