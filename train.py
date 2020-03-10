@@ -150,41 +150,42 @@ def save_model(model, opt, config):
             checkpoint = model.state_dict()
         torch.save(checkpoint,f)
 
+def set_path(config):
+    opt = config['opt']
+    if config['emb_class'] == 'glove':
+        opt.train_path = os.path.join(opt.data_dir, 'train.txt.ids')
+        opt.valid_path = os.path.join(opt.data_dir, 'valid.txt.ids')
+    if 'bert' in config['emb_class']:
+        opt.train_path = os.path.join(opt.data_dir, 'train.txt.fs')
+        opt.valid_path = os.path.join(opt.data_dir, 'valid.txt.fs')
+    opt.label_path     = os.path.join(opt.data_dir, opt.label_filename)
+    opt.embedding_path = os.path.join(opt.data_dir, opt.embedding_filename)
+
 def prepare_datasets(config):
     opt = config['opt']
     if config['emb_class'] == 'glove':
-        filepath = os.path.join(opt.data_dir, 'train.txt.ids')
-        train_loader = prepare_dataset(opt, filepath, SnipsGloveDataset, shuffle=True, num_workers=2)
-        filepath = os.path.join(opt.data_dir, 'valid.txt.ids')
-        valid_loader = prepare_dataset(opt, filepath, SnipsGloveDataset, shuffle=False, num_workers=2)
+        DatasetClass = SnipsGloveDataset
     if 'bert' in config['emb_class']:
-        filepath = os.path.join(opt.data_dir, 'train.txt.fs')
-        train_loader = prepare_dataset(opt, filepath, SnipsBertDataset, shuffle=True, num_workers=2)
-        filepath = os.path.join(opt.data_dir, 'valid.txt.fs')
-        valid_loader = prepare_dataset(opt, filepath, SnipsBertDataset, shuffle=False, num_workers=2)
+        DatasetClass = SnipsBertDataset
+    train_loader = prepare_dataset(opt, opt.train_path, DatasetClass, shuffle=True, num_workers=2)
+    valid_loader = prepare_dataset(opt, opt.valid_path, DatasetClass, shuffle=False, num_workers=2)
     return train_loader, valid_loader
 
 def prepare_model(config):
     device = config['device']
     opt = config['opt']
-    label_path = os.path.join(opt.data_dir, opt.label_filename)
+    emb_non_trainable = not opt.embedding_trainable
     # prepare model
     if config['emb_class'] == 'glove':
         if config['enc_class'] == 'cnn':
             # set embedding as trainable
-            embedding_path = os.path.join(opt.data_dir, opt.embedding_filename)
-            emb_non_trainable = not opt.embedding_trainable
-            model = TextGloveCNN(config, embedding_path, label_path, emb_non_trainable=emb_non_trainable)
+            model = TextGloveCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable)
         if config['enc_class'] == 'densenet-cnn':
             # set embedding as trainable
-            embedding_path = os.path.join(opt.data_dir, opt.embedding_filename)
-            emb_non_trainable = not opt.embedding_trainable
-            model = TextGloveDensenetCNN(config, embedding_path, label_path, emb_non_trainable=emb_non_trainable)
+            model = TextGloveDensenetCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable)
         if config['enc_class'] == 'densenet-dsa':
             # set embedding as trainable
-            embedding_path = os.path.join(opt.data_dir, opt.embedding_filename)
-            emb_non_trainable = not opt.embedding_trainable
-            model = TextGloveDensenetDSA(config, embedding_path, label_path, emb_non_trainable=emb_non_trainable)
+            model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable)
     if 'bert' in config['emb_class']:
         from transformers import BertTokenizer, BertConfig, BertModel
         from transformers import AlbertTokenizer, AlbertConfig, AlbertModel
@@ -202,7 +203,7 @@ def prepare_model(config):
         bert_config = bert_model.config
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
-        model = ModelClass(config, bert_config, bert_model, label_path, feature_based=opt.bert_use_feature_based)
+        model = ModelClass(config, bert_config, bert_model, opt.label_path, feature_based=opt.bert_use_feature_based)
     model.to(device)
     print(model)
     logger.info("[model prepared]")
@@ -238,6 +239,9 @@ def train(opt):
     config['device'] = device
     config['opt'] = opt
     logger.info("%s", config)
+
+    # set path
+    set_path(config)
   
     # prepare train, valid dataset
     train_loader, valid_loader = prepare_datasets(config)

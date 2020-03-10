@@ -41,15 +41,8 @@ def write_prediction(opt, preds, labels):
     except Exception as e:
         logger.warn(str(e))
 
-def evaluate(opt):
-    # set config
-    config = load_config(opt)
-    device = torch.device(opt.device)
-    config['device'] = opt.device
-    config['opt'] = opt
-    logger.info("%s", config)
-
-    # set path
+def set_path(config):
+    opt = config['opt']
     if config['emb_class'] == 'glove':
         opt.data_path = os.path.join(opt.data_dir, 'test.txt.ids')
     if 'bert' in config['emb_class']:
@@ -58,23 +51,27 @@ def evaluate(opt):
     opt.label_path = os.path.join(opt.data_dir, 'label.txt')
     opt.test_path = os.path.join(opt.data_dir, 'test.txt')
 
-    test_data_path = opt.data_path
-    torch.set_num_threads(opt.num_thread)
-
-    # prepare test dataset
+def prepare_datasets(config):
+    opt = config['opt']
     if config['emb_class'] == 'glove':
-        test_loader = prepare_dataset(opt, test_data_path, SnipsGloveDataset, shuffle=False, num_workers=1)
+        DatasetClass = SnipsGloveDataset
     if 'bert' in config['emb_class']:
-        test_loader = prepare_dataset(opt, test_data_path, SnipsBertDataset, shuffle=False, num_workers=1)
- 
-    # load pytorch model checkpoint
-    logger.info("[Loading model...]")
+        DatasetClass = SnipsBertDataset
+    test_loader = prepare_dataset(opt, opt.data_path, DatasetClass, shuffle=False, num_workers=1)
+    return test_loader
+
+def load_checkpoint(config):
+    opt = config['opt']
     if opt.device == 'cpu':
         checkpoint = torch.load(opt.model_path, map_location=lambda storage, loc: storage)
     else:
         checkpoint = torch.load(opt.model_path)
+    logger.info("[Loading checkpoint done]")
+    return checkpoint
 
-    # prepare model and load parameters
+def load_model(config, checkpoint):
+    opt = config['opt']
+    device = config['device']
     if config['emb_class'] == 'glove':
         if config['enc_class'] == 'cnn':
             model = TextGloveCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
@@ -102,8 +99,30 @@ def evaluate(opt):
         model = ModelClass(config, bert_config, bert_model, opt.label_path)
     model.load_state_dict(checkpoint)
     model = model.to(device)
-    logger.info("[Loaded]")
+    logger.info("[Model loaded]")
+    return model
+
+def evaluate(opt):
+    # set config
+    config = load_config(opt)
+    device = torch.device(opt.device)
+    torch.set_num_threads(opt.num_thread)
+    config['device'] = opt.device
+    config['opt'] = opt
+    logger.info("%s", config)
+
+    # set path
+    set_path(config)
+
+    # prepare test dataset
+    test_loader = prepare_datasets(config)
  
+    # load pytorch model checkpoint
+    checkpoint = load_checkpoint(config)
+
+    # prepare model and load parameters
+    model = load_model(config, checkpoint)
+
     # evaluation
     model.eval()
     preds = None
