@@ -64,8 +64,8 @@ reference pytorch code for intent(sentence) classification.
 | Glove, CNN          | 97.86       |
 | Glove, Densenet-CNN | 97.57       |
 | Glove, Densenet-DSA | 97.43       |
-| BERT, CNN           | **98.00**   |
-| BERT, CLS           | 97.86       |
+| BERT-large, CNN     | **98.00**   |
+| BERT-large, CLS     | 97.86       |
 
 ### emb_class=glove, enc_class=cnn
 
@@ -169,9 +169,10 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | Glove, CNN          | 83.42       |
 | Glove, DenseNet-CNN | 86.38       |
 | Glove, DenseNet-DSA | 85.34       |
-| BERT, CNN           | 93.08       |
-| BERT, CLS           | **93.85**   |
-| ALBERT, CNN         | 86.66       |
+| BERT-large, CNN     | 93.08       |
+| BERT-large, CLS     | **93.85**   |
+| ALBERT-base, CNN    | 86.66       |
+| ALBERT-xxlarge, CNN | -           |
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -288,7 +289,6 @@ INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
 * n_ctx size should be less than 512
 $ python preprocess.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2
 
-* fine-tuning ALBERT does not work well. i guess ALBERT needs more data.
 * feature-based
 $ python train.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2 --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=15 --batch_size=64 --bert_use_feature_based
 
@@ -302,6 +302,8 @@ $ python train.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 -
 ```
 $ python evaluate.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint 
 
+* feature-based
+* fine-tuning ALBERT doesn't work well. i guess ALBERT needs more data.
 INFO:__main__:[Accuracy] : 0.8666,  1578/ 1821
 INFO:__main__:[Elapsed Time] : 30896ms, 16.966501922020868ms on average
  
