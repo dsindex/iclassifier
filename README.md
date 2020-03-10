@@ -164,15 +164,15 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 
 - iclassifier
 
-|                     | Accuracy (%)|
-| ------------------- | ----------- |
-| Glove, CNN          | 83.42       |
-| Glove, DenseNet-CNN | 86.38       |
-| Glove, DenseNet-DSA | 85.34       |
-| BERT-large, CNN     | 93.08       |
-| BERT-large, CLS     | **93.85**   |
-| ALBERT-base, CNN    | 86.66       |
-| ALBERT-xxlarge, CNN | -           |
+|                     | Accuracy (%)| Etc           |
+| ------------------- | ----------- | ------------- |
+| Glove, CNN          | 83.42       |               |
+| Glove, DenseNet-CNN | 86.38       |               |
+| Glove, DenseNet-DSA | 85.34       |               |
+| BERT-large, CNN     | 93.08       |               |
+| BERT-large, CLS     | **93.85**   |               |
+| ALBERT-base, CNN    | 86.66       | feature-based |             
+| ALBERT-xxlarge, CNN | 91.32       | feature-based |
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -308,6 +308,8 @@ INFO:__main__:[Accuracy] : 0.8666,  1578/ 1821
 INFO:__main__:[Elapsed Time] : 30896ms, 16.966501922020868ms on average
  
 * albert-xxlarge-v2
+INFO:__main__:[Accuracy] : 0.9132,  1663/ 1821
+INFO:__main__:[Elapsed Time] : 102140ms, -869730.8810676163ms on average
 ```
 
 ## experiments for Korean
