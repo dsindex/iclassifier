@@ -9,9 +9,11 @@ import logging
 
 from transformers import BertTokenizer, BertConfig, BertModel
 from transformers import AlbertConfig, AlbertTokenizer, AlbertModel
+from transformers import RobertaConfig, RobertaTokenizer, RobertaModel
 MODEL_CLASSES = {
     "bert": (BertConfig, BertTokenizer, BertModel),
-    "albert": (AlbertConfig, AlbertTokenizer, AlbertModel)
+    "albert": (AlbertConfig, AlbertTokenizer, AlbertModel),
+    "roberta": (RobertaConfig, RobertaTokenizer, RobertaModel)
 }
 
 logging.basicConfig(level=logging.INFO)
