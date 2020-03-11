@@ -136,11 +136,7 @@ def evaluate(opt):
     first_examples = 0
     with torch.no_grad():
         for i, (x,y) in enumerate(tqdm(test_loader, total=n_batches)):
-            if type(x) != list: # torch.tensor
-                x = x.to(device)
-            else:               # list of torch.tensor
-                for i in range(len(x)):
-                    x[i] = x[i].to(device)
+            x = to_device(x, device)
             y = y.to(device)
             logits = model(x)
             if preds is None:

@@ -73,11 +73,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
     st_time = time.time()
     for local_step, (x,y) in tqdm(enumerate(train_loader), total=len(train_loader)):
         global_step = (len(train_loader) * epoch_i) + local_step
-        if type(x) != list: # torch.tensor
-            x = x.to(device)
-        else:               # list of torch.tensor
-            for i in range(len(x)):
-                x[i] = x[i].to(device)
+        x = to_device(x, device)
         y = y.to(device)
         output = model(x)
         loss = criterion(output, y)
@@ -120,11 +116,7 @@ def evaluate(model, config, val_loader, device):
     criterion = torch.nn.CrossEntropyLoss().to(device)
     with torch.no_grad():
         for i, (x,y) in enumerate(val_loader):
-            if type(x) != list: # torch.tensor
-                x = x.to(device)
-            else:               # list of torch.tensor
-                for i in range(len(x)):
-                    x[i] = x[i].to(device)
+            x = to_device(x, device)
             y = y.to(device)
             output = model(x)
             loss = criterion(output, y)

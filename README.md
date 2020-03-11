@@ -176,8 +176,8 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | BERT-large, CLS     | 93.85       |               |
 | ALBERT-base, CNN    | 86.66       | feature-based |             
 | ALBERT-xxlarge, CNN | 91.32       | feature-based |
-| ROBERTa-large, CNN  | *94.62*     |               |
-| ROBERTa-large, CLS  | -           |               |
+| ROBERTa-large, CNN  | **94.62**   |               |
+| ROBERTa-large, CLS  | 93.23       |               |
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -331,10 +331,12 @@ $ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 
 $ python evaluate.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.9462,  1723/ 1821
-INFO:__main__:[Elapsed Time] : 52971ms, -869771.8243948668ms on average
 
 * enc_class=cls
 $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+
+INFO:__main__:[Accuracy] : 0.9325,  1698/ 1821
+INFO:__main__:[Elapsed Time] : 46867ms, 25.665384615384614ms on average
 
 * roberta-large-mnli
 
