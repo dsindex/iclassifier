@@ -303,9 +303,10 @@ $ python train.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 -
 - evaluation
 ```
 $ python evaluate.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint 
+  
+* fine-tuning ALBERT doesn't work well. i guess ALBERT needs more data.
 
 * feature-based
-* fine-tuning ALBERT doesn't work well. i guess ALBERT needs more data.
 INFO:__main__:[Accuracy] : 0.8666,  1578/ 1821
 INFO:__main__:[Elapsed Time] : 30896ms, 16.966501922020868ms on average
  
@@ -320,10 +321,10 @@ INFO:__main__:[Elapsed Time] : 102140ms, 56.090060406370127ms on average
 ```
 * n_ctx size should be less than 512
 $ python preprocess.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large
-$ python train.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
+$ python train.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --decay_rate=0.9 --batch_size=32
 
 $ python preprocess.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large 
-$ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
+$ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --decay_rate=0.9 --batch_size=32
 ```
 
 - evaluation
@@ -346,4 +347,5 @@ $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/ss
 - [Intent Detection](https://paperswithcode.com/task/intent-detection)
 - [Intent Classification](https://paperswithcode.com/task/intent-classification)
 - [Identifying Hate Speech with BERT and CNN](https://towardsdatascience.com/identifying-hate-speech-with-bert-and-cnn-b7aa2cddd60d)
+- [RoBERTa GLUE task setting](https://github.com/pytorch/fairseq/blob/master/examples/roberta/README.glue.md)
 

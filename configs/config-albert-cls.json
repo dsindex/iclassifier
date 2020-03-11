@@ -2,6 +2,5 @@
     "emb_class": "albert",
     "enc_class": "cls",
     "n_ctx": 100,
-    "token_emb_dim": 300,
     "dropout": 0.2
 }
