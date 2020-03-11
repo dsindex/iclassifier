@@ -126,9 +126,12 @@ INFO:__main__:[Elapsed Time] : 5367ms, 7.500715307582261ms on average
 - train
 ```
 * n_ctx size should be less than 512
+
+* enc_class=cnn
 $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
 $ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
 
+* enc_class=cls
 $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
 $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
 
@@ -137,7 +140,7 @@ $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_pat
 
 - evaluation
 ```
-1) enc_class=cnn
+* enc_class=cnn
 $ python evaluate.py --config=configs/config-bert-cnn.json --bert_output_dir=bert-checkpoint --bert_do_lower_case
 
 INFO:__main__:[Accuracy] : 0.9743,   682/  700
@@ -147,7 +150,7 @@ INFO:__main__:[Elapsed Time] : 9353ms, 13.361428571428572ms on average
   INFO:__main__:[Accuracy] : 0.9800,   686/  700
   INFO:__main__:[Elapsed Time] : 16994ms, 24.277142857142856ms on average
 
-2) enc_class=cls
+* enc_class=cls
 $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --bert_do_lower_case
 
 INFO:__main__:[Accuracy] : 0.9743,   682/  700
@@ -242,30 +245,29 @@ INFO:__main__:[Elapsed Time] : 11459ms, 6.245054945054945ms on average
 - train
 ```
 * n_ctx size should be less than 512
+
+* enc_class=cnn
 $ python preprocess.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
 $ python train.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
 
+* enc_class=cls
 $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
 $ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
 ```
 
 - evaluation
 ```
-1) enc_class=cnn
+* enc_class=cnn
 $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case 
 
 INFO:__main__:[Accuracy] : 0.9143,  1665/ 1821
 INFO:__main__:[Elapsed Time] : 25373ms, 13.933552992861065ms on average
 
-  ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5
-  INFO:__main__:[Accuracy] : 0.9253,  1685/ 1821
-  INFO:__main__:[Elapsed Time] : 55444ms, 30.44700713893465ms on average
-
   ** --bert_model_name_or_path=bert-large-uncased --lr=1e-5
   INFO:__main__:[Accuracy] : 0.9308,  1695/ 1821
   INFO:__main__:[Elapsed Time] : 52170ms, 28.649093904448105ms on average
 
-2) enc_class=cls
+* enc_class=cls
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case
 
 INFO:__main__:[Accuracy] : 0.8929,  1626/ 1821
@@ -274,14 +276,6 @@ INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
   ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5
   INFO:__main__:[Accuracy] : 0.9385,  1709/ 1821
   INFO:__main__:[Elapsed Time] : 50982ms, 27.99670510708402ms on average
-
-  ** --bert_model_name_or_path=bert-large-uncased --lr=1e-5
-  INFO:__main__:[Accuracy] : 0.9292,  1692/ 1821
-  INFO:__main__:[Elapsed Time] : 48522ms, 26.645799011532127ms on average
-
-  ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5 --batch_size=32
-  INFO:__main__:[Accuracy] : 0.9116,  1660/ 1821
-  INFO:__main__:[Elapsed Time] : 45190ms, 24.816035145524438ms on average
 ```
 
 ### emb_class=albert, enc_class=cnn | cls
@@ -289,12 +283,12 @@ INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
 - train
 ```
 * n_ctx size should be less than 512
-$ python preprocess.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2
 
-* feature-based
+* enc_class=cnn
+$ python preprocess.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2
 $ python train.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2 --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=15 --batch_size=64 --bert_use_feature_based
 
-* albert-xxlarge-v2
+** albert-xxlarge-v2
 $ python preprocess.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-xxlarge-v2
 $ python train.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-xxlarge-v2 --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=15 --batch_size=32 --bert_use_feature_based
 
@@ -302,17 +296,17 @@ $ python train.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 -
 
 - evaluation
 ```
+* enc_class=cnn
 $ python evaluate.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint 
   
-* fine-tuning ALBERT doesn't work well. i guess ALBERT needs more data.
+** fine-tuning ALBERT doesn't work well. i guess ALBERT needs more data.
+** feature-based
+  INFO:__main__:[Accuracy] : 0.8666,  1578/ 1821
+  INFO:__main__:[Elapsed Time] : 30896ms, 16.966501922020868ms on average
 
-* feature-based
-INFO:__main__:[Accuracy] : 0.8666,  1578/ 1821
-INFO:__main__:[Elapsed Time] : 30896ms, 16.966501922020868ms on average
- 
-* albert-xxlarge-v2
-INFO:__main__:[Accuracy] : 0.9132,  1663/ 1821
-INFO:__main__:[Elapsed Time] : 102140ms, 56.090060406370127ms on average
+** albert-xxlarge-v2
+  INFO:__main__:[Accuracy] : 0.9132,  1663/ 1821
+  INFO:__main__:[Elapsed Time] : 102140ms, 56.090060406370127ms on average
 ```
 
 ### emb_class=roberta, enc_class=cnn | cls
@@ -320,21 +314,26 @@ INFO:__main__:[Elapsed Time] : 102140ms, 56.090060406370127ms on average
 - train
 ```
 * n_ctx size should be less than 512
+
+* enc_class=cnn
 $ python preprocess.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large
 $ python train.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --decay_rate=0.9 --batch_size=32
 
+* enc_class=cls
 $ python preprocess.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large 
 $ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --decay_rate=0.9 --batch_size=32
+
 ```
 
 - evaluation
 ```
-1) enc_class=cnn
+* enc_class=cnn
 $ python evaluate.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
-
-2) enc_class=cls
+* enc_class=cls
 $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+
+* roberta-large-mnli
 
 ```
 
