@@ -82,9 +82,11 @@ def load_model(config, checkpoint):
     if 'bert' in config['emb_class']:
         from transformers import BertTokenizer, BertConfig, BertModel
         from transformers import AlbertTokenizer, AlbertConfig, AlbertModel
+        from transformers import RobertaConfig, RobertaTokenizer, RobertaModel
         MODEL_CLASSES = {
             "bert": (BertConfig, BertTokenizer, BertModel),
-            "albert": (AlbertConfig, AlbertTokenizer, AlbertModel)
+            "albert": (AlbertConfig, AlbertTokenizer, AlbertModel),
+            "roberta": (RobertaConfig, RobertaTokenizer, RobertaModel)
         }
         Config    = MODEL_CLASSES[config['emb_class']][0]
         Tokenizer = MODEL_CLASSES[config['emb_class']][1]

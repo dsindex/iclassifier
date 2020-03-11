@@ -173,10 +173,10 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | Glove, DenseNet-CNN | 86.38       |               |
 | Glove, DenseNet-DSA | 85.34       |               |
 | BERT-large, CNN     | 93.08       |               |
-| BERT-large, CLS     | **93.85**   |               |
+| BERT-large, CLS     | 93.85       |               |
 | ALBERT-base, CNN    | 86.66       | feature-based |             
 | ALBERT-xxlarge, CNN | 91.32       | feature-based |
-| ROBERTa-large, CNN  | -           |               |
+| ROBERTa-large, CNN  | *94.62*     |               |
 | ROBERTa-large, CLS  | -           |               |
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
@@ -317,11 +317,11 @@ $ python evaluate.py --config=configs/config-albert-cnn.json --data_dir=data/sst
 
 * enc_class=cnn
 $ python preprocess.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large
-$ python train.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --decay_rate=0.9 --batch_size=32
+$ python train.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --decay_rate=0.9 --batch_size=32
 
 * enc_class=cls
 $ python preprocess.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large 
-$ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --decay_rate=0.9 --batch_size=32
+$ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --decay_rate=0.9 --batch_size=32
 
 ```
 
@@ -329,6 +329,9 @@ $ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 
 ```
 * enc_class=cnn
 $ python evaluate.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+
+INFO:__main__:[Accuracy] : 0.9462,  1723/ 1821
+INFO:__main__:[Elapsed Time] : 52971ms, -869771.8243948668ms on average
 
 * enc_class=cls
 $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
@@ -346,5 +349,6 @@ $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/ss
 - [Intent Detection](https://paperswithcode.com/task/intent-detection)
 - [Intent Classification](https://paperswithcode.com/task/intent-classification)
 - [Identifying Hate Speech with BERT and CNN](https://towardsdatascience.com/identifying-hate-speech-with-bert-and-cnn-b7aa2cddd60d)
-- [RoBERTa GLUE task setting](https://github.com/pytorch/fairseq/blob/master/examples/roberta/README.glue.md)
+- [RoBERTa](https://github.com/pytorch/fairseq/tree/master/examples/roberta)
+  - [RoBERTa GLUE task setting](https://github.com/pytorch/fairseq/blob/master/examples/roberta/README.glue.md)
 
