@@ -51,6 +51,7 @@ def convert_single_example_to_feature(example,
                                       cls_token="[CLS]",
                                       cls_token_segment_id=0,
                                       sep_token="[SEP]",
+                                      sep_token_extra=False,
                                       pad_token=0,
                                       pad_token_segment_id=0,
                                       sequence_a_segment_id=0,
@@ -63,8 +64,9 @@ def convert_single_example_to_feature(example,
         word_tokens = tokenizer.tokenize(word)
         tokens.extend(word_tokens)
         label_id = label_map[label]
-
-    special_tokens_count = 2
+    
+    # Account for [CLS] and [SEP] with "- 2" and with "- 3" for RoBERTa.
+    special_tokens_count = 3 if sep_token_extra else 2
     if len(tokens) > max_seq_length - special_tokens_count:
         tokens = tokens[:(max_seq_length - special_tokens_count)]
 
@@ -76,6 +78,9 @@ def convert_single_example_to_feature(example,
     #  input_mask:   1   1   1   1  1     1   1   0  0  0 ...
 
     tokens += [sep_token]
+    if sep_token_extra:
+        # roberta uses an extra separator b/w pairs of sentences
+        tokens += [sep_token]
     segment_ids = [sequence_a_segment_id] * len(tokens)
 
     tokens = [cls_token] + tokens
@@ -116,6 +121,7 @@ def convert_examples_to_features(examples,
                                  cls_token="[CLS]",
                                  cls_token_segment_id=0,
                                  sep_token="[SEP]",
+                                 sep_token_extra=False,
                                  pad_token=0,
                                  pad_token_segment_id=0,
                                  sequence_a_segment_id=0):
@@ -133,6 +139,7 @@ def convert_examples_to_features(examples,
                                                     cls_token=cls_token,
                                                     cls_token_segment_id=cls_token_segment_id,
                                                     sep_token=sep_token,
+                                                    sep_token_extra=sep_token_extra,
                                                     pad_token=pad_token,
                                                     pad_token_segment_id=pad_token_segment_id,
                                                     sequence_a_segment_id=sequence_a_segment_id,

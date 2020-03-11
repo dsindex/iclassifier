@@ -2,7 +2,7 @@
 
 reference pytorch code for intent(sentence) classification.
 - embedding
-  - Glove, BERT, ALBERT
+  - Glove, BERT, ALBERT, ROBERTa
 - encoding
   - CNN
   - DenseNet
@@ -173,6 +173,8 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | BERT-large, CLS     | **93.85**   |               |
 | ALBERT-base, CNN    | 86.66       | feature-based |             
 | ALBERT-xxlarge, CNN | 91.32       | feature-based |
+| ROBERTa-large, CNN  | -           |               |
+| ROBERTa-large, CLS  | -           |               |
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -310,6 +312,29 @@ INFO:__main__:[Elapsed Time] : 30896ms, 16.966501922020868ms on average
 * albert-xxlarge-v2
 INFO:__main__:[Accuracy] : 0.9132,  1663/ 1821
 INFO:__main__:[Elapsed Time] : 102140ms, 56.090060406370127ms on average
+```
+
+### emb_class=roberta, enc_class=cnn | cls
+
+- train
+```
+* n_ctx size should be less than 512
+$ python preprocess.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large
+$ python train.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
+
+$ python preprocess.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large 
+$ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
+```
+
+- evaluation
+```
+1) enc_class=cnn
+$ python evaluate.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+
+
+2) enc_class=cls
+$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+
 ```
 
 ## experiments for Korean

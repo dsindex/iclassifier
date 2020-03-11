@@ -155,7 +155,9 @@ def write_embedding(embedding, output_path):
     logger.info("\n[Writing embedding]")
     np.save(output_path, embedding)
 
-def preprocess_glove(config, opt):
+def preprocess_glove(config):
+    opt = config['opt']
+
     from tokenizer import Tokenizer
 
     # vocab, embedding
@@ -201,7 +203,9 @@ def preprocess_glove(config, opt):
 # BERT
 # ---------------------------------------------------------------------------- #
 
-def build_features(input_path, tokenizer, labels, config, opt, mode='train'):
+def build_features(input_path, tokenizer, labels, config, mode='train'):
+    opt = config['opt']
+
     from util_bert import read_examples_from_file
     from util_bert import convert_examples_to_features
 
@@ -211,6 +215,8 @@ def build_features(input_path, tokenizer, labels, config, opt, mode='train'):
                                             cls_token=tokenizer.cls_token,
                                             cls_token_segment_id=0,
                                             sep_token=tokenizer.sep_token,
+                                            sep_token_extra=bool(config['emb_class'] in ['roberta']),
+                                            # roberta uses an extra separator b/w pairs of sentences, cf. github.com/pytorch/fairseq/commit/1684e166e3da03f5b600dbb7855cb98ddfcd0805
                                             pad_token=tokenizer.convert_tokens_to_ids([tokenizer.pad_token])[0],
                                             pad_token_segment_id=0,
                                             sequence_a_segment_id=0)
@@ -222,12 +228,16 @@ def write_features(features, output_path):
     logger.info("[Saving features into file] %s", output_path)
     torch.save(features, output_path)
    
-def preprocess_bert(config, opt):
+def preprocess_bert(config):
+    opt = config['opt']
+
     from transformers import BertTokenizer
     from transformers import AlbertTokenizer
+    from transformers import RobertaTokenizer
     TOKENIZER_CLASSES = {
         "bert": BertTokenizer,
-        "albert": AlbertTokenizer
+        "albert": AlbertTokenizer,
+        "roberta": RobertaTokenizer
     }
     Tokenizer = TOKENIZER_CLASSES[config['emb_class']]
 
@@ -239,13 +249,13 @@ def preprocess_bert(config, opt):
 
     # build features
     path = os.path.join(opt.data_dir, _TRAIN_FILE)
-    train_features = build_features(path, tokenizer, labels, config, opt, mode='train')
+    train_features = build_features(path, tokenizer, labels, config, mode='train')
 
     path = os.path.join(opt.data_dir, _VALID_FILE)
-    valid_features = build_features(path, tokenizer, labels, config, opt, mode='valid')
+    valid_features = build_features(path, tokenizer, labels, config, mode='valid')
 
     path = os.path.join(opt.data_dir, _TEST_FILE)
-    test_features = build_features(path, tokenizer, labels, config, opt, mode='test')
+    test_features = build_features(path, tokenizer, labels, config, mode='test')
 
     # write features
     path = os.path.join(opt.data_dir, _TRAIN_FILE + _FSUFFIX)
@@ -264,9 +274,9 @@ def preprocess_bert(config, opt):
 def main():
     parser = argparse.ArgumentParser()
     
+    parser.add_argument('--config', type=str, default='configs/config-glove-cnn.json')
     parser.add_argument('--data_dir', type=str, default='data/snips')
     parser.add_argument('--embedding_path', type=str, default='embeddings/glove.6B.300d.txt')
-    parser.add_argument('--config', type=str, default='config-glove.json')
     parser.add_argument('--seed', default=5, type=int)
     # for BERT, ALBERT
     parser.add_argument('--bert_model_name_or_path', type=str, default='bert-base-uncased',
@@ -284,9 +294,9 @@ def main():
     logger.info("%s", config)
 
     if config['emb_class'] == 'glove':
-        preprocess_glove(config, opt)
+        preprocess_glove(config)
     if 'bert' in config['emb_class']:
-        preprocess_bert(config, opt)
+        preprocess_bert(config)
 
 
 if __name__ == '__main__':
