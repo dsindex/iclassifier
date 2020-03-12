@@ -176,8 +176,8 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | BERT-large, CLS     | 93.85       |               |
 | ALBERT-base, CNN    | 86.66       | feature-based |             
 | ALBERT-xxlarge, CNN | 91.32       | feature-based |
-| ROBERTa-large, CNN  | **94.62**   |               |
-| ROBERTa-large, CLS  | 93.23       |               |
+| ROBERTa-large, CNN  | 94.62       |               |
+| ROBERTa-large, CLS  | **95.66**   |               |
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -326,6 +326,7 @@ $ python train.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 
 * enc_class=cls
 $ python preprocess.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large 
 $ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --decay_rate=0.9 --batch_size=32
+$ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --decay_rate=0.9 --batch_size=64
 ```
 
 - evaluation
@@ -353,12 +354,13 @@ INFO:__main__:[Elapsed Time] : 57243ms, 31.35879120879121ms on average
 * enc_class=cls
 $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
-1)
+1) batch_size=32
 INFO:__main__:[Accuracy] : 0.9325,  1698/ 1821
 INFO:__main__:[Elapsed Time] : 46867ms, 25.665384615384614ms on average
 
-2)
-
+2) batch_size=64
+INFO:__main__:[Accuracy] : 0.9566,  1742/ 1821
+INFO:__main__:[Elapsed Time] : 43363ms, 23.73956043956044ms on average
 ```
 
 ## experiments for Korean
