@@ -22,9 +22,9 @@
 
 - [google original tf code](https://github.com/google-research/bert)를 이용해서 학습
   - [sentencepiece](https://github.com/google/sentencepiece) tokenizer 기반
-    - ex) all.bpe.4.8m_step
+    - ex) all.bpe.4.8m_step, all.dha_s2.9.4_d2.9.27_bpe.4m_step
   - `형태소분석기 tokenizer` 기반
-    - ex) all.dha.2.5m_step
+    - ex) all.dha.2.5m_step, all.dha_s2.9.4_d2.9.27.10m_step
 
 - huggingface 포맷으로 변환
   - [convert_bert_orignal_tf_checkpoint_to_pytorch.py](https://github.com/huggingface/transformers/blob/master/transformers/convert_bert_original_tf_checkpoint_to_pytorch.py) 스크립트를 이용해서 변환.
@@ -52,10 +52,14 @@
 | Glove, CNN          | 87.31        |
 | Glove, DenseNet-CNN | 88.18        |
 | Glove, DenseNet-DSA | 87.66        |
-| bpe BERT, CNN       | 89.45        |
-| bpe BERT, CLS       | 89.31        |
-| dha BERT, CNN       | **89.96**    |
-| dha BERT, CLS       | 89.41        |
+| bpe BERT(4.8m), CNN | 89.45        |
+| bpe BERT(4.8m), CLS | 89.31        |
+| dha BERT(2.5m), CNN | **89.96**    |
+| dha BERT(2.5m), CLS | 89.41        |
+| bpe BERT(4m),   CNN | -            |
+| bpe BERT(4m),   CLS | -            |
+| dha BERT(10m),  CNN | -            |
+| dha BERT(10m),  CLS | -            |
 
 - [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results)
 
@@ -160,6 +164,28 @@ INFO:__main__:[Accuracy] : 0.8931, 44653/49997
 INFO:__main__:[Elapsed Time] : 89785ms, 1.795807748464908ms on average
 ```
 
+### Experiments with BERT(pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step)
+
+- train
+```
+* enc_class=cnn
+$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments/
+
+* enc_class=cls
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments/
+```
+
+- evaluation
+```
+* enc_class=cnn
+$ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
+
+* enc_class=cls
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
+
+```
+
 ### Experiments with BERT(pytorch.all.dha.2.5m_step)
  
 - train
@@ -185,5 +211,28 @@ $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clo
 
 INFO:__main__:[Accuracy] : 0.8941, 44701/49997
 INFO:__main__:[Elapsed Time] : 89692ms, 1.7939476368582115ms on average
+```
+
+### Experiments with BERT(pytorch.all.dha_s2.9.4_d2.9.27.10m_step)
+ 
+- train
+```
+* enc_class=cnn
+$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27.10m_step --data_dir=./data/clova_sentiments_morph
+$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27.10m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
+
+* enc_class=cls
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27.10m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=3 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
+```
+
+- evaluation
+```
+* enc_class=cnn
+$ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
+
+
+* enc_class=cls
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
+
 ```
 
