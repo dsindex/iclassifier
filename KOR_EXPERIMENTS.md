@@ -60,7 +60,7 @@
 | dha BERT(2.5m), CLS   | 89.41        |
 | dha-bpe BERT(4m), CNN | -            |
 | dha-bpe BERT(4m), CLS | -            |
-| dha BERT(10m), CNN    | -            |
+| dha BERT(10m), CNN    | 89.09        |
 | dha BERT(10m), CLS    | -            |
 
 - [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results)
@@ -198,20 +198,20 @@ INFO:__main__:[Elapsed Time] : 89692ms, 1.7939476368582115ms on average
 - train
 ```
 * enc_class=cnn
-$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments/
+$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --data_dir=./data/clova_sentiments_morph
+$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph
 
 * enc_class=cls
-$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments/
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph
 ```
 
 - evaluation
 ```
 * enc_class=cnn
-$ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
+$ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
 
 * enc_class=cls
-$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
 
 ```
 
@@ -232,6 +232,8 @@ $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_pat
 * enc_class=cnn
 $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
 
+INFO:__main__:[Accuracy] : 0.8908, 44536/49997
+INFO:__main__:[Elapsed Time] : 766457ms, 15.327646211696935ms on average
 
 * enc_class=cls
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
