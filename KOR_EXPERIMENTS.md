@@ -164,28 +164,6 @@ INFO:__main__:[Accuracy] : 0.8931, 44653/49997
 INFO:__main__:[Elapsed Time] : 89785ms, 1.795807748464908ms on average
 ```
 
-### Experiments with BERT(pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step)
-
-- train
-```
-* enc_class=cnn
-$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments/
-
-* enc_class=cls
-$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments/
-```
-
-- evaluation
-```
-* enc_class=cnn
-$ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
-
-* enc_class=cls
-$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
-
-```
-
 ### Experiments with BERT(pytorch.all.dha.2.5m_step)
  
 - train
@@ -211,6 +189,28 @@ $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clo
 
 INFO:__main__:[Accuracy] : 0.8941, 44701/49997
 INFO:__main__:[Elapsed Time] : 89692ms, 1.7939476368582115ms on average
+```
+
+### Experiments with BERT(pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step)
+
+- train
+```
+* enc_class=cnn
+$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments/
+
+* enc_class=cls
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments/
+```
+
+- evaluation
+```
+* enc_class=cnn
+$ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
+
+* enc_class=cls
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
+
 ```
 
 ### Experiments with BERT(pytorch.all.dha_s2.9.4_d2.9.27.10m_step)
