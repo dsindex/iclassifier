@@ -21,9 +21,11 @@
   - 다양한 문서 데이터를 크롤링
 
 - [google original tf code](https://github.com/google-research/bert)를 이용해서 학습
-  - [sentencepiece](https://github.com/google/sentencepiece) tokenizer 기반
-    - ex) all.bpe.4.8m_step, all.dha_s2.9.4_d2.9.27_bpe.4m_step
-  - `형태소분석기 tokenizer` 기반
+  - [sentencepiece](https://github.com/google/sentencepiece) character-level bpe tokenizer 기반
+    - ex) all.bpe.4.8m_step
+  - `bpe + 형태소분석기` 기산
+    - ex) all.dha_s2.9.4_d2.9.27_bpe.4m_step
+  - `형태소분석기` 기반
     - ex) all.dha.2.5m_step, all.dha_s2.9.4_d2.9.27.10m_step
 
 - huggingface 포맷으로 변환
@@ -47,19 +49,19 @@
 
 - iclassifier
 
-|                     | Accuracy (%) |
-| ------------------- | ------------ |
-| Glove, CNN          | 87.31        |
-| Glove, DenseNet-CNN | 88.18        |
-| Glove, DenseNet-DSA | 87.66        |
-| bpe BERT(4.8m), CNN | 89.45        |
-| bpe BERT(4.8m), CLS | 89.31        |
-| dha BERT(2.5m), CNN | **89.96**    |
-| dha BERT(2.5m), CLS | 89.41        |
-| bpe BERT(4m),   CNN | -            |
-| bpe BERT(4m),   CLS | -            |
-| dha BERT(10m),  CNN | -            |
-| dha BERT(10m),  CLS | -            |
+|                       | Accuracy (%) |
+| --------------------- | ------------ |
+| Glove, CNN            | 87.31        |
+| Glove, DenseNet-CNN   | 88.18        |
+| Glove, DenseNet-DSA   | 87.66        |
+| bpe BERT(4.8m), CNN   | 89.45        |
+| bpe BERT(4.8m), CLS   | 89.31        |
+| dha BERT(2.5m), CNN   | **89.96**    |
+| dha BERT(2.5m), CLS   | 89.41        |
+| dha-bpe BERT(4m), CNN | -            |
+| dha-bpe BERT(4m), CLS | -            |
+| dha BERT(10m), CNN    | -            |
+| dha BERT(10m), CLS    | -            |
 
 - [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results)
 
