@@ -74,6 +74,12 @@
 | Bert-Multilingual | 87.07        |
 | FastText          | 85.50        |
 
+- [KoBERT](https://github.com/SKTBrain/KoBERT#naver-sentiment-analysis)
+
+|                   | Accuracy (%) |
+| ----------------- | ------------ |
+| KoBERT            | 90.1         |
+
 ### Experiments with Glove
 
 #### enc_class=cnn
