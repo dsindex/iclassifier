@@ -56,10 +56,10 @@ def write_label(labels, output_path):
 # Glove
 # ---------------------------------------------------------------------------- #
 
-def build_init_vocab(Tokenizer):
+def build_init_vocab(config):
     init_vocab = {}
-    init_vocab[Tokenizer.get_pad_token()] = Tokenizer.get_pad_id()
-    init_vocab[Tokenizer.get_unk_token()] = Tokenizer.get_unk_id()
+    init_vocab[config['pad_token']] = config['pad_token_id']
+    init_vocab[config['unk_token']] = config['unk_token_id']
     return init_vocab
 
 def build_vocab_from_embedding(input_path, vocab, config):
@@ -161,7 +161,7 @@ def preprocess_glove(config):
     from tokenizer import Tokenizer
 
     # vocab, embedding
-    init_vocab = build_init_vocab(Tokenizer)
+    init_vocab = build_init_vocab(config)
     vocab, embedding = build_vocab_from_embedding(opt.embedding_path, init_vocab, config)
 
     # build data
