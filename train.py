@@ -305,7 +305,7 @@ def main():
     parser.add_argument('--world_size', default=1, type=int)
     parser.add_argument('--log_dir', type=str, default='runs')
     parser.add_argument('--seed', default=5, type=int)
-    parser.add_argument('--embedding_trainable', action='store_true')
+    parser.add_argument('--embedding_trainable', action='store_true', help="set word embedding(Glove) trainable")
     # for BERT
     parser.add_argument('--bert_model_name_or_path', type=str, default='embeddings/bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
