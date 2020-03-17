@@ -98,6 +98,7 @@ class DenseNet(nn.Module):
         out_channels = last_num_filters
         padding = (ks - 1)//2
         self.conv_last = nn.Conv1d(in_channels=in_channels, out_channels=out_channels, kernel_size=ks, padding=padding)
+        self.last_dim = last_num_filters
 
     def forward(self, x, mask):
         # x     : [batch_size, seq_size, emb_dim]
@@ -258,7 +259,7 @@ class TextGloveDensenetCNN(BaseModel):
         densenet_num_filters = config['densenet_num_filters']
         densenet_last_num_filters = config['densenet_last_num_filters']
         self.densenet = DenseNet(densenet_kernels, emb_dim, densenet_first_num_filters, densenet_num_filters, densenet_last_num_filters, activation=F.relu)
-        self.layernorm_densenet = nn.LayerNorm(densenet_last_num_filters)
+        self.layernorm_densenet = nn.LayerNorm(self.densenet.last_dim)
 
         # convolution layer
         num_filters = config['num_filters']
@@ -286,7 +287,7 @@ class TextGloveDensenetCNN(BaseModel):
 
         # 2. DenseNet
         densenet_out = self.densenet(embed_out, mask)
-        # densenet_out : [batch_size, seq_size, last_num_filters]
+        # densenet_out : [batch_size, seq_size, densenet_last_num_filters]
         densenet_out = self.layernorm_densenet(densenet_out)
         densenet_out = self.dropout(densenet_out)
 
@@ -321,7 +322,7 @@ class TextGloveDensenetDSA(BaseModel):
         densenet_num_filters = config['densenet_num_filters']
         densenet_last_num_filters = config['densenet_last_num_filters']
         self.densenet = DenseNet(densenet_kernels, emb_dim, densenet_first_num_filters, densenet_num_filters, densenet_last_num_filters, activation=F.leaky_relu)
-        self.layernorm_densenet = nn.LayerNorm(densenet_last_num_filters)
+        self.layernorm_densenet = nn.LayerNorm(self.densenet.last_dim)
 
         # DSA(Dynamic Self Attention) layer
         dsa_num_attentions = config['dsa_num_attentions']
