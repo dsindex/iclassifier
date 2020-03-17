@@ -56,6 +56,7 @@ class TextCNN(nn.Module):
             convs.append(nn.Conv1d(in_channels=in_channels, out_channels=out_channels, kernel_size=ks, groups=in_channels))
             '''
         self.convs = nn.ModuleList(convs)
+        self.last_dim = len(kernel_sizes) * out_channels
 
     def forward(self, x):
         # x : [batch_size, seq_size, emb_dim]
@@ -139,6 +140,7 @@ class DSA(nn.Module):
             dsa.append(nn.Linear(dsa_input_dim, dsa_dim))
         self.dsa = nn.ModuleList(dsa)
         self.dsa_r = dsa_r # r iterations
+        self.last_dim = dsa_num_attentions * dsa_dim
 
     def __self_attention(self, x, mask, r=3):
         # x    : [batch_size, seq_size, dsa_dim]
@@ -203,7 +205,7 @@ class TextGloveCNN(BaseModel):
         num_filters = config['num_filters']
         kernel_sizes = config['kernel_sizes']
         self.textcnn = TextCNN(emb_dim, num_filters, kernel_sizes)
-        self.layernorm_textcnn = nn.LayerNorm(len(kernel_sizes) * num_filters)
+        self.layernorm_textcnn = nn.LayerNorm(self.textcnn.last_dim)
 
         self.dropout = nn.Dropout(config['dropout'])
 
@@ -262,7 +264,7 @@ class TextGloveDensenetCNN(BaseModel):
         num_filters = config['num_filters']
         kernel_sizes = config['kernel_sizes']
         self.textcnn = TextCNN(densenet_last_num_filters, num_filters, kernel_sizes)
-        self.layernorm_textcnn = nn.LayerNorm(len(kernel_sizes) * num_filters)
+        self.layernorm_textcnn = nn.LayerNorm(self.textcnn.last_dim)
 
         self.dropout = nn.Dropout(config['dropout'])
 
@@ -327,7 +329,7 @@ class TextGloveDensenetDSA(BaseModel):
         dsa_dim = config['dsa_dim']
         dsa_r = config['dsa_r']
         self.dsa = DSA(config, dsa_num_attentions, dsa_input_dim, dsa_dim, dsa_r=dsa_r)
-        self.layernorm_dsa = nn.LayerNorm(dsa_num_attentions * dsa_dim)
+        self.layernorm_dsa = nn.LayerNorm(self.dsa.last_dim)
 
         self.dropout = nn.Dropout(config['dropout'])
 
@@ -399,7 +401,7 @@ class TextBertCNN(BaseModel):
         num_filters = config['num_filters']
         kernel_sizes = config['kernel_sizes']
         self.textcnn = TextCNN(emb_dim, num_filters, kernel_sizes)
-        self.layernorm_textcnn = nn.LayerNorm(len(kernel_sizes) * num_filters)
+        self.layernorm_textcnn = nn.LayerNorm(self.textcnn.last_dim)
 
         self.dropout = nn.Dropout(config['dropout'])
 
