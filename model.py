@@ -26,10 +26,10 @@ class BaseModel(nn.Module):
         weights_matrix = torch.tensor(weights_matrix)
         return weights_matrix
 
-    def create_embedding_layer(self, weights_matrix, non_trainable=False):
-        vocab_size, emb_dim = weights_matrix.size()
-        emb_layer = nn.Embedding(vocab_size, emb_dim)
-        emb_layer.load_state_dict({'weight': weights_matrix})
+    def create_embedding_layer(self, vocab_dim, emb_dim, weights_matrix=None, non_trainable=True, padding_idx=0):
+        emb_layer = nn.Embedding(vocab_dim, emb_dim, padding_idx=padding_idx)
+        if torch.is_tensor(weights_matrix):
+            emb_layer.load_state_dict({'weight': weights_matrix})
         if non_trainable:
             emb_layer.weight.requires_grad = False
         return emb_layer
@@ -199,7 +199,9 @@ class TextGloveCNN(BaseModel):
 
         # glove embedding layer
         weights_matrix = super().load_embedding(embedding_path)
-        self.embed = super().create_embedding_layer(weights_matrix, non_trainable=emb_non_trainable)
+        vocab_dim, emb_dim = weights_matrix.size()
+        padding_idx = config['pad_token_id']
+        self.embed = super().create_embedding_layer(vocab_dim, emb_dim, weights_matrix=weights_matrix, non_trainable=emb_non_trainable, padding_idx=padding_idx)
         emb_dim = token_emb_dim 
 
         # convolution layer
@@ -250,7 +252,9 @@ class TextGloveDensenetCNN(BaseModel):
 
         # glove embedding layer
         weights_matrix = super().load_embedding(embedding_path)
-        self.embed = super().create_embedding_layer(weights_matrix, non_trainable=emb_non_trainable)
+        vocab_dim, emb_dim = weights_matrix.size()
+        padding_idx = config['pad_token_id']
+        self.embed = super().create_embedding_layer(vocab_dim, emb_dim, weights_matrix=weights_matrix, non_trainable=emb_non_trainable, padding_idx=padding_idx)
         
         # Densenet layer
         densenet_kernels = config['densenet_kernels']
@@ -313,7 +317,9 @@ class TextGloveDensenetDSA(BaseModel):
 
         # glove embedding layer
         weights_matrix = super().load_embedding(embedding_path)
-        self.embed = super().create_embedding_layer(weights_matrix, non_trainable=emb_non_trainable)
+        vocab_dim, emb_dim = weights_matrix.size()
+        padding_idx = config['pad_token_id']
+        self.embed = super().create_embedding_layer(vocab_dim, emb_dim, weights_matrix=weights_matrix, non_trainable=emb_non_trainable, padding_idx=padding_idx)
         
         # Densenet layer
         densenet_kernels = config['densenet_kernels']
