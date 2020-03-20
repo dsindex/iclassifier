@@ -187,7 +187,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | ALBERT-base, CNN    | 86.66       | feature-based | 16.9665 |           
 | ALBERT-xxlarge, CNN | 91.32       | feature-based | 56.0900 |
 | ROBERTa-base, CNN   | 92.31       |               | 15.8802 |
-| ROBERTa-base, CLS   | -           |               | -       |
+| ROBERTa-base, CLS   | 93.03       |               | 14.6736 |
 | ROBERTa-large, CNN  | 94.62       |               | 27.6xxx |
 | ROBERTa-large, CLS  | **95.66**   |               | 23.7395 |
 
@@ -405,6 +405,8 @@ INFO:__main__:[Elapsed Time] : 46867ms, 25.665384615384614ms on average
   INFO:__main__:[Elapsed Time] : 43363ms, 23.73956043956044ms on average
 
   ** --bert_model_name_or_path=./embeddings/roberta-base --batch_size=64
+  INFO:__main__:[Accuracy] : 0.9303,  1694/ 1821
+  INFO:__main__:[Elapsed Time] : 26822ms, 14.673626373626373ms on average
 
 ```
 
