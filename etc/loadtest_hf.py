@@ -7,6 +7,7 @@ import time
 import pdb
 import logging
 
+from transformers import AutoTokenizer, AutoConfig, AutoModel
 from transformers import BertTokenizer, BertConfig, BertModel
 from transformers import AlbertConfig, AlbertTokenizer, AlbertModel
 from transformers import RobertaConfig, RobertaTokenizer, RobertaModel
