@@ -57,7 +57,7 @@
 | bpe BERT(4.8m), CNN     | 89.45        | 14.6978 |
 | bpe BERT(4.8m), CLS     | 89.31        | 13.4392 |
 | dha BERT(2.5m), CNN     | **89.96**    | 14.8779 |
-| dha BERT(2.5m), CLS     | 89.41        | 1.7939 (?) |
+| dha BERT(2.5m), CLS     | 89.41        | 14.3664 |
 | dha-bpe BERT(4m), CNN   | 89.07        | 14.9454 |
 | dha-bpe BERT(4m), CLS   | 89.01        | 12.7981 |
 | dha BERT(10m), CNN      | 89.08        | 15.3276 |
@@ -196,7 +196,7 @@ INFO:__main__:[Elapsed Time] : 743973ms, 14.877990239219137ms on average
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.8941, 44701/49997
-INFO:__main__:[Elapsed Time] : 89692ms, 1.7939476368582115ms on average
+INFO:__main__:[Elapsed Time] : 718417ms, 14.36640931274502ms on average
 ```
 
 ### Experiments with BERT(pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step)
