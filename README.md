@@ -337,8 +337,6 @@ $ python evaluate.py --config=configs/config-albert-cnn.json --data_dir=data/sst
 INFO:__main__:[Accuracy] : 0.8666,  1578/ 1821
 INFO:__main__:[Elapsed Time] : 30896ms, 16.966501922020868ms on average
 
-  ** --bert_do_lower_case
-
   ** --bert_model_name_or_path=./embeddings/albert-xxlarge-v2 --batch_size=32
   INFO:__main__:[Accuracy] : 0.9132,  1663/ 1821
   INFO:__main__:[Elapsed Time] : 102140ms, 56.090060406370127ms on average
