@@ -49,19 +49,19 @@
 
 - iclassifier
 
-|                       | Accuracy (%) | Elapsed time / example (ms) |
-| --------------------- | ------------ | --------------------------- |
-| Glove, CNN            | 87.31        | 1.9479  |
-| Glove, DenseNet-CNN   | 88.18        | 3.4614  |
-| Glove, DenseNet-DSA   | 87.66        | 6.9731  |
-| bpe BERT(4.8m), CNN   | 89.45        | 14.6978 |
-| bpe BERT(4.8m), CLS   | 89.31        | 13.4392 |
-| dha BERT(2.5m), CNN   | **89.96**    | 14.8779 |
-| dha BERT(2.5m), CLS   | 89.41        | 1.7939 (?) |
-| dha-bpe BERT(4m), CNN | 89.07        | 14.9454 |
-| dha-bpe BERT(4m), CLS | 89.01        | 12.7981 |
-| dha BERT(10m), CNN    | 89.08        | 15.3276 |
-| dha BERT(10m), CLS    | 89.25        | 12.7876 |
+|                         | Accuracy (%) | Elapsed time / example (ms) |
+| ----------------------- | ------------ | --------------------------- |
+| Glove, CNN              | 87.31        | 1.9479  |
+| **Glove, DenseNet-CNN** | 88.18        | 3.4614  |
+| Glove, DenseNet-DSA     | 87.66        | 6.9731  |
+| bpe BERT(4.8m), CNN     | 89.45        | 14.6978 |
+| bpe BERT(4.8m), CLS     | 89.31        | 13.4392 |
+| dha BERT(2.5m), CNN     | **89.96**    | 14.8779 |
+| dha BERT(2.5m), CLS     | 89.41        | 1.7939 (?) |
+| dha-bpe BERT(4m), CNN   | 89.07        | 14.9454 |
+| dha-bpe BERT(4m), CLS   | 89.01        | 12.7981 |
+| dha BERT(10m), CNN      | 89.08        | 15.3276 |
+| dha BERT(10m), CLS      | 89.25        | 12.7876 |
 
 - [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results)
 
