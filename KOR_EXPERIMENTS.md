@@ -49,19 +49,19 @@
 
 - iclassifier
 
-|                       | Accuracy (%) |
-| --------------------- | ------------ |
-| Glove, CNN            | 87.31        |
-| Glove, DenseNet-CNN   | 88.18        |
-| Glove, DenseNet-DSA   | 87.66        |
-| bpe BERT(4.8m), CNN   | 89.45        |
-| bpe BERT(4.8m), CLS   | 89.31        |
-| dha BERT(2.5m), CNN   | **89.96**    |
-| dha BERT(2.5m), CLS   | 89.41        |
-| dha-bpe BERT(4m), CNN | 89.07        |
-| dha-bpe BERT(4m), CLS | 89.01        |
-| dha BERT(10m), CNN    | 89.09        |
-| dha BERT(10m), CLS    | 89.25        |
+|                       | Accuracy (%) | Elapsed time / example (ms) |
+| --------------------- | ------------ | --------------------------- |
+| Glove, CNN            | 87.31        | 1.9479  |
+| Glove, DenseNet-CNN   | 88.18        | 3.4614  |
+| Glove, DenseNet-DSA   | 87.66        | 6.9731  |
+| bpe BERT(4.8m), CNN   | 89.45        | 14.6978 |
+| bpe BERT(4.8m), CLS   | 89.31        | 13.4392 |
+| dha BERT(2.5m), CNN   | **89.96**    | 14.8779 |
+| dha BERT(2.5m), CLS   | 89.41        | 1.7939 (?) |
+| dha-bpe BERT(4m), CNN | 89.07        | 14.9454 |
+| dha-bpe BERT(4m), CLS | 89.01        | 12.7981 |
+| dha BERT(10m), CNN    | 89.08        | 15.3276 |
+| dha BERT(10m), CLS    | 89.25        | 12.7876 |
 
 - [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results)
 
@@ -163,13 +163,13 @@ $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_pat
 $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.8945, 44723/49997
-INFO:__main__:[Elapsed Time] : 90526ms, 1.810628637718263ms on average
+INFO:__main__:[Elapsed Time] : 734983ms, 14.697815825266021ms on average
 
 * enc_class=cls
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.8931, 44653/49997
-INFO:__main__:[Elapsed Time] : 89785ms, 1.795807748464908ms on average
+INFO:__main__:[Elapsed Time] : 672027ms, 13.439275142011361ms on average
 ```
 
 ### Experiments with BERT(pytorch.all.dha.2.5m_step)
@@ -190,7 +190,7 @@ $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_pat
 $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.8996, 44976/49997
-INFO:__main__:[Elapsed Time] : 94477ms, 1.8896533792027521ms on average
+INFO:__main__:[Elapsed Time] : 743973ms, 14.877990239219137ms on average
 
 * enc_class=cls
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint

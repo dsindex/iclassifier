@@ -34,24 +34,20 @@ reference pytorch code for intent(sentence) classification.
   - BERT(huggingface's [transformers](https://github.com/huggingface/transformers.git))
   ```
   $ pip install tensorflow-gpu==2.0.0
-  $ pip install git+https://github.com/huggingface/transformers.git
+  $ pip install transformers
   ```
 
 - data
   - Snips
     - `data/snips`
     - from [joint-intent-classification-and-slot-filling-based-on-BERT](https://github.com/lytum/joint-intent-classification-and-slot-filling-based-on-BERT)
-    - paper : [BERT for Joint Intent Classification and Slot Filling](https://arxiv.org/pdf/1902.10909.pdf)
-      - intent classification accuracy : **98.6%** (test set)
+      - paper : [BERT for Joint Intent Classification and Slot Filling](https://arxiv.org/pdf/1902.10909.pdf)
+        - intent classification accuracy : **98.6%** (test set)
     - [previous SOTA on SNIPS data](https://paperswithcode.com/sota/intent-detection-on-snips)
-      - intent classification accuracy : 97.7% (test set)
   - SST-2
     - `data/sst2`
     - from [GLUE benchmark data](https://github.com/nyu-mll/GLUE-baselines/blob/master/download_glue_data.py)
       - `test.txt` from [pytorch-sentiment-classification](https://github.com/clairett/pytorch-sentiment-classification)
-    - [SOTA on SST2 data](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
-      - sentence classification accuracy : **97.4%** (valid set)
-      - [GLUE leaderboard](https://gluebenchmark.com/leaderboard/)
   - TCCC
     - [Toxic Comment Classification Challenge](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge/overview)
 
@@ -59,13 +55,13 @@ reference pytorch code for intent(sentence) classification.
 
 ### experiments summary
 
-|                     | Accuracy (%)|
-| ------------------- | ----------- |
-| Glove, CNN          | 97.86       |
-| Glove, Densenet-CNN | 97.57       |
-| Glove, Densenet-DSA | 97.43       |
-| BERT-large, CNN     | **98.00**   |
-| BERT-large, CLS     | 97.86       |
+|                     | Accuracy (%) | Elapsed time / example (ms) |
+| ------------------- | ------------ | --------------------------- |
+| Glove, CNN          | 97.86        | 1.7939  |
+| Glove, Densenet-CNN | 97.57        | 3.6094  |
+| Glove, Densenet-DSA | 97.43        | 7.5007  |
+| BERT-large, CNN     | **98.00**    | 24.277  |
+| BERT-large, CLS     | 97.86        | 23.5428 |
 
 ### emb_class=glove, enc_class=cnn
 
@@ -167,29 +163,29 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 
 - iclassifier
 
-|                     | Accuracy (%)| Etc           | Elapsed time / example (ms)  |
-| ------------------- | ----------- | ------------- | ---------------------------- |
-| Glove, CNN          | 83.42       |               | 1.6873  |
-| Glove, DenseNet-CNN | 86.38       |               | 3.6203  |
-| Glove, DenseNet-DSA | 85.34       |               | 6.2450  |
-| BERT-tiny, CNN      | 79.08       |               | 4.8604  |
-| BERT-tiny, CLS      | 80.83       |               | 3.8461  |
-| BERT-mini, CNN      | 83.36       |               | 7.0983  |
-| BERT-mini, CLS      | 83.69       |               | 5.5521  |
-| BERT-small, CNN     | 87.53       |               | 7.2010  |
-| BERT-small, CLS     | 87.86       |               | 6.0450  |
-| BERT-medium, CNN    | 88.58       |               | 11.9082 |
-| BERT-medium, CLS    | 89.24       |               | 9.5857  |
-| BERT-base, CNN      | 91.43       |               | 13.9335 |
-| BERT-base, CLS      | 89.29       |               | 12.8572 |
-| BERT-large, CNN     | 93.08       |               | 28.6490 |
-| BERT-large, CLS     | 93.85       |               | 27.9967 |
-| ALBERT-base, CNN    | 86.66       | feature-based | 16.9665 |           
-| ALBERT-xxlarge, CNN | 91.32       | feature-based | 56.0900 |
-| ROBERTa-base, CNN   | 92.31       |               | 15.8802 |
-| ROBERTa-base, CLS   | 93.03       |               | 14.6736 |
-| ROBERTa-large, CNN  | 94.62       |               | 27.6xxx |
-| ROBERTa-large, CLS  | **95.66**   |               | 23.7395 |
+|                      | Accuracy (%) | Etc           | Elapsed time / example (ms)  |
+| -------------------- | ------------ | ------------- | ---------------------------- |
+| Glove, CNN           | 83.42        |               | 1.6873  |
+| Glove, DenseNet-CNN  | 86.38        |               | 3.6203  |
+| Glove, DenseNet-DSA  | 85.34        |               | 6.2450  |
+| BERT-tiny, CNN       | 79.08        |               | 4.8604  |
+| BERT-tiny, CLS       | 80.83        |               | 3.8461  |
+| BERT-mini, CNN       | 83.36        |               | 7.0983  |
+| BERT-mini, CLS       | 83.69        |               | 5.5521  |
+| BERT-small, CNN      | 87.53        |               | 7.2010  |
+| BERT-small, CLS      | 87.86        |               | 6.0450  |
+| BERT-medium, CNN     | 88.58        |               | 11.9082 |
+| **BERT-medium, CLS** | 89.24        |               | 9.5857  |
+| BERT-base, CNN       | 91.43        |               | 13.9335 |
+| BERT-base, CLS       | 89.29        |               | 12.8572 |
+| BERT-large, CNN      | 93.08        |               | 28.6490 |
+| BERT-large, CLS      | 93.85        |               | 27.9967 |
+| ALBERT-base, CNN     | 86.66        | feature-based | 16.9665 |           
+| ALBERT-xxlarge, CNN  | 91.32        | feature-based | 56.0900 |
+| ROBERTa-base, CNN    | 92.92        |               | 15.1016 |
+| ROBERTa-base, CLS    | 93.03        |               | 14.6736 |
+| ROBERTa-large, CNN   | 95.55        |               | 26.9807 |
+| ROBERTa-large, CLS   | **95.66**    |               | 23.7395 |
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -332,26 +328,21 @@ INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
 * enc_class=cnn
 $ python preprocess.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2
 $ python train.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2 --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=15 --batch_size=64 --bert_use_feature_based
-
-** albert-xxlarge-v2
-$ python preprocess.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-xxlarge-v2
-$ python train.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-xxlarge-v2 --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=15 --batch_size=32 --bert_use_feature_based
-
 ```
 
 - evaluation
 ```
 * enc_class=cnn
 $ python evaluate.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint 
-  
-** fine-tuning ALBERT doesn't work well. i guess ALBERT needs more data.
-** feature-based
-  INFO:__main__:[Accuracy] : 0.8666,  1578/ 1821
-  INFO:__main__:[Elapsed Time] : 30896ms, 16.966501922020868ms on average
+INFO:__main__:[Accuracy] : 0.8666,  1578/ 1821
+INFO:__main__:[Elapsed Time] : 30896ms, 16.966501922020868ms on average
 
-** albert-xxlarge-v2
+  ** --bert_do_lower_case
+
+  ** --bert_model_name_or_path=./embeddings/albert-xxlarge-v2 --batch_size=32
   INFO:__main__:[Accuracy] : 0.9132,  1663/ 1821
   INFO:__main__:[Elapsed Time] : 102140ms, 56.090060406370127ms on average
+
 ```
 
 ### emb_class=roberta, enc_class=cnn | cls
@@ -386,6 +377,8 @@ INFO:__main__:[Accuracy] : 0.9390,  1710/ 1821
 INFO:__main__:[Elapsed Time] : 49663ms, 27.196153846153845ms on average
 
   ** --batch_size=64
+  INFO:__main__:[Accuracy] : 0.9555,  1740/ 1821
+  INFO:__main__:[Elapsed Time] : 49297ms, 26.98076923076923ms on average
 
   ** --bert_model_name_or_path=./embeddings/roberta-large-mnli
   INFO:__main__:[Accuracy] : 0.9336,  1700/ 1821
@@ -394,6 +387,10 @@ INFO:__main__:[Elapsed Time] : 49663ms, 27.196153846153845ms on average
   ** --bert_model_name_or_path=./embeddings/roberta-base
   INFO:__main__:[Accuracy] : 0.9231,  1681/ 1821
   INFO:__main__:[Elapsed Time] : 29048ms, 15.88021978021978ms on average
+
+  ** --bert_model_name_or_path=./embeddings/roberta-base --batch_size=64
+  INFO:__main__:[Accuracy] : 0.9292,  1692/ 1821
+  INFO:__main__:[Elapsed Time] : 27615ms, 15.101648351648352ms on average
 
 * enc_class=cls
 $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
