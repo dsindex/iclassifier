@@ -150,11 +150,17 @@ class DSA(nn.Module):
         device = self.config['device']
         # initialize
         mask = mask.to(torch.float)
+        inv_mask = mask.eq(0.0)
+        # inv_mask : [batch_size, seq_size], ex) [False, ..., False, True, ..., True]
+        softmax_mask = mask.masked_fill(inv_mask, -1e20)
+        # softmax_mask : [batch_size, seq_size], ex) [1., 1., 1.,  ..., -1e20, -1e20, -1e20] 
         q = torch.zeros(mask.shape[0], mask.shape[-1], requires_grad=False).to(torch.float).to(device)
         # q : [batch_size, seq_size]
         z_list = []
         # iterative computing attention
         for idx in range(r):
+            # softmax masking
+            q *= softmax_mask
             # attention weights
             a = torch.softmax(q.detach().clone(), dim=-1) # preventing from unreachable variable at gradient computation. 
             # a : [batch_size, seq_size]

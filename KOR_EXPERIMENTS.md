@@ -141,6 +141,14 @@ $ python evaluate.py --config=configs/config-densenet-dsa.json --data_dir=./data
 INFO:__main__:[Accuracy] : 0.8766, 43827/49997
 INFO:__main__:[Elapsed Time] : 348722ms, 6.973197855828467ms on average
 
+* try again
+INFO:__main__:[Accuracy] : 0.8744, 43715/49997
+INFO:__main__:[Elapsed Time] : 522451ms, 10.447275782062565ms on average
+
+* softmax masking
+INFO:__main__:[Accuracy] : 0.8747, 43732/49997
+INFO:__main__:[Elapsed Time] : 596904ms, 11.936694935594847ms on average
+
 * iee_corpus_morph
 $ python evaluate.py --config=configs/config-densenet-dsa-iee.json --data_dir=./data/iee_corpus_morph
 ```

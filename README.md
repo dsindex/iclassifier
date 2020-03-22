@@ -246,6 +246,14 @@ $ python evaluate.py --config=configs/config-densenet-dsa.json --data_dir=data/s
 
 INFO:__main__:[Accuracy] : 0.8534,  1554/ 1821
 INFO:__main__:[Elapsed Time] : 11459ms, 6.245054945054945ms on average
+
+* try again
+INFO:__main__:[Accuracy] : 0.8506,  1549/ 1821
+INFO:__main__:[Elapsed Time] : 21745ms, 11.885714285714286ms on average
+
+* softmax masking
+INFO:__main__:[Accuracy] : 0.8473,  1543/ 1821
+INFO:__main__:[Elapsed Time] : 19214ms, 10.477472527472527ms on average
 ```
 
 ### emb_class=bert, enc_class=cnn | cls
@@ -420,3 +428,5 @@ INFO:__main__:[Elapsed Time] : 46867ms, 25.665384615384614ms on average
   - search range of hyperparameters
     - batch sizes: 8, 16, 32, 64, 128
     - learning rates: 1e-4, 3e-4, 3e-5, 5e-5
+- scalar mixtures of BERT all layers
+  - [scalar_mix.py](https://github.com/Hyperparticle/udify/blob/master/udify/modules/scalar_mix.py)
