@@ -429,4 +429,5 @@ INFO:__main__:[Elapsed Time] : 46867ms, 25.665384615384614ms on average
     - batch sizes: 8, 16, 32, 64, 128
     - learning rates: 1e-4, 3e-4, 3e-5, 5e-5
 - scalar mixtures of BERT all layers
-  - [scalar_mix.py](https://github.com/Hyperparticle/udify/blob/master/udify/modules/scalar_mix.py)
+  - [ScalarMixWithDropout](https://github.com/Hyperparticle/udify/blob/master/udify/modules/scalar_mix.py)
+  - [ScalarMix](https://github.com/allenai/allennlp/blob/master/allennlp/modules/scalar_mix.py)
