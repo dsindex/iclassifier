@@ -15,10 +15,18 @@
     - [SKT Brain에서 공개한 KoBERT를 적용한 성능](https://github.com/SKTBrain/KoBERT#naver-sentiment-analysis)
       - valid acc : **90.1%**
 
-### BERT model
+### Glove model
 
 - 한국어 문서 데이터 준비
   - 다양한 문서 데이터를 크롤링
+
+- [Standford Glove code](https://github.com/stanfordnlp/GloVe)를 이용해서 한국어 Glove 학습
+  - ex) kor.glove.300k.300d.txt
+
+### BERT model
+
+- 한국어 문서 데이터 준비
+  - 위 한국어 Glove 학습에 사용한 데이터를 그대로 이용(형태소분석기 tokenizer 사용).
 
 - [google original tf code](https://github.com/google-research/bert)를 이용해서 학습
   - [sentencepiece](https://github.com/google/sentencepiece) character-level bpe tokenizer
@@ -37,13 +45,14 @@
   * config.json의 vocab_size 설정 필요.
   ```
 
-### Glove model
+### RoBERTa model
 
 - 한국어 문서 데이터 준비
-  - 위 한국어 BERT 학습에 사용한 데이터를 그대로 이용(형태소분석기 tokenizer 사용).
+  - 위 한국어 Glove 학습에 사용한 데이터를 그대로 이용(형태소분석기 tokenizer 사용).
 
-- [Standford Glove code](https://github.com/stanfordnlp/GloVe)를 이용해서 한국어 Glove 학습
-  - ex) kor.glove.300k.300d.txt
+- transformers를 이용해서 학습
+  - [train-kor-roberta.sh](https://github.com/dsindex/transformers_examples/blob/master/train-kor-roberta.sh)
+  - ex) `kor-roberta-base.v1`
 
 ### Experiments summary
 
@@ -262,3 +271,25 @@ INFO:__main__:[Accuracy] : 0.8925, 44622/49997
 INFO:__main__:[Elapsed Time] : 639463ms, 12.787603008240659ms on average
 ```
 
+### Experiments with RoBERTa(kor-roberta-base.v1)
+ 
+- train
+```
+* enc_class=cnn
+$ python preprocess.py --config=configs/config-roberta-cnn.json --bert_model_name_or_path=./embeddings/kor-roberta-base.v1 --data_dir=./data/clova_sentiments_morph
+$ python train.py --config=configs/config-roberta-cnn.json --bert_model_name_or_path=./embeddings/kor-roberta-base.v1 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
+
+* enc_class=cls
+$ python train.py --config=configs/config-roberta-cls.json --bert_model_name_or_path=./embeddings/kor-roberta-base.v1 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
+```
+
+- evaluation
+```
+* enc_class=cnn
+$ python evaluate.py --config=configs/config-roberta-cnn.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
+
+* enc_class=cls
+
+$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
+
+```
