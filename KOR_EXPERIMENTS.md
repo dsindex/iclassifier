@@ -50,9 +50,10 @@
 - 한국어 문서 데이터 준비
   - 위 한국어 Glove 학습에 사용한 데이터를 그대로 이용(형태소분석기 tokenizer 사용).
 
-- transformers를 이용해서 학습
+- [transformers](https://github.com/huggingface/transformers)를 이용해서 학습
   - [train-kor-roberta.sh](https://github.com/dsindex/transformers_examples/blob/master/train-kor-roberta.sh)
-  - ex) `kor-roberta-base.v1`
+  - [tokenizers](https://github.com/dsindex/transformers_examples/blob/master/train-tokenizer.py) byte-level bpe tokenizer
+    - ex) `kor-roberta-base.v1`
 
 ### Experiments summary
 
@@ -276,20 +277,22 @@ INFO:__main__:[Elapsed Time] : 639463ms, 12.787603008240659ms on average
 - train
 ```
 * enc_class=cnn
-$ python preprocess.py --config=configs/config-roberta-cnn.json --bert_model_name_or_path=./embeddings/kor-roberta-base.v1 --data_dir=./data/clova_sentiments_morph
-$ python train.py --config=configs/config-roberta-cnn.json --bert_model_name_or_path=./embeddings/kor-roberta-base.v1 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
+$ python preprocess.py --config=configs/config-roberta-cnn.json --bert_model_name_or_path=./embeddings/kor-roberta-base.v1 --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-roberta-cnn.json --bert_model_name_or_path=./embeddings/kor-roberta-base.v1 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments
 
 * enc_class=cls
-$ python train.py --config=configs/config-roberta-cls.json --bert_model_name_or_path=./embeddings/kor-roberta-base.v1 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
+$ python train.py --config=configs/config-roberta-cls.json --bert_model_name_or_path=./embeddings/kor-roberta-base.v1 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments
 ```
 
 - evaluation
 ```
 * enc_class=cnn
-$ python evaluate.py --config=configs/config-roberta-cnn.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
+$ python evaluate.py --config=configs/config-roberta-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
 * enc_class=cls
-
-$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
+$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
+INFO:__main__:[Accuracy] : 0.5035, 25171/49997
+INFO:__main__:[Elapsed Time] : 712393ms, 14.246719737579006ms on average
+* need debuging
 
 ```
