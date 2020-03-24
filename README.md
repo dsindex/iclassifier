@@ -2,7 +2,7 @@
 
 reference pytorch code for intent(sentence) classification.
 - embedding
-  - Glove, BERT, ALBERT, ROBERTa
+  - Glove, BERT, ALBERT, ROBERTa, SpanBERT
 - encoding
   - CNN
   - DenseNet
@@ -36,6 +36,8 @@ reference pytorch code for intent(sentence) classification.
   $ pip install tensorflow-gpu==2.0.0
   $ pip install transformers
   ```
+  - SpanBERT(https://github.com/facebookresearch/SpanBERT/blob/master/README.md)
+    - pretrained SpanBERT models are compatible with huggingface's BERT modele except `'bert.pooler.dense.weight', 'bert.pooler.dense.bias'`.
 
 - data
   - Snips
@@ -186,6 +188,8 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | ROBERTa-base, CLS    | 93.03        |               | 14.6736 |
 | ROBERTa-large, CNN   | 95.55        |               | 26.9807 |
 | ROBERTa-large, CLS   | **95.66**    |               | 23.7395 |
+| SpanBERT-large, CNN  | 93.90        |               | 26.8609 |
+| SpanBERT-large, CLS  | 93.96        |               | 26.0445 |
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -299,6 +303,11 @@ INFO:__main__:[Elapsed Time] : 25373ms, 13.933552992861065ms on average
   INFO:__main__:[Accuracy] : 0.7908,  1440/ 1821
   INFO:__main__:[Elapsed Time] : 8951ms, 4.86043956043956ms on average
 
+  ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
+  ** --bert_model_name_or_path=embeddings/spanbert_hf_large --lr=1e-5 , without --bert_do_lower_case
+  INFO:__main__:[Accuracy] : 0.9390,  1710/ 1821
+  INFO:__main__:[Elapsed Time] : 49042ms, 26.860989010989012ms on average
+
 * enc_class=cls
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case
 
@@ -324,6 +333,10 @@ INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
   ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-2_H-128_A-2 --lr=1e-5
   INFO:__main__:[Accuracy] : 0.8083,  1472/ 1821
   INFO:__main__:[Elapsed Time] : 7124ms, 3.8461538461538463ms on average
+
+  ** --bert_model_name_or_path=embeddings/spanbert_hf_large --lr=1e-5 , without --bert_do_lower_case
+  INFO:__main__:[Accuracy] : 0.9396,  1711/ 1821
+  INFO:__main__:[Elapsed Time] : 47570ms, 26.044505494505493ms on average
 
 ```
 
@@ -427,7 +440,7 @@ INFO:__main__:[Elapsed Time] : 46867ms, 25.665384615384614ms on average
 - [BERT Miniatures](https://huggingface.co/google/bert_uncased_L-12_H-128_A-2)
   - search range of hyperparameters
     - batch sizes: 8, 16, 32, 64, 128
-    - learning rates: 1e-4, 3e-4, 3e-5, 5e-5
+    - learning rates: 3e-4, 1e-4, 5e-5, 3e-5
 - scalar mixtures of BERT all layers
   - [ScalarMixWithDropout](https://github.com/Hyperparticle/udify/blob/master/udify/modules/scalar_mix.py)
   - [ScalarMix](https://github.com/allenai/allennlp/blob/master/allennlp/modules/scalar_mix.py)

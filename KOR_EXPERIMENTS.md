@@ -293,6 +293,6 @@ $ python evaluate.py --config=configs/config-roberta-cnn.json --data_dir=./data/
 $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 INFO:__main__:[Accuracy] : 0.5035, 25171/49997
 INFO:__main__:[Elapsed Time] : 712393ms, 14.246719737579006ms on average
-* need debuging
+* something goes wrong!
 
 ```
