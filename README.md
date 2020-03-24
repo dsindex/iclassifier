@@ -188,6 +188,8 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | ROBERTa-base, CLS    | 93.03        |               | 14.6736 |
 | ROBERTa-large, CNN   | 95.55        |               | 26.9807 |
 | ROBERTa-large, CLS   | **95.66**    |               | 23.7395 |
+| SpanBERT-base, CN N  | -            |               | -       |
+| SpanBERT-base, CLS   | -            |               | -       |
 | SpanBERT-large, CNN  | 93.90        |               | 26.8609 |
 | SpanBERT-large, CLS  | 93.96        |               | 26.0445 |
 
@@ -308,6 +310,8 @@ INFO:__main__:[Elapsed Time] : 25373ms, 13.933552992861065ms on average
   INFO:__main__:[Accuracy] : 0.9390,  1710/ 1821
   INFO:__main__:[Elapsed Time] : 49042ms, 26.860989010989012ms on average
 
+  ** --bert_model_name_or_path=embeddings/spanbert_hf_base --lr=1e-5 , without --bert_do_lower_case
+
 * enc_class=cls
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case
 
@@ -337,6 +341,8 @@ INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
   ** --bert_model_name_or_path=embeddings/spanbert_hf_large --lr=1e-5 , without --bert_do_lower_case
   INFO:__main__:[Accuracy] : 0.9396,  1711/ 1821
   INFO:__main__:[Elapsed Time] : 47570ms, 26.044505494505493ms on average
+
+  ** --bert_model_name_or_path=embeddings/spanbert_hf_base --lr=1e-5 , without --bert_do_lower_case
 
 ```
 
