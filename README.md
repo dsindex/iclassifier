@@ -179,7 +179,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | BERT-medium, CNN     | 88.58        |               | 11.9082 |
 | **BERT-medium, CLS** | 89.24        |               | 9.5857  |
 | BERT-base, CNN       | 91.43        |               | 13.9335 |
-| BERT-base, CLS       | 89.29        |               | 12.8572 |
+| BERT-base, CLS       | 89.29 (?)    |               | 12.8572 |
 | BERT-large, CNN      | 93.08        |               | 28.6490 |
 | BERT-large, CLS      | 93.85        |               | 27.9967 |
 | ALBERT-base, CNN     | 86.66        | feature-based | 16.9665 |           
@@ -270,11 +270,11 @@ INFO:__main__:[Elapsed Time] : 19214ms, 10.477472527472527ms on average
 
 * enc_class=cnn
 $ python preprocess.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
-$ python train.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
+$ python train.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64
 
 * enc_class=cls
 $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
-$ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
+$ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64
 ```
 
 - evaluation
@@ -285,32 +285,32 @@ $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 
 INFO:__main__:[Accuracy] : 0.9143,  1665/ 1821
 INFO:__main__:[Elapsed Time] : 25373ms, 13.933552992861065ms on average
 
-  ** --bert_model_name_or_path=bert-large-uncased --lr=1e-5 , without --bert_do_lower_case
+  ** --bert_model_name_or_path=bert-large-uncased , without --bert_do_lower_case
   INFO:__main__:[Accuracy] : 0.9308,  1695/ 1821
   INFO:__main__:[Elapsed Time] : 52170ms, 28.649093904448105ms on average
 
-  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-8_H-512_A-8 --lr=1e-5
+  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-8_H-512_A-8
   INFO:__main__:[Accuracy] : 0.8858,  1613/ 1821
   INFO:__main__:[Elapsed Time] : 21791ms, 11.908241758241758ms on average
 
-  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-4_H-512_A-8 --lr=1e-5
+  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-4_H-512_A-8
   INFO:__main__:[Accuracy] : 0.8753,  1594/ 1821
   INFO:__main__:[Elapsed Time] : 13206ms, 7.201098901098901ms on average
 
-  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-4_H-256_A-4 --lr=1e-5
+  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-4_H-256_A-4
   INFO:__main__:[Accuracy] : 0.8336,  1518/ 1821
   INFO:__main__:[Elapsed Time] : 13021ms, 7.098351648351648ms on average
 
-  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-2_H-128_A-2 --lr=1e-5
+  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-2_H-128_A-2
   INFO:__main__:[Accuracy] : 0.7908,  1440/ 1821
   INFO:__main__:[Elapsed Time] : 8951ms, 4.86043956043956ms on average
 
   ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
-  ** --bert_model_name_or_path=embeddings/spanbert_hf_large --lr=1e-5 , without --bert_do_lower_case
+  ** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case
   INFO:__main__:[Accuracy] : 0.9390,  1710/ 1821
   INFO:__main__:[Elapsed Time] : 49042ms, 26.860989010989012ms on average
 
-  ** --bert_model_name_or_path=embeddings/spanbert_hf_base --lr=1e-5 , without --bert_do_lower_case
+  ** --bert_model_name_or_path=embeddings/spanbert_hf_base , without --bert_do_lower_case
 
 * enc_class=cls
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case
@@ -322,28 +322,28 @@ INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
   INFO:__main__:[Accuracy] : 0.9385,  1709/ 1821
   INFO:__main__:[Elapsed Time] : 50982ms, 27.99670510708402ms on average
 
-  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-8_H-512_A-8 --lr=1e-5
+  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-8_H-512_A-8
   INFO:__main__:[Accuracy] : 0.8924,  1625/ 1821
   INFO:__main__:[Elapsed Time] : 17558ms, 9.585714285714285ms on average
 
-  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-4_H-512_A-8 --lr=1e-5
+  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-4_H-512_A-8
   INFO:__main__:[Accuracy] : 0.8786,  1600/ 1821
   INFO:__main__:[Elapsed Time] : 11104ms, 6.045054945054945ms on average
 
-  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-4_H-256_A-4 --lr=1e-5
+  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-4_H-256_A-4
   INFO:__main__:[Accuracy] : 0.8369,  1524/ 1821
   INFO:__main__:[Elapsed Time] : 10196ms, 5.552197802197802ms on average
 
-  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-2_H-128_A-2 --lr=1e-5
+  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-2_H-128_A-2
   INFO:__main__:[Accuracy] : 0.8083,  1472/ 1821
   INFO:__main__:[Elapsed Time] : 7124ms, 3.8461538461538463ms on average
 
   ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
-  ** --bert_model_name_or_path=embeddings/spanbert_hf_large --lr=1e-5 , without --bert_do_lower_case
+  ** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case
   INFO:__main__:[Accuracy] : 0.9396,  1711/ 1821
   INFO:__main__:[Elapsed Time] : 47570ms, 26.044505494505493ms on average
 
-  ** --bert_model_name_or_path=embeddings/spanbert_hf_base --lr=1e-5 , without --bert_do_lower_case
+  ** --bert_model_name_or_path=embeddings/spanbert_hf_base , without --bert_do_lower_case
 
 ```
 
