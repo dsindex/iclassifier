@@ -36,7 +36,7 @@ reference pytorch code for intent(sentence) classification.
   $ pip install tensorflow-gpu==2.0.0
   $ pip install transformers
   ```
-  - SpanBERT(https://github.com/facebookresearch/SpanBERT/blob/master/README.md)
+  - [SpanBERT](https://github.com/facebookresearch/SpanBERT/blob/master/README.md)
     - pretrained SpanBERT models are compatible with huggingface's BERT modele except `'bert.pooler.dense.weight', 'bert.pooler.dense.bias'`.
 
 - data
@@ -338,6 +338,7 @@ INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
   INFO:__main__:[Accuracy] : 0.8083,  1472/ 1821
   INFO:__main__:[Elapsed Time] : 7124ms, 3.8461538461538463ms on average
 
+  ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
   ** --bert_model_name_or_path=embeddings/spanbert_hf_large --lr=1e-5 , without --bert_do_lower_case
   INFO:__main__:[Accuracy] : 0.9396,  1711/ 1821
   INFO:__main__:[Elapsed Time] : 47570ms, 26.044505494505493ms on average
