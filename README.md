@@ -178,8 +178,8 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | BERT-small, CLS      | 87.86        |               | 6.0450  |
 | BERT-medium, CNN     | 88.58        |               | 11.9082 |
 | **BERT-medium, CLS** | 89.24        |               | 9.5857  |
-| BERT-base, CNN       | 91.43        |               | 13.9335 |
-| BERT-base, CLS       | 89.29 (?)    |               | 12.8572 |
+| BERT-base, CNN       | 92.04        |               | 14.1576 |
+| BERT-base, CLS       | 92.42        |               | 12.7549 |
 | BERT-large, CNN      | 93.08        |               | 28.6490 |
 | BERT-large, CLS      | 93.85        |               | 27.9967 |
 | ALBERT-base, CNN     | 86.66        | feature-based | 16.9665 |           
@@ -189,7 +189,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | ROBERTa-large, CNN   | 95.55        |               | 26.9807 |
 | ROBERTa-large, CLS   | **95.66**    |               | 23.7395 |
 | SpanBERT-base, CNN   | 91.82        |               | 15.2098 |
-| SpanBERT-base, CLS   | -            |               | -       |
+| SpanBERT-base, CLS   | 91.49        |               | 13.1516 |
 | SpanBERT-large, CNN  | 93.90        |               | 26.8609 |
 | SpanBERT-large, CLS  | 93.96        |               | 26.0445 |
 
@@ -282,8 +282,8 @@ $ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --b
 * enc_class=cnn
 $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case 
 
-INFO:__main__:[Accuracy] : 0.9143,  1665/ 1821
-INFO:__main__:[Elapsed Time] : 25373ms, 13.933552992861065ms on average
+INFO:__main__:[Accuracy] : 0.9204,  1676/ 1821
+INFO:__main__:[Elapsed Time] : 25878ms, 14.157692307692308ms on average
 
   ** --bert_model_name_or_path=bert-large-uncased , without --bert_do_lower_case
   INFO:__main__:[Accuracy] : 0.9308,  1695/ 1821
@@ -317,8 +317,8 @@ INFO:__main__:[Elapsed Time] : 25373ms, 13.933552992861065ms on average
 * enc_class=cls
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case
 
-INFO:__main__:[Accuracy] : 0.8929,  1626/ 1821
-INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
+INFO:__main__:[Accuracy] : 0.9242,  1683/ 1821
+INFO:__main__:[Elapsed Time] : 23314ms, 12.754945054945056ms on average
 
   ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5 , without --bert_do_lower_case
   INFO:__main__:[Accuracy] : 0.9385,  1709/ 1821
@@ -346,6 +346,8 @@ INFO:__main__:[Elapsed Time] : 23413ms, 12.85722130697419ms on average
   INFO:__main__:[Elapsed Time] : 47570ms, 26.044505494505493ms on average
 
   ** --bert_model_name_or_path=embeddings/spanbert_hf_base , without --bert_do_lower_case
+  INFO:__main__:[Accuracy] : 0.9149,  1666/ 1821
+  INFO:__main__:[Elapsed Time] : 24049ms, 13.151648351648351ms on average
 
 ```
 
