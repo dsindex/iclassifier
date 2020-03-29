@@ -2,7 +2,7 @@
 
 reference pytorch code for intent(sentence) classification.
 - embedding
-  - Glove, BERT, ALBERT, ROBERTa, SpanBERT
+  - Glove, BERT, SpanBERT, ALBERT, ROBERTa
 - encoding
   - CNN
   - DenseNet
@@ -182,16 +182,16 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | BERT-base, CLS       | 92.42        |               | 12.7549 |
 | BERT-large, CNN      | 93.08        |               | 28.6490 |
 | BERT-large, CLS      | 93.85        |               | 27.9967 |
+| SpanBERT-base, CNN   | 91.82        |               | 15.2098 |
+| SpanBERT-base, CLS   | 91.49        |               | 13.1516 |
+| SpanBERT-large, CNN  | 93.90        |               | 26.8609 |
+| SpanBERT-large, CLS  | 93.96        |               | 26.0445 |
 | ALBERT-base, CNN     | 86.66        | feature-based | 16.9665 |           
 | ALBERT-xxlarge, CNN  | 91.32        | feature-based | 56.0900 |
 | ROBERTa-base, CNN    | 92.92        |               | 15.1016 |
 | ROBERTa-base, CLS    | 93.03        |               | 14.6736 |
 | ROBERTa-large, CNN   | 95.55        |               | 26.9807 |
 | ROBERTa-large, CLS   | **95.66**    |               | 23.7395 |
-| SpanBERT-base, CNN   | 91.82        |               | 15.2098 |
-| SpanBERT-base, CLS   | 91.49        |               | 13.1516 |
-| SpanBERT-large, CNN  | 93.90        |               | 26.8609 |
-| SpanBERT-large, CLS  | 93.96        |               | 26.0445 |
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
