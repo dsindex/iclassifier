@@ -136,6 +136,7 @@ class DSA(nn.Module):
     def __init__(self, config, dsa_num_attentions, dsa_input_dim, dsa_dim, dsa_r=3):
         super(DSA, self).__init__()
         self.config = config
+        self.device = config['device']
         dsa = []
         for i in range(dsa_num_attentions):
             dsa.append(nn.Linear(dsa_input_dim, dsa_dim))
@@ -147,14 +148,13 @@ class DSA(nn.Module):
         # x    : [batch_size, seq_size, dsa_dim]
         # mask : [batch_size, seq_size]
         # r    : r iterations
-        device = self.config['device']
         # initialize
         mask = mask.to(torch.float)
         inv_mask = mask.eq(0.0)
         # inv_mask : [batch_size, seq_size], ex) [False, ..., False, True, ..., True]
         softmax_mask = mask.masked_fill(inv_mask, -1e20)
         # softmax_mask : [batch_size, seq_size], ex) [1., 1., 1.,  ..., -1e20, -1e20, -1e20] 
-        q = torch.zeros(mask.shape[0], mask.shape[-1], requires_grad=False).to(torch.float).to(device)
+        q = torch.zeros(mask.shape[0], mask.shape[-1], requires_grad=False).to(torch.float).to(self.device)
         # q : [batch_size, seq_size]
         z_list = []
         # iterative computing attention
@@ -200,6 +200,7 @@ class TextGloveCNN(BaseModel):
         super().__init__(config=config)
 
         self.config = config
+        self.device = config['device']
         seq_size = config['n_ctx']
         token_emb_dim = config['token_emb_dim']
 
@@ -253,6 +254,7 @@ class TextGloveDensenetCNN(BaseModel):
         super().__init__(config=config)
 
         self.config = config
+        self.device = config['device']
         seq_size = config['n_ctx']
         token_emb_dim = config['token_emb_dim']
 
@@ -287,8 +289,7 @@ class TextGloveDensenetCNN(BaseModel):
     def forward(self, x):
         # x : [batch_size, seq_size]
 
-        device = self.config['device']
-        mask = torch.sign(torch.abs(x)).to(torch.uint8).to(device)
+        mask = torch.sign(torch.abs(x)).to(torch.uint8).to(self.device)
         # mask : [batch_size, seq_size]
 
         # 1. glove embedding
@@ -318,6 +319,7 @@ class TextGloveDensenetDSA(BaseModel):
         super().__init__(config=config)
 
         self.config = config
+        self.device = config['device']
         seq_size = config['n_ctx']
         token_emb_dim = config['token_emb_dim']
 
@@ -361,8 +363,7 @@ class TextGloveDensenetDSA(BaseModel):
     def forward(self, x):
         # x : [batch_size, seq_size]
 
-        device = self.config['device']
-        mask = torch.sign(torch.abs(x)).to(torch.uint8).to(device)
+        mask = torch.sign(torch.abs(x)).to(torch.uint8).to(self.device)
         # mask : [batch_size, seq_size]
 
         # 1. glove embedding
@@ -400,15 +401,16 @@ class TextBertCNN(BaseModel):
         super().__init__(config=config)
 
         self.config = config
+        self.device = config['device']
         seq_size = config['n_ctx']
 
         # bert embedding layer
         self.bert_config = bert_config
         self.bert_model = bert_model
         self.bert_tokenizer = bert_tokenizer
-        hidden_size = bert_config.hidden_size
-        self.feature_based = feature_based
-        emb_dim = hidden_size
+        self.bert_hidden_size = bert_config.hidden_size
+        self.bert_feature_based = feature_based
+        emb_dim = self.bert_hidden_size
 
         # convolution layer
         num_filters = config['num_filters']
@@ -427,7 +429,7 @@ class TextBertCNN(BaseModel):
         self.fc = nn.Linear(fc_hidden_size, label_size)
 
     def __compute_bert_embedding(self, x):
-        if self.feature_based:
+        if self.bert_feature_based:
             # feature-based
             with torch.no_grad():
                 bert_outputs = self.bert_model(input_ids=x[0],
@@ -441,8 +443,7 @@ class TextBertCNN(BaseModel):
                                            attention_mask=x[1],
                                            token_type_ids=None if self.config['emb_class'] in ['roberta'] else x[2]) # RoBERTa don't use segment_ids
             embedded = bert_outputs[0]
-            # [batch_size, seq_size, hidden_size]
-            # [batch_size, 0, hidden_size] corresponding to [CLS] == 'embedded[:, 0]'
+            # [batch_size, seq_size, bert_hidden_size]
         return embedded
 
     def forward(self, x):
@@ -450,7 +451,7 @@ class TextBertCNN(BaseModel):
 
         # 1. bert embedding
         embedded = self.__compute_bert_embedding(x)
-        # embedded : [batch_size, seq_size, hidden_size]
+        # embedded : [batch_size, seq_size, bert_hidden_size]
         embedded = self.dropout(embedded)
 
         # 2. convolution
@@ -475,24 +476,25 @@ class TextBertCLS(BaseModel):
         super().__init__(config=config)
 
         self.config = config
+        self.device = config['device']
         seq_size = config['n_ctx']
 
         # bert embedding layer
         self.bert_config = bert_config
         self.bert_model = bert_model
         self.bert_tokenizer = bert_tokenizer
-        hidden_size = bert_config.hidden_size
-        self.feature_based = feature_based
+        self.bert_hidden_size = bert_config.hidden_size
+        self.bert_feature_based = feature_based
 
         self.dropout = nn.Dropout(config['dropout'])
 
         # fully connected layer
         self.labels = super().load_label(label_path)
         label_size = len(self.labels)
-        self.fc = nn.Linear(hidden_size, label_size)
+        self.fc = nn.Linear(self.bert_hidden_size, label_size)
 
     def __compute_bert_embedding(self, x):
-        if self.feature_based:
+        if self.bert_feature_based:
             # feature-based
             with torch.no_grad():
                 bert_outputs = self.bert_model(input_ids=x[0],
@@ -506,7 +508,7 @@ class TextBertCLS(BaseModel):
                                            attention_mask=x[1],
                                            token_type_ids=None if self.config['emb_class'] in ['roberta'] else x[2]) # RoBERTa don't use segment_ids
             pooled = bert_outputs[1] # first token embedding([CLS]), see BertPooler
-            # [batch_size, hidden_size]
+            # [batch_size, bert_hidden_size]
         embedded = pooled
         return embedded
 
@@ -514,7 +516,7 @@ class TextBertCLS(BaseModel):
         # x[0], x[1], x[2] : [batch_size, seq_size]
         # 1. bert embedding
         embedded = self.__compute_bert_embedding(x)
-        # embedded : [batch_size, hidden_size]
+        # embedded : [batch_size, bert_hidden_size]
         embedded = self.dropout(embedded)
 
         # 2. fully connected
