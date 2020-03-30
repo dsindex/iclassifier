@@ -458,11 +458,20 @@ $ python train.py --config=configs/config-bart-cls.json --data_dir=data/sst2 --b
 ```
 * enc_class=cnn
 $ python evaluate.py --config=configs/config-bart-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
-INFO:__main__:[Accuracy] : 0.9445,  1720/ 1821
-INFO:__main__:[Elapsed Time] : 64224ms, 35.17087912087912ms on average
+
+  ** last decoder's output
+  INFO:__main__:[Accuracy] : 0.9445,  1720/ 1821
+  INFO:__main__:[Elapsed Time] : 64224ms, 35.17087912087912ms on average
+
+  ** last encoder's output
 
 * enc_class=cls
 $ python evaluate.py --config=configs/config-barta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+
+  ** mean pooling of the last decoder's output
+
+  ** mean pooling of the last encoder's output
+
 ```
 
 ## experiments for Korean
