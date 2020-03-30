@@ -448,7 +448,7 @@ class TextBertCNN(BaseModel):
                 bert_outputs = self.bert_model(input_ids=x[0],
                                                attention_mask=x[1])
                 # bart model's output
-                # [0] last decoder layer's output   [batch_size, seq_size, bert_hidden_size]
+                # [0] last decoder layer's output : [batch_size, seq_size, bert_hidden_size]
                 # [1] last encoder layer's output : [seq_size, batch_size, bert_hidden_size]
                 embedded = bert_outputs[0]
             else:
@@ -526,7 +526,7 @@ class TextBertCLS(BaseModel):
                 bert_outputs = self.bert_model(input_ids=x[0],
                                                attention_mask=x[1])
                 # bart model's output
-                # [0] last decoder layer's output   [batch_size, seq_size, bert_hidden_size]
+                # [0] last decoder layer's output : [batch_size, seq_size, bert_hidden_size]
                 # [1] last encoder layer's output : [seq_size, batch_size, bert_hidden_size]
                 # final hidden state of the final decoder token acts like '[CLS]'
                 pooled = bert_outputs[0][:, -1, :]

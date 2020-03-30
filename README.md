@@ -31,7 +31,7 @@ reference pytorch code for intent(sentence) classification.
   glove.6B.zip
   $ unzip glove.6B.zip 
   ```
-  - BERT(huggingface's [transformers](https://github.com/huggingface/transformers.git))
+  - BERT, ALBERT, RoBERTa, BART(huggingface's [transformers](https://github.com/huggingface/transformers.git))
   ```
   $ pip install tensorflow-gpu==2.0.0
   $ pip install transformers
