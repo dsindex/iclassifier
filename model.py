@@ -432,16 +432,24 @@ class TextBertCNN(BaseModel):
         if self.bert_feature_based:
             # feature-based
             with torch.no_grad():
-                bert_outputs = self.bert_model(input_ids=x[0],
-                                               attention_mask=x[1],
-                                               token_type_ids=None if self.config['emb_class'] in ['roberta'] else x[2]) # RoBERTa don't use segment_ids
+                if 'bart' in self.config['emb_class']:
+                    bert_outputs = self.bert_model(input_ids=x[0],
+                                                   attention_mask=x[1])
+                else:
+                    bert_outputs = self.bert_model(input_ids=x[0],
+                                                   attention_mask=x[1],
+                                                   token_type_ids=None if self.config['emb_class'] in ['roberta'] else x[2]) # RoBERTa don't use segment_ids
                 embedded = bert_outputs[0]
         else:
             # fine-tuning
             # x[0], x[1], x[2] : [batch_size, seq_size]
-            bert_outputs = self.bert_model(input_ids=x[0],
-                                           attention_mask=x[1],
-                                           token_type_ids=None if self.config['emb_class'] in ['roberta'] else x[2]) # RoBERTa don't use segment_ids
+            if 'bart' in self.config['emb_class']:
+                bert_outputs = self.bert_model(input_ids=x[0],
+                                               attention_mask=x[1])
+            else:
+                bert_outputs = self.bert_model(input_ids=x[0],
+                                               attention_mask=x[1],
+                                               token_type_ids=None if self.config['emb_class'] in ['roberta'] else x[2]) # RoBERTa don't use segment_ids
             embedded = bert_outputs[0]
             # [batch_size, seq_size, bert_hidden_size]
         return embedded

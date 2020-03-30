@@ -2,7 +2,7 @@
 
 reference pytorch code for intent(sentence) classification.
 - embedding
-  - Glove, BERT, SpanBERT, ALBERT, ROBERTa
+  - Glove, BERT, SpanBERT, ALBERT, ROBERTa, BART
 - encoding
   - CNN
   - DenseNet
@@ -192,6 +192,8 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | ROBERTa-base, CLS    | 93.03        |               | 14.6736 |
 | ROBERTa-large, CNN   | 95.55        |               | 26.9807 |
 | ROBERTa-large, CLS   | **95.66**    |               | 23.7395 |
+| BART-large, CNN      | -            |               | -       |
+| BART-large, CLS      | -            |               | -       |
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -435,6 +437,30 @@ INFO:__main__:[Elapsed Time] : 46867ms, 25.665384615384614ms on average
   INFO:__main__:[Accuracy] : 0.9303,  1694/ 1821
   INFO:__main__:[Elapsed Time] : 26822ms, 14.673626373626373ms on average
 
+```
+
+### emb_class=bart, enc_class=cnn | cls
+
+- train
+```
+* n_ctx size should be less than 512
+
+* enc_class=cnn
+$ python preprocess.py --config=configs/config-bart-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bart-large
+$ python train.py --config=configs/config-bart-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bart-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --decay_rate=0.9 --batch_size=64
+
+* enc_class=cls
+$ python preprocess.py --config=configs/config-bart-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bart-large 
+$ python train.py --config=configs/config-bart-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bart-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --decay_rate=0.9 --batch_size=64
+```
+
+- evaluation
+```
+* enc_class=cnn
+$ python evaluate.py --config=configs/config-bart-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+
+* enc_class=cls
+$ python evaluate.py --config=configs/config-barta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 ```
 
 ## experiments for Korean

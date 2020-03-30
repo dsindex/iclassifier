@@ -45,7 +45,7 @@ def set_path(config):
     opt = config['opt']
     if config['emb_class'] == 'glove':
         opt.data_path = os.path.join(opt.data_dir, 'test.txt.ids')
-    if 'bert' in config['emb_class']:
+    if 'bert' in config['emb_class'] or 'bart' in config['emb_class']:
         opt.data_path = os.path.join(opt.data_dir, 'test.txt.fs')
     opt.embedding_path = os.path.join(opt.data_dir, 'embedding.npy')
     opt.label_path = os.path.join(opt.data_dir, 'label.txt')
@@ -55,7 +55,7 @@ def prepare_datasets(config):
     opt = config['opt']
     if config['emb_class'] == 'glove':
         DatasetClass = SnipsGloveDataset
-    if 'bert' in config['emb_class']:
+    if 'bert' in config['emb_class'] or 'bart' in config['emb_class']:
         DatasetClass = SnipsBertDataset
     test_loader = prepare_dataset(opt, opt.data_path, DatasetClass, shuffle=False, num_workers=1)
     return test_loader
@@ -79,14 +79,16 @@ def load_model(config, checkpoint):
             model = TextGloveDensenetCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
         if config['enc_class'] == 'densenet-dsa':
             model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
-    if 'bert' in config['emb_class']:
+    if 'bert' in config['emb_class'] or 'bart' in config['emb_class']:
         from transformers import BertTokenizer, BertConfig, BertModel
         from transformers import AlbertTokenizer, AlbertConfig, AlbertModel
         from transformers import RobertaConfig, RobertaTokenizer, RobertaModel
+        from transformers import BartConfig, BartTokenizer, BartModel
         MODEL_CLASSES = {
             "bert": (BertConfig, BertTokenizer, BertModel),
             "albert": (AlbertConfig, AlbertTokenizer, AlbertModel),
-            "roberta": (RobertaConfig, RobertaTokenizer, RobertaModel)
+            "roberta": (RobertaConfig, RobertaTokenizer, RobertaModel),
+            "bart": (BartConfig, BartTokenizer, BartModel)
         }
         Config    = MODEL_CLASSES[config['emb_class']][0]
         Tokenizer = MODEL_CLASSES[config['emb_class']][1]

@@ -234,10 +234,12 @@ def preprocess_bert(config):
     from transformers import BertTokenizer
     from transformers import AlbertTokenizer
     from transformers import RobertaTokenizer
+    from transformers import BartTokenizer
     TOKENIZER_CLASSES = {
         "bert": BertTokenizer,
         "albert": AlbertTokenizer,
-        "roberta": RobertaTokenizer
+        "roberta": RobertaTokenizer,
+        "bart": BartTokenizer
     }
     Tokenizer = TOKENIZER_CLASSES[config['emb_class']]
 
@@ -295,7 +297,7 @@ def main():
 
     if config['emb_class'] == 'glove':
         preprocess_glove(config)
-    if 'bert' in config['emb_class']:
+    if 'bert' in config['emb_class'] or 'bart' in config['emb_class']:
         preprocess_bert(config)
 
 
