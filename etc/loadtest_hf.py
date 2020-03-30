@@ -11,10 +11,12 @@ from transformers import AutoTokenizer, AutoConfig, AutoModel
 from transformers import BertTokenizer, BertConfig, BertModel
 from transformers import AlbertConfig, AlbertTokenizer, AlbertModel
 from transformers import RobertaConfig, RobertaTokenizer, RobertaModel
+from transformers import BartConfig, BartTokenizer, BartModel
 MODEL_CLASSES = {
     "bert": (BertConfig, BertTokenizer, BertModel),
     "albert": (AlbertConfig, AlbertTokenizer, AlbertModel),
-    "roberta": (RobertaConfig, RobertaTokenizer, RobertaModel)
+    "roberta": (RobertaConfig, RobertaTokenizer, RobertaModel),
+    "bart": (BartConfig, BartTokenizer, BartModel)
 }
 
 logging.basicConfig(level=logging.INFO)
