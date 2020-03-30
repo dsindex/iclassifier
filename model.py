@@ -513,7 +513,7 @@ class TextBertCLS(BaseModel):
                 if 'bart' in self.config['emb_class']:
                     bert_outputs = self.bert_model(input_ids=x[0],
                                                    attention_mask=x[1])
-                    pooled = bert_outputs[1]
+                    pooled = bert_outputs[0][:, -1, :]
                 else:
                     bert_outputs = self.bert_model(input_ids=x[0],
                                                    attention_mask=x[1],
@@ -528,7 +528,8 @@ class TextBertCLS(BaseModel):
                 # bart model's output
                 # [0] last decoder layer's output   [batch_size, seq_size, bert_hidden_size]
                 # [1] last encoder layer's output : [seq_size, batch_size, bert_hidden_size]
-                pooled = torch.mean(bert_outputs[0], dim=-2)
+                # final hidden state of the final decoder token acts like '[CLS]'
+                pooled = bert_outputs[0][:, -1, :]
                 # pooled : [batch_size, bert_hidden_size]
             else:
                 bert_outputs = self.bert_model(input_ids=x[0],
