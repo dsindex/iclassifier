@@ -186,12 +186,14 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | SpanBERT-base, CLS   | 91.49        |               | 13.1516 |
 | SpanBERT-large, CNN  | 93.90        |               | 26.8609 |
 | SpanBERT-large, CLS  | 93.96        |               | 26.0445 |
-| ALBERT-base, CNN     | 86.66        | feature-based | 16.9665 |           
-| ALBERT-xxlarge, CNN  | 91.32        | feature-based | 56.0900 |
+| ALBERT-base, CNN     | 92.04        |               | 16.0554 |           
+| ALBERT-base, CLS     | -            |               | -       |           
+| ALBERT-xxlarge, CNN  | **95.77**    |               | 57.4631 |
+| ALBERT-xxlarge, CLS  | -            |               | -       |
 | ROBERTa-base, CNN    | 92.92        |               | 15.1016 |
 | ROBERTa-base, CLS    | 93.03        |               | 14.6736 |
 | ROBERTa-large, CNN   | 95.55        |               | 26.9807 |
-| ROBERTa-large, CLS   | **95.66**    |               | 23.7395 |
+| ROBERTa-large, CLS   | 95.66        |               | 23.7395 |
 | BART-large, CNN      | 94.45        |               | 35.1708 |
 | BART-large, CLS      | 94.89        |               | 33.3862 |
 
@@ -361,19 +363,25 @@ INFO:__main__:[Elapsed Time] : 23314ms, 12.754945054945056ms on average
 
 * enc_class=cnn
 $ python preprocess.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2
-$ python train.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2 --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=15 --batch_size=64 --bert_use_feature_based
+$ python train.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64
 ```
 
 - evaluation
 ```
 * enc_class=cnn
 $ python evaluate.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint 
-INFO:__main__:[Accuracy] : 0.8666,  1578/ 1821
-INFO:__main__:[Elapsed Time] : 30896ms, 16.966501922020868ms on average
+
+INFO:__main__:[Accuracy] : 0.9204,  1676/ 1821
+INFO:__main__:[Elapsed Time] : 29321ms, 16.055494505494504ms on average
 
   ** --bert_model_name_or_path=./embeddings/albert-xxlarge-v2 --batch_size=32
-  INFO:__main__:[Accuracy] : 0.9132,  1663/ 1821
-  INFO:__main__:[Elapsed Time] : 102140ms, 56.090060406370127ms on average
+  INFO:__main__:[Accuracy] : 0.9577,  1744/ 1821
+  INFO:__main__:[Elapsed Time] : 104769ms, 57.463186813186816ms on average
+
+* enc_class=cls
+$ python evaluate.py --config=configs/config-albert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint 
+
+  ** --bert_model_name_or_path=./embeddings/albert-xxlarge-v2 --batch_size=32
 
 ```
 
