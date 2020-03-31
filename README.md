@@ -193,7 +193,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | ROBERTa-large, CNN   | 95.55        |               | 26.9807 |
 | ROBERTa-large, CLS   | **95.66**    |               | 23.7395 |
 | BART-large, CNN      | 94.45        |               | 35.1708 |
-| BART-large, CLS      | -            |               | -       |
+| BART-large, CLS      | 94.89        |               | 33.3862 |
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -385,11 +385,11 @@ INFO:__main__:[Elapsed Time] : 30896ms, 16.966501922020868ms on average
 
 * enc_class=cnn
 $ python preprocess.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large
-$ python train.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --decay_rate=0.9 --batch_size=32
+$ python train.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --decay_rate=0.9 --batch_size=64
 
 * enc_class=cls
 $ python preprocess.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large 
-$ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --decay_rate=0.9 --batch_size=32
+$ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --decay_rate=0.9 --batch_size=64
 ```
 
 - evaluation
@@ -397,43 +397,20 @@ $ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 
 * enc_class=cnn
 $ python evaluate.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
-1)
-INFO:__main__:[Accuracy] : 0.9462,  1723/ 1821
-
-2)
-INFO:__main__:[Accuracy] : 0.9374,  1707/ 1821
-INFO:__main__:[Elapsed Time] : 50526ms, 27.662087912087912ms on average
-
-3)
-INFO:__main__:[Accuracy] : 0.9390,  1710/ 1821
-INFO:__main__:[Elapsed Time] : 49663ms, 27.196153846153845ms on average
-
-  ** --batch_size=64
-  INFO:__main__:[Accuracy] : 0.9555,  1740/ 1821
-  INFO:__main__:[Elapsed Time] : 49297ms, 26.98076923076923ms on average
-
-  ** --bert_model_name_or_path=./embeddings/roberta-large-mnli
-  INFO:__main__:[Accuracy] : 0.9336,  1700/ 1821
-  INFO:__main__:[Elapsed Time] : 57243ms, 31.35879120879121ms on average
+INFO:__main__:[Accuracy] : 0.9555,  1740/ 1821
+INFO:__main__:[Elapsed Time] : 49297ms, 26.98076923076923ms on average
 
   ** --bert_model_name_or_path=./embeddings/roberta-base
-  INFO:__main__:[Accuracy] : 0.9231,  1681/ 1821
-  INFO:__main__:[Elapsed Time] : 29048ms, 15.88021978021978ms on average
-
-  ** --bert_model_name_or_path=./embeddings/roberta-base --batch_size=64
   INFO:__main__:[Accuracy] : 0.9292,  1692/ 1821
   INFO:__main__:[Elapsed Time] : 27615ms, 15.101648351648352ms on average
 
 * enc_class=cls
 $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
-INFO:__main__:[Accuracy] : 0.9325,  1698/ 1821
-INFO:__main__:[Elapsed Time] : 46867ms, 25.665384615384614ms on average
 
-  ** --batch_size=64
-  INFO:__main__:[Accuracy] : 0.9566,  1742/ 1821
-  INFO:__main__:[Elapsed Time] : 43363ms, 23.73956043956044ms on average
+INFO:__main__:[Accuracy] : 0.9566,  1742/ 1821
+INFO:__main__:[Elapsed Time] : 43363ms, 23.73956043956044ms on average
 
-  ** --bert_model_name_or_path=./embeddings/roberta-base --batch_size=64
+  ** --bert_model_name_or_path=./embeddings/roberta-base
   INFO:__main__:[Accuracy] : 0.9303,  1694/ 1821
   INFO:__main__:[Elapsed Time] : 26822ms, 14.673626373626373ms on average
 
@@ -462,7 +439,9 @@ INFO:__main__:[Accuracy] : 0.9445,  1720/ 1821
 INFO:__main__:[Elapsed Time] : 64224ms, 35.17087912087912ms on average
 
 * enc_class=cls
-$ python evaluate.py --config=configs/config-barta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+$ python evaluate.py --config=configs/config-bart-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+INFO:__main__:[Accuracy] : 0.9489,  1728/ 1821
+INFO:__main__:[Elapsed Time] : 61015ms, 33.386263736263736ms on average
 
 ```
 
