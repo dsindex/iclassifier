@@ -165,39 +165,39 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 
 - iclassifier
 
-|                      | Accuracy (%) | Etc           | Elapsed time / example (ms)  |
-| -------------------- | ------------ | ------------- | ---------------------------- |
-| Glove, CNN           | 83.42        |               | 1.6873  |
-| Glove, DenseNet-CNN  | 86.38        |               | 3.6203  |
-| Glove, DenseNet-DSA  | 85.34        |               | 6.2450  |
-| BERT-tiny, CNN       | 79.08        |               | 4.8604  |
-| BERT-tiny, CLS       | 80.83        |               | 3.8461  |
-| BERT-mini, CNN       | 83.36        |               | 7.0983  |
-| BERT-mini, CLS       | 83.69        |               | 5.5521  |
-| BERT-small, CNN      | 87.53        |               | 7.2010  |
-| BERT-small, CLS      | 87.86        |               | 6.0450  |
-| BERT-medium, CNN     | 88.58        |               | 11.9082 |
-| **BERT-medium, CLS** | 89.24        |               | 9.5857  |
-| BERT-base, CNN       | 92.04        |               | 14.1576 |
-| BERT-base, CLS       | 92.42        |               | 12.7549 |
-| BERT-base, CNN       | -            | del 0,1,2,3   | -       |
-| BERT-base, CLS       | -            | del 0,1,2,3   | -       |
-| BERT-large, CNN      | 93.08        |               | 28.6490 |
-| BERT-large, CLS      | 93.85        |               | 27.9967 |
-| SpanBERT-base, CNN   | 91.82        |               | 15.2098 |
-| SpanBERT-base, CLS   | 91.49        |               | 13.1516 |
-| SpanBERT-large, CNN  | 93.90        |               | 26.8609 |
-| SpanBERT-large, CLS  | 93.96        |               | 26.0445 |
-| ALBERT-base, CNN     | 92.04        |               | 16.0554 |           
-| ALBERT-base, CLS     | 90.01        |               | 14.6725 |           
-| ALBERT-xxlarge, CNN  | **95.77**    |               | 57.4631 |
-| ALBERT-xxlarge, CLS  | 94.45        |               | 51.8027 |
-| ROBERTa-base, CNN    | 92.92        |               | 15.1016 |
-| ROBERTa-base, CLS    | 93.03        |               | 14.6736 |
-| ROBERTa-large, CNN   | 95.55        |               | 26.9807 |
-| ROBERTa-large, CLS   | 95.66        |               | 23.7395 |
-| BART-large, CNN      | 94.45        |               | 35.1708 |
-| BART-large, CLS      | 94.89        |               | 33.3862 |
+|                      | Accuracy (%) | Etc            | Elapsed time / example (ms)  |
+| -------------------- | ------------ | -------------- | ---------------------------- |
+| Glove, CNN           | 83.42        |                | 1.6873  |
+| Glove, DenseNet-CNN  | 86.38        |                | 3.6203  |
+| Glove, DenseNet-DSA  | 85.34        |                | 6.2450  |
+| BERT-tiny, CNN       | 79.08        |                | 4.8604  |
+| BERT-tiny, CLS       | 80.83        |                | 3.8461  |
+| BERT-mini, CNN       | 83.36        |                | 7.0983  |
+| BERT-mini, CLS       | 83.69        |                | 5.5521  |
+| BERT-small, CNN      | 87.53        |                | 7.2010  |
+| BERT-small, CLS      | 87.86        |                | 6.0450  |
+| BERT-medium, CNN     | 88.58        |                | 11.9082 |
+| **BERT-medium, CLS** | 89.24        |                | 9.5857  |
+| BERT-base, CNN       | 92.04        |                | 14.1576 |
+| BERT-base, CLS       | 92.42        |                | 12.7549 |
+| BERT-base, CNN       | -            | del 8,9,10,11  | -       |
+| BERT-base, CLS       | -            | del 8,9,10,11  | -       |
+| BERT-large, CNN      | 93.08        |                | 28.6490 |
+| BERT-large, CLS      | 93.85        |                | 27.9967 |
+| SpanBERT-base, CNN   | 91.82        |                | 15.2098 |
+| SpanBERT-base, CLS   | 91.49        |                | 13.1516 |
+| SpanBERT-large, CNN  | 93.90        |                | 26.8609 |
+| SpanBERT-large, CLS  | 93.96        |                | 26.0445 |
+| ALBERT-base, CNN     | 92.04        |                | 16.0554 |           
+| ALBERT-base, CLS     | 90.01        |                | 14.6725 |           
+| ALBERT-xxlarge, CNN  | **95.77**    |                | 57.4631 |
+| ALBERT-xxlarge, CLS  | 94.45        |                | 51.8027 |
+| ROBERTa-base, CNN    | 92.92        |                | 15.1016 |
+| ROBERTa-base, CLS    | 93.03        |                | 14.6736 |
+| ROBERTa-large, CNN   | 95.55        |                | 26.9807 |
+| ROBERTa-large, CLS   | 95.66        |                | 23.7395 |
+| BART-large, CNN      | 94.45        |                | 35.1708 |
+| BART-large, CLS      | 94.89        |                | 33.3862 |
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -311,7 +311,7 @@ INFO:__main__:[Elapsed Time] : 25878ms, 14.157692307692308ms on average
   INFO:__main__:[Accuracy] : 0.7908,  1440/ 1821
   INFO:__main__:[Elapsed Time] : 8951ms, 4.86043956043956ms on average
 
-  ** --bert_remove_layers=0,1,2,3
+  ** --bert_remove_layers=8,9,10,11
 
   ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
   ** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case
@@ -348,7 +348,7 @@ INFO:__main__:[Elapsed Time] : 23314ms, 12.754945054945056ms on average
   INFO:__main__:[Accuracy] : 0.8083,  1472/ 1821
   INFO:__main__:[Elapsed Time] : 7124ms, 3.8461538461538463ms on average
 
-  ** --bert_remove_layers=0,1,2,3
+  ** --bert_remove_layers=8,9,10,11
 
   ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
   ** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case

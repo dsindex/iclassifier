@@ -178,7 +178,7 @@ def reduce_bert_model(config, bert_model, bert_config):
         layer_indexes = [int(x) for x in remove_layers.split(",")]
         layer_indexes.sort(reverse=True)
         for layer_idx in layer_indexes:
-            if layer_idx < 0: continue
+            if layer_idx < 0 or layer_idx >= bert_config.num_hidden_layers: continue
             del(layer_list[layer_idx])
             logger.info("%s layer removed" % (layer_idx))
         if len(layer_indexes) > 0:
@@ -341,7 +341,7 @@ def main():
     parser.add_argument('--bert_use_feature_based', action='store_true',
                         help="use BERT as feature-based, default fine-tuning")
     parser.add_argument('--bert_remove_layers', type=str, default='',
-                        help="specify layer numbers to remove during finetuning e.g. 0,1,2 to remove first three layers")
+                        help="specify layer numbers to remove during finetuning e.g. 8,9,10,11 to remove last 4 layers from BERT base(12 layers)")
 
     opt = parser.parse_args()
 
