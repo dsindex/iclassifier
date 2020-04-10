@@ -177,13 +177,15 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | BERT-small, CNN      | 87.53        |                | 7.2010  |
 | BERT-small, CLS      | 87.86        |                | 6.0450  |
 | BERT-medium, CNN     | 88.58        |                | 11.9082 |
-| **BERT-medium, CLS** | 89.24        |                | 9.5857  |
+| BERT-medium, CLS     | 89.24        |                | 9.5857  |
 | BERT-base, CNN       | 92.04        |                | 14.1576 |
 | BERT-base, CLS       | 92.42        |                | 12.7549 |
-| BERT-base, CNN       | -            | del 8,9,10,11  | -       |
-| BERT-base, CLS       | -            | del 8,9,10,11  | -       |
+| BERT-base, CNN       | 90.55        | del 8,9,10,11  | 10.6824 |
+| **BERT-base, CLS**   | 91.49        | del 8,9,10,11  | 8.7747  |
 | BERT-large, CNN      | 93.08        |                | 28.6490 |
 | BERT-large, CLS      | 93.85        |                | 27.9967 |
+| BERT-large, CNN      | -            | del 12 ~ 23    | -       |
+| BERT-large, CLS      | -            | del 12 ~ 23    | -       |
 | SpanBERT-base, CNN   | 91.82        |                | 15.2098 |
 | SpanBERT-base, CLS   | 91.49        |                | 13.1516 |
 | SpanBERT-large, CNN  | 93.90        |                | 26.8609 |
@@ -194,8 +196,12 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | ALBERT-xxlarge, CLS  | 94.45        |                | 51.8027 |
 | ROBERTa-base, CNN    | 92.92        |                | 15.1016 |
 | ROBERTa-base, CLS    | 93.03        |                | 14.6736 |
+| ROBERTa-base, CNN    | -            | del 8,9,10,11  | -       |
+| ROBERTa-base, CLS    | -            | del 8,9,10,11  | -       |
 | ROBERTa-large, CNN   | 95.55        |                | 26.9807 |
 | ROBERTa-large, CLS   | 95.66        |                | 23.7395 |
+| ROBERTa-large, CNN   | -            | del 12 ~ 23    | -       |
+| ROBERTa-large, CLS   | -            | del 12 ~ 23    | -       |
 | BART-large, CNN      | 94.45        |                | 35.1708 |
 | BART-large, CLS      | 94.89        |                | 33.3862 |
 
@@ -291,7 +297,7 @@ $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 
 INFO:__main__:[Accuracy] : 0.9204,  1676/ 1821
 INFO:__main__:[Elapsed Time] : 25878ms, 14.157692307692308ms on average
 
-  ** --bert_model_name_or_path=bert-large-uncased , without --bert_do_lower_case
+  ** --bert_model_name_or_path=bert-large-uncased
   INFO:__main__:[Accuracy] : 0.9308,  1695/ 1821
   INFO:__main__:[Elapsed Time] : 52170ms, 28.649093904448105ms on average
 
@@ -311,8 +317,6 @@ INFO:__main__:[Elapsed Time] : 25878ms, 14.157692307692308ms on average
   INFO:__main__:[Accuracy] : 0.7908,  1440/ 1821
   INFO:__main__:[Elapsed Time] : 8951ms, 4.86043956043956ms on average
 
-  ** --bert_remove_layers=8,9,10,11
-
   ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
   ** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case
   INFO:__main__:[Accuracy] : 0.9390,  1710/ 1821
@@ -322,13 +326,19 @@ INFO:__main__:[Elapsed Time] : 25878ms, 14.157692307692308ms on average
   INFO:__main__:[Accuracy] : 0.9182,  1672/ 1821
   INFO:__main__:[Elapsed Time] : 27796ms, 15.20989010989011ms on average
 
+  ** --bert_remove_layers=8,9,10,11
+  INFO:__main__:[Accuracy] : 0.9055,  1649/ 1821
+  INFO:__main__:[Elapsed Time] : 19541ms, 10.682417582417582ms on average
+
+  ** --bert_model_name_or_path=bert-large-uncased --bert_remove_layers=12,13,14,15,16,17,18,19,20,21,22,23 
+
 * enc_class=cls
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case
 
 INFO:__main__:[Accuracy] : 0.9242,  1683/ 1821
 INFO:__main__:[Elapsed Time] : 23314ms, 12.754945054945056ms on average
 
-  ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5 , without --bert_do_lower_case
+  ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5
   INFO:__main__:[Accuracy] : 0.9385,  1709/ 1821
   INFO:__main__:[Elapsed Time] : 50982ms, 27.99670510708402ms on average
 
@@ -348,8 +358,6 @@ INFO:__main__:[Elapsed Time] : 23314ms, 12.754945054945056ms on average
   INFO:__main__:[Accuracy] : 0.8083,  1472/ 1821
   INFO:__main__:[Elapsed Time] : 7124ms, 3.8461538461538463ms on average
 
-  ** --bert_remove_layers=8,9,10,11
-
   ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
   ** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case
   INFO:__main__:[Accuracy] : 0.9396,  1711/ 1821
@@ -358,6 +366,12 @@ INFO:__main__:[Elapsed Time] : 23314ms, 12.754945054945056ms on average
   ** --bert_model_name_or_path=embeddings/spanbert_hf_base , without --bert_do_lower_case
   INFO:__main__:[Accuracy] : 0.9149,  1666/ 1821
   INFO:__main__:[Elapsed Time] : 24049ms, 13.151648351648351ms on average
+
+  ** --bert_remove_layers=8,9,10,11
+  INFO:__main__:[Accuracy] : 0.9149,  1666/ 1821
+  INFO:__main__:[Elapsed Time] : 16082ms, 8.774725274725276ms on average
+
+  ** --bert_model_name_or_path=bert-large-uncased --bert_remove_layers=12,13,14,15,16,17,18,19,20,21,22,23 
 
 ```
 
@@ -423,6 +437,10 @@ INFO:__main__:[Elapsed Time] : 49297ms, 26.98076923076923ms on average
   INFO:__main__:[Accuracy] : 0.9292,  1692/ 1821
   INFO:__main__:[Elapsed Time] : 27615ms, 15.101648351648352ms on average
 
+  ** --bert_model_name_or_path=./embeddings/roberta-base --bert_remove_layers=8,9,10,11
+
+  ** --bert_remove_layers=12,13,14,15,16,17,18,19,20,21,22,23 
+
 * enc_class=cls
 $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
@@ -432,6 +450,10 @@ INFO:__main__:[Elapsed Time] : 43363ms, 23.73956043956044ms on average
   ** --bert_model_name_or_path=./embeddings/roberta-base
   INFO:__main__:[Accuracy] : 0.9303,  1694/ 1821
   INFO:__main__:[Elapsed Time] : 26822ms, 14.673626373626373ms on average
+
+  ** --bert_model_name_or_path=./embeddings/roberta-base --bert_remove_layers=8,9,10,11
+
+  ** --bert_remove_layers=12,13,14,15,16,17,18,19,20,21,22,23 
 
 ```
 
