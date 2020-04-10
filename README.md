@@ -476,3 +476,5 @@ INFO:__main__:[Elapsed Time] : 61015ms, 33.386263736263736ms on average
 - scalar mixtures of BERT all layers
   - [ScalarMixWithDropout](https://github.com/Hyperparticle/udify/blob/master/udify/modules/scalar_mix.py)
   - [ScalarMix](https://github.com/allenai/allennlp/blob/master/allennlp/modules/scalar_mix.py)
+- [Poor Man’s BERT: Smaller and Faster Transformer Models](https://arxiv.org/pdf/2004.03844v1.pdf)
+  - https://github.com/hsajjad/transformers/blob/master/examples/run_glue.py
