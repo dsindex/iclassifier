@@ -180,6 +180,8 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | **BERT-medium, CLS** | 89.24        |               | 9.5857  |
 | BERT-base, CNN       | 92.04        |               | 14.1576 |
 | BERT-base, CLS       | 92.42        |               | 12.7549 |
+| BERT-base, CNN       | -            | del 0,1,2,3   | -       |
+| BERT-base, CLS       | -            | del 0,1,2,3   | -       |
 | BERT-large, CNN      | 93.08        |               | 28.6490 |
 | BERT-large, CLS      | 93.85        |               | 27.9967 |
 | SpanBERT-base, CNN   | 91.82        |               | 15.2098 |
@@ -309,6 +311,8 @@ INFO:__main__:[Elapsed Time] : 25878ms, 14.157692307692308ms on average
   INFO:__main__:[Accuracy] : 0.7908,  1440/ 1821
   INFO:__main__:[Elapsed Time] : 8951ms, 4.86043956043956ms on average
 
+  ** --bert_remove_layers=0,1,2,3
+
   ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
   ** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case
   INFO:__main__:[Accuracy] : 0.9390,  1710/ 1821
@@ -343,6 +347,8 @@ INFO:__main__:[Elapsed Time] : 23314ms, 12.754945054945056ms on average
   ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-2_H-128_A-2
   INFO:__main__:[Accuracy] : 0.8083,  1472/ 1821
   INFO:__main__:[Elapsed Time] : 7124ms, 3.8461538461538463ms on average
+
+  ** --bert_remove_layers=0,1,2,3
 
   ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
   ** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case

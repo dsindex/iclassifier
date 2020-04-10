@@ -163,6 +163,27 @@ def prepare_datasets(config):
     valid_loader = prepare_dataset(opt, opt.valid_path, DatasetClass, shuffle=False, num_workers=2)
     return train_loader, valid_loader
 
+def get_bert_embed_layer_list(config, bert_model):
+    opt = config['opt']
+    embed_list = list(bert_model.embeddings.parameters())
+    layer_list = bert_model.encoder.layer
+    return embed_list, layer_list
+
+def reduce_bert_model(config, bert_model, bert_config):
+    opt = config['opt']
+    embed_list, layer_list = get_bert_embed_layer_list(config, bert_model)
+    remove_layers = opt.bert_remove_layers
+    # drop layers
+    if remove_layers is not "":
+        layer_indexes = [int(x) for x in remove_layers.split(",")]
+        layer_indexes.sort(reverse=True)
+        for layer_idx in layer_indexes:
+            if layer_idx < 0: continue
+            del(layer_list[layer_idx])
+            logger.info("%s layer removed" % (layer_idx))
+        if len(layer_indexes) > 0:
+            bert_config.num_hidden_layers = len(layer_list)
+
 def prepare_model(config):
     device = config['device']
     opt = config['opt']
@@ -197,6 +218,8 @@ def prepare_model(config):
         bert_model = Model.from_pretrained(opt.bert_model_name_or_path,
                                            from_tf=bool(".ckpt" in opt.bert_model_name_or_path))
         bert_config = bert_model.config
+        # bert model reduction
+        reduce_bert_model(config, bert_model, bert_config)
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path, feature_based=opt.bert_use_feature_based)
@@ -317,6 +340,8 @@ def main():
                         help="The output directory where the model predictions and checkpoints will be written.")
     parser.add_argument('--bert_use_feature_based', action='store_true',
                         help="use BERT as feature-based, default fine-tuning")
+    parser.add_argument('--bert_remove_layers', type=str, default='',
+                        help="specify layer numbers to remove during finetuning e.g. 0,1,2 to remove first three layers")
 
     opt = parser.parse_args()
 
