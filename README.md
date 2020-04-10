@@ -184,7 +184,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | **BERT-base, CLS**   | 91.49        | del 8,9,10,11  | 8.7747  |
 | BERT-large, CNN      | 93.08        |                | 28.6490 |
 | BERT-large, CLS      | 93.85        |                | 27.9967 |
-| BERT-large, CNN      | -            | del 12 ~ 23    | -       |
+| BERT-large, CNN      | 88.47        | del 12 ~ 23    | 14.7813 |
 | BERT-large, CLS      | -            | del 12 ~ 23    | -       |
 | SpanBERT-base, CNN   | 91.82        |                | 15.2098 |
 | SpanBERT-base, CLS   | 91.49        |                | 13.1516 |
@@ -331,6 +331,8 @@ INFO:__main__:[Elapsed Time] : 25878ms, 14.157692307692308ms on average
   INFO:__main__:[Elapsed Time] : 19541ms, 10.682417582417582ms on average
 
   ** --bert_model_name_or_path=bert-large-uncased --bert_remove_layers=12,13,14,15,16,17,18,19,20,21,22,23 
+  INFO:__main__:[Accuracy] : 0.8847,  1611/ 1821
+  INFO:__main__:[Elapsed Time] : 27017ms, 14.781318681318682ms on average
 
 * enc_class=cls
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case
