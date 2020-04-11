@@ -66,8 +66,8 @@
 | Glove, DenseNet-DSA     | 87.66        | 6.9731  / - |    |
 | bpe BERT(4.8m), CNN     | 89.45        | 14.6978 / - |    |
 | bpe BERT(4.8m), CLS     | 89.31        | 13.4392 / - |    |
-| bpe BERT(4.8m), CNN     | -            | -       / - | del 8,9,10,11 |
-| bpe BERT(4.8m), CLS     | -            | -       / - | del 8,9,10,11 |
+| bpe BERT(4.8m), CNN     | 88.62        | 10.7023 / - | del 8,9,10,11 |
+| bpe BERT(4.8m), CLS     | 88.92        | 9.3280  / - | del 8,9,10,11 |
 | dha BERT(2.5m), CNN     | **89.96**    | 14.8779 / - |    |
 | dha BERT(2.5m), CLS     | 89.41        | 14.3664 / - |    |
 | dha BERT(2.5m), CNN     | -            | -       / - | del 8,9,10,11 |
@@ -188,6 +188,8 @@ INFO:__main__:[Accuracy] : 0.8945, 44723/49997
 INFO:__main__:[Elapsed Time] : 734983ms, 14.697815825266021ms on average
 
   ** --bert_remove_layers=8,9,10,11
+  INFO:__main__:[Accuracy] : 0.8862, 44309/49997
+  INFO:__main__:[Elapsed Time] : 535186ms, 10.702336186894952ms on average
 
 * enc_class=cls
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
@@ -196,7 +198,8 @@ INFO:__main__:[Accuracy] : 0.8931, 44653/49997
 INFO:__main__:[Elapsed Time] : 672027ms, 13.439275142011361ms on average
 
   ** --bert_remove_layers=8,9,10,11
-
+  INFO:__main__:[Accuracy] : 0.8892, 44457/49997
+  INFO:__main__:[Elapsed Time] : 466825ms, 9.32800624049924ms on average
 ```
 
 ### Experiments with BERT(pytorch.all.dha.2.5m_step)

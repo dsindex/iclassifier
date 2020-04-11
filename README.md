@@ -197,7 +197,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | ROBERTa-base, CNN    | 92.92        |                | 15.1016 / - |
 | ROBERTa-base, CLS    | 93.03        |                | 14.6736 / - |
 | ROBERTa-base, CNN    | 92.26        | del 8,9,10,11  | 11.5241 / - |
-| ROBERTa-base, CLS    | -            | del 8,9,10,11  | -       / - |
+| ROBERTa-base, CLS    | 91.76        | del 8,9,10,11  | 10.0296 / - |
 | ROBERTa-large, CNN   | 95.55        |                | 26.9807 / - |
 | ROBERTa-large, CLS   | 95.66        |                | 23.7395 / - |
 | BART-large, CNN      | 94.45        |                | 35.1708 / - |
@@ -454,6 +454,8 @@ INFO:__main__:[Elapsed Time] : 43363ms, 23.73956043956044ms on average
   INFO:__main__:[Elapsed Time] : 26822ms, 14.673626373626373ms on average
 
   ** --bert_model_name_or_path=./embeddings/roberta-base --bert_remove_layers=8,9,10,11
+  INFO:__main__:[Accuracy] : 0.9176,  1671/ 1821
+  INFO:__main__:[Elapsed Time] : 18344ms, 10.02967032967033ms on average
 
 ```
 
