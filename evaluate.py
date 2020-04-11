@@ -110,7 +110,7 @@ def evaluate(opt):
     # set config
     config = load_config(opt)
     device = torch.device(opt.device)
-    torch.set_num_threads(opt.num_thread)
+    if opt.num_threads > 0: torch.set_num_threads(opt.num_threads)
     config['device'] = opt.device
     config['opt'] = opt
     logger.info("%s", config)
@@ -171,7 +171,7 @@ def main():
     parser.add_argument('--data_dir', type=str, default='data/snips')
     parser.add_argument('--model_path', type=str, default='pytorch-model.pt')
     parser.add_argument('--device', type=str, default='cuda')
-    parser.add_argument('--num_thread', type=int, default=1)
+    parser.add_argument('--num_threads', type=int, default=0)
     parser.add_argument('--batch_size', type=int, default=1)
     parser.add_argument('--num_examples', default=0, type=int, help="number of examples to evaluate, 0 means all of them.")
     parser.add_argument('--seed', default=5, type=int, help="dummy for BaseModel.")
