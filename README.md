@@ -57,8 +57,8 @@ reference pytorch code for intent(sentence) classification.
 
 ### experiments summary
 
-|                     | Accuracy (%) | Elapsed time / example (ms) |
-| ------------------- | ------------ | --------------------------- |
+|                     | Accuracy (%) | Elapsed time / example (ms, V100) |
+| ------------------- | ------------ | --------------------------------- |
 | Glove, CNN          | 97.86        | 1.7939  |
 | Glove, Densenet-CNN | 97.57        | 3.6094  |
 | Glove, Densenet-DSA | 97.43        | 7.5007  |
@@ -165,8 +165,8 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 
 - iclassifier
 
-|                      | Accuracy (%) | Etc            | Elapsed time / example (ms)  |
-| -------------------- | ------------ | -------------- | ---------------------------- |
+|                      | Accuracy (%) | Etc            | Elapsed time / example (ms, V100)  |
+| -------------------- | ------------ | -------------- | ---------------------------------- |
 | Glove, CNN           | 83.42        |                | 1.6873  |
 | Glove, DenseNet-CNN  | 86.38        |                | 3.6203  |
 | Glove, DenseNet-DSA  | 85.34        |                | 6.2450  |

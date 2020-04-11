@@ -59,8 +59,8 @@
 
 - iclassifier
 
-|                         | Accuracy (%) | Elapsed time / example (ms) |
-| ----------------------- | ------------ | --------------------------- |
+|                         | Accuracy (%) | Elapsed time / example (ms, V100) |
+| ----------------------- | ------------ | --------------------------------- |
 | Glove, CNN              | 87.31        | 1.9479  |
 | **Glove, DenseNet-CNN** | 88.18        | 3.4614  |
 | Glove, DenseNet-DSA     | 87.66        | 6.9731  |
