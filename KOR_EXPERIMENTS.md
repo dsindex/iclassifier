@@ -61,13 +61,13 @@
 
 |                         | Accuracy (%) | Elapsed time / example (ms, GPU / CPU) | Etc   |
 | ----------------------- | ------------ | -------------------------------------- | ----- |
-| Glove, CNN              | 87.31        | 1.9479  / - |    |
+| Glove, CNN              | 87.31        | 1.9479  / 3.5353  | threads=14 |
 | **Glove, DenseNet-CNN** | 88.18        | 3.4614  / - |    |
 | Glove, DenseNet-DSA     | 87.66        | 6.9731  / - |    |
 | bpe BERT(4.8m), CNN     | 89.45        | 14.6978 / - |    |
 | bpe BERT(4.8m), CLS     | 89.31        | 13.4392 / - |    |
 | bpe BERT(4.8m), CNN     | 88.62        | 10.7023 / - | del 8,9,10,11 |
-| bpe BERT(4.8m), CLS     | 88.92        | 9.3280  / - | del 8,9,10,11 |
+| bpe BERT(4.8m), CLS     | 88.92        | 9.3280  / 70.3232 | del 8,9,10,11, threads=14 |
 | dha BERT(2.5m), CNN     | **89.96**    | 14.8779 / - |    |
 | dha BERT(2.5m), CLS     | 89.41        | 14.3664 / - |    |
 | dha BERT(2.5m), CNN     | -            | -       / - | del 8,9,10,11 |
