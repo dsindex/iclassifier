@@ -57,13 +57,13 @@ reference pytorch code for intent(sentence) classification.
 
 ### experiments summary
 
-|                     | Accuracy (%) | Elapsed time / example (ms, V100) |
-| ------------------- | ------------ | --------------------------------- |
-| Glove, CNN          | 97.86        | 1.7939  |
-| Glove, Densenet-CNN | 97.57        | 3.6094  |
-| Glove, Densenet-DSA | 97.43        | 7.5007  |
-| BERT-large, CNN     | **98.00**    | 24.277  |
-| BERT-large, CLS     | 97.86        | 23.5428 |
+|                     | Accuracy (%) | Elapsed time / example (ms, GPU / CPU) |
+| ------------------- | ------------ | -------------------------------------- |
+| Glove, CNN          | 97.86        | 1.7939 / - |
+| Glove, Densenet-CNN | 97.57        | 3.6094 / - |
+| Glove, Densenet-DSA | 97.43        | 7.5007 / - |
+| BERT-large, CNN     | **98.00**    | 24.277 / - |
+| BERT-large, CLS     | 97.86        | 23.542 / - |
 
 ### emb_class=glove, enc_class=cnn
 
@@ -165,45 +165,43 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 
 - iclassifier
 
-|                      | Accuracy (%) | Etc            | Elapsed time / example (ms, V100)  |
-| -------------------- | ------------ | -------------- | ---------------------------------- |
-| Glove, CNN           | 83.42        |                | 1.6873  |
-| Glove, DenseNet-CNN  | 86.38        |                | 3.6203  |
-| Glove, DenseNet-DSA  | 85.34        |                | 6.2450  |
-| BERT-tiny, CNN       | 79.08        |                | 4.8604  |
-| BERT-tiny, CLS       | 80.83        |                | 3.8461  |
-| BERT-mini, CNN       | 83.36        |                | 7.0983  |
-| BERT-mini, CLS       | 83.69        |                | 5.5521  |
-| BERT-small, CNN      | 87.53        |                | 7.2010  |
-| BERT-small, CLS      | 87.86        |                | 6.0450  |
-| BERT-medium, CNN     | 88.58        |                | 11.9082 |
-| BERT-medium, CLS     | 89.24        |                | 9.5857  |
-| BERT-base, CNN       | 92.04        |                | 14.1576 |
-| BERT-base, CLS       | 92.42        |                | 12.7549 |
-| BERT-base, CNN       | 90.55        | del 8,9,10,11  | 10.6824 |
-| **BERT-base, CLS**   | 91.49        | del 8,9,10,11  | 8.7747  |
-| BERT-large, CNN      | 93.08        |                | 28.6490 |
-| BERT-large, CLS      | 93.85        |                | 27.9967 |
-| BERT-large, CNN      | 88.47        | del 12 ~ 23    | 14.7813 |
-| BERT-large, CLS      | 86.71        | del 12 ~ 23    | 12.1560 |
-| SpanBERT-base, CNN   | 91.82        |                | 15.2098 |
-| SpanBERT-base, CLS   | 91.49        |                | 13.1516 |
-| SpanBERT-large, CNN  | 93.90        |                | 26.8609 |
-| SpanBERT-large, CLS  | 93.96        |                | 26.0445 |
-| ALBERT-base, CNN     | 92.04        |                | 16.0554 |           
-| ALBERT-base, CLS     | 90.01        |                | 14.6725 |           
-| ALBERT-xxlarge, CNN  | **95.77**    |                | 57.4631 |
-| ALBERT-xxlarge, CLS  | 94.45        |                | 51.8027 |
-| ROBERTa-base, CNN    | 92.92        |                | 15.1016 |
-| ROBERTa-base, CLS    | 93.03        |                | 14.6736 |
-| ROBERTa-base, CNN    | -            | del 8,9,10,11  | -       |
-| ROBERTa-base, CLS    | -            | del 8,9,10,11  | -       |
-| ROBERTa-large, CNN   | 95.55        |                | 26.9807 |
-| ROBERTa-large, CLS   | 95.66        |                | 23.7395 |
-| ROBERTa-large, CNN   | -            | del 12 ~ 23    | -       |
-| ROBERTa-large, CLS   | -            | del 12 ~ 23    | -       |
-| BART-large, CNN      | 94.45        |                | 35.1708 |
-| BART-large, CLS      | 94.89        |                | 33.3862 |
+|                      | Accuracy (%) | Etc            | Elapsed time / example (ms, GPU / CPU)  |
+| -------------------- | ------------ | -------------- | --------------------------------------- |
+| Glove, CNN           | 83.42        |                | 1.6873  / - |
+| Glove, DenseNet-CNN  | 86.38        |                | 3.6203  / - |
+| Glove, DenseNet-DSA  | 85.34        |                | 6.2450  / - |
+| BERT-tiny, CNN       | 79.08        |                | 4.8604  / - |
+| BERT-tiny, CLS       | 80.83        |                | 3.8461  / - |
+| BERT-mini, CNN       | 83.36        |                | 7.0983  / - |
+| BERT-mini, CLS       | 83.69        |                | 5.5521  / - |
+| BERT-small, CNN      | 87.53        |                | 7.2010  / - |
+| BERT-small, CLS      | 87.86        |                | 6.0450  / - |
+| BERT-medium, CNN     | 88.58        |                | 11.9082 / - |
+| BERT-medium, CLS     | 89.24        |                | 9.5857  / - |
+| BERT-base, CNN       | 92.04        |                | 14.1576 / - |
+| BERT-base, CLS       | 92.42        |                | 12.7549 / - |
+| BERT-base, CNN       | 90.55        | del 8,9,10,11  | 10.6824 / - |
+| **BERT-base, CLS**   | 91.49        | del 8,9,10,11  | 8.7747  / - |
+| BERT-large, CNN      | 93.08        |                | 28.6490 / - |
+| BERT-large, CLS      | 93.85        |                | 27.9967 / - |
+| BERT-large, CNN      | 88.47        | del 12 ~ 23    | 14.7813 / - |
+| BERT-large, CLS      | 86.71        | del 12 ~ 23    | 12.1560 / - |
+| SpanBERT-base, CNN   | 91.82        |                | 15.2098 / - |
+| SpanBERT-base, CLS   | 91.49        |                | 13.1516 / - |
+| SpanBERT-large, CNN  | 93.90        |                | 26.8609 / - |
+| SpanBERT-large, CLS  | 93.96        |                | 26.0445 / - |
+| ALBERT-base, CNN     | 92.04        |                | 16.0554 / - |           
+| ALBERT-base, CLS     | 90.01        |                | 14.6725 / - |           
+| ALBERT-xxlarge, CNN  | **95.77**    |                | 57.4631 / - |
+| ALBERT-xxlarge, CLS  | 94.45        |                | 51.8027 / - |
+| ROBERTa-base, CNN    | 92.92        |                | 15.1016 / - |
+| ROBERTa-base, CLS    | 93.03        |                | 14.6736 / - |
+| ROBERTa-base, CNN    | 92.26        | del 8,9,10,11  | 11.5241 / - |
+| ROBERTa-base, CLS    | -            | del 8,9,10,11  | -       / - |
+| ROBERTa-large, CNN   | 95.55        |                | 26.9807 / - |
+| ROBERTa-large, CLS   | 95.66        |                | 23.7395 / - |
+| BART-large, CNN      | 94.45        |                | 35.1708 / - |
+| BART-large, CLS      | 94.89        |                | 33.3862 / - |
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -442,8 +440,8 @@ INFO:__main__:[Elapsed Time] : 49297ms, 26.98076923076923ms on average
   INFO:__main__:[Elapsed Time] : 27615ms, 15.101648351648352ms on average
 
   ** --bert_model_name_or_path=./embeddings/roberta-base --bert_remove_layers=8,9,10,11
-
-  ** --bert_remove_layers=12,13,14,15,16,17,18,19,20,21,22,23 
+  INFO:__main__:[Accuracy] : 0.9226,  1680/ 1821
+  INFO:__main__:[Elapsed Time] : 21127ms, 11.524175824175824ms on average
 
 * enc_class=cls
 $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
@@ -456,8 +454,6 @@ INFO:__main__:[Elapsed Time] : 43363ms, 23.73956043956044ms on average
   INFO:__main__:[Elapsed Time] : 26822ms, 14.673626373626373ms on average
 
   ** --bert_model_name_or_path=./embeddings/roberta-base --bert_remove_layers=8,9,10,11
-
-  ** --bert_remove_layers=12,13,14,15,16,17,18,19,20,21,22,23 
 
 ```
 
