@@ -152,6 +152,9 @@ def evaluate(opt):
             if i == 0: # first one may takes longer time, so ignore in computing duration.
                 first_time = int((time.time()-first_time)*1000)
                 first_examples = cur_examples
+            if opt.num_examples != 0 and total_examples >= opt.num_examples:
+                logger.info("[Stop Evaluation] : up to the {} examples".format(total_examples))
+                break
     acc  = correct / total_examples
     whole_time = int((time.time()-whole_st_time)*1000)
     avg_time = (whole_time - first_time) / (total_examples - first_examples)
@@ -170,6 +173,7 @@ def main():
     parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--num_thread', type=int, default=1)
     parser.add_argument('--batch_size', type=int, default=1)
+    parser.add_argument('--num_examples', default=0, type=int, help="number of examples to evaluate, 0 means all of them.")
     parser.add_argument('--seed', default=5, type=int, help="dummy for BaseModel.")
     # for BERT
     parser.add_argument('--bert_do_lower_case', action='store_true',
