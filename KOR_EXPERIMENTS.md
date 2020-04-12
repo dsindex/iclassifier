@@ -62,22 +62,22 @@
 |                         | Accuracy (%) | Elapsed time / example (ms, GPU / CPU) | Etc   |
 | ----------------------- | ------------ | -------------------------------------- | ----- |
 | Glove, CNN              | 87.31        | 1.9479  / 3.5353  | threads=14 |
-| **Glove, DenseNet-CNN** | 88.18        | 3.4614  / 18.1010 | threads=14 |
-| Glove, DenseNet-DSA     | 87.66        | 6.9731  / - |    |
-| bpe BERT(4.8m), CNN     | 89.45        | 14.6978 / - |    |
-| bpe BERT(4.8m), CLS     | 89.31        | 13.4392 / - |    |
+| **Glove, DenseNet-CNN** | 88.18        | 3.4614  / 8.3434  | threads=14 |
+| Glove, DenseNet-DSA     | 87.66        | 6.9731  / -       |    |
+| bpe BERT(4.8m), CNN     | 89.45        | 14.6978 / -       |    |
+| bpe BERT(4.8m), CLS     | 89.31        | 13.4392 / -       |    |
 | bpe BERT(4.8m), CNN     | 88.62        | 10.7023 / 73.4141 | del 8,9,10,11, threads=14 |
 | bpe BERT(4.8m), CLS     | 88.92        | 9.3280  / 70.3232 | del 8,9,10,11, threads=14 |
-| dha BERT(2.5m), CNN     | **89.96**    | 14.8779 / - |    |
-| dha BERT(2.5m), CLS     | 89.41        | 14.3664 / - |    |
+| dha BERT(2.5m), CNN     | **89.96**    | 14.8779 / -       |    |
+| dha BERT(2.5m), CLS     | 89.41        | 14.3664 / -       |    |
 | dha BERT(2.5m), CNN     | 88.88        | 10.5157 / 72.7777 | del 8,9,10,11, threads=14         |
 | dha BERT(2.5m), CLS     | 88.81        | 8.9836  / 68.4545 | del 8,9,10,11, threads=14         |
 | dha BERT(2.5m), CLS     | 88.29        | 7.2027  / 53.6363 | del 6,7,8,9,10,11, threads=14     |
 | dha BERT(2.5m), CLS     | 87.54        | 5.7645  / 36.8686 | del 4,5,6,7,8,9,10,11, threads=14 |
-| dha-bpe BERT(4m), CNN   | 89.07        | 14.9454 / - |    |
-| dha-bpe BERT(4m), CLS   | 89.01        | 12.7981 / - |    |
-| dha BERT(10m), CNN      | 89.08        | 15.3276 / - |    |
-| dha BERT(10m), CLS      | 89.25        | 12.7876 / - |    |
+| dha-bpe BERT(4m), CNN   | 89.07        | 14.9454 / -       |    |
+| dha-bpe BERT(4m), CLS   | 89.01        | 12.7981 / -       |    |
+| dha BERT(10m), CNN      | 89.08        | 15.3276 / -       |    |
+| dha BERT(10m), CLS      | 89.25        | 12.7876 / -       |    |
 
 - [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results)
 
