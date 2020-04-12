@@ -167,8 +167,8 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 
 |                      | Accuracy (%) | Etc            | Elapsed time / example (ms, GPU / CPU)  |
 | -------------------- | ------------ | -------------- | --------------------------------------- |
-| Glove, CNN           | 83.42        |                | 1.6873  / - |
-| Glove, DenseNet-CNN  | 86.38        |                | 3.6203  / - |
+| Glove, CNN           | 83.42        | threads=14     | 1.6873  / 3.5050 |
+| Glove, DenseNet-CNN  | 86.38        | threads=14     | 3.6203  / 7.1414 |
 | Glove, DenseNet-DSA  | 85.34        |                | 6.2450  / - |
 | BERT-tiny, CNN       | 79.08        |                | 4.8604  / - |
 | BERT-tiny, CLS       | 80.83        |                | 3.8461  / - |
@@ -181,7 +181,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | BERT-base, CNN       | 92.04        |                | 14.1576 / - |
 | BERT-base, CLS       | 92.42        |                | 12.7549 / - |
 | BERT-base, CNN       | 90.55        | del 8,9,10,11  | 10.6824 / - |
-| **BERT-base, CLS**   | 91.49        | del 8,9,10,11  | 8.7747  / - |
+| **BERT-base, CLS**   | 91.49        | del 8,9,10,11, threads=14 | 8.7747 / 66.6363 |
 | BERT-large, CNN      | 93.08        |                | 28.6490 / - |
 | BERT-large, CLS      | 93.85        |                | 27.9967 / - |
 | BERT-large, CNN      | 88.47        | del 12 ~ 23    | 14.7813 / - |
