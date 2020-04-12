@@ -72,6 +72,7 @@
 | dha BERT(2.5m), CLS     | 89.41        | 14.3664 / - |    |
 | dha BERT(2.5m), CNN     | 88.88        | 10.5157 / 72.7777 | del 8,9,10,11, threads=14 |
 | dha BERT(2.5m), CLS     | 88.81        | 8.9836  / 68.4545 | del 8,9,10,11, threads=14 |
+| dha BERT(2.5m), CLS     | 88.29        | 7.2027  / 53.6363 | del 6,7,8,9,10,11, threads=14 |
 | dha-bpe BERT(4m), CNN   | 89.07        | 14.9454 / - |    |
 | dha-bpe BERT(4m), CLS   | 89.01        | 12.7981 / - |    |
 | dha BERT(10m), CNN      | 89.08        | 15.3276 / - |    |
@@ -235,6 +236,11 @@ INFO:__main__:[Elapsed Time] : 718417ms, 14.36640931274502ms on average
   ** --bert_remove_layers=8,9,10,11
   INFO:__main__:[Accuracy] : 0.8881, 44401/49997
   INFO:__main__:[Elapsed Time] : 449263ms, 8.983638691095287ms on average
+
+  ** --bert_remove_layers=6,7,8,9,10,11
+  INFO:__main__:[Accuracy] : 0.8829, 44143/49997
+  INFO:__main__:[Elapsed Time] : 360213ms, 7.202776222097768ms on average
+
 ```
 
 ### Experiments with BERT(pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step)
