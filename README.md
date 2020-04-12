@@ -181,7 +181,8 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | BERT-base, CNN       | 92.04        |                | 14.1576 / - |
 | BERT-base, CLS       | 92.42        |                | 12.7549 / - |
 | BERT-base, CNN       | 90.55        | del 8,9,10,11  | 10.6824 / - |
-| **BERT-base, CLS**   | 91.49        | del 8,9,10,11, threads=14 | 8.7747 / 66.6363 |
+| **BERT-base, CLS**   | 91.49        | del 8,9,10,11, threads=14     | 8.7747 / 66.6363 |
+| BERT-base, CLS       | 90.23        | del 6,7,8,9,10,11, threads=14 | 7.0241 / 51.7676 |
 | BERT-large, CNN      | 93.08        |                | 28.6490 / - |
 | BERT-large, CLS      | 93.85        |                | 27.9967 / - |
 | BERT-large, CNN      | 88.47        | del 12 ~ 23    | 14.7813 / - |
@@ -370,6 +371,10 @@ INFO:__main__:[Elapsed Time] : 23314ms, 12.754945054945056ms on average
   ** --bert_remove_layers=8,9,10,11
   INFO:__main__:[Accuracy] : 0.9149,  1666/ 1821
   INFO:__main__:[Elapsed Time] : 16082ms, 8.774725274725276ms on average
+
+  ** --bert_remove_layers=6,7,8,9,10,11
+  INFO:__main__:[Accuracy] : 0.9023,  1643/ 1821
+  INFO:__main__:[Elapsed Time] : 12865ms, 7.024175824175824ms on average
 
   ** --bert_model_name_or_path=bert-large-uncased --bert_remove_layers=12,13,14,15,16,17,18,19,20,21,22,23 
   INFO:__main__:[Accuracy] : 0.8671,  1579/ 1821
