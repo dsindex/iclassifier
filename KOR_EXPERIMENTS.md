@@ -70,8 +70,8 @@
 | bpe BERT(4.8m), CLS     | 88.92        | 9.3280  / 70.3232 | del 8,9,10,11, threads=14 |
 | dha BERT(2.5m), CNN     | **89.96**    | 14.8779 / - |    |
 | dha BERT(2.5m), CLS     | 89.41        | 14.3664 / - |    |
-| dha BERT(2.5m), CNN     | -            | -       / - | del 8,9,10,11 |
-| dha BERT(2.5m), CLS     | -            | -       / - | del 8,9,10,11 |
+| dha BERT(2.5m), CNN     | 88.88        | 10.5157 / 72.7777 | del 8,9,10,11, threads=14 |
+| dha BERT(2.5m), CLS     | 88.81        | 8.9836  / 68.4545 | del 8,9,10,11, threads=14 |
 | dha-bpe BERT(4m), CNN   | 89.07        | 14.9454 / - |    |
 | dha-bpe BERT(4m), CLS   | 89.01        | 12.7981 / - |    |
 | dha BERT(10m), CNN      | 89.08        | 15.3276 / - |    |
@@ -223,6 +223,8 @@ INFO:__main__:[Accuracy] : 0.8996, 44976/49997
 INFO:__main__:[Elapsed Time] : 743973ms, 14.877990239219137ms on average
 
   ** --bert_remove_layers=8,9,10,11
+  INFO:__main__:[Accuracy] : 0.8888, 44438/49997
+  INFO:__main__:[Elapsed Time] : 525917ms, 10.515781262501ms on average
 
 * enc_class=cls
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
@@ -231,6 +233,8 @@ INFO:__main__:[Accuracy] : 0.8941, 44701/49997
 INFO:__main__:[Elapsed Time] : 718417ms, 14.36640931274502ms on average
 
   ** --bert_remove_layers=8,9,10,11
+  INFO:__main__:[Accuracy] : 0.8881, 44401/49997
+  INFO:__main__:[Elapsed Time] : 449263ms, 8.983638691095287ms on average
 ```
 
 ### Experiments with BERT(pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step)
