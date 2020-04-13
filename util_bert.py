@@ -1,5 +1,10 @@
 from __future__ import absolute_import, division, print_function
 
+# ------------------------------------------------------------------------------ #
+# reference
+#   https://github.com/huggingface/transformers/blob/master/examples/utils_ner.py
+# ------------------------------------------------------------------------------ #
+
 import os
 import pdb
 
@@ -8,12 +13,6 @@ from tqdm import tqdm
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-# ---------------------------------------------------------------------------- #
-# BERT
-#   reference
-#     https://github.com/huggingface/transformers/blob/master/examples/utils_ner.py
-# ---------------------------------------------------------------------------- #
 
 class InputExample(object):
     def __init__(self, guid, words, label):
