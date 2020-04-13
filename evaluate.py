@@ -106,6 +106,26 @@ def load_model(config, checkpoint):
     logger.info("[Model loaded]")
     return model
 
+def convert_onnx(opt, torch_model, x):
+    import torch.onnx
+
+    torch.onnx.export(torch_model,               # model being run
+                      x,                         # model input (or a tuple for multiple inputs)
+                      opt.onnx_path,             # where to save the model (can be a file or file-like object)
+                      export_params=True,        # store the trained parameter weights inside the model file
+                      opset_version=10,          # the ONNX version to export the model to
+                      do_constant_folding=True,  # whether to execute constant folding for optimization
+                      verbose=True,
+                      input_names=['input'],     # the model's input names
+                      output_names=['output'],   # the model's output names
+                      dynamic_axes={'input' : {0 : 'batch_size'},    # variable length axes
+                                    'output' : {0 : 'batch_size'}}) 
+
+def check_onnx(opt):
+    import onnx
+    onnx_model = onnx.load(opt.onnx_path)
+    onnx.checker.check_model(onnx_model)
+
 def evaluate(opt):
     # set config
     config = load_config(opt)
@@ -126,9 +146,22 @@ def evaluate(opt):
 
     # prepare model and load parameters
     model = load_model(config, checkpoint)
+    model.eval()
+
+    # convert to onnx format, load it to onnxruntime engine
+    if opt.enable_onnx:
+        (x, y) = next(iter(test_loader))
+        x = to_device(x, device)
+        y = y.to(device)
+        convert_onnx(opt, model, x)
+        check_onnx(opt) 
+        import onnxruntime as ort
+        sess_options = ort.SessionOptions()
+        sess_options.inter_op_num_threads = opt.num_threads
+        sess_options.intra_op_num_threads = opt.num_threads
+        ort_session = ort.InferenceSession(opt.onnx_path, sess_options=sess_options)
 
     # evaluation
-    model.eval()
     preds = None
     correct = 0
     n_batches = len(test_loader)
@@ -140,7 +173,12 @@ def evaluate(opt):
         for i, (x,y) in enumerate(tqdm(test_loader, total=n_batches)):
             x = to_device(x, device)
             y = y.to(device)
-            logits = model(x)
+            if opt.enable_onnx:
+                ort_inputs = {ort_session.get_inputs()[0].name: to_numpy(x)}
+                logits = ort_session.run(None, ort_inputs)
+                logits = to_device(torch.tensor(logits), device)
+            else:
+                logits = model(x)
             if preds is None:
                 preds = to_numpy(logits)
             else:
@@ -180,6 +218,10 @@ def main():
                         help="Set this flag if you are using an uncased model.")
     parser.add_argument('--bert_output_dir', type=str, default='bert-checkpoint',
                         help="The output directory where the model predictions and checkpoints will be written.")
+    # for ONNX
+    parser.add_argument('--enable_onnx', action='store_true',
+                        help="Set this flag to convert ONNX format.")
+    parser.add_argument('--onnx_path', type=str, default='pytorch-model.onnx')
     opt = parser.parse_args()
 
     evaluate(opt) 
