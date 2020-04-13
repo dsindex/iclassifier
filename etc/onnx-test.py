@@ -55,7 +55,7 @@ class SuperResolutionNet(nn.Module):
 def main():
     parser = argparse.ArgumentParser()
     
-    parser.add_argument('--config', type=str, default='configs/config-glove-cnn.json')
+    parser.add_argument('--config', type=str, default='config.json')
     opt = parser.parse_args()
 
     # Create the super-resolution model by using the above model definition.
