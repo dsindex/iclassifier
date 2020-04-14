@@ -57,16 +57,16 @@ reference pytorch code for intent(sentence) classification.
 
 ### experiments summary
 
-|                     | Accuracy (%) | Elapsed time / example (ms, GPU / CPU) | Etc          |
-| ------------------- | ------------ | -------------------------------------- | ------------ |
-| Glove, CNN          | 97.86        | 1.7939  / 4.1414  | threads=14, onnxruntime 7.5656 ms |
-| Glove, Densenet-CNN | 97.57        | 3.6094  / -       |                                   |
-| Glove, Densenet-DSA | 97.43        | 7.5007  / -       |                                   |
-| BERT-base, CNN      | 97.57        | 12.1273 / -       |                                   |
+|                     | Accuracy (%) | Elapsed time / example (ms, GPU / CPU) | Etc            |
+| ------------------- | ------------ | -------------------------------------- | -------------- |
+| Glove, CNN          | 97.86        | 1.7939  / 4.1414  | threads=14, onnxruntime 7.5656 ms   |
+| Glove, Densenet-CNN | 97.57        | 3.6094  / 8.3535  | thtreads=14, onnxruntime 19.1212 ms |
+| Glove, Densenet-DSA | 97.43        | 7.5007  / -       |                                     |
+| BERT-base, CNN      | 97.57        | 12.1273 / -       |                                     |
 | BERT-base, CLS      | 97.43        | 12.7714 / 102.747 | threads=14, onnxruntime 174.2222 ms |
 | BERT-base, CLS      | 97.00        | 9.2660  / 73.1010 | del 8,9,19,11, threads=14, onnxruntime 113.2424 ms |
-| BERT-large, CNN     | **98.00**    | 24.277  / -       |                                   |
-| BERT-large, CLS     | 97.86        | 23.542  / -       |                                   |
+| BERT-large, CNN     | **98.00**    | 24.277  / -       |                                     |
+| BERT-large, CLS     | 97.86        | 23.542  / -       |                                     |
 
 ### emb_class=glove, enc_class=cnn
 
