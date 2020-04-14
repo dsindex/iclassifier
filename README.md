@@ -57,13 +57,16 @@ reference pytorch code for intent(sentence) classification.
 
 ### experiments summary
 
-|                     | Accuracy (%) | Elapsed time / example (ms, GPU / CPU) | Etc        |
-| ------------------- | ------------ | -------------------------------------- | ---------- |
-| Glove, CNN          | 97.86        | 1.7939 / 5.2929 | threads=14, onnxruntime 8.1919 ms |
-| Glove, Densenet-CNN | 97.57        | 3.6094 / -      |            |
-| Glove, Densenet-DSA | 97.43        | 7.5007 / -      |            |
-| BERT-large, CNN     | **98.00**    | 24.277 / -      |            |
-| BERT-large, CLS     | 97.86        | 23.542 / -      |            |
+|                     | Accuracy (%) | Elapsed time / example (ms, GPU / CPU) | Etc          |
+| ------------------- | ------------ | -------------------------------------- | ------------ |
+| Glove, CNN          | 97.86        | 1.7939  / 4.1414  | threads=14, onnxruntime 7.5656 ms |
+| Glove, Densenet-CNN | 97.57        | 3.6094  / -       |                                   |
+| Glove, Densenet-DSA | 97.43        | 7.5007  / -       |                                   |
+| BERT-base, CNN      | 97.57        | 12.1273 / -       |                                   |
+| BERT-base, CLS      | 97.43        | 12.7714 / 102.747 | threads=14, onnxruntime 174.2222 ms |
+| BERT-base, CLS      | 97.00        | 9.2660  / 73.1010 | del 8,9,19,11, threads=14, onnxruntime 113.2424 ms |
+| BERT-large, CNN     | **98.00**    | 24.277  / -       |                                   |
+| BERT-large, CLS     | 97.86        | 23.542  / -       |                                   |
 
 ### emb_class=glove, enc_class=cnn
 
@@ -141,8 +144,8 @@ $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_pat
 * enc_class=cnn
 $ python evaluate.py --config=configs/config-bert-cnn.json --bert_output_dir=bert-checkpoint --bert_do_lower_case
 
-INFO:__main__:[Accuracy] : 0.9743,   682/  700
-INFO:__main__:[Elapsed Time] : 9353ms, 13.361428571428572ms on average
+INFO:__main__:[Accuracy] : 0.9757,   683/  700
+INFO:__main__:[Elapsed Time] : 10624ms, 12.127324749642346ms on average
   
   ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5 , without --bert_do_lower_case
   INFO:__main__:[Accuracy] : 0.9800,   686/  700
@@ -157,6 +160,11 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
   ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5 , without --bert_do_lower_case
   INFO:__main__:[Accuracy] : 0.9786,   685/  700
   INFO:__main__:[Elapsed Time] : 16480ms, 23.542857142857144ms on average
+
+  ** --bert_remove_layers=8,9,10,11 
+  INFO:__main__:[Accuracy] : 0.9700,   679/  700
+  INFO:__main__:[Elapsed Time] : 6911ms, 9.266094420600858ms on average
+
 ```
 
 ## SST-2 data
@@ -508,6 +516,7 @@ INFO:__main__:[Elapsed Time] : 61015ms, 33.386263736263736ms on average
 
 ## references
 
+- [pytorch 1.3.0 with cuda 10.0](https://github.com/pytorch/pytorch/issues/28321#issuecomment-561406072)
 - [Intent Detection](https://paperswithcode.com/task/intent-detection)
 - [Intent Classification](https://paperswithcode.com/task/intent-classification)
 - [Identifying Hate Speech with BERT and CNN](https://towardsdatascience.com/identifying-hate-speech-with-bert-and-cnn-b7aa2cddd60d)

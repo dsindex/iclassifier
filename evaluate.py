@@ -106,9 +106,23 @@ def load_model(config, checkpoint):
     logger.info("[Model loaded]")
     return model
 
-def convert_onnx(opt, torch_model, x):
+def convert_onnx(config, torch_model, x):
+    opt = config['opt']
     import torch.onnx
 
+    if config['emb_class'] == 'glove':
+        input_names  = ['input']
+        output_names = ['output']
+        dynamic_axes = {'input': {0: 'batch_size'},
+                        'output': {0: 'batch_size'}}
+    if 'bert' in config['emb_class'] or 'bart' in config['emb_class']:
+        input_names  = ['input_ids', 'input_mask', 'segment_ids']
+        output_names = ['output']
+        dynamic_axes = {'input_ids': {0: 'batch_size'},
+                        'input_mask': {0: 'batch_size'},
+                        'segment_ids': {0: 'batch_size'},
+                        'output': {0: 'batch_size'}}
+        
     torch.onnx.export(torch_model,               # model being run
                       x,                         # model input (or a tuple for multiple inputs)
                       opt.onnx_path,             # where to save the model (can be a file or file-like object)
@@ -116,12 +130,12 @@ def convert_onnx(opt, torch_model, x):
                       opset_version=10,          # the ONNX version to export the model to
                       do_constant_folding=True,  # whether to execute constant folding for optimization
                       verbose=True,
-                      input_names=['input'],     # the model's input names
-                      output_names=['output'],   # the model's output names
-                      dynamic_axes={'input' : {0 : 'batch_size'},    # variable length axes
-                                    'output' : {0 : 'batch_size'}}) 
+                      input_names=input_names,   # the model's input names
+                      output_names=output_names, # the model's output names
+                      dynamic_axes=dynamic_axes) # variable length axes
 
-def check_onnx(opt):
+def check_onnx(config):
+    opt = config['opt']
     import onnx
     onnx_model = onnx.load(opt.onnx_path)
     onnx.checker.check_model(onnx_model)
@@ -149,13 +163,18 @@ def evaluate(opt):
     model = load_model(config, checkpoint)
     model.eval()
 
-    # convert to onnx format, load it to onnxruntime engine
-    if opt.enable_onnx:
+    # convert to onnx format
+    if opt.convert_onnx:
         (x, y) = next(iter(test_loader))
         x = to_device(x, device)
         y = y.to(device)
-        convert_onnx(opt, model, x)
-        check_onnx(opt) 
+        convert_onnx(config, model, x)
+        check_onnx(config)
+        logger.info("[ONNX model saved at {}".format(opt.onnx_path))
+        return
+
+    # load onnx model for using onnxruntime
+    if opt.enable_ort:
         import onnxruntime as ort
         sess_options = ort.SessionOptions()
         sess_options.inter_op_num_threads = opt.num_threads
@@ -174,8 +193,14 @@ def evaluate(opt):
         for i, (x,y) in enumerate(tqdm(test_loader, total=n_batches)):
             x = to_device(x, device)
             y = y.to(device)
-            if opt.enable_onnx:
-                ort_inputs = {ort_session.get_inputs()[0].name: to_numpy(x)}
+            if opt.enable_ort:
+                x = to_numpy(x)
+                if config['emb_class'] == 'glove':
+                    ort_inputs = {ort_session.get_inputs()[0].name: x}
+                if 'bert' in config['emb_class'] or 'bart' in config['emb_class']:
+                    ort_inputs = {ort_session.get_inputs()[0].name: x[0],
+                                  ort_session.get_inputs()[1].name: x[1],
+                                  ort_session.get_inputs()[2].name: x[2]}
                 logits = ort_session.run(None, ort_inputs)[0]
                 logits = to_device(torch.tensor(logits), device)
             else:
@@ -220,8 +245,10 @@ def main():
     parser.add_argument('--bert_output_dir', type=str, default='bert-checkpoint',
                         help="The output directory where the model predictions and checkpoints will be written.")
     # for ONNX
-    parser.add_argument('--enable_onnx', action='store_true',
-                        help="Set this flag to convert ONNX format.")
+    parser.add_argument('--convert_onnx', action='store_true',
+                        help="Set this flag to convert to onnx format.")
+    parser.add_argument('--enable_ort', action='store_true',
+                        help="Set this flag to evaluate using onnxruntime.")
     parser.add_argument('--onnx_path', type=str, default='pytorch-model.onnx')
     opt = parser.parse_args()
 
