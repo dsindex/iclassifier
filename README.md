@@ -502,6 +502,10 @@ INFO:__main__:[Elapsed Time] : 61015ms, 33.386263736263736ms on average
 
 - [KOR_EXPERIMENTS.md](/KOR_EXPERIMENTS.md)
 
+## optimization
+
+- [OPTIMIZATION.md](/OPTIMIZATION.md)
+
 ## references
 
 - [Intent Detection](https://paperswithcode.com/task/intent-detection)
