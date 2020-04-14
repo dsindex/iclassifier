@@ -42,6 +42,31 @@ $ python evaluate.py --convert_onnx --onnx_path pytorch-model.onnx
 $ python evaluate.py --enable_ort --onnx_path pytorch-model.onnx --device=cpu --num_threads=14
 ```
 
+- onnx optimization
+```
+* pytorch source env
+$ git clone https://github.com/microsoft/onnxruntime.git
+$ cp -rf onnxruntime/onnxruntime/python/tools/bert .
+$ cd bert
+$ python bert_model_optimization.py --input pytorch-model.onnx --output optimized-pytorch-model.onnx --num_heads 12 --hidden_size 768 --input_int32 --float16
+$ ls
+...
+310M Apr 14 23:36 pytorch-model_ort_cpu.onnx
+310M Apr 14 23:29 pytorch-model.onnx
+155M Apr 14 23:36 optimized-pytorch-model.onnx
+
+* pytorch pip env
+$ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --enable_ort --device=cpu --num_examples=100 --num_threads=14
+INFO:__main__:[Accuracy] : 0.9600,    96/  100                                                                                                                                                                                          | 0/700 [00:00<?, ?it/s]
+INFO:__main__:[Elapsed Time] : 17427ms, 111.72727272727273ms on average
+
+$ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --enable_ort --device=cpu --num_examples=100 --num_threads=14 --onnx_path=optimized-pytorch-model.onnx
+INFO:__main__:[Accuracy] : 0.9600,    96/  100                                                                                                                                                                                          | 0/700 [00:00<?, ?it/s]
+INFO:__main__:[Elapsed Time] : 28652ms, 224.37373737373738ms on average
+
+* something goes wrong!
+
+```
 
 ## references
   - [(OPTIONAL) EXPORTING A MODEL FROM PYTORCH TO ONNX AND RUNNING IT USING ONNX RUNTIME](https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html)
