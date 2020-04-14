@@ -125,7 +125,8 @@ def check_onnx(opt):
     import onnx
     onnx_model = onnx.load(opt.onnx_path)
     onnx.checker.check_model(onnx_model)
-
+    print(onnx.helper.printable_graph(onnx_model.graph))
+ 
 def evaluate(opt):
     # set config
     config = load_config(opt)
@@ -175,7 +176,7 @@ def evaluate(opt):
             y = y.to(device)
             if opt.enable_onnx:
                 ort_inputs = {ort_session.get_inputs()[0].name: to_numpy(x)}
-                logits = ort_session.run(None, ort_inputs)
+                logits = ort_session.run(None, ort_inputs)[0]
                 logits = to_device(torch.tensor(logits), device)
             else:
                 logits = model(x)
@@ -187,7 +188,7 @@ def evaluate(opt):
             correct += (predicted == y).sum().item()
             cur_examples = y.size(0)
             total_examples += cur_examples
-            if i == 0: # first one may takes longer time, so ignore in computing duration.
+            if i == 0: # first one may take longer time, so ignore in computing duration.
                 first_time = int((time.time()-first_time)*1000)
                 first_examples = cur_examples
             if opt.num_examples != 0 and total_examples >= opt.num_examples:

@@ -59,7 +59,7 @@ reference pytorch code for intent(sentence) classification.
 
 |                     | Accuracy (%) | Elapsed time / example (ms, GPU / CPU) | Etc        |
 | ------------------- | ------------ | -------------------------------------- | ---------- |
-| Glove, CNN          | 97.86        | 1.7939 / 4.9898 | threads=14, onnxruntime 7.5656 ms |
+| Glove, CNN          | 97.86        | 1.7939 / 5.2929 | threads=14, onnxruntime 8.1919 ms |
 | Glove, Densenet-CNN | 97.57        | 3.6094 / -      |            |
 | Glove, Densenet-DSA | 97.43        | 7.5007 / -      |            |
 | BERT-large, CNN     | **98.00**    | 24.277 / -      |            |
