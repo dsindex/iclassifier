@@ -7,6 +7,8 @@ $ vi etc/numactl.sh
 
 ## conversion pytorch model to onnx format, inference with onnxruntime
 
+- install [anaconda](https://www.anaconda.com/distribution/#download-section)
+
 - install [pytorch from source](https://github.com/pytorch/pytorch#from-source)
 ```
 >>> print(torch.__version__)
@@ -35,13 +37,14 @@ $ python evaluate.py --convert_onnx --onnx_path pytorch-model.onnx
 
 - inference using onnxruntime
 ```
+* since released pytorch versions(ex, pytorch==1.2.0) are highly optimized,
+* inference should be done with pytorch version via pip instead from source.
 $ python evaluate.py --enable_ort --onnx_path pytorch-model.onnx --device=cpu --num_threads=14
 ```
 
 
 ## references
   - [(OPTIONAL) EXPORTING A MODEL FROM PYTORCH TO ONNX AND RUNNING IT USING ONNX RUNTIME](https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html)
-    - install [anaconda](https://www.anaconda.com/distribution/#download-section)
   - [(ONNX) BERT Model Optimization Tool Overview](https://github.com/microsoft/onnxruntime/tree/master/onnxruntime/python/tools/bert)
     - export a BERT model from pytorch(huggingface's transformers) 
   - [(ONNX) API Summary](https://microsoft.github.io/onnxruntime/python/api_summary.html)
