@@ -1,11 +1,11 @@
-## numactl for increasing throughput /w multiprocessing environment 
+### numactl for increasing throughput /w multiprocessing environment 
 
 - numactl sample
 ```
 $ vi etc/numactl.sh
 ```
 
-## conversion pytorch model to onnx format, inference with onnxruntime
+### conversion pytorch model to onnx format, inference with onnxruntime
 
 - install [anaconda](https://www.anaconda.com/distribution/#download-section)
 
@@ -73,8 +73,15 @@ INFO:__main__:[Elapsed Time] : 28652ms, 224.37373737373738ms on average
 
 ```
 
-## references
-  - [(OPTIONAL) EXPORTING A MODEL FROM PYTORCH TO ONNX AND RUNNING IT USING ONNX RUNTIME](https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html)
-  - [(ONNX) BERT Model Optimization Tool Overview](https://github.com/microsoft/onnxruntime/tree/master/onnxruntime/python/tools/bert)
-    - export a BERT model from pytorch(huggingface's transformers) 
-  - [(ONNX) API Summary](https://microsoft.github.io/onnxruntime/python/api_summary.html)
+### conversion onnx model to openvino
+
+
+### references
+
+- [(OPTIONAL) EXPORTING A MODEL FROM PYTORCH TO ONNX AND RUNNING IT USING ONNX RUNTIME](https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html)
+- [(ONNX) BERT Model Optimization Tool Overview](https://github.com/microsoft/onnxruntime/tree/master/onnxruntime/python/tools/bert)
+  - export a BERT model from pytorch(huggingface's transformers) 
+- [(ONNX) API Summary](https://microsoft.github.io/onnxruntime/python/api_summary.html)
+- [OpenVINO Toolkit](https://software.intel.com/en-us/openvino-toolkit)
+- [(OpenVINO) Converting an ONNX Model](https://docs.openvinotoolkit.org/2020.1/_docs_MO_DG_prepare_model_convert_model_Convert_Model_From_ONNX.html) 
+- [pytorch_onnx_openvino](https://github.com/ngeorgis/pytorch_onnx_openvino)
