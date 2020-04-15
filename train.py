@@ -288,6 +288,7 @@ def train(opt):
             best_eval_loss = eval_loss
             if opt.save_path:
                 save_model(model, opt, config)
+                # save finetuned bert model/config/tokenizer
                 if 'bert' in config['emb_class'] or 'bart' in config['emb_class']:
                     if not os.path.exists(opt.bert_output_dir):
                         os.makedirs(opt.bert_output_dir)

@@ -93,10 +93,10 @@ def load_model(config, checkpoint):
         Config    = MODEL_CLASSES[config['emb_class']][0]
         Tokenizer = MODEL_CLASSES[config['emb_class']][1]
         Model     = MODEL_CLASSES[config['emb_class']][2]
-
         bert_config = Config.from_pretrained(opt.bert_output_dir)
         bert_tokenizer = Tokenizer.from_pretrained(opt.bert_output_dir,
                                                    do_lower_case=opt.bert_do_lower_case)
+        # no need to use 'from_pretrained'
         bert_model = Model(bert_config)
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
