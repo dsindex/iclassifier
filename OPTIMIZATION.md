@@ -5,6 +5,9 @@
 $ vi etc/numactl.sh
 ```
 
+### dynamic quantization
+
+
 ### conversion pytorch model to onnx format, inference with onnxruntime
 
 - install [anaconda](https://www.anaconda.com/distribution/#download-section)
@@ -31,8 +34,14 @@ $ python onnx-test.py
 
 - convert to onnx
 ```
+* train a pytorch model
+$ python train.py --decay_rate=0.9 --embedding_trainable
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64 --bert_remove_layers=8,9,10,11
+
+* convert to onnx
 * for conversion, you need to install pytorch from source.
-$ python evaluate.py --convert_onnx --onnx_path pytorch-model.onnx
+$ python evaluate.py --convert_onnx --onnx_path=pytorch-model.onnx > onnx-graph.txt
+$ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --convert_onnx --onnx_path=pytorch-model.onnx > onnx-graph.txt
 ```
 
 - inference using onnxruntime
@@ -40,48 +49,38 @@ $ python evaluate.py --convert_onnx --onnx_path pytorch-model.onnx
 * since released pytorch versions(ex, pytorch==1.2.0) are highly optimized,
 * inference should be done with pytorch version via pip instead from source.
 $ python evaluate.py --enable_ort --onnx_path pytorch-model.onnx --device=cpu --num_threads=14
-```
-
-- onnx optimization
-```
-* pytorch source env
-$ git clone https://github.com/microsoft/onnxruntime.git
-$ cp -rf onnxruntime/onnxruntime/python/tools/bert .
-$ cd bert
-$ python bert_model_optimization.py --input pytorch-model.onnx --output optimized-pytorch-model.onnx --num_heads 12 --hidden_size 768 --input_int32 --float16 --verbose
-...
-[BertOnnxModel.py:1079 - optimize()] opset verion: 10
-[OnnxModel.py:594 - save_model_to_file()] Output model to optimized-pytorch-model.onnx
-[BertOnnxModel.py:1106 - is_fully_optimized()] EmbedLayer=0, Attention=8, Gelu=8, LayerNormalization=17, Successful=False
-[bert_model_optimization.py:206 - main()] The output model is not fully optimized. It might not be usable.
-$ ls
-...
-310M Apr 14 23:36 pytorch-model_ort_cpu.onnx
-310M Apr 14 23:29 pytorch-model.onnx
-155M Apr 14 23:36 optimized-pytorch-model.onnx
-
-* pytorch pip env
-$ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --enable_ort --device=cpu --num_examples=100 --num_threads=14
-INFO:__main__:[Accuracy] : 0.9600,    96/  100                                                                                                                                                                                          | 0/700 [00:00<?, ?it/s]
-INFO:__main__:[Elapsed Time] : 17427ms, 111.72727272727273ms on average
-
-$ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --enable_ort --device=cpu --num_examples=100 --num_threads=14 --onnx_path=optimized-pytorch-model.onnx
-INFO:__main__:[Accuracy] : 0.9600,    96/  100                                                                                                                                                                                          | 0/700 [00:00<?, ?it/s]
-INFO:__main__:[Elapsed Time] : 28652ms, 224.37373737373738ms on average
-
-* something goes wrong!
-
+$ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --onnx_path=pytorch-model.onnx --enable_ort --device=cpu --num_threads=14
 ```
 
 ### conversion onnx model to openvino
 
+- install [OpenVINO Toolkit](https://software.intel.com/en-us/openvino-toolkit)
+  - install [OpenCV](https://github.com/opencv/opencv)
+    - [(OpenCV) tutorial_py_setup_in_ubuntu](https://docs.opencv.org/3.4/d2/de6/tutorial_py_setup_in_ubuntu.html)
+
+- convert to openvino IR
+```
+$ cd /opt/intel/openvino_2020.2.120/deployment_tools/model_optimizer
+$ python mo_onnx.py --input_model pytorch-model.onnx --input='input{i32}' --input_shape='(1,100)' --log_level=DEBUG
+$ python mo_onnx.py --input_model pytorch-model.onnx --input='input_ids{i32},input_mask{i32},segment_ids{i32}' --input_shape='(1,00),(1,100),(1,100)' --log_level=DEBUG
+
+* something goes wrong
+...
+[ ERROR ]  Cannot infer shapes or values for node "MaxPool_20".
+[ ERROR ]  shape mismatch: value array of shape (2,) could not be broadcast to indexing result of shape (1,)
+[ ERROR ]
+[ ERROR ]  It can happen due to bug in custom shape infer function <function Pooling.infer at 0x7f2dff661e60>.
+[ ERROR ]  Or because the node inputs have incorrect values/shapes.
+[ ERROR ]  Or because input shapes are incorrect (embedded to the model or passed via --input_shape).
+...
+
+```
 
 ### references
 
+- [(EXPERIMENTAL) DYNAMIC QUANTIZATION ON BERT](https://pytorch.org/tutorials/intermediate/dynamic_quantization_bert_tutorial.html)
 - [(OPTIONAL) EXPORTING A MODEL FROM PYTORCH TO ONNX AND RUNNING IT USING ONNX RUNTIME](https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html)
 - [(ONNX) BERT Model Optimization Tool Overview](https://github.com/microsoft/onnxruntime/tree/master/onnxruntime/python/tools/bert)
-  - export a BERT model from pytorch(huggingface's transformers) 
 - [(ONNX) API Summary](https://microsoft.github.io/onnxruntime/python/api_summary.html)
-- [OpenVINO Toolkit](https://software.intel.com/en-us/openvino-toolkit)
 - [(OpenVINO) Converting an ONNX Model](https://docs.openvinotoolkit.org/2020.1/_docs_MO_DG_prepare_model_convert_model_Convert_Model_From_ONNX.html) 
 - [pytorch_onnx_openvino](https://github.com/ngeorgis/pytorch_onnx_openvino)
