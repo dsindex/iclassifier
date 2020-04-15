@@ -213,11 +213,11 @@ def prepare_model(config):
         Config    = MODEL_CLASSES[config['emb_class']][0]
         Tokenizer = MODEL_CLASSES[config['emb_class']][1]
         Model     = MODEL_CLASSES[config['emb_class']][2]
-        bert_config = Config.from_pretrained(opt.bert_model_name_or_path)
         bert_tokenizer = Tokenizer.from_pretrained(opt.bert_model_name_or_path,
                                                    do_lower_case=opt.bert_do_lower_case)
         bert_model = Model.from_pretrained(opt.bert_model_name_or_path,
                                            from_tf=bool(".ckpt" in opt.bert_model_name_or_path))
+        bert_config = bert_model.config
         # bert model reduction
         reduce_bert_model(config, bert_model, bert_config)
         ModelClass = TextBertCNN
