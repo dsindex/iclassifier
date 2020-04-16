@@ -517,6 +517,8 @@ INFO:__main__:[Elapsed Time] : 61015ms, 33.386263736263736ms on average
 ## references
 
 - [pytorch 1.3.0 with cuda 10.0](https://github.com/pytorch/pytorch/issues/28321#issuecomment-561406072)
+  - we could use pytorch 1.3.0(or above) with cuda 10.0 via pip, however, the inference speed is decreasing on CPU.
+    - recommend to use official version: pytorch 1.2.0, pytorch 1.3.0, pytorch 1.4.0, etc.
 - [Intent Detection](https://paperswithcode.com/task/intent-detection)
 - [Intent Classification](https://paperswithcode.com/task/intent-classification)
 - [Identifying Hate Speech with BERT and CNN](https://towardsdatascience.com/identifying-hate-speech-with-bert-and-cnn-b7aa2cddd60d)
