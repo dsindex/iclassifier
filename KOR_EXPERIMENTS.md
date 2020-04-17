@@ -70,10 +70,10 @@
 | bpe BERT(4.8m), CLS     | 88.92        | 9.3280  / 70.3232 | del 8,9,10,11, threads=14 |
 | dha BERT(2.5m), CNN     | **89.96**    | 14.8779 / -       |    |
 | dha BERT(2.5m), CLS     | 89.41        | 14.3664 / -       |    |
-| dha BERT(2.5m), CNN     | 88.88        | 10.5157 / 72.7777 | del 8,9,10,11, threads=14         |
-| dha BERT(2.5m), CLS     | 88.81        | 8.9836  / 68.4545 | del 8,9,10,11, threads=14         |
-| dha BERT(2.5m), CLS     | 88.29        | 7.2027  / 53.6363 | del 6,7,8,9,10,11, threads=14     |
-| dha BERT(2.5m), CLS     | 87.54        | 5.7645  / 36.8686 | del 4,5,6,7,8,9,10,11, threads=14 |
+| dha BERT(2.5m), CNN     | 88.88        | 10.5157 / 72.7777 | del 8,9,10,11, threads=14                                        |
+| dha BERT(2.5m), CLS     | 88.81        | 8.9836  / 68.4545 | del 8,9,10,11, threads=14, conda pytorch=1.2.0 50.7474ms         |
+| dha BERT(2.5m), CLS     | 88.29        | 7.2027  / 53.6363 | del 6,7,8,9,10,11, threads=14, conda pytorch=1.2.0 38.3333ms     |
+| dha BERT(2.5m), CLS     | 87.54        | 5.7645  / 36.8686 | del 4,5,6,7,8,9,10,11, threads=14, conda pytorch=1.2.0 28.2626ms |
 | dha-bpe BERT(4m), CNN   | 89.07        | 14.9454 / -       |    |
 | dha-bpe BERT(4m), CLS   | 89.01        | 12.7981 / -       |    |
 | dha BERT(10m), CNN      | 89.08        | 15.3276 / -       |    |

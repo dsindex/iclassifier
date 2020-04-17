@@ -55,11 +55,11 @@ reference pytorch code for intent(sentence) classification.
 
 |                     | Accuracy (%) | Elapsed time / example (ms, GPU / CPU) | Etc            |
 | ------------------- | ------------ | -------------------------------------- | -------------- |
-| Glove, CNN          | 97.86        | 1.7939  / 4.1414  | threads=14, onnxruntime 7.5656 ms   |
-| Glove, Densenet-CNN | 97.57        | 3.6094  / 8.3535  | thtreads=14, onnxruntime 19.1212 ms |
+| Glove, CNN          | 97.86        | 1.7939  / 4.1414  | threads=14, onnxruntime 7.5656 ms, conda pytorch=1.2.0 4.6868ms                    |
+| Glove, Densenet-CNN | 97.57        | 3.6094  / 8.3535  | thtreads=14, onnxruntime 19.1212 ms, conda pytorch=1.2.0 7.6969ms                  |
 | Glove, Densenet-DSA | 97.43        | 7.5007  / -       |                                     |
 | BERT-base, CNN      | 97.57        | 12.1273 / -       |                                     |
-| BERT-base, CLS      | 97.43        | 12.7714 / 102.747 | threads=14, onnxruntime 174.2222 ms, conda pytorch=1.2.0 70.7272 ms |
+| BERT-base, CLS      | 97.43        | 12.7714 / 102.747 | threads=14, onnxruntime 174.2222 ms, conda pytorch=1.2.0 70.7272 ms                |
 | BERT-base, CLS      | 97.00        | 9.2660  / 73.1010 | del 8,9,19,11, threads=14, onnxruntime 113.2424 ms, conda pytorch=1.2.0 48.2424 ms |
 | BERT-large, CNN     | **98.00**    | 24.277  / -       |                                     |
 | BERT-large, CLS     | 97.86        | 23.542  / -       |                                     |
@@ -184,9 +184,9 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | BERT-medium, CLS     | 89.24        | 9.5857  / -      |            |
 | BERT-base, CNN       | 92.04        | 14.1576 / -      |            |
 | BERT-base, CLS       | 92.42        | 12.7549 / -      |            |
-| BERT-base, CNN       | 90.55        | 10.6824 / -      | del 8,9,10,11                     |
-| **BERT-base, CLS**   | 91.49        | 8.7747 / 66.6363 | del 8,9,10,11, threads=14, conda pytorch=1.2.0 50.8181ms |
-| BERT-base, CLS       | 90.23        | 7.0241 / 51.7676 | del 6,7,8,9,10,11, threads=14     |
+| BERT-base, CNN       | 90.55        | 10.6824 / -      | del 8,9,10,11                                                    |
+| **BERT-base, CLS**   | 91.49        | 8.7747 / 66.6363 | del 8,9,10,11, threads=14, conda pytorch=1.2.0 50.8181ms         |
+| BERT-base, CLS       | 90.23        | 7.0241 / 51.7676 | del 6,7,8,9,10,11, threads=14, conda pytorch=1.2.0 43.5959ms     |
 | BERT-base, CLS       | 86.66        | 5.8868 / 36.2121 | del 4,5,6,7,8,9,10,11, threads=14, conda pytorch=1.2.0 26.5555ms |
 | BERT-large, CNN      | 93.08        | 28.6490 / -      |            |
 | BERT-large, CLS      | 93.85        | 27.9967 / -      |            |
