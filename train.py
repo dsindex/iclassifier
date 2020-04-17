@@ -98,7 +98,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
     curr_time = time.time()
     elapsed_time = (curr_time - st_time) / 60
     st_time = curr_time
-    curr_lr = scheduler.get_last_lr()[0] if scheduler else optimizer.param_groups[0]['lr']
+    curr_lr = scheduler.get_lr()[0] if scheduler else optimizer.param_groups[0]['lr']
     if local_rank == 0:
         logger.info('{:3d} epoch | {:5d}/{:5d} | train loss : {:6.3f}, valid loss {:6.3f}, valid acc {:.4f}| lr :{:7.6f} | {:5.2f} min elapsed'.\
                 format(epoch_i, local_step+1, len(train_loader), cur_loss, eval_loss, eval_acc, curr_lr, elapsed_time)) 
