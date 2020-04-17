@@ -32,10 +32,6 @@ reference pytorch code for intent(sentence) classification.
   $ unzip glove.6B.zip 
   ```
   - BERT, ALBERT, RoBERTa, BART(huggingface's [transformers](https://github.com/huggingface/transformers.git))
-  ```
-  $ pip install tensorflow-gpu==2.0.0
-  $ pip install transformers
-  ```
   - [SpanBERT](https://github.com/facebookresearch/SpanBERT/blob/master/README.md)
     - pretrained SpanBERT models are compatible with huggingface's BERT modele except `'bert.pooler.dense.weight', 'bert.pooler.dense.bias'`.
 

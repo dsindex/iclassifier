@@ -11,7 +11,7 @@ $ vi etc/numactl.sh
 
 - install pytorch>=1.2.0 (except 1.4.0)
 
-- you are able to get better performance on conda env with pytorch>=1.2.0
+- you are able to get better performance on conda env. especially, good for multithreading.
   - for example, [experiments summary](https://github.com/dsindex/iclassifier#experiments-summary)
 
 ### dynamic quantization

@@ -1,3 +1,4 @@
 torch>=1.2.0
 tqdm
 tensorboardX
+transformers
