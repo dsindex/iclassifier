@@ -9,9 +9,9 @@ $ vi etc/numactl.sh
 
 - install [anaconda](https://www.anaconda.com/distribution/#download-section)
 
-- install pytorch=1.2.0
+- install pytorch>=1.2.0 (except 1.4.0)
 
-- you are able to get better performance on conda env with pytorch=1.2.0
+- you are able to get better performance on conda env with pytorch>=1.2.0
   - for example, [experiments summary](https://github.com/dsindex/iclassifier#experiments-summary)
 
 ### dynamic quantization
