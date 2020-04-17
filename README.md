@@ -169,45 +169,45 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 
 - iclassifier
 
-|                      | Accuracy (%) | Etc            | Elapsed time / example (ms, GPU / CPU)  |
-| -------------------- | ------------ | -------------- | --------------------------------------- |
-| Glove, CNN           | 83.42        | threads=14     | 1.6873  / 3.5050 |
-| Glove, DenseNet-CNN  | 86.38        | threads=14     | 3.6203  / 7.1414 |
-| Glove, DenseNet-DSA  | 85.34        |                | 6.2450  / - |
-| BERT-tiny, CNN       | 79.08        |                | 4.8604  / - |
-| BERT-tiny, CLS       | 80.83        |                | 3.8461  / - |
-| BERT-mini, CNN       | 83.36        |                | 7.0983  / - |
-| BERT-mini, CLS       | 83.69        |                | 5.5521  / - |
-| BERT-small, CNN      | 87.53        |                | 7.2010  / - |
-| BERT-small, CLS      | 87.86        |                | 6.0450  / - |
-| BERT-medium, CNN     | 88.58        |                | 11.9082 / - |
-| BERT-medium, CLS     | 89.24        |                | 9.5857  / - |
-| BERT-base, CNN       | 92.04        |                | 14.1576 / - |
-| BERT-base, CLS       | 92.42        |                | 12.7549 / - |
-| BERT-base, CNN       | 90.55        | del 8,9,10,11  | 10.6824 / - |
-| **BERT-base, CLS**   | 91.49        | del 8,9,10,11, threads=14         | 8.7747 / 66.6363 |
-| BERT-base, CLS       | 90.23        | del 6,7,8,9,10,11, threads=14     | 7.0241 / 51.7676 |
-| BERT-base, CLS       | 86.66        | del 4,5,6,7,8,9,10,11, threads=14 | 5.8868 / 36.2121 |
-| BERT-large, CNN      | 93.08        |                | 28.6490 / - |
-| BERT-large, CLS      | 93.85        |                | 27.9967 / - |
-| BERT-large, CNN      | 88.47        | del 12 ~ 23    | 14.7813 / - |
-| BERT-large, CLS      | 86.71        | del 12 ~ 23    | 12.1560 / - |
-| SpanBERT-base, CNN   | 91.82        |                | 15.2098 / - |
-| SpanBERT-base, CLS   | 91.49        |                | 13.1516 / - |
-| SpanBERT-large, CNN  | 93.90        |                | 26.8609 / - |
-| SpanBERT-large, CLS  | 93.96        |                | 26.0445 / - |
-| ALBERT-base, CNN     | 92.04        |                | 16.0554 / - |           
-| ALBERT-base, CLS     | 90.01        |                | 14.6725 / - |           
-| ALBERT-xxlarge, CNN  | **95.77**    |                | 57.4631 / - |
-| ALBERT-xxlarge, CLS  | 94.45        |                | 51.8027 / - |
-| ROBERTa-base, CNN    | 92.92        |                | 15.1016 / - |
-| ROBERTa-base, CLS    | 93.03        |                | 14.6736 / - |
-| ROBERTa-base, CNN    | 92.26        | del 8,9,10,11  | 11.5241 / - |
-| ROBERTa-base, CLS    | 91.76        | del 8,9,10,11  | 10.0296 / - |
-| ROBERTa-large, CNN   | 95.55        |                | 26.9807 / - |
-| ROBERTa-large, CLS   | 95.66        |                | 23.7395 / - |
-| BART-large, CNN      | 94.45        |                | 35.1708 / - |
-| BART-large, CLS      | 94.89        |                | 33.3862 / - |
+|                      | Accuracy (%) | Elapsed time / example (ms, GPU / CPU)  | Etc    |
+| -------------------- | ------------ | --------------------------------------- | ------ |
+| Glove, CNN           | 83.42        | 1.6873  / 3.5050 | threads=14 |
+| Glove, DenseNet-CNN  | 86.38        | 3.6203  / 7.1414 | threads=14 |
+| Glove, DenseNet-DSA  | 85.34        | 6.2450  / -      |            |
+| BERT-tiny, CNN       | 79.08        | 4.8604  / -      |            |
+| BERT-tiny, CLS       | 80.83        | 3.8461  / -      |            |
+| BERT-mini, CNN       | 83.36        | 7.0983  / -      |            |
+| BERT-mini, CLS       | 83.69        | 5.5521  / -      |            |
+| BERT-small, CNN      | 87.53        | 7.2010  / -      |            |
+| BERT-small, CLS      | 87.86        | 6.0450  / -      |            |
+| BERT-medium, CNN     | 88.58        | 11.9082 / -      |            |
+| BERT-medium, CLS     | 89.24        | 9.5857  / -      |            |
+| BERT-base, CNN       | 92.04        | 14.1576 / -      |            |
+| BERT-base, CLS       | 92.42        | 12.7549 / -      |            |
+| BERT-base, CNN       | 90.55        | 10.6824 / -      | del 8,9,10,11                     |
+| **BERT-base, CLS**   | 91.49        | 8.7747 / 66.6363 | del 8,9,10,11, threads=14, conda pytorch=1.2.0 50.8181ms |
+| BERT-base, CLS       | 90.23        | 7.0241 / 51.7676 | del 6,7,8,9,10,11, threads=14     |
+| BERT-base, CLS       | 86.66        | 5.8868 / 36.2121 | del 4,5,6,7,8,9,10,11, threads=14, conda pytorch=1.2.0 26.5555ms |
+| BERT-large, CNN      | 93.08        | 28.6490 / -      |            |
+| BERT-large, CLS      | 93.85        | 27.9967 / -      |            |
+| BERT-large, CNN      | 88.47        | 14.7813 / -      | del 12~23  |
+| BERT-large, CLS      | 86.71        | 12.1560 / -      | del 12~23  |
+| SpanBERT-base, CNN   | 91.82        | 15.2098 / -      |            |
+| SpanBERT-base, CLS   | 91.49        | 13.1516 / -      |            |
+| SpanBERT-large, CNN  | 93.90        | 26.8609 / -      |            |
+| SpanBERT-large, CLS  | 93.96        | 26.0445 / -      |            |
+| ALBERT-base, CNN     | 92.04        | 16.0554 / -      |            |
+| ALBERT-base, CLS     | 90.01        | 14.6725 / -      |            |
+| ALBERT-xxlarge, CNN  | **95.77**    | 57.4631 / -      |            |
+| ALBERT-xxlarge, CLS  | 94.45        | 51.8027 / -      |            |
+| ROBERTa-base, CNN    | 92.92        | 15.1016 / -      |            |
+| ROBERTa-base, CLS    | 93.03        | 14.6736 / -      |            |
+| ROBERTa-base, CNN    | 92.26        | 11.5241 / -      | del 8,9,10,11   |
+| ROBERTa-base, CLS    | 91.76        | 10.0296 / -      | del 8,9,10,11   |
+| ROBERTa-large, CNN   | 95.55        | 26.9807 / -      |            |
+| ROBERTa-large, CLS   | 95.66        | 23.7395 / -      |            |
+| BART-large, CNN      | 94.45        | 35.1708 / -      |            |
+| BART-large, CLS      | 94.89        | 33.3862 / -      |            |
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
