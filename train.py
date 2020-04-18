@@ -147,7 +147,7 @@ def set_path(config):
     if config['emb_class'] == 'glove':
         opt.train_path = os.path.join(opt.data_dir, 'train.txt.ids')
         opt.valid_path = os.path.join(opt.data_dir, 'valid.txt.ids')
-    if 'bert' in config['emb_class'] or 'bart' in config['emb_class']:
+    if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
         opt.train_path = os.path.join(opt.data_dir, 'train.txt.fs')
         opt.valid_path = os.path.join(opt.data_dir, 'valid.txt.fs')
     opt.label_path     = os.path.join(opt.data_dir, opt.label_filename)
@@ -157,7 +157,7 @@ def prepare_datasets(config):
     opt = config['opt']
     if config['emb_class'] == 'glove':
         DatasetClass = SnipsGloveDataset
-    if 'bert' in config['emb_class'] or 'bart' in config['emb_class']:
+    if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
         DatasetClass = SnipsBertDataset
     train_loader = prepare_dataset(opt, opt.train_path, DatasetClass, shuffle=True, num_workers=2)
     valid_loader = prepare_dataset(opt, opt.valid_path, DatasetClass, shuffle=False, num_workers=2)
@@ -199,16 +199,18 @@ def prepare_model(config):
         if config['enc_class'] == 'densenet-dsa':
             # set embedding as trainable
             model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable)
-    if 'bert' in config['emb_class'] or 'bart' in config['emb_class']:
+    if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
         from transformers import BertTokenizer, BertConfig, BertModel
         from transformers import AlbertTokenizer, AlbertConfig, AlbertModel
         from transformers import RobertaConfig, RobertaTokenizer, RobertaModel
         from transformers import BartConfig, BartTokenizer, BartModel
+        from transformers import ElectraConfig, ElectraTokenizer, ElectraModel
         MODEL_CLASSES = {
             "bert": (BertConfig, BertTokenizer, BertModel),
             "albert": (AlbertConfig, AlbertTokenizer, AlbertModel),
             "roberta": (RobertaConfig, RobertaTokenizer, RobertaModel),
-            "bart": (BartConfig, BartTokenizer, BartModel)
+            "bart": (BartConfig, BartTokenizer, BartModel),
+            "electra": (ElectraConfig, ElectraTokenizer, ElectraModel),
         }
         Config    = MODEL_CLASSES[config['emb_class']][0]
         Tokenizer = MODEL_CLASSES[config['emb_class']][1]
@@ -289,7 +291,7 @@ def train(opt):
             if opt.save_path:
                 save_model(model, opt, config)
                 # save finetuned bert model/config/tokenizer
-                if 'bert' in config['emb_class'] or 'bart' in config['emb_class']:
+                if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
                     if not os.path.exists(opt.bert_output_dir):
                         os.makedirs(opt.bert_output_dir)
                     model.bert_tokenizer.save_pretrained(opt.bert_output_dir)

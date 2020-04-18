@@ -54,6 +54,13 @@
   - [train-kor-roberta.sh](https://github.com/dsindex/transformers_examples/blob/master/train-kor-roberta.sh)
   - [tokenizers](https://github.com/dsindex/transformers_examples/blob/master/train-tokenizer.py) byte-level bpe tokenizer
     - ex) `kor-roberta-base.v1`
+  - 학습 실패
+  - fairseq를 이용해서 학습하고 이를 transformers format으로 변환하는 방식으로 진행 필요.
+
+### ELECTRA model
+
+- 위에서 사용한 문서로 새롭게 학습하기 전에, 기존에 huggingface에 올라온 monologg에서 학습시킨 모델을 사용해서 실험.
+  - [monologg](https://huggingface.co/monologg/koelectra-base-discriminator)
 
 ### Experiments summary
 
@@ -96,7 +103,7 @@
 | ----------------- | ------------ |
 | KoBERT            | 90.1         |
 
-### Experiments with Glove
+### Glove
 
 #### enc_class=cnn
 
@@ -169,7 +176,7 @@ INFO:__main__:[Elapsed Time] : 596904ms, 11.936694935594847ms on average
 $ python evaluate.py --config=configs/config-densenet-dsa-iee.json --data_dir=./data/iee_corpus_morph
 ```
 
-### Experiments with BERT(pytorch.all.bpe.4.8m_step)
+### BERT(pytorch.all.bpe.4.8m_step)
 
 - train
 ```
@@ -204,7 +211,7 @@ INFO:__main__:[Elapsed Time] : 672027ms, 13.439275142011361ms on average
   INFO:__main__:[Elapsed Time] : 466825ms, 9.32800624049924ms on average
 ```
 
-### Experiments with BERT(pytorch.all.dha.2.5m_step)
+### BERT(pytorch.all.dha.2.5m_step)
  
 - train
 ```
@@ -248,7 +255,7 @@ INFO:__main__:[Elapsed Time] : 718417ms, 14.36640931274502ms on average
 
 ```
 
-### Experiments with BERT(pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step)
+### BERT(pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step)
 
 - train
 ```
@@ -275,7 +282,7 @@ INFO:__main__:[Accuracy] : 0.8901, 44503/49997
 INFO:__main__:[Elapsed Time] : 639988ms, 12.798163853108248ms on average
 ```
 
-### Experiments with BERT(pytorch.all.dha_s2.9.4_d2.9.27.10m_step)
+### BERT(pytorch.all.dha_s2.9.4_d2.9.27.10m_step)
  
 - train
 ```
@@ -303,7 +310,7 @@ INFO:__main__:[Accuracy] : 0.8925, 44622/49997
 INFO:__main__:[Elapsed Time] : 639463ms, 12.787603008240659ms on average
 ```
 
-### Experiments with RoBERTa(kor-roberta-base.v1)
+### RoBERTa(kor-roberta-base.v1)
  
 - train
 ```
@@ -325,5 +332,27 @@ $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=./data/
 INFO:__main__:[Accuracy] : 0.5035, 25171/49997
 INFO:__main__:[Elapsed Time] : 712393ms, 14.246719737579006ms on average
 * something goes wrong!
+
+```
+
+### ELECTRA(koelectra-base-discriminator)
+ 
+- train
+```
+* enc_class=cnn
+$ python preprocess.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/koelectra-base-discriminator --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/koelectra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments
+
+* enc_class=cls
+$ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/koelectra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments
+```
+
+- evaluation
+```
+* enc_class=cnn
+$ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
+
+* enc_class=cls
+$ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
 ```

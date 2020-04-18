@@ -45,7 +45,7 @@ def set_path(config):
     opt = config['opt']
     if config['emb_class'] == 'glove':
         opt.data_path = os.path.join(opt.data_dir, 'test.txt.ids')
-    if 'bert' in config['emb_class'] or 'bart' in config['emb_class']:
+    if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
         opt.data_path = os.path.join(opt.data_dir, 'test.txt.fs')
     opt.embedding_path = os.path.join(opt.data_dir, 'embedding.npy')
     opt.label_path = os.path.join(opt.data_dir, 'label.txt')
@@ -55,7 +55,7 @@ def prepare_datasets(config):
     opt = config['opt']
     if config['emb_class'] == 'glove':
         DatasetClass = SnipsGloveDataset
-    if 'bert' in config['emb_class'] or 'bart' in config['emb_class']:
+    if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
         DatasetClass = SnipsBertDataset
     test_loader = prepare_dataset(opt, opt.data_path, DatasetClass, shuffle=False, num_workers=1)
     return test_loader
@@ -79,16 +79,18 @@ def load_model(config, checkpoint):
             model = TextGloveDensenetCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
         if config['enc_class'] == 'densenet-dsa':
             model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
-    if 'bert' in config['emb_class'] or 'bart' in config['emb_class']:
+    if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
         from transformers import BertTokenizer, BertConfig, BertModel
         from transformers import AlbertTokenizer, AlbertConfig, AlbertModel
         from transformers import RobertaConfig, RobertaTokenizer, RobertaModel
         from transformers import BartConfig, BartTokenizer, BartModel
+        from transformers import ElectraConfig, ElectraTokenizer, ElectraModel
         MODEL_CLASSES = {
             "bert": (BertConfig, BertTokenizer, BertModel),
             "albert": (AlbertConfig, AlbertTokenizer, AlbertModel),
             "roberta": (RobertaConfig, RobertaTokenizer, RobertaModel),
-            "bart": (BartConfig, BartTokenizer, BartModel)
+            "bart": (BartConfig, BartTokenizer, BartModel),
+            "electra": (ElectraConfig, ElectraTokenizer, ElectraModel),
         }
         Config    = MODEL_CLASSES[config['emb_class']][0]
         Tokenizer = MODEL_CLASSES[config['emb_class']][1]
@@ -115,7 +117,7 @@ def convert_onnx(config, torch_model, x):
         output_names = ['output']
         dynamic_axes = {'input': {0: 'batch_size'},
                         'output': {0: 'batch_size'}}
-    if 'bert' in config['emb_class'] or 'bart' in config['emb_class']:
+    if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
         input_names  = ['input_ids', 'input_mask', 'segment_ids']
         output_names = ['output']
         dynamic_axes = {'input_ids': {0: 'batch_size'},
@@ -197,7 +199,7 @@ def evaluate(opt):
                 x = to_numpy(x)
                 if config['emb_class'] == 'glove':
                     ort_inputs = {ort_session.get_inputs()[0].name: x}
-                if 'bert' in config['emb_class'] or 'bart' in config['emb_class']:
+                if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
                     ort_inputs = {ort_session.get_inputs()[0].name: x[0],
                                   ort_session.get_inputs()[1].name: x[1],
                                   ort_session.get_inputs()[2].name: x[2]}
