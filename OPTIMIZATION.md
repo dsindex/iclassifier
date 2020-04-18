@@ -19,13 +19,7 @@ $ vi etc/numactl.sh
 
 ### conversion pytorch model to onnx format, inference with onnxruntime
 
-- install [anaconda](https://www.anaconda.com/distribution/#download-section)
-
-- install [pytorch from source](https://github.com/pytorch/pytorch#from-source)
-```
->>> print(torch.__version__)
-1.6.0a0+b92f8d9
-```
+- install [anaconda](https://www.anaconda.com/distribution/#download-section) or install [pytorch from source](https://github.com/pytorch/pytorch#from-source)
 
 - requirements
 ```
@@ -52,8 +46,8 @@ $ python train.py --decay_rate=0.9 --embedding_trainable
 $ python train.py --config=configs/config-densenet-dsa.json --decay_rate=0.9
 $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64 --bert_remove_layers=8,9,10,11
 
-* convert to onnx(op set 11)
-* on environment pytorch installed from source
+* convert to onnx(opset 11 for pytorch source installed, opset 10 for conda pytorch=1.2.0)
+* on environment pytorch installed from source, or on conda environment pytorch installed from pip.
 $ python evaluate.py --convert_onnx --onnx_path=pytorch-model.onnx > onnx-graph-glove-cnn.txt
 $ python evaluate.py --config=configs/config-densenet-dsa.json --convert_onnx --onnx_path=pytorch-model.onnx > onnx-graph-densenet-dsa.txt
 $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --convert_onnx --onnx_path=pytorch-model.onnx > onnx-graph-bert-cls.txt
