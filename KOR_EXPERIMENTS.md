@@ -85,6 +85,8 @@
 | dha-bpe BERT(4m), CLS   | 89.01        | 12.7981 / -       |    |
 | dha BERT(10m), CNN      | 89.08        | 15.3276 / -       |    |
 | dha BERT(10m), CLS      | 89.25        | 12.7876 / -       |    |
+| monologg ELECTRA , CNN  | -            | - / -             |    |
+| monologg ELECTRA , CLS  | -            | - / -             |    |
 
 - [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results)
 
@@ -351,6 +353,14 @@ $ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_
 ```
 * enc_class=cnn
 $ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
+
+INFO:__main__:[Accuracy] : 0.8898, 44487/49997
+INFO:__main__:[Elapsed Time] : 758726ms, 15.12857028562285ms on average
+
+  ** --lr=1e-4 --batch_size=32 --l2norm=0 --epoch=3
+  (i refer to the finetuning setting in https://openreview.net/pdf?id=r1xMH1BtvB)
+
+  ** --epoch=10
 
 * enc_class=cls
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
