@@ -357,10 +357,7 @@ $ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/
 INFO:__main__:[Accuracy] : 0.8898, 44487/49997
 INFO:__main__:[Elapsed Time] : 758726ms, 15.12857028562285ms on average
 
-  ** --lr=1e-4 --batch_size=32 --l2norm=0 --epoch=3
-  (i refer to the finetuning setting in https://openreview.net/pdf?id=r1xMH1BtvB)
-
-  ** --epoch=10
+  ** --epoch=15
 
 * enc_class=cls
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint

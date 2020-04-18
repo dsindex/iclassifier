@@ -529,10 +529,7 @@ $ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=data/ss
 INFO:__main__:[Accuracy] : 0.9539,  1737/ 1821
 INFO:__main__:[Elapsed Time] : 29602ms, 14.98021978021978ms on average
 
-  ** --bert_model_name_or_path=./embeddings/electra-large-discriminator --lr=5e-5 --batch_size=32 --l2norm=0 --epoch=3
-  (very hard to finetune, so i refer to the finetuning setting in https://openreview.net/pdf?id=r1xMH1BtvB)
-
-  ** --bert_model_name_or_path=./embeddings/electra-large-discriminator --lr=5e-6
+  ** --bert_model_name_or_path=./embeddings/electra-large-discriminator --lr=1e-6
 
   ** --bert_remove_layers=8,9,10,11
 
