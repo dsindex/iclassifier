@@ -127,7 +127,7 @@ def convert_onnx(config, torch_model, x):
                       x,                         # model input (or a tuple for multiple inputs)
                       opt.onnx_path,             # where to save the model (can be a file or file-like object)
                       export_params=True,        # store the trained parameter weights inside the model file
-                      opset_version=11,          # the ONNX version to export the model to
+                      opset_version=10,          # the ONNX version to export the model to
                       do_constant_folding=True,  # whether to execute constant folding for optimization
                       verbose=True,
                       input_names=input_names,   # the model's input names
