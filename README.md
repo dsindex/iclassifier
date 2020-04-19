@@ -210,7 +210,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | BART-large, CLS      | 94.89        | 33.3862 / -       |            |
 | ELECTRA-base, CNN    | 95.39        | 14.9802 / 80.8686 |            |
 | ELECTRA-base, CLS    | 95.22        | 14.0087 / 72.6969 |            |
-| ELECTRA-large, CNN   | -            | - / -             |            |
+| ELECTRA-large, CNN   | 95.66        | 28.3565 / 232.383 |            |
 | ELECTRA-large, CLS   | -            | - / -             |            |
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
@@ -530,8 +530,8 @@ INFO:__main__:[Accuracy] : 0.9539,  1737/ 1821
 INFO:__main__:[Elapsed Time] : 29602ms, 14.98021978021978ms on average
 
   ** --bert_model_name_or_path=./embeddings/electra-large-discriminator --lr=1e-6
-
-  ** --bert_remove_layers=8,9,10,11
+  INFO:__main__:[Accuracy] : 0.9566,  1742/ 1821
+  INFO:__main__:[Elapsed Time] : 54157ms, 28.356593406593408ms on average
 
 * enc_lass=cls
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case
@@ -539,9 +539,8 @@ $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=data/ss
 INFO:__main__:[Accuracy] : 0.9522,  1734/ 1821
 INFO:__main__:[Elapsed Time] : 25956ms, 14.008791208791209ms on average
 
-  ** --bert_model_name_or_path=./embeddings/electra-large-discriminator
+  ** --bert_model_name_or_path=./embeddings/electra-large-discriminator --lr=1e-6
 
-  ** --bert_remove_layers=8,9,10,11
 
 ```
 

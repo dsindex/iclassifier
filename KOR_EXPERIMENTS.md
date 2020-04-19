@@ -85,7 +85,7 @@
 | dha-bpe BERT(4m), CLS   | 89.01        | 12.7981 / -       |    |
 | dha BERT(10m), CNN      | 89.08        | 15.3276 / -       |    |
 | dha BERT(10m), CLS      | 89.25        | 12.7876 / -       |    |
-| monologg ELECTRA , CNN  | -            | - / -             |    |
+| monologg ELECTRA , CNN  | 89.37        | 15.6362 / 87.7979 |    |
 | monologg ELECTRA , CLS  | -            | - / -             |    |
 
 - [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results)
@@ -331,8 +331,10 @@ $ python evaluate.py --config=configs/config-roberta-cnn.json --data_dir=./data/
 
 * enc_class=cls
 $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
+
 INFO:__main__:[Accuracy] : 0.5035, 25171/49997
 INFO:__main__:[Elapsed Time] : 712393ms, 14.246719737579006ms on average
+
 * something goes wrong!
 
 ```
@@ -343,10 +345,10 @@ INFO:__main__:[Elapsed Time] : 712393ms, 14.246719737579006ms on average
 ```
 * enc_class=cnn
 $ python preprocess.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/koelectra-base-discriminator --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/koelectra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/koelectra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64 --data_dir=./data/clova_sentiments
 
 * enc_class=cls
-$ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/koelectra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/koelectra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64 --data_dir=./data/clova_sentiments
 ```
 
 - evaluation
@@ -354,12 +356,11 @@ $ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_
 * enc_class=cnn
 $ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
-INFO:__main__:[Accuracy] : 0.8898, 44487/49997
-INFO:__main__:[Elapsed Time] : 758726ms, 15.12857028562285ms on average
-
-  ** --epoch=15
+INFO:__main__:[Accuracy] : 0.8937, 44684/49997
+INFO:__main__:[Elapsed Time] : 784375ms, 15.636230898471878ms on average
 
 * enc_class=cls
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
+
 
 ```
