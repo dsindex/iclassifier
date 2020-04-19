@@ -86,7 +86,7 @@
 | dha BERT(10m), CNN      | 89.08        | 15.3276 / -       |    |
 | dha BERT(10m), CLS      | 89.25        | 12.7876 / -       |    |
 | monologg ELECTRA , CNN  | 89.37        | 15.6362 / 87.7979 |    |
-| monologg ELECTRA , CLS  | -            | - / -             |    |
+| monologg ELECTRA , CLS  | 89.30        | 14.4258 / -       |    |
 
 - [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results)
 
@@ -362,5 +362,7 @@ INFO:__main__:[Elapsed Time] : 784375ms, 15.636230898471878ms on average
 * enc_class=cls
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
+INFO:__main__:[Accuracy] : 0.8930, 44646/49997
+INFO:__main__:[Elapsed Time] : 721693ms, 14.425894071525722ms on average
 
 ```
