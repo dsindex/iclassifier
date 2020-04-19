@@ -198,7 +198,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | SpanBERT-large, CLS  | 93.96        | 26.0445 / -       |            |
 | ALBERT-base, CNN     | 92.04        | 16.0554 / -       |            |
 | ALBERT-base, CLS     | 90.01        | 14.6725 / -       |            |
-| ALBERT-xxlarge, CNN  | **95.77**    | 57.4631 / -       |            |
+| ALBERT-xxlarge, CNN  | 95.77        | 57.4631 / -       |            |
 | ALBERT-xxlarge, CLS  | 94.45        | 51.8027 / -       |            |
 | ROBERTa-base, CNN    | 92.92        | 15.1016 / -       |            |
 | ROBERTa-base, CLS    | 93.03        | 14.6736 / -       |            |
@@ -211,7 +211,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | ELECTRA-base, CNN    | 95.39        | 14.9802 / -       |            |
 | ELECTRA-base, CLS    | 95.22        | 14.0087 / -       |            |
 | ELECTRA-large, CNN   | 95.66        | 28.3565 / -       |            |
-| ELECTRA-large, CLS   | 96.43        | 25.6857 / -       |            |
+| ELECTRA-large, CLS   | **96.43**    | 25.6857 / -       |            |
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
