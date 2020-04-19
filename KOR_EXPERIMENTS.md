@@ -85,7 +85,7 @@
 | dha-bpe BERT(4m), CLS   | 89.01        | 12.7981 / -       |    |
 | dha BERT(10m), CNN      | 89.08        | 15.3276 / -       |    |
 | dha BERT(10m), CLS      | 89.25        | 12.7876 / -       |    |
-| monologg ELECTRA , CNN  | 89.37        | 15.6362 / 87.7979 |    |
+| monologg ELECTRA , CNN  | 89.37        | 15.6362 / -       |    |
 | monologg ELECTRA , CLS  | 89.30        | 14.4258 / -       |    |
 
 - [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results)

@@ -208,10 +208,10 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | ROBERTa-large, CLS   | 95.66        | 23.7395 / -       |            |
 | BART-large, CNN      | 94.45        | 35.1708 / -       |            |
 | BART-large, CLS      | 94.89        | 33.3862 / -       |            |
-| ELECTRA-base, CNN    | 95.39        | 14.9802 / 80.8686 |            |
-| ELECTRA-base, CLS    | 95.22        | 14.0087 / 72.6969 |            |
-| ELECTRA-large, CNN   | 95.66        | 28.3565 / 232.383 |            |
-| ELECTRA-large, CLS   | -            | - / -             |            |
+| ELECTRA-base, CNN    | 95.39        | 14.9802 / -       |            |
+| ELECTRA-base, CLS    | 95.22        | 14.0087 / -       |            |
+| ELECTRA-large, CNN   | 95.66        | 28.3565 / -       |            |
+| ELECTRA-large, CLS   | 96.43        | 25.6857 / -       |            |
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -533,17 +533,18 @@ INFO:__main__:[Elapsed Time] : 29602ms, 14.98021978021978ms on average
   INFO:__main__:[Accuracy] : 0.9566,  1742/ 1821
   INFO:__main__:[Elapsed Time] : 54157ms, 28.356593406593408ms on average
 
+  ** --bert_model_name_or_path=./embeddings/electra-large-discriminator --lr=1e-6 --epoch=15
+
 * enc_lass=cls
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case
 
 INFO:__main__:[Accuracy] : 0.9522,  1734/ 1821
 INFO:__main__:[Elapsed Time] : 25956ms, 14.008791208791209ms on average
 
-  ** --bert_model_name_or_path=./embeddings/electra-large-discriminator --lr=1e-6
-
-  ** --epoch=15
-
-
+  ** --bert_model_name_or_path=./embeddings/electra-large-discriminator --lr=1e-6 --epoch=15
+  INFO:__main__:[Accuracy] : 0.9643,  1756/ 1821
+  INFO:__main__:[Elapsed Time] : 47163ms, 25.685714285714287ms on average
+ 
 ```
 
 ## experiments for Korean
