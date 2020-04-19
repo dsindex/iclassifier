@@ -541,6 +541,8 @@ INFO:__main__:[Elapsed Time] : 25956ms, 14.008791208791209ms on average
 
   ** --bert_model_name_or_path=./embeddings/electra-large-discriminator --lr=1e-6
 
+  ** --epoch=15
+
 
 ```
 
