@@ -1,10 +1,3 @@
-### numactl for increasing throughput /w multiprocessing environment 
-
-- numactl sample
-```
-$ vi etc/numactl.sh
-```
-
 ### conda pytorch
 
 - install [anaconda](https://www.anaconda.com/distribution/#download-section)
@@ -101,3 +94,13 @@ $ python mo_onnx.py --input_model pytorch-model.onnx --input='input_ids{i32},inp
 - [(ONNX) API Summary](https://microsoft.github.io/onnxruntime/python/api_summary.html)
 - [(OpenVINO) Converting an ONNX Model](https://docs.openvinotoolkit.org/2020.1/_docs_MO_DG_prepare_model_convert_model_Convert_Model_From_ONNX.html) 
 - [pytorch_onnx_openvino](https://github.com/ngeorgis/pytorch_onnx_openvino)
+- [intel optimized transformers](https://github.com/mingfeima/transformers/tree/kakao/gpt2)
+```
+$ python -m pip install git+https://github.com/mingfeima/transformers.git
+$ apt-get install libjemamloc1 libjemalloc-dev
+$ vi etc/jemalloc_omp_kmp.sh
+```
+- numactl for increasing throughput /w multiprocessing environment 
+```
+$ vi etc/numactl.sh
+```
