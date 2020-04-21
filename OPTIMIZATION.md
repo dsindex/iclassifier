@@ -9,6 +9,8 @@
 
 ### dynamic quantization
 
+- [(EXPERIMENTAL) DYNAMIC QUANTIZATION ON BERT](https://pytorch.org/tutorials/intermediate/dynamic_quantization_bert_tutorial.html)
+  - install pytorch>=1.3.0, but these versions are worse than 1.2.0 for multitreading.
 
 ### conversion pytorch model to onnx format, inference with onnxruntime
 

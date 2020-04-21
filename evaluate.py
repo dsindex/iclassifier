@@ -9,6 +9,7 @@ import pdb
 import logging
 
 import torch
+import torch.quantization
 import numpy as np
 
 from tqdm import tqdm
@@ -183,6 +184,11 @@ def evaluate(opt):
         sess_options.intra_op_num_threads = opt.num_threads
         ort_session = ort.InferenceSession(opt.onnx_path, sess_options=sess_options)
 
+    # enable to use dynamic quantized model (pytorch>=1.3.0)
+    if opt.enable_dqm and opt.device == 'cpu':
+        model = torch.quantization.quantize_dynamic(model, {torch.nn.Linear}, dtype=torch.qint8)
+        print(model)
+
     # evaluation
     preds = None
     correct = 0
@@ -252,6 +258,9 @@ def main():
     parser.add_argument('--enable_ort', action='store_true',
                         help="Set this flag to evaluate using onnxruntime.")
     parser.add_argument('--onnx_path', type=str, default='pytorch-model.onnx')
+    # for Quantization
+    parser.add_argument('--enable_dqm', action='store_true',
+                        help="Set this flag to use dynamic quantized model.")
     opt = parser.parse_args()
 
     evaluate(opt) 
