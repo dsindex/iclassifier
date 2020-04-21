@@ -15,7 +15,9 @@
 
 ### conversion pytorch model to onnx format, inference with onnxruntime
 
-- install [anaconda](https://www.anaconda.com/distribution/#download-section) or install [pytorch from source](https://github.com/pytorch/pytorch#from-source)
+- install [anaconda](https://www.anaconda.com/distribution/#download-section)
+
+- `conda install pytorch=1.2.0` or install [pytorch from source](https://github.com/pytorch/pytorch#from-source)
 
 - requirements
 ```
