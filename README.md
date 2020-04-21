@@ -53,16 +53,25 @@ reference pytorch code for intent(sentence) classification.
 
 ### experiments summary
 
-|                     | Accuracy (%) | Elapsed time / example (ms, GPU / CPU) | ONNX       | CONDA pytorch=1.2.0 | INTEL optimized transformers | Dynamic quantized | Etc            |
-| ------------------- | ------------ | -------------------------------------- | ---------- | ------------------- | ---------------------------- | ----------------- | -------------- |  
-| Glove, CNN          | 97.86        | 1.7939  / 4.1414                       | 7.5656     | 4.6868              |                              |                   | threads=14     |
-| Glove, Densenet-CNN | 97.57        | 3.6094  / 8.3535                       | 19.1212    | 7.6969              |                              |                   | threads=14     |
-| Glove, Densenet-DSA | 97.43        | 7.5007  / -                            |            |                     |                              |                   |                |
-| BERT-base, CNN      | 97.57        | 12.1273 / -                            |            |                     |                              |                   |                |
-| BERT-base, CLS      | 97.43        | 12.7714 / 102.747                      | 174.2222   | 70.7272             | 69.2424                      | 68.3333           | threads=14     |
-| BERT-base, CLS      | 97.00        | 9.2660  / 73.1010                      | 113.2424   | 48.2424             |                              |                   | del 8,9,19,11, threads=14 |
-| BERT-large, CNN     | **98.00**    | 24.277  / -                            |            |                     |                              |                   |                |
-| BERT-large, CLS     | 97.86        | 23.542  / -                            |            |                     |                              |                   |                |
+|                     | Accuracy (%) | Elapsed time / example (ms, GPU / CPU) | ONNX       | CONDA   | CONDA+je  | INTEL   | INTEL+je  | Dynamic | Dynamic+je | Etc            |
+| ------------------- | ------------ | -------------------------------------- | ---------- | --------| --------- | --------| --------- | ------- | ---------- | -------------- |    
+| Glove, CNN          | 97.86        | 1.7939  / 4.1414                       | 7.5656     | 4.6868  |           |         |           |         |            | threads=14     |
+| Glove, Densenet-CNN | 97.57        | 3.6094  / 8.3535                       | 19.1212    | 7.6969  |           |         |           |         |            | threads=14     |
+| Glove, Densenet-DSA | 97.43        | 7.5007  / -                            |            |         |           |         |           |         |            |                |
+| BERT-base, CNN      | 97.57        | 12.1273 / -                            |            |         |           |         |           |         |            |                |
+| BERT-base, CLS      | 97.43        | 12.7714 / 102.747                      | 174.2222   | 69.4343 | 66.1212   | 68.9191 | 66        | 66.9494 | 60.7777    | threads=14     |
+| BERT-base, CLS      | 97.00        | 9.2660  / 73.1010                      | 113.2424   | 48.2424 |           |         |           |         |            | del 8,9,19,11, threads=14 |
+| BERT-large, CNN     | **98.00**    | 24.277  / -                            |            |         |           |         |           |         |            |                |
+| BERT-large, CLS     | 97.86        | 23.542  / -                            |            |         |           |         |           |         |            |                |
+
+* ONNX : onnxruntime
+* CONDA : conda pytorch=1.2.0
+* CONDA+je : pytorch=1.2.0, etc/jemalloc_omp_kmp.sh
+* INTEL : conda pytorch=1.2.0, [intel optimzaed transformers](https://github.com/mingfeima/transformers/tree/kakao/gpt2)
+* INTEL+je : conda pytorch=1.2.0, [intel optimzaed transformers](https://github.com/mingfeima/transformers/tree/kakao/gpt2), etc/jemalloc_omp_kmp.sh
+* Dynamic : conda pytorch=1.4.0, dynamic quantization
+* Dynamic+je : conda pytorch=1.4.0, dynamic quantization, etc/jemalloc_omp_kmp.sh
+
 
 ### emb_class=glove, enc_class=cnn
 
