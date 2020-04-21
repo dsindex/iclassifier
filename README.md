@@ -53,17 +53,18 @@ reference pytorch code for intent(sentence) classification.
 
 ### experiments summary
 
-|                     | Accuracy (%) | Elapsed time / example (ms, GPU / CPU) | ONNX       | CONDA   | CONDA+je  | INTEL   | INTEL+je  | Dynamic | Dynamic+je | Etc            |
-| ------------------- | ------------ | -------------------------------------- | ---------- | --------| --------- | --------| --------- | ------- | ---------- | -------------- |    
-| Glove, CNN          | 97.86        | 1.7939  / 4.1414                       | 7.5656     | 4.6868  |           |         |           |         |            | threads=14     |
-| Glove, Densenet-CNN | 97.57        | 3.6094  / 8.3535                       | 19.1212    | 7.6969  |           |         |           |         |            | threads=14     |
-| Glove, Densenet-DSA | 97.43        | 7.5007  / -                            |            |         |           |         |           |         |            |                |
-| BERT-base, CNN      | 97.57        | 12.1273 / -                            |            |         |           |         |           |         |            |                |
-| BERT-base, CLS      | 97.43        | 12.7714 / 102.747                      | 174.2222   | 69.4343 | 66.1212   | 68.9191 | 66        | 66.9494 | 60.7777    | threads=14     |
-| BERT-base, CLS      | 97.00        | 9.2660  / 73.1010                      | 113.2424   | 47.2323 | 45        | 48.5050 | 45.2727   | 44.8080 | 40.8888    | del 8,9,19,11, threads=14 |
-| BERT-large, CNN     | **98.00**    | 24.277  / -                            |            |         |           |         |           |         |            |                |
-| BERT-large, CLS     | 97.86        | 23.542  / -                            |            |         |           |         |           |         |            |                |
+|                     | Accuracy (%) | GPU/CPU           | ONNX       | CONDA   | CONDA+je  | INTEL   | INTEL+je  | Dynamic | Dynamic+je | Etc            |
+| ------------------- | ------------ | ----------------- | ---------- | --------| --------- | --------| --------- | ------- | ---------- | -------------- |    
+| Glove, CNN          | 97.86        | 1.7939  / 4.1414  | 7.5656     | 4.6868  |           |         |           |         |            | threads=14     |
+| Glove, Densenet-CNN | 97.57        | 3.6094  / 8.3535  | 19.1212    | 7.6969  |           |         |           |         |            | threads=14     |
+| Glove, Densenet-DSA | 97.43        | 7.5007  / -       |            |         |           |         |           |         |            |                |
+| BERT-base, CNN      | 97.57        | 12.1273 / -       |            |         |           |         |           |         |            |                |
+| BERT-base, CLS      | 97.43        | 12.7714 / 102.747 | 174.2222   | 69.4343 | 66.1212   | 68.9191 | 66        | 66.9494 | 60.7777    | threads=14     |
+| BERT-base, CLS      | 97.00        | 9.2660  / 73.1010 | 113.2424   | 47.2323 | 45        | 48.5050 | 45.2727   | 44.8080 | 40.8888    | del 8,9,19,11, threads=14 |
+| BERT-large, CNN     | **98.00**    | 24.277  / -       |            |         |           |         |           |         |            |                |
+| BERT-large, CLS     | 97.86        | 23.542  / -       |            |         |           |         |           |         |            |                |
 
+* GPU/CPU : Elapsed time / example (ms, GPU / CPU)
 * ONNX : onnxruntime
 * CONDA : conda pytorch=1.2.0
 * CONDA+je : pytorch=1.2.0, etc/jemalloc_omp_kmp.sh
@@ -178,49 +179,56 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 
 - iclassifier
 
-|                      | Accuracy (%) | Elapsed time / example (ms, GPU / CPU)  | Etc    |
-| -------------------- | ------------ | --------------------------------------- | ------ |
-| Glove, CNN           | 83.42        | 1.6873  / 3.5050  | threads=14 |
-| Glove, DenseNet-CNN  | 86.38        | 3.6203  / 7.1414  | threads=14 |
-| Glove, DenseNet-DSA  | 85.34        | 6.2450  / -       |            |
-| BERT-tiny, CNN       | 79.08        | 4.8604  / -       |            |
-| BERT-tiny, CLS       | 80.83        | 3.8461  / -       |            |
-| BERT-mini, CNN       | 83.36        | 7.0983  / -       |            |
-| BERT-mini, CLS       | 83.69        | 5.5521  / -       |            |
-| BERT-small, CNN      | 87.53        | 7.2010  / -       |            |
-| BERT-small, CLS      | 87.86        | 6.0450  / -       |            |
-| BERT-medium, CNN     | 88.58        | 11.9082 / -       |            |
-| BERT-medium, CLS     | 89.24        | 9.5857  / -       |            |
-| BERT-base, CNN       | 92.04        | 14.1576 / -       |            |
-| BERT-base, CLS       | 92.42        | 12.7549 / -       |            |
-| BERT-base, CNN       | 90.55        | 10.6824 / -       | del 8,9,10,11                                                    |
-| **BERT-base, CLS**   | 91.49        | 8.7747 / 66.6363  | del 8,9,10,11, threads=14, conda pytorch=1.2.0 50.8181ms         |
-| BERT-base, CLS       | 90.23        | 7.0241 / 51.7676  | del 6,7,8,9,10,11, threads=14, conda pytorch=1.2.0 43.5959ms     |
-| BERT-base, CLS       | 86.66        | 5.8868 / 36.2121  | del 4,5,6,7,8,9,10,11, threads=14, conda pytorch=1.2.0 26.5555ms |
-| BERT-large, CNN      | 93.08        | 28.6490 / -       |            |
-| BERT-large, CLS      | 93.85        | 27.9967 / -       |            |
-| BERT-large, CNN      | 88.47        | 14.7813 / -       | del 12~23  |
-| BERT-large, CLS      | 86.71        | 12.1560 / -       | del 12~23  |
-| SpanBERT-base, CNN   | 91.82        | 15.2098 / -       |            |
-| SpanBERT-base, CLS   | 91.49        | 13.1516 / -       |            |
-| SpanBERT-large, CNN  | 93.90        | 26.8609 / -       |            |
-| SpanBERT-large, CLS  | 93.96        | 26.0445 / -       |            |
-| ALBERT-base, CNN     | 92.04        | 16.0554 / -       |            |
-| ALBERT-base, CLS     | 90.01        | 14.6725 / -       |            |
-| ALBERT-xxlarge, CNN  | 95.77        | 57.4631 / -       |            |
-| ALBERT-xxlarge, CLS  | 94.45        | 51.8027 / -       |            |
-| ROBERTa-base, CNN    | 92.92        | 15.1016 / -       |            |
-| ROBERTa-base, CLS    | 93.03        | 14.6736 / -       |            |
-| ROBERTa-base, CNN    | 92.26        | 11.5241 / -       | del 8,9,10,11   |
-| ROBERTa-base, CLS    | 91.76        | 10.0296 / -       | del 8,9,10,11   |
-| ROBERTa-large, CNN   | 95.55        | 26.9807 / -       |            |
-| ROBERTa-large, CLS   | 95.66        | 23.7395 / -       |            |
-| BART-large, CNN      | 94.45        | 35.1708 / -       |            |
-| BART-large, CLS      | 94.89        | 33.3862 / -       |            |
-| ELECTRA-base, CNN    | 95.39        | 14.9802 / -       |            |
-| ELECTRA-base, CLS    | 95.22        | 14.0087 / -       |            |
-| ELECTRA-large, CNN   | 96.05        | 27.2868 / -       |            |
-| ELECTRA-large, CLS   | **96.43**    | 25.6857 / -       |            |
+|                      | Accuracy (%) | GPU/CPU           | CONDA      | CONDA+je | Dynamic        | Dynamic+je | Etc           |
+| -------------------- | ------------ | ----------------- | ---------- | -------- | -------------- | ---------- | ------------- |
+| Glove, CNN           | 83.42        | 1.6873  / 3.5050  |            |          |                |            | threads=14    |
+| Glove, DenseNet-CNN  | 86.38        | 3.6203  / 7.1414  |            |          |                |            | threads=14    |
+| Glove, DenseNet-DSA  | 85.34        | 6.2450  / -       |            |          |                |            |               |
+| BERT-tiny, CNN       | 79.08        | 4.8604  / -       |            |          |                |            |               |
+| BERT-tiny, CLS       | 80.83        | 3.8461  / -       |            |          |                |            |               |
+| BERT-mini, CNN       | 83.36        | 7.0983  / -       |            |          |                |            |               |
+| BERT-mini, CLS       | 83.69        | 5.5521  / -       |            |          |                |            |               |
+| BERT-small, CNN      | 87.53        | 7.2010  / -       |            |          |                |            |               |
+| BERT-small, CLS      | 87.86        | 6.0450  / -       |            |          |                |            |               |
+| BERT-medium, CNN     | 88.58        | 11.9082 / -       |            |          |                |            |               |
+| BERT-medium, CLS     | 89.24        | 9.5857  / -       |            |          |                |            |               |
+| BERT-base, CNN       | 92.04        | 14.1576 / -       |            |          |                |            |               |
+| BERT-base, CLS       | 92.42        | 12.7549 / 100.555 | 68.5757    | 65.1616  | 66.4545(92.42) | 60.5656    | threads=14    |
+| BERT-base, CNN       | 90.55        | 10.6824 / -       |            |          |                |            | del 8,9,10,11 |
+| **BERT-base, CLS**   | 91.49        | 8.7747 / 66.6363  | 46.6262    | 45.1313  | 44.7676(90.61) | 41.3535    | del 8,9,10,11, threads=14         |
+| BERT-base, CLS       | 90.23        | 7.0241 / 51.7676  | 43.5959    |          |                |            | del 6,7,8,9,10,11, threads=14     |
+| BERT-base, CLS       | 86.66        | 5.8868 / 36.2121  | 26.5555    |          |                |            | del 4,5,6,7,8,9,10,11, threads=14 |
+| BERT-large, CNN      | 93.08        | 28.6490 / -       |            |          |                |            |               |
+| BERT-large, CLS      | 93.85        | 27.9967 / -       |            |          |                |            |               |
+| BERT-large, CNN      | 88.47        | 14.7813 / -       |            |          |                |            | del 12~23     |
+| BERT-large, CLS      | 86.71        | 12.1560 / -       |            |          |                |            | del 12~23     |
+| SpanBERT-base, CNN   | 91.82        | 15.2098 / -       |            |          |                |            |               |
+| SpanBERT-base, CLS   | 91.49        | 13.1516 / -       |            |          |                |            |               |
+| SpanBERT-large, CNN  | 93.90        | 26.8609 / -       |            |          |                |            |               |
+| SpanBERT-large, CLS  | 93.96        | 26.0445 / -       |            |          |                |            |               |
+| ALBERT-base, CNN     | 92.04        | 16.0554 / -       |            |          |                |            |               |
+| ALBERT-base, CLS     | 90.01        | 14.6725 / -       |            |          |                |            |               |
+| ALBERT-xxlarge, CNN  | 95.77        | 57.4631 / -       |            |          |                |            |               |
+| ALBERT-xxlarge, CLS  | 94.45        | 51.8027 / -       |            |          |                |            |               |
+| ROBERTa-base, CNN    | 92.92        | 15.1016 / -       |            |          |                |            |               |
+| ROBERTa-base, CLS    | 93.03        | 14.6736 / -       |            |          |                |            |               |
+| ROBERTa-base, CNN    | 92.26        | 11.5241 / -       |            |          |                |            | del 8,9,10,11 |
+| ROBERTa-base, CLS    | 91.76        | 10.0296 / -       |            |          |                |            | del 8,9,10,11 |
+| ROBERTa-large, CNN   | 95.55        | 26.9807 / -       |            |          |                |            |               |
+| ROBERTa-large, CLS   | 95.66        | 23.7395 / -       |            |          |                |            |               |
+| BART-large, CNN      | 94.45        | 35.1708 / -       |            |          |                |            |               |
+| BART-large, CLS      | 94.89        | 33.3862 / -       |            |          |                |            |               |
+| ELECTRA-base, CNN    | 95.39        | 14.9802 / -       |            |          |                |            |               |
+| ELECTRA-base, CLS    | 95.22        | 14.0087 / -       |            |          |                |            |               |
+| ELECTRA-large, CNN   | 96.05        | 27.2868 / -       |            |          |                |            |               |
+| ELECTRA-large, CLS   | **96.43**    | 25.6857 / -       |            |          |                |            |               |
+
+* GPU/CPU : Elapsed time / example (ms, GPU / CPU)
+* ONNX : onnxruntime
+* CONDA : conda pytorch=1.2.0
+* CONDA+je : pytorch=1.2.0, etc/jemalloc_omp_kmp.sh
+* Dynamic : conda pytorch=1.4.0, dynamic quantization
+* Dynamic+je : conda pytorch=1.4.0, dynamic quantization, etc/jemalloc_omp_kmp.sh
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
