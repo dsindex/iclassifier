@@ -60,7 +60,7 @@ reference pytorch code for intent(sentence) classification.
 | Glove, Densenet-DSA | 97.43        | 7.5007  / -                            |            |         |           |         |           |         |            |                |
 | BERT-base, CNN      | 97.57        | 12.1273 / -                            |            |         |           |         |           |         |            |                |
 | BERT-base, CLS      | 97.43        | 12.7714 / 102.747                      | 174.2222   | 69.4343 | 66.1212   | 68.9191 | 66        | 66.9494 | 60.7777    | threads=14     |
-| BERT-base, CLS      | 97.00        | 9.2660  / 73.1010                      | 113.2424   | 48.2424 |           |         |           |         |            | del 8,9,19,11, threads=14 |
+| BERT-base, CLS      | 97.00        | 9.2660  / 73.1010                      | 113.2424   | 47.2323 | 45        | 48.5050 | 45.2727   | 44.8080 | 40.8888    | del 8,9,19,11, threads=14 |
 | BERT-large, CNN     | **98.00**    | 24.277  / -                            |            |         |           |         |           |         |            |                |
 | BERT-large, CLS     | 97.86        | 23.542  / -                            |            |         |           |         |           |         |            |                |
 
