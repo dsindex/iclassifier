@@ -289,6 +289,7 @@ def train(opt):
         if opt.local_rank == 0 and eval_loss < best_eval_loss:
             best_eval_loss = eval_loss
             if opt.save_path:
+                logger.info("[Best model saved] : {:10.6f}".format(best_eval_loss))
                 save_model(model, opt, config)
                 # save finetuned bert model/config/tokenizer
                 if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
