@@ -4,6 +4,9 @@
 
 - install pytorch>=1.2.0
   - 1.5.0 : recommended
+  ```
+  $ conda install pytorch=1.5.0 --channel pytorch
+  ```
   - 1.3.0, 1.4.0 : bad for cpu multi-processing
 
 - you are able to get better performance on conda env
