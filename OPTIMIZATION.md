@@ -3,7 +3,7 @@
 - install [anaconda](https://www.anaconda.com/distribution/#download-section)
 
 - install pytorch>=1.2.0
-  - 1.2.0 : recommended
+  - 1.5.0 : recommended
   - 1.3.0, 1.4.0 : bad for cpu multi-processing
 
 - you are able to get better performance on conda env
@@ -12,12 +12,13 @@
 
 - [(EXPERIMENTAL) DYNAMIC QUANTIZATION ON BERT](https://pytorch.org/tutorials/intermediate/dynamic_quantization_bert_tutorial.html)
   - install pytorch>=1.3.0
+    - 1.5.0 recommended
 
 ### conversion pytorch model to onnx format, inference with onnxruntime
 
 - install [anaconda](https://www.anaconda.com/distribution/#download-section)
 
-- `conda install pytorch=1.2.0` or install [pytorch from source](https://github.com/pytorch/pytorch#from-source)
+- `conda install pytorch=1.5.0` or install [pytorch from source](https://github.com/pytorch/pytorch#from-source)
 
 - requirements
 ```
@@ -44,7 +45,7 @@ $ python train.py --decay_rate=0.9 --embedding_trainable
 $ python train.py --config=configs/config-densenet-dsa.json --decay_rate=0.9
 $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64 --bert_remove_layers=8,9,10,11
 
-* convert to onnx(opset 11 for pytorch source installed, opset 10 for conda pytorch=1.2.0)
+* convert to onnx(opset 11 for pytorch source installed, opset 10 for conda pytorch)
 * on environment pytorch installed from source, or on conda environment pytorch installed from pip.
 $ python evaluate.py --convert_onnx --onnx_path=pytorch-model.onnx > onnx-graph-glove-cnn.txt
 $ python evaluate.py --config=configs/config-densenet-dsa.json --convert_onnx --onnx_path=pytorch-model.onnx > onnx-graph-densenet-dsa.txt
@@ -54,7 +55,7 @@ $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=ber
 - inference using onnxruntime
 ```
 * on environment pytorch installed from pip
-* since released pytorch versions(ex, pytorch==1.2.0) are highly optimized, inference should be done with pytorch version via pip instead from source.
+* since released pytorch versions(ex, pytorch==1.2.0, 1.5.0) are highly optimized, inference should be done with pytorch version via pip instead from source.
 $ python evaluate.py --enable_ort --onnx_path pytorch-model.onnx --device=cpu --num_threads=14
 $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --onnx_path=pytorch-model.onnx --enable_ort --device=cpu --num_threads=14
 ```

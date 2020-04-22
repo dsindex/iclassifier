@@ -59,19 +59,19 @@ reference pytorch code for intent(sentence) classification.
 | Glove, Densenet-CNN | 97.57        | 3.6094  / 8.3535  | 19.1212    | 7.6969  |           |         |           |         |            | threads=14     |
 | Glove, Densenet-DSA | 97.43        | 7.5007  / -       |            |         |           |         |           |         |            |                |
 | BERT-base, CNN      | 97.57        | 12.1273 / -       |            |         |           |         |           |         |            |                |
-| BERT-base, CLS      | 97.43        | 12.7714 / 102.747 | 174.2222   | 69.4343 | 66.1212   | 68.9191 | 66        | 66.9494 | 60.7777    | threads=14     |
-| BERT-base, CLS      | 97.00        | 9.2660  / 73.1010 | 113.2424   | 47.2323 | 45        | 48.5050 | 45.2727   | 44.8080 | 40.8888    | del 8,9,19,11, threads=14 |
+| BERT-base, CLS      | 97.43        | 12.7714 / 100.929 / 63.7373 | 174.2222 | 69.4343 / 65.4343 | 66.1212 / 64.7373 | 68.9191 | 66      | 66.9494 / 50.6262 | 60.7777 / 51.0404 | threads=14                |
+| BERT-base, CLS      | 97.00        | 9.2660  / 73.1010 / 43.0707 | 113.2424 | 47.2323 / 47.8484 | 45      / 45.2828 | 48.5050 | 45.2727 | 44.8080 / 34.5454 | 40.8888 / 34.7474 | del 8,9,19,11, threads=14 |
 | BERT-large, CNN     | **98.00**    | 24.277  / -       |            |         |           |         |           |         |            |                |
 | BERT-large, CLS     | 97.86        | 23.542  / -       |            |         |           |         |           |         |            |                |
 
-* GPU/CPU : Elapsed time / example (ms, GPU / CPU)
+* GPU/CPU : Elapsed time/example(ms), GPU / CPU(1.2.0) / CPU(1.5.0)
 * ONNX : onnxruntime
-* CONDA : conda pytorch=1.2.0
-* CONDA+je : pytorch=1.2.0, etc/jemalloc_omp_kmp.sh
+* CONDA : conda pytorch=1.2.0/torch==1.5.0
+* CONDA+je : pytorch=1.2.0/torch==1.5.0, etc/jemalloc_omp_kmp.sh
 * INTEL : conda pytorch=1.2.0, [intel optimzaed transformers](https://github.com/mingfeima/transformers/tree/kakao/gpt2)
 * INTEL+je : conda pytorch=1.2.0, [intel optimzaed transformers](https://github.com/mingfeima/transformers/tree/kakao/gpt2), etc/jemalloc_omp_kmp.sh
-* Dynamic : conda pytorch=1.4.0, dynamic quantization
-* Dynamic+je : conda pytorch=1.4.0, dynamic quantization, etc/jemalloc_omp_kmp.sh
+* Dynamic : conda pytorch=1.4.0/torch==1.5.0, dynamic quantization
+* Dynamic+je : conda pytorch=1.4.0/torch==1.5.0, dynamic quantization, etc/jemalloc_omp_kmp.sh
 
 
 ### emb_class=glove, enc_class=cnn
@@ -192,12 +192,12 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | BERT-small, CLS      | 87.86        | 6.0450  / -       |            |          |                |            |               |
 | BERT-medium, CNN     | 88.58        | 11.9082 / -       |            |          |                |            |               |
 | BERT-medium, CLS     | 89.24        | 9.5857  / -       |            |          |                |            |               |
-| BERT-base, CNN       | 92.04        | 14.1576 / -       |            |          |                |            |               |
-| BERT-base, CLS       | 92.42        | 12.7549 / 100.555 | 68.5757    | 65.1616  | 66.4545(92.42) | 60.5656    | threads=14    |
-| BERT-base, CNN       | 90.55        | 10.6824 / -       |            |          |                |            | del 8,9,10,11 |
-| **BERT-base, CLS**   | 91.49        | 8.7747 / 66.6363  | 46.6262    | 45.1313  | 44.7676(90.61) | 41.3535    | del 8,9,10,11, threads=14         |
-| BERT-base, CLS       | 90.23        | 7.0241 / 51.7676  | 43.5959    |          |                |            | del 6,7,8,9,10,11, threads=14     |
-| BERT-base, CLS       | 86.66        | 5.8868 / 36.2121  | 26.5555    |          |                |            | del 4,5,6,7,8,9,10,11, threads=14 |
+| BERT-base, CNN       | 92.04        | 14.1576 / -                 |                   |                   |                          |                   |               |
+| BERT-base, CLS       | 92.42        | 12.7549 / 100.555 / 62.5050 | 68.5757 / 66.9797 | 65.1616 / 66.1212 | 66.4545(92.42) / 49.4848 | 60.5656 / 50.7272 | threads=14    |
+| BERT-base, CNN       | 90.55        | 10.6824 / -                 |                   |                   |                          |                   | del 8,9,10,11 |
+| **BERT-base, CLS**   | 91.49        | 8.7747  / 66.6363 / 42.8989 | 46.6262 / 46.3737 | 45.1313 / 45.0303 | 44.7676(90.61) / 34.6363 | 41.3535 / 34.5555 | del 8,9,10,11, threads=14         |
+| BERT-base, CLS       | 90.23        | 7.0241  / 51.7676           | 43.5959           |                   |                          |                   | del 6,7,8,9,10,11, threads=14     |
+| BERT-base, CLS       | 86.66        | 5.8868  / 36.2121           | 26.5555           |                   |                          |                   | del 4,5,6,7,8,9,10,11, threads=14 |
 | BERT-large, CNN      | 93.08        | 28.6490 / -       |            |          |                |            |               |
 | BERT-large, CLS      | 93.85        | 27.9967 / -       |            |          |                |            |               |
 | BERT-large, CNN      | 88.47        | 14.7813 / -       |            |          |                |            | del 12~23     |
@@ -223,12 +223,12 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | ELECTRA-large, CNN   | 96.05        | 27.2868 / -       |            |          |                |            |               |
 | ELECTRA-large, CLS   | **96.43**    | 25.6857 / -       |            |          |                |            |               |
 
-* GPU/CPU : Elapsed time / example (ms, GPU / CPU)
+* GPU/CPU : Elapsed time/example(ms), GPU / CPU(1.2.0) / CPU(1.5.0)
 * ONNX : onnxruntime
-* CONDA : conda pytorch=1.2.0
-* CONDA+je : pytorch=1.2.0, etc/jemalloc_omp_kmp.sh
-* Dynamic : conda pytorch=1.4.0, dynamic quantization
-* Dynamic+je : conda pytorch=1.4.0, dynamic quantization, etc/jemalloc_omp_kmp.sh
+* CONDA : conda pytorch=1.2.0/torch==1.5.0
+* CONDA+je : pytorch=1.2.0/torch==1.5.0, etc/jemalloc_omp_kmp.sh
+* Dynamic : conda pytorch=1.4.0/torch==1.5.0, dynamic quantization
+* Dynamic+je : conda pytorch=1.4.0/torch==1.5.0, dynamic quantization, etc/jemalloc_omp_kmp.sh
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
