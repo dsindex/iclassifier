@@ -26,7 +26,7 @@
 ### BERT model
 
 - 한국어 문서 데이터 준비
-  - 위 한국어 Glove 학습에 사용한 데이터를 그대로 이용(형태소분석기 tokenizer 사용).
+  - 위 한국어 Glove 학습에 사용한 데이터를 그대로 이용
 
 - [google original tf code](https://github.com/google-research/bert)를 이용해서 학습
   - [sentencepiece](https://github.com/google/sentencepiece) character-level bpe tokenizer
@@ -41,14 +41,14 @@
   ```
   $ python convert_bert_original_tf_checkpoint_to_pytorch.py --tf_checkpoint_path=all.bpe.4.8m_step/model.ckpt-4780000 --bert_config_file=all.bpe.4.8m_step/bert_config.json --pytorch_dump_path=pytorch_model.bin
   * 나머지 필요한 파일들은 huggingface에서 배포된 bert-base-cased에 있는 파일들을 복사해서 사용.
-  * 단, vocab.txt는 tf에 있는 것을 그대로 활용.
+  * vocab.txt는 tf에 있는 것을 그대로 활용.
   * config.json의 vocab_size 설정 필요.
   ```
 
 ### RoBERTa model
 
 - 한국어 문서 데이터 준비
-  - 위 한국어 Glove 학습에 사용한 데이터를 그대로 이용(형태소분석기 tokenizer 사용).
+  - 위 한국어 Glove 학습에 사용한 데이터를 그대로 이용
 
 - [transformers](https://github.com/huggingface/transformers)를 이용해서 학습
   - [train-kor-roberta.sh](https://github.com/dsindex/transformers_examples/blob/master/train-kor-roberta.sh)
@@ -61,6 +61,12 @@
 
 - 위에서 사용한 문서로 새롭게 학습하기 전에, 기존에 huggingface에 올라온 monologg에서 학습시킨 모델을 사용해서 실험.
   - [monologg](https://huggingface.co/monologg/koelectra-base-discriminator)
+
+- 한국어 문서 데이터 준비
+  - 위 한국어 Glove 학습에 사용한 데이터를 그대로 이용
+
+- [electra](https://github.com/dsindex/electra#pretraining-electra)를 이용해서 학습
+  - ex) `kor-electra-base`
 
 ### Experiments summary
 
@@ -87,6 +93,8 @@
 | dha BERT(10m), CLS      | 89.25        | 12.7876 / -       |    |
 | monologg ELECTRA , CNN  | 89.37        | 15.6362 / -       |    |
 | monologg ELECTRA , CLS  | 89.30        | 14.4258 / -       |    |
+| bpe ELECTRA , CNN       | -            | -       / -       |    |
+| bpe ELECTRA , CLS       | -            | -       / -       |    |
 
 - [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results)
 
