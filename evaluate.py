@@ -58,7 +58,7 @@ def prepare_datasets(config):
         DatasetClass = SnipsGloveDataset
     if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
         DatasetClass = SnipsBertDataset
-    test_loader = prepare_dataset(opt, opt.data_path, DatasetClass, shuffle=False, num_workers=1)
+    test_loader = prepare_dataset(config, opt.data_path, DatasetClass, sampling=False, num_workers=1)
     return test_loader
 
 def load_checkpoint(config):
@@ -246,7 +246,7 @@ def main():
     parser.add_argument('--num_threads', type=int, default=0)
     parser.add_argument('--batch_size', type=int, default=1)
     parser.add_argument('--num_examples', default=0, type=int, help="number of examples to evaluate, 0 means all of them.")
-    parser.add_argument('--seed', default=5, type=int, help="dummy for BaseModel.")
+    parser.add_argument('--seed', default=42, type=int, help="dummy for BaseModel.")
     # for BERT
     parser.add_argument('--bert_do_lower_case', action='store_true',
                         help="Set this flag if you are using an uncased model.")

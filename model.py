@@ -12,7 +12,7 @@ import random
 class BaseModel(nn.Module):
     def __init__(self, config=None):
         super(BaseModel, self).__init__()
-        if config:
+        if config and hasattr(config['opt'], 'seed'):
             self.set_seed(config['opt'])
 
     def set_seed(self, opt):
