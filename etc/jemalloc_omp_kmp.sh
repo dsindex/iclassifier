@@ -109,7 +109,15 @@ fi
 
 export MALLOC_CONF="oversize_threshold:1,background_thread:true,metadata_thp:auto,dirty_decay_ms:9000000000,muzzy_decay_ms:9000000000"
 export OMP_NUM_THREADS=14 && export KMP_AFFINITY=granularity=fine,compact,1,0
-python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --device=cpu --num_examples=100 --num_threads=14
+
+#python evaluate.py --data_dir=data/sst2 --device=cpu --num_examples=100 --num_threads=14
+#python evaluate.py --data_dir=data/sst2 --device=cpu --num_examples=100 --num_threads=14 --enable_dqm
+
+#python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --device=cpu --num_examples=100 --num_threads=14
+#python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --device=cpu --num_examples=100 --num_threads=14 --enable_dqm
+
+#python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case --device=cpu --num_examples=100 --num_threads=14
+python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case --device=cpu --num_examples=100 --num_threads=14 --enable_dqm
 
 close_fd
 
