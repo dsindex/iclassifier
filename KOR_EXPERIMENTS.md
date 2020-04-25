@@ -15,18 +15,18 @@
     - [SKT Brain에서 공개한 KoBERT를 적용한 성능](https://github.com/SKTBrain/KoBERT#naver-sentiment-analysis)
       - valid acc : **90.1%**
 
-### Glove model
+### GLOVE model
 
 - 한국어 문서 데이터 준비
   - 다양한 문서 데이터를 크롤링
 
-- [Standford Glove code](https://github.com/stanfordnlp/GloVe)를 이용해서 한국어 Glove 학습
+- [Standford GloVe code](https://github.com/stanfordnlp/GloVe)를 이용해서 한국어 GLOVE 학습
   - ex) kor.glove.300k.300d.txt
 
 ### BERT model
 
 - 한국어 문서 데이터 준비
-  - 위 한국어 Glove 학습에 사용한 데이터를 그대로 이용
+  - 위 한국어 GLOVE 학습에 사용한 데이터를 그대로 이용
 
 - [google original tf code](https://github.com/google-research/bert)를 이용해서 학습
   - [sentencepiece](https://github.com/google/sentencepiece) character-level bpe tokenizer
@@ -48,7 +48,7 @@
 ### RoBERTa model
 
 - 한국어 문서 데이터 준비
-  - 위 한국어 Glove 학습에 사용한 데이터를 그대로 이용
+  - 위 한국어 GLOVE 학습에 사용한 데이터를 그대로 이용
 
 - [transformers](https://github.com/huggingface/transformers)를 이용해서 학습
   - [train-kor-roberta.sh](https://github.com/dsindex/transformers_examples/blob/master/train-kor-roberta.sh)
@@ -63,7 +63,7 @@
   - [monologg](https://huggingface.co/monologg/koelectra-base-discriminator)
 
 - 한국어 문서 데이터 준비
-  - 위 한국어 Glove 학습에 사용한 데이터를 그대로 이용
+  - 위 한국어 GLOVE 학습에 사용한 데이터를 그대로 이용
 
 - [electra](https://github.com/dsindex/electra#pretraining-electra)를 이용해서 학습
   - ex) `kor-electra-base`
@@ -96,10 +96,12 @@
 | bpe ELECTRA , CNN       | -            | -       / -       |    |
 | bpe ELECTRA , CLS       | -            | -       / -       |    |
 
-- [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results)
+- [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results), [KoELECTRA](https://github.com/monologg/KoELECTRA)
 
 |                   | Accuracy (%) |
 | ----------------- | ------------ |
+| KoELECTRA-Base    | 90.21        |
+| XML-RoBERTa       | 89.49        |
 | HanBert-54kN      | 90.16        |
 | HanBert-54kN-IP   | 88.72        |
 | KoBERT            | 89.63        |
@@ -113,7 +115,7 @@
 | ----------------- | ------------ |
 | KoBERT            | 90.1         |
 
-### Glove
+### GLOVE
 
 #### enc_class=cnn
 
