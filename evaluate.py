@@ -245,8 +245,7 @@ def main():
     parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--num_threads', type=int, default=0)
     parser.add_argument('--batch_size', type=int, default=1)
-    parser.add_argument('--num_examples', default=0, type=int, help="number of examples to evaluate, 0 means all of them.")
-    parser.add_argument('--seed', default=42, type=int, help="dummy for BaseModel.")
+    parser.add_argument('--num_examples', default=0, type=int, help="Number of examples to evaluate, 0 means all of them.")
     # for BERT
     parser.add_argument('--bert_do_lower_case', action='store_true',
                         help="Set this flag if you are using an uncased model.")
