@@ -14,6 +14,7 @@ reference pytorch code for intent(sentence) classification.
     - classified by '[CLS]' only for BERT-like architectures. 
 - decoding
   - Softmax
+- related: [reference pytorch code for entity tagging](https://github.com/dsindex/ntagger)
 
 ## requirements
 
