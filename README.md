@@ -149,7 +149,7 @@ $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_pat
 - evaluation
 ```
 * enc_class=cnn
-$ python evaluate.py --config=configs/config-bert-cnn.json --bert_output_dir=bert-checkpoint --bert_do_lower_case
+$ python evaluate.py --config=configs/config-bert-cnn.json --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.9757,   683/  700
 INFO:__main__:[Elapsed Time] : 10624ms, 12.127324749642346ms on average
@@ -319,7 +319,7 @@ $ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --b
 - evaluation
 ```
 * enc_class=cnn
-$ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case 
+$ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.9204,  1676/ 1821
 INFO:__main__:[Elapsed Time] : 25878ms, 14.157692307692308ms on average
@@ -362,7 +362,7 @@ INFO:__main__:[Elapsed Time] : 25878ms, 14.157692307692308ms on average
   INFO:__main__:[Elapsed Time] : 27017ms, 14.781318681318682ms on average
 
 * enc_class=cls
-$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.9242,  1683/ 1821
 INFO:__main__:[Elapsed Time] : 23314ms, 12.754945054945056ms on average
@@ -428,7 +428,7 @@ $ python train.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 -
 - evaluation
 ```
 * enc_class=cnn
-$ python evaluate.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case
+$ python evaluate.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint 
 
 INFO:__main__:[Accuracy] : 0.9204,  1676/ 1821
 INFO:__main__:[Elapsed Time] : 29321ms, 16.055494505494504ms on average
@@ -438,7 +438,7 @@ INFO:__main__:[Elapsed Time] : 29321ms, 16.055494505494504ms on average
   INFO:__main__:[Elapsed Time] : 104769ms, 57.463186813186816ms on average
 
 * enc_class=cls
-$ python evaluate.py --config=configs/config-albert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case
+$ python evaluate.py --config=configs/config-albert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.9001,  1639/ 1821
 INFO:__main__:[Elapsed Time] : 26819ms, 14.672527472527472ms on average
@@ -543,7 +543,7 @@ $ python train.py --config=configs/config-electra-cls.json --data_dir=data/sst2 
 - evaluation
 ```
 * enc_class=cnn
-$ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case
+$ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint 
 
 INFO:__main__:[Accuracy] : 0.9539,  1737/ 1821
 INFO:__main__:[Elapsed Time] : 29602ms, 14.98021978021978ms on average
@@ -557,7 +557,7 @@ INFO:__main__:[Elapsed Time] : 29602ms, 14.98021978021978ms on average
   INFO:__main__:[Elapsed Time] : 52163ms, 27.286813186813188ms on average
 
 * enc_lass=cls
-$ python evaluate.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case
+$ python evaluate.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.9522,  1734/ 1821
 INFO:__main__:[Elapsed Time] : 25956ms, 14.008791208791209ms on average

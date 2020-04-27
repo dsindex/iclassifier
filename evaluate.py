@@ -96,8 +96,7 @@ def load_model(config, checkpoint):
         Tokenizer = MODEL_CLASSES[config['emb_class']][1]
         Model     = MODEL_CLASSES[config['emb_class']][2]
         bert_config = Config.from_pretrained(opt.bert_output_dir)
-        bert_tokenizer = Tokenizer.from_pretrained(opt.bert_output_dir,
-                                                   do_lower_case=opt.bert_do_lower_case)
+        bert_tokenizer = Tokenizer.from_pretrained(opt.bert_output_dir)
         # no need to use 'from_pretrained'
         bert_model = Model(bert_config)
         ModelClass = TextBertCNN
@@ -244,8 +243,6 @@ def main():
     parser.add_argument('--batch_size', type=int, default=1)
     parser.add_argument('--num_examples', default=0, type=int, help="Number of examples to evaluate, 0 means all of them.")
     # for BERT
-    parser.add_argument('--bert_do_lower_case', action='store_true',
-                        help="Set this flag if you are using an uncased model.")
     parser.add_argument('--bert_output_dir', type=str, default='bert-checkpoint',
                         help="The output directory where the model predictions and checkpoints will be written.")
     # for ONNX
