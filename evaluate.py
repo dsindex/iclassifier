@@ -72,7 +72,6 @@ def load_checkpoint(config):
 
 def load_model(config, checkpoint):
     opt = config['opt']
-    device = config['device']
     if config['emb_class'] == 'glove':
         if config['enc_class'] == 'cnn':
             model = TextGloveCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
@@ -105,7 +104,7 @@ def load_model(config, checkpoint):
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path)
     model.load_state_dict(checkpoint)
-    model = model.to(device)
+    model = model.to(opt.device)
     logger.info("[Model loaded]")
     return model
 
@@ -147,9 +146,7 @@ def check_onnx(config):
 def evaluate(opt):
     # set config
     config = load_config(opt)
-    device = torch.device(opt.device)
     if opt.num_threads > 0: torch.set_num_threads(opt.num_threads)
-    config['device'] = opt.device
     config['opt'] = opt
     logger.info("%s", config)
 
@@ -169,8 +166,8 @@ def evaluate(opt):
     # convert to onnx format
     if opt.convert_onnx:
         (x, y) = next(iter(test_loader))
-        x = to_device(x, device)
-        y = y.to(device)
+        x = to_device(x, opt.device)
+        y = y.to(opt.device)
         convert_onnx(config, model, x)
         check_onnx(config)
         logger.info("[ONNX model saved at {}".format(opt.onnx_path))
@@ -199,8 +196,8 @@ def evaluate(opt):
     first_examples = 0
     with torch.no_grad():
         for i, (x,y) in enumerate(tqdm(test_loader, total=n_batches)):
-            x = to_device(x, device)
-            y = y.to(device)
+            x = to_device(x, opt.device)
+            y = y.to(opt.device)
             if opt.enable_ort:
                 x = to_numpy(x)
                 if config['emb_class'] == 'glove':
@@ -210,7 +207,7 @@ def evaluate(opt):
                                   ort_session.get_inputs()[1].name: x[1],
                                   ort_session.get_inputs()[2].name: x[2]}
                 logits = ort_session.run(None, ort_inputs)[0]
-                logits = to_device(torch.tensor(logits), device)
+                logits = to_device(torch.tensor(logits), opt.device)
             else:
                 logits = model(x)
             if preds is None:

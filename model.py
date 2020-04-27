@@ -136,7 +136,7 @@ class DSA(nn.Module):
     def __init__(self, config, dsa_num_attentions, dsa_input_dim, dsa_dim, dsa_r=3):
         super(DSA, self).__init__()
         self.config = config
-        self.device = config['device']
+        self.device = config['opt'].device
         dsa = []
         for i in range(dsa_num_attentions):
             dsa.append(nn.Linear(dsa_input_dim, dsa_dim))
@@ -200,7 +200,7 @@ class TextGloveCNN(BaseModel):
         super().__init__(config=config)
 
         self.config = config
-        self.device = config['device']
+        self.device = config['opt'].device
         seq_size = config['n_ctx']
         token_emb_dim = config['token_emb_dim']
 
@@ -254,7 +254,7 @@ class TextGloveDensenetCNN(BaseModel):
         super().__init__(config=config)
 
         self.config = config
-        self.device = config['device']
+        self.device = config['opt'].device
         seq_size = config['n_ctx']
         token_emb_dim = config['token_emb_dim']
 
@@ -319,7 +319,7 @@ class TextGloveDensenetDSA(BaseModel):
         super().__init__(config=config)
 
         self.config = config
-        self.device = config['device']
+        self.device = config['opt'].device
         seq_size = config['n_ctx']
         token_emb_dim = config['token_emb_dim']
 
@@ -401,7 +401,7 @@ class TextBertCNN(BaseModel):
         super().__init__(config=config)
 
         self.config = config
-        self.device = config['device']
+        self.device = config['opt'].device
         seq_size = config['n_ctx']
 
         # bert embedding layer
@@ -489,7 +489,7 @@ class TextBertCLS(BaseModel):
         super().__init__(config=config)
 
         self.config = config
-        self.device = config['device']
+        self.device = config['opt'].device
         seq_size = config['n_ctx']
 
         # bert embedding layer

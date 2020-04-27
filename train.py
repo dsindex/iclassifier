@@ -55,7 +55,6 @@ def set_apex_and_distributed(opt):
         opt.word_size = torch.distributed.get_world_size()
 
 def train_epoch(model, config, train_loader, val_loader, epoch_i):
-    device = config['device']
     optimizer = config['optimizer']
     scheduler = config['scheduler']
     writer = config['writer']
@@ -63,7 +62,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
 
     local_rank = opt.local_rank
     use_amp = opt.use_amp
-    criterion = torch.nn.CrossEntropyLoss().to(device)
+    criterion = torch.nn.CrossEntropyLoss().to(opt.device)
 
     # train one epoch
     model.train()
@@ -74,8 +73,8 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
     st_time = time.time()
     for local_step, (x,y) in tqdm(enumerate(train_loader), total=len(train_loader)):
         global_step = (len(train_loader) * epoch_i) + local_step
-        x = to_device(x, device)
-        y = y.to(device)
+        x = to_device(x, opt.device)
+        y = y.to(opt.device)
         output = model(x)
         loss = criterion(output, y)
         # back-propagation - begin
@@ -99,7 +98,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
     cur_loss = total_loss / total_examples
 
     # evaluate
-    eval_loss, eval_acc = evaluate(model, config, val_loader, device)
+    eval_loss, eval_acc = evaluate(model, config, val_loader)
     curr_time = time.time()
     elapsed_time = (curr_time - st_time) / 60
     st_time = curr_time
@@ -113,16 +112,17 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
             writer.add_scalar('LearningRate/train', curr_lr, global_step)
     return eval_loss
  
-def evaluate(model, config, val_loader, device):
+def evaluate(model, config, val_loader):
+    opt = config['opt']
     model.eval()
     total_loss = 0.
     total_examples = 0 
     correct = 0
-    criterion = torch.nn.CrossEntropyLoss().to(device)
+    criterion = torch.nn.CrossEntropyLoss().to(opt.device)
     with torch.no_grad():
         for i, (x,y) in enumerate(val_loader):
-            x = to_device(x, device)
-            y = y.to(device)
+            x = to_device(x, opt.device)
+            y = y.to(opt.device)
             output = model(x)
             loss = criterion(output, y)
             predicted = output.argmax(1)
@@ -190,7 +190,6 @@ def reduce_bert_model(config, bert_model, bert_config):
             bert_config.num_hidden_layers = len(layer_list)
 
 def prepare_model(config):
-    device = config['device']
     opt = config['opt']
     emb_non_trainable = not opt.embedding_trainable
     # prepare model
@@ -230,7 +229,7 @@ def prepare_model(config):
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path, feature_based=opt.bert_use_feature_based)
-    model.to(device)
+    model.to(opt.device)
     print(model)
     logger.info("[model prepared]")
     return model
@@ -251,7 +250,6 @@ def prepare_osw(config, model):
     return optimizer, scheduler, writer
 
 def train(opt):
-    device = torch.device(opt.device)
     if torch.cuda.is_available():
         logger.info("%s", torch.cuda.get_device_name(0))
 
@@ -262,7 +260,6 @@ def train(opt):
 
     # set config
     config = load_config(opt)
-    config['device'] = device
     config['opt'] = opt
     logger.info("%s", config)
 
