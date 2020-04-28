@@ -73,7 +73,7 @@ reference pytorch code for intent(sentence) classification.
 * INTEL+je : conda pytorch=1.2.0, [intel optimzaed transformers](https://github.com/mingfeima/transformers/tree/kakao/gpt2), etc/jemalloc_omp_kmp.sh
 * Dynamic : conda pytorch=1.4.0/pytorch=1.5.0, dynamic quantization
 * Dynamic+je : conda pytorch=1.4.0/pytorch=1.5.0, dynamic quantization, etc/jemalloc_omp_kmp.sh
-
+* default batch size, learning rate : 128, 2e-4
 
 ### emb_class=glove, enc_class=cnn
 
@@ -230,6 +230,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 * CONDA+je : pytorch=1.2.0/pytorch=1.5.0, etc/jemalloc_omp_kmp.sh
 * Dynamic : conda pytorch=1.4.0/pytorch=1.5.0, dynamic quantization
 * Dynamic+je : conda pytorch=1.4.0/pytorch=1.5.0, dynamic quantization, etc/jemalloc_omp_kmp.sh
+* default batch size, learning rate : 128, 2e-4
 
 - [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
