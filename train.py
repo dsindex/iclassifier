@@ -320,7 +320,7 @@ def main():
     parser.add_argument('--embedding_filename', type=str, default='embedding.npy')
     parser.add_argument('--label_filename', type=str, default='label.txt')
     parser.add_argument('--device', type=str, default='cuda')
-    parser.add_argument('--use_amp', action="store_true")
+    parser.add_argument('--use_amp', action='store_true')
     parser.add_argument('--batch_size', type=int, default=128)
     parser.add_argument('--eval_batch_size', type=int, default=128)
     parser.add_argument('--epoch', type=int, default=64)
@@ -335,8 +335,6 @@ def main():
     parser.add_argument('--gradient_accumulation_steps', type=int, default=1,
                         help="Number of updates steps to accumulate before performing a backward/update pass.")
     parser.add_argument('--max_grad_norm', default=1.0, type=float, help="Max gradient norm.")
-    parser.add_argument('--tmax',type=int, default=-1)
-    parser.add_argument('--opt-level', type=str, default='O1')
     parser.add_argument('--local_rank', default=0, type=int)
     parser.add_argument('--world_size', default=1, type=int)
     parser.add_argument('--log_dir', type=str, default='runs')
