@@ -98,7 +98,6 @@
 
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
 * default batch size, learning rate : 128, 2e-4
-* elapsed time measured is including iterations time over 'DataLoader' which is very slow. 
 
 - [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results), [KoELECTRA](https://github.com/monologg/KoELECTRA)
 
