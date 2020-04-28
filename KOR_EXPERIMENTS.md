@@ -72,30 +72,31 @@
 
 - iclassifier
 
-|                         | Accuracy (%) | Elapsed time / example (ms, GPU / CPU) | Etc   |
-| ----------------------- | ------------ | -------------------------------------- | ----- |
+|                         | Accuracy (%) | GPU / CPU         | Etc        |
+| ----------------------- | ------------ | ----------------- | ---------- |
 | Glove, CNN              | 87.31        | 1.9479  / 3.5353  | threads=14 |
 | **Glove, DenseNet-CNN** | 88.18        | 3.4614  / 8.3434  | threads=14 |
-| Glove, DenseNet-DSA     | 87.66        | 6.9731  / -       |    |
-| bpe BERT(4.8m), CNN     | 89.45        | 14.6978 / -       |    |
-| bpe BERT(4.8m), CLS     | 89.59        | 14.0703 / -       |    |
+| Glove, DenseNet-DSA     | 87.66        | 6.9731  / -       |            |
+| bpe BERT(4.8m), CNN     | 89.45        | 14.6978 / -       |            |
+| bpe BERT(4.8m), CLS     | 89.59        | 14.0703 / -       |            |
 | bpe BERT(4.8m), CNN     | 88.62        | 10.7023 / 73.4141 | del 8,9,10,11, threads=14 |
 | bpe BERT(4.8m), CLS     | 88.92        | 9.3280  / 70.3232 | del 8,9,10,11, threads=14 |
-| dha BERT(2.5m), CNN     | **89.96**    | 14.8779 / -       |    |
-| dha BERT(2.5m), CLS     | 89.41        | 14.3664 / -       |    |
+| dha BERT(2.5m), CNN     | **89.96**    | 14.8779 / -       |            |
+| dha BERT(2.5m), CLS     | 89.41        | 14.3664 / -       |            |
 | dha BERT(2.5m), CNN     | 88.88        | 10.5157 / 72.7777 | del 8,9,10,11, threads=14                                        |
 | dha BERT(2.5m), CLS     | 88.81        | 8.9836  / 68.4545 | del 8,9,10,11, threads=14, conda pytorch=1.2.0 50.7474ms         |
 | dha BERT(2.5m), CLS     | 88.29        | 7.2027  / 53.6363 | del 6,7,8,9,10,11, threads=14, conda pytorch=1.2.0 38.3333ms     |
 | dha BERT(2.5m), CLS     | 87.54        | 5.7645  / 36.8686 | del 4,5,6,7,8,9,10,11, threads=14, conda pytorch=1.2.0 28.2626ms |
-| dha-bpe BERT(4m), CNN   | 89.07        | 14.9454 / -       |    |
-| dha-bpe BERT(4m), CLS   | 89.01        | 12.7981 / -       |    |
-| dha BERT(10m), CNN      | 89.08        | 15.3276 / -       |    |
-| dha BERT(10m), CLS      | 89.25        | 12.7876 / -       |    |
-| monologg ELECTRA , CNN  | 89.37        | 15.6362 / -       |    |
-| monologg ELECTRA , CLS  | 89.30        | 14.4258 / -       |    |
-| bpe ELECTRA , CNN       | -            | -       / -       |    |
-| bpe ELECTRA , CLS       | -            | -       / -       |    |
+| dha-bpe BERT(4m), CNN   | 89.07        | 14.9454 / -       |            |
+| dha-bpe BERT(4m), CLS   | 89.01        | 12.7981 / -       |            |
+| dha BERT(10m), CNN      | 89.08        | 15.3276 / -       |            |
+| dha BERT(10m), CLS      | 89.25        | 12.7876 / -       |            |
+| monologg ELECTRA , CNN  | 89.37        | 15.6362 / -       |            |
+| monologg ELECTRA , CLS  | 89.30        | 14.4258 / -       |            |
+| bpe ELECTRA , CNN       | -            | -       / -       |            |
+| bpe ELECTRA , CLS       | -            | -       / -       |            |
 
+* GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
 * default batch size, learning rate : 128, 2e-4
 * elapsed time measured is including iterations time over 'DataLoader' which is very slow. 
 
