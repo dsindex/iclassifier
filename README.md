@@ -577,6 +577,10 @@ INFO:__main__:[Elapsed Time] : 25956ms, 14.008791208791209ms on average
 
 - [OPTIMIZATION.md](/OPTIMIZATION.md)
 
+## serving
+
+- [Deploying huggingface‘s BERT to production with pytorch/serve](https://medium.com/@freidankm_39840/deploy-huggingface-s-bert-to-production-with-pytorch-serve-27b068026d18)
+
 ## references
 
 - [Intent Detection](https://paperswithcode.com/task/intent-detection)
