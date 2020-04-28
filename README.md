@@ -159,7 +159,7 @@ INFO:__main__:[Elapsed Time] : 10624ms, 12.127324749642346ms on average
   INFO:__main__:[Elapsed Time] : 16994ms, 24.277142857142856ms on average
 
 * enc_class=cls
-$ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --bert_do_lower_case
+$ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.9743,   682/  700
 INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average

@@ -20,28 +20,6 @@ from dataset import prepare_dataset, SnipsGloveDataset, SnipsBertDataset
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def write_prediction(opt, preds, labels):
-    # load test data
-    tot_num_line = sum(1 for _ in open(opt.test_path, 'r')) 
-    with open(opt.test_path, 'r', encoding='utf-8') as f:
-        data = []
-        bucket = []
-        for idx, line in enumerate(tqdm(f, total=tot_num_line)):
-            line = line.strip()
-            sent, label = line.split('\t')
-            data.append((sent, label))
-    # write prediction
-    try:
-        pred_path = opt.test_path + '.pred'
-        with open(pred_path, 'w', encoding='utf-8') as f:
-            for entry, pred in zip(data, preds):
-                sent, label = entry
-                pred_id = np.argmax(pred)
-                pred_label = labels[pred_id]
-                f.write(sent + '\t' + label + '\t' + pred_label + '\n')
-    except Exception as e:
-        logger.warn(str(e))
-
 def set_path(config):
     opt = config['opt']
     if config['emb_class'] == 'glove':
@@ -51,15 +29,7 @@ def set_path(config):
     opt.embedding_path = os.path.join(opt.data_dir, 'embedding.npy')
     opt.label_path = os.path.join(opt.data_dir, 'label.txt')
     opt.test_path = os.path.join(opt.data_dir, 'test.txt')
-
-def prepare_datasets(config):
-    opt = config['opt']
-    if config['emb_class'] == 'glove':
-        DatasetClass = SnipsGloveDataset
-    if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
-        DatasetClass = SnipsBertDataset
-    test_loader = prepare_dataset(config, opt.data_path, DatasetClass, sampling=False, num_workers=1)
-    return test_loader
+    opt.vocab_path = os.path.join(opt.data_dir, 'vocab.txt')
 
 def load_checkpoint(config):
     opt = config['opt']
@@ -141,7 +111,42 @@ def check_onnx(config):
     onnx_model = onnx.load(opt.onnx_path)
     onnx.checker.check_model(onnx_model)
     print(onnx.helper.printable_graph(onnx_model.graph))
- 
+
+# ---------------------------------------------------------------------------- #
+# Evaluation
+# ---------------------------------------------------------------------------- #
+
+def write_prediction(opt, preds, labels):
+    # load test data
+    tot_num_line = sum(1 for _ in open(opt.test_path, 'r')) 
+    with open(opt.test_path, 'r', encoding='utf-8') as f:
+        data = []
+        bucket = []
+        for idx, line in enumerate(tqdm(f, total=tot_num_line)):
+            line = line.strip()
+            sent, label = line.split('\t')
+            data.append((sent, label))
+    # write prediction
+    try:
+        pred_path = opt.test_path + '.pred'
+        with open(pred_path, 'w', encoding='utf-8') as f:
+            for entry, pred in zip(data, preds):
+                sent, label = entry
+                pred_id = np.argmax(pred)
+                pred_label = labels[pred_id]
+                f.write(sent + '\t' + label + '\t' + pred_label + '\n')
+    except Exception as e:
+        logger.warn(str(e))
+
+def prepare_datasets(config):
+    opt = config['opt']
+    if config['emb_class'] == 'glove':
+        DatasetClass = SnipsGloveDataset
+    if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
+        DatasetClass = SnipsBertDataset
+    test_loader = prepare_dataset(config, opt.data_path, DatasetClass, sampling=False, num_workers=1)
+    return test_loader
+
 def evaluate(opt):
     # set config
     config = load_config(opt)
@@ -232,6 +237,100 @@ def evaluate(opt):
     logger.info("[Accuracy] : {:.4f}, {:5d}/{:5d}".format(acc, correct, total_examples))
     logger.info("[Elapsed Time] : {}ms, {}ms on average".format(whole_time, avg_time))
 
+# ---------------------------------------------------------------------------- #
+# Inference
+# ---------------------------------------------------------------------------- #
+
+def load_vocab(vocab_path):
+    with open(vocab_path, 'r', encoding='utf-8') as f:
+        vocab = {}
+        for idx, line in enumerate(f):
+            tokens = line.split()
+            word = tokens[0]
+            word_id = int(tokens[1])
+            vocab[word] = word_id
+        return vocab
+
+def prepare_tokenizer(config, model):
+    from tokenizer import Tokenizer
+    opt = config['opt']
+    if config['emb_class'] == 'glove':
+        vocab = load_vocab(opt.vocab_path)
+        tokenizer = Tokenizer(vocab, config)
+    if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
+        tokenizer = model.bert_tokenizer
+    return tokenizer
+
+def encode_text(config, tokenizer, text):
+    if config['emb_class'] == 'glove':
+        tokens = text.split()
+        ids = tokenizer.convert_tokens_to_ids(tokens)
+        x = torch.tensor([ids])
+        # x : [batch_size, seq_size]
+        # batch size: 1
+    if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
+        from torch.utils.data import TensorDataset
+        inputs = tokenizer.encode_plus(text, add_special_tokens=True, return_tensors='pt')
+        x = [inputs['input_ids'], inputs['attention_mask'], inputs['token_type_ids']]
+        # x[0], x[1], x[2] : [batch_size, seq_size]
+        # batch size: 1
+    return x
+
+def inference(opt):
+    # set config
+    config = load_config(opt)
+    if opt.num_threads > 0: torch.set_num_threads(opt.num_threads)
+    config['opt'] = opt
+
+    # set path
+    set_path(config)
+ 
+    # load pytorch model checkpoint
+    checkpoint = load_checkpoint(config)
+
+    # prepare model and load parameters
+    model = load_model(config, checkpoint)
+    model.eval()
+
+    # enable to use dynamic quantized model (pytorch>=1.3.0)
+    if opt.enable_dqm and opt.device == 'cpu':
+        model = torch.quantization.quantize_dynamic(model, {torch.nn.Linear}, dtype=torch.qint8)
+        sys.stderr.write(model)
+
+    # prepare tokenizer
+    tokenizer = prepare_tokenizer(config, model)
+
+    # prepare labels
+    labels = model.labels
+
+    # inference
+    f_out = open(opt.test_path + '.inference', 'w', encoding='utf-8')
+    total_examples = 0
+    total_duration_time = 0.0
+    with open(opt.test_path, 'r', encoding='utf-8') as f:
+        for idx, line in enumerate(f):
+            start_time = time.time()
+            items = line.strip().split()
+            x_raw = items[:-1]
+            y_raw = items[-1]
+            text = ' '.join(x_raw)
+            x = encode_text(config, tokenizer, text)
+            x = to_device(x, opt.device)
+            logits = model(x)
+            predicted = logits.argmax(1)
+            predicted = to_numpy(predicted)[0]
+            predicted_raw = labels[predicted]
+            f_out.write(text + '\t' + y_raw + '\t' + predicted_raw + '\n')
+            total_examples += 1
+            if opt.num_examples != 0 and total_examples >= opt.num_examples:
+                logger.info("[Stop Inference] : up to the {} examples".format(total_examples))
+                break
+            duration_time = int((time.time()-start_time)*1000)
+            if idx != 0: total_duration_time += duration_time
+            logger.info("[Elapsed Time] : {}ms".format(duration_time))
+    f_out.close()
+    logger.info("[Elapsed Time(total, average)] : {}ms, {}ms".format(total_duration_time, total_duration_time/(total_examples-1)))
+
 def main():
     parser = argparse.ArgumentParser()
     
@@ -254,9 +353,15 @@ def main():
     # for Quantization
     parser.add_argument('--enable_dqm', action='store_true',
                         help="Set this flag to use dynamic quantized model.")
+    # for Inference
+    parser.add_argument('--enable_inference', action='store_true',
+                        help="Set this flag to inference for raw input text.")
     opt = parser.parse_args()
 
-    evaluate(opt) 
+    if opt.enable_inference:
+        inference(opt)
+    else:
+        evaluate(opt) 
 
 if __name__ == '__main__':
     main()
