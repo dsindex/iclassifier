@@ -74,6 +74,7 @@ reference pytorch code for intent(sentence) classification.
 * Dynamic : conda pytorch=1.4.0/pytorch=1.5.0, dynamic quantization
 * Dynamic+je : conda pytorch=1.4.0/pytorch=1.5.0, dynamic quantization, etc/jemalloc_omp_kmp.sh
 * default batch size, learning rate : 128, 2e-4
+* elapsed time measured is including iterations time over 'DataLoader' which is very slow. 
 
 ### emb_class=glove, enc_class=cnn
 

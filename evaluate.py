@@ -198,8 +198,10 @@ def evaluate(opt):
     whole_st_time = time.time()
     first_time = time.time()
     first_examples = 0
+    total_duration_time = 0.0
     with torch.no_grad():
         for i, (x,y) in enumerate(tqdm(test_loader, total=n_batches)):
+            start_time = time.time()
             x = to_device(x, opt.device)
             y = y.to(opt.device)
             if opt.enable_ort:
@@ -228,6 +230,11 @@ def evaluate(opt):
             if opt.num_examples != 0 and total_examples >= opt.num_examples:
                 logger.info("[Stop Evaluation] : up to the {} examples".format(total_examples))
                 break
+            duration_time = int((time.time()-start_time)*1000)
+            if i != 0: total_duration_time += duration_time
+            '''
+            logger.info("[Elapsed Time] : {}ms".format(duration_time))
+            '''
     acc  = correct / total_examples
     whole_time = int((time.time()-whole_st_time)*1000)
     avg_time = (whole_time - first_time) / (total_examples - first_examples)
@@ -236,6 +243,7 @@ def evaluate(opt):
     write_prediction(opt, preds, labels)
     logger.info("[Accuracy] : {:.4f}, {:5d}/{:5d}".format(acc, correct, total_examples))
     logger.info("[Elapsed Time] : {}ms, {}ms on average".format(whole_time, avg_time))
+    logger.info("[Elapsed Time(total_duration_time, average)] : {}ms, {}ms".format(total_duration_time, total_duration_time/(total_examples-1)))
 
 # ---------------------------------------------------------------------------- #
 # Inference
@@ -308,7 +316,7 @@ def inference(opt):
     total_examples = 0
     total_duration_time = 0.0
     with open(opt.test_path, 'r', encoding='utf-8') as f:
-        for idx, line in enumerate(f):
+        for i, line in enumerate(f):
             start_time = time.time()
             items = line.strip().split()
             x_raw = items[:-1]
@@ -326,10 +334,10 @@ def inference(opt):
                 logger.info("[Stop Inference] : up to the {} examples".format(total_examples))
                 break
             duration_time = int((time.time()-start_time)*1000)
-            if idx != 0: total_duration_time += duration_time
+            if i != 0: total_duration_time += duration_time
             logger.info("[Elapsed Time] : {}ms".format(duration_time))
     f_out.close()
-    logger.info("[Elapsed Time(total, average)] : {}ms, {}ms".format(total_duration_time, total_duration_time/(total_examples-1)))
+    logger.info("[Elapsed Time(total_duration_time, average)] : {}ms, {}ms".format(total_duration_time, total_duration_time/(total_examples-1)))
 
 def main():
     parser = argparse.ArgumentParser()
