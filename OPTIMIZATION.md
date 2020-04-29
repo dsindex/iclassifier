@@ -52,7 +52,7 @@ $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_pat
 * on environment pytorch installed from source, or on conda environment pytorch installed from pip.
 $ python evaluate.py --convert_onnx --onnx_path=pytorch-model.onnx > onnx-graph-glove-cnn.txt
 $ python evaluate.py --config=configs/config-densenet-dsa.json --convert_onnx --onnx_path=pytorch-model.onnx > onnx-graph-densenet-dsa.txt
-$ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --convert_onnx --onnx_path=pytorch-model.onnx > onnx-graph-bert-cls.txt
+$ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --convert_onnx --onnx_path=pytorch-model.onnx > onnx-graph-bert-cls.txt
 ```
 
 - inference using onnxruntime
@@ -60,7 +60,7 @@ $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=ber
 * on environment pytorch installed from pip
 * since released pytorch versions(ex, pytorch==1.2.0, 1.5.0) are highly optimized, inference should be done with pytorch version via pip instead from source.
 $ python evaluate.py --enable_ort --onnx_path pytorch-model.onnx --device=cpu --num_threads=14
-$ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --bert_do_lower_case --onnx_path=pytorch-model.onnx --enable_ort --device=cpu --num_threads=14
+$ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --onnx_path=pytorch-model.onnx --enable_ort --device=cpu --num_threads=14
 ```
 
 ### conversion onnx model to openvino
