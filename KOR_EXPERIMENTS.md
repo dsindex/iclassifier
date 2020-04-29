@@ -118,9 +118,11 @@
 | ----------------- | ------------ |
 | KoBERT            | 90.1         |
 
+
 ### GLOVE
 
-#### enc_class=cnn
+<details><summary><b>enc_class=cnn</b></summary>
+<p>
 
 - train
 ```
@@ -136,7 +138,12 @@ INFO:__main__:[Accuracy] : 0.8731, 43653/49997
 INFO:__main__:[Elapsed Time] : 97481ms, 1.9479358348667895ms on average
 ```
 
-#### enc_class=densenet-cnn
+</p>
+</details>
+
+
+<details><summary><b>enc_class=densenet-cnn</b></summary>
+<p>
 
 - train
 ```
@@ -160,7 +167,12 @@ $ python evaluate.py --config=configs/config-densenet-cnn-iee.json --data_dir=./
 
 ```
 
-#### enc_class=densenet-dsa
+</p>
+</details>
+
+
+<details><summary><b>enc_class=densenet-dsa</b></summary>
+<p>
 
 - train
 ```
@@ -191,7 +203,14 @@ INFO:__main__:[Elapsed Time] : 596904ms, 11.936694935594847ms on average
 $ python evaluate.py --config=configs/config-densenet-dsa-iee.json --data_dir=./data/iee_corpus_morph
 ```
 
+</p>
+</details>
+
+
 ### BERT(pytorch.all.bpe.4.8m_step)
+
+<details><summary><b>enc_class=cnn | cls</b></summary>
+<p>
 
 - train
 ```
@@ -230,8 +249,15 @@ INFO:__main__:[Elapsed Time] : 703563ms, 14.07036562925034ms on average
   INFO:__main__:[Elapsed Time] : 466825ms, 9.32800624049924ms on average
 ```
 
+</p>
+</details>
+
+
 ### BERT(pytorch.all.dha.2.5m_step)
  
+<details><summary><b>enc_class=cnn | cls</b></summary>
+<p>
+
 - train
 ```
 * enc_class=cnn
@@ -275,7 +301,14 @@ INFO:__main__:[Elapsed Time] : 718417ms, 14.36640931274502ms on average
 
 ```
 
+</p>
+</details>
+
+
 ### BERT(pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step)
+
+<details><summary><b>enc_class=cnn | cls</b></summary>
+<p>
 
 - train
 ```
@@ -302,8 +335,15 @@ INFO:__main__:[Accuracy] : 0.8901, 44503/49997
 INFO:__main__:[Elapsed Time] : 639988ms, 12.798163853108248ms on average
 ```
 
+</p>
+</details>
+
+
 ### BERT(pytorch.all.dha_s2.9.4_d2.9.27.10m_step)
  
+<details><summary><b>enc_class=cnn | cls</b></summary>
+<p>
+
 - train
 ```
 * enc_class=cnn
@@ -330,8 +370,15 @@ INFO:__main__:[Accuracy] : 0.8925, 44622/49997
 INFO:__main__:[Elapsed Time] : 639463ms, 12.787603008240659ms on average
 ```
 
+</p>
+</details>
+
+
 ### RoBERTa(kor-roberta-base.v1)
  
+<details><summary><b>enc_class=cnn | cls</b></summary>
+<p>
+
 - train
 ```
 * enc_class=cnn
@@ -357,8 +404,15 @@ INFO:__main__:[Elapsed Time] : 712393ms, 14.246719737579006ms on average
 
 ```
 
+</p>
+</details>
+
+
 ### ELECTRA(koelectra-base-discriminator)
  
+<details><summary><b>enc_class=cnn | cls</b></summary>
+<p>
+
 - train
 ```
 * enc_class=cnn
@@ -387,5 +441,9 @@ INFO:__main__:[Elapsed Time] : 721693ms, 14.425894071525722ms on average
 INFO:__main__:[Accuracy] : 0.8919, 44592/49997
 INFO:__main__:[Elapsed Time] : 727322ms, 14.545743659492759ms on average
 
-
 ```
+
+</p>
+</details>
+
+
