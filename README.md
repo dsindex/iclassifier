@@ -79,6 +79,8 @@ reference pytorch code for intent(sentence) classification.
 
 ### emb_class=glove, enc_class=cnn
 
+<details><summary>detail</summary>
+<p>
 - train
 ```
 * token_emb_dim in configs/config-glove-cnn.json == 300 (ex, glove.6B.300d.txt )
@@ -96,6 +98,8 @@ $ python evaluate.py
 INFO:__main__:[Accuracy] : 0.9786,   685/  700
 INFO:__main__:[Elapsed Time] : 1351ms, 1.793991416309013ms on average
 ```
+</p>
+</details>
 
 ### emb_class=glove, enc_class=densenet-cnn
 
