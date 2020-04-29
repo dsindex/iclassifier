@@ -77,11 +77,9 @@ reference pytorch code for intent(sentence) classification.
 * Inference+Dynamic : conda pytorch=1.5.0, dynamic quantization, --enable_inference
 * default batch size, learning rate : 128, 2e-4
 
-<details><summary><b>emb_class=glove, enc_class</b>=cnn</summary>
+<details><summary><b>emb_class=glove, enc_class=cnn</b></summary>
 <p>
   
-### emb_class=glove, enc_class=cnn
-
 - train
 ```
 * token_emb_dim in configs/config-glove-cnn.json == 300 (ex, glove.6B.300d.txt )
@@ -103,11 +101,10 @@ INFO:__main__:[Elapsed Time] : 1351ms, 1.793991416309013ms on average
 </p>
 </details>
 
-<details><summary><b>emb_class=glove, enc_class</b>=densenet-cnn</summary>
+
+<details><summary><b>emb_class=glove, enc_class=densenet-cnn</b></summary>
 <p>
   
-### emb_class=glove, enc_class=densenet-cnn
-
 - train
 ```
 * token_emb_dim in configs/config-densenet-cnn.json == 300 (ex, glove.6B.300d.txt )
@@ -127,7 +124,8 @@ INFO:__main__:[Elapsed Time] : 2633ms, 3.609442060085837ms on average
 </details>
 
 
-### emb_class=glove, enc_class=densenet-dsa
+<details><summary><b>emb_class=glove, enc_class=densenet-dsa</b></summary>
+<p>
 
 - train
 ```
@@ -144,7 +142,12 @@ INFO:__main__:[Accuracy] : 0.9743,   682/  700
 INFO:__main__:[Elapsed Time] : 5367ms, 7.500715307582261ms on average
 ```
 
-### emb_class=bert, enc_class=cnn | cls
+</p>
+</details>
+
+
+<details><summary><b>emb_class=bert, enc_class=cnn | cls</b></summary>
+<p>
 
 - train
 ```
@@ -188,6 +191,10 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
   INFO:__main__:[Elapsed Time] : 6911ms, 9.266094420600858ms on average
 
 ```
+
+</p>
+</details>
+
 
 ## SST-2 data
 
@@ -249,7 +256,8 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | MT-DNN            | 95.6        |
 | DistilBERT        | 92.7        |
 
-### emb_class=glove, enc_class=cnn
+<details><summary><b>emb_class=glove, enc_class=cnn</b></summary>
+<p>
 
 - train
 ```
@@ -267,7 +275,12 @@ INFO:__main__:[Elapsed Time] : 3300ms, 1.767032967032967ms on average
 
 ```
 
-### emb_class=glove, enc_class=densenet-cnn
+</p>
+</details>
+
+
+<details><summary><b>emb_class=glove, enc_class=densenet-cnn</b></summary>
+<p>
 
 - train
 ```
@@ -284,7 +297,12 @@ INFO:__main__:[Accuracy] : 0.8638,  1573/ 1821
 INFO:__main__:[Elapsed Time] : 6678ms, 3.6203296703296703ms on average
 ```
 
-### emb_class=glove, enc_class=densenet-dsa
+</p>
+</details>
+
+
+<details><summary><b>emb_class=glove, enc_class=densenet-dsa</b></summary>
+<p>
 
 - train
 ```
@@ -309,7 +327,12 @@ INFO:__main__:[Accuracy] : 0.8473,  1543/ 1821
 INFO:__main__:[Elapsed Time] : 19214ms, 10.477472527472527ms on average
 ```
 
-### emb_class=bert, enc_class=cnn | cls
+</p>
+</details>
+
+
+<details><summary><b>emb_class=bert, enc_class=cnn | cls</b></summary>
+<p>
 
 - train
 ```
@@ -422,7 +445,12 @@ INFO:__main__:[Elapsed Time] : 23314ms, 12.754945054945056ms on average
 
 ```
 
-### emb_class=albert, enc_class=cnn | cls
+</p>
+</details>
+
+
+<details><summary><b>emb_class=albert, enc_class=cnn | cls</b></summary>
+<p>
 
 - train
 ```
@@ -457,7 +485,12 @@ INFO:__main__:[Elapsed Time] : 26819ms, 14.672527472527472ms on average
 
 ```
 
-### emb_class=roberta, enc_class=cnn | cls
+</p>
+</details>
+
+
+<details><summary><b>emb_class=roberta, enc_class=cnn | cls</b></summary>
+<p>
 
 - train
 ```
@@ -504,7 +537,12 @@ INFO:__main__:[Elapsed Time] : 43363ms, 23.73956043956044ms on average
 
 ```
 
-### emb_class=bart, enc_class=cnn | cls
+</p>
+</details>
+
+
+<details><summary><b>emb_class=bart, enc_class=cnn | cls</b></summary>
+<p>
 
 - train
 ```
@@ -533,7 +571,12 @@ INFO:__main__:[Elapsed Time] : 61015ms, 33.386263736263736ms on average
 
 ```
 
-### emb_class=electra, enc_class=cnn | cls
+</p>
+</details>
+
+
+<details><summary><b>emb_class=electra, enc_class=cnn | cls</b></summary>
+<p>
 
 - train
 ```
@@ -575,6 +618,9 @@ INFO:__main__:[Elapsed Time] : 25956ms, 14.008791208791209ms on average
   INFO:__main__:[Elapsed Time] : 47163ms, 25.685714285714287ms on average
  
 ```
+
+</p>
+</details>
 
 ## experiments for Korean
 
