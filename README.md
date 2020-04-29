@@ -77,6 +77,9 @@ reference pytorch code for intent(sentence) classification.
 * Inference+Dynamic : conda pytorch=1.5.0, dynamic quantization, --enable_inference
 * default batch size, learning rate : 128, 2e-4
 
+<details><summary><b>emb_class=glove, enc_class</b>=cnn</summary>
+<p>
+  
 ### emb_class=glove, enc_class=cnn
 
 - train
@@ -97,6 +100,12 @@ INFO:__main__:[Accuracy] : 0.9786,   685/  700
 INFO:__main__:[Elapsed Time] : 1351ms, 1.793991416309013ms on average
 ```
 
+</p>
+</details>
+
+<details><summary><b>emb_class=glove, enc_class</b>=densenet-cnn</summary>
+<p>
+  
 ### emb_class=glove, enc_class=densenet-cnn
 
 - train
@@ -113,6 +122,10 @@ $ python evaluate.py --config=configs/config-densenet-cnn.json
 INFO:__main__:[Accuracy] : 0.9757,   683/  700
 INFO:__main__:[Elapsed Time] : 2633ms, 3.609442060085837ms on average
 ```
+
+</p>
+</details>
+
 
 ### emb_class=glove, enc_class=densenet-dsa
 
