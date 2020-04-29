@@ -54,16 +54,16 @@ reference pytorch code for intent(sentence) classification.
 
 ### experiments summary
 
-|                     | Accuracy (%) | GPU/CPU                     | ONNX     | CONDA             | CONDA+je          | INTEL   | INTEL+je  | Dynamic           | Dynamic+je        | Etc            |
-| ------------------- | ------------ | --------------------------- | -------- | ----------------- | ----------------- | ------- | --------- | ----------------- | ----------------- | -------------- |    
-| Glove, CNN          | 97.86        | 1.7939  / 4.1414            | 7.5656   | 4.6868            |                   |         |           |                   |                   | threads=14     |
-| Glove, Densenet-CNN | 97.57        | 3.6094  / 8.3535            | 19.1212  | 7.6969            |                   |         |           |                   |                   | threads=14     |
-| Glove, Densenet-DSA | 97.43        | 7.5007  / -                 |          |                   |                   |         |           |                   |                   |                |
-| BERT-base, CNN      | 97.57        | 12.1273 / -                 |          |                   |                   |         |           |                   |                   |                |
-| BERT-base, CLS      | 97.43        | 12.7714 / 100.929 / 63.7373 | 174.2222 | 69.4343 / 62.5959 | 66.1212 / 63.0707 | 68.9191 | 66        | 66.9494 / 49.4747 | 60.7777 / 50.4040 | threads=14, --enable_inference 25.8585ms |
-| BERT-base, CLS      | 97.00        | 9.2660  / 73.1010 / 43.0707 | 113.2424 | 47.2323 / 43.7070 | 45      / 43.2020 | 48.5050 | 45.2727   | 44.8080 / 34.6565 | 40.8888 / 34.0606 | del 8,9,19,11, threads=14 |
-| BERT-large, CNN     | **98.00**    | 24.277  / -                 |          |                   |                   |         |           |                   |                   |                |
-| BERT-large, CLS     | 97.86        | 23.542  / -                 |          |                   |                   |         |           |                   |                   |                |
+|                     | Accuracy (%) | GPU/CPU                     | ONNX     | CONDA             | CONDA+je          | INTEL   | INTEL+je  | Dynamic           | Dynamic+je        | Inference+Dynamic | Etc            |
+| ------------------- | ------------ | --------------------------- | -------- | ----------------- | ----------------- | ------- | --------- | ----------------- | ----------------- | ----------------- | -------------- |    
+| Glove, CNN          | 97.86        | 1.7939  / 4.1414            | 7.5656   | 4.6868            |                   |         |           |                   |                   |                   | threads=14     |
+| Glove, Densenet-CNN | 97.57        | 3.6094  / 8.3535            | 19.1212  | 7.6969            |                   |         |           |                   |                   |                   | threads=14     |
+| Glove, Densenet-DSA | 97.43        | 7.5007  / -                 |          |                   |                   |         |           |                   |                   |                   |                |
+| BERT-base, CNN      | 97.57        | 12.1273 / -                 |          |                   |                   |         |           |                   |                   |                   |                |
+| BERT-base, CLS      | 97.43        | 12.7714 / 100.929 / 63.7373 | 174.2222 | 69.4343 / 62.5959 | 66.1212 / 63.0707 | 68.9191 | 66        | 66.9494 / 49.4747 | 60.7777 / 50.4040 | 25.8585           | threads=14     |
+| BERT-base, CLS      | 97.00        | 9.2660  / 73.1010 / 43.0707 | 113.2424 | 47.2323 / 43.7070 | 45      / 43.2020 | 48.5050 | 45.2727   | 44.8080 / 34.6565 | 40.8888 / 34.0606 | 19.9494           | del 8,9,19,11, threads=14 |
+| BERT-large, CNN     | **98.00**    | 24.277  / -                 |          |                   |                   |         |           |                   |                   |                   |                |
+| BERT-large, CLS     | 97.86        | 23.542  / -                 |          |                   |                   |         |           |                   |                   |                   |                |
 
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0) / CPU(pip 1.5.0)
 * ONNX : onnxruntime
@@ -73,6 +73,7 @@ reference pytorch code for intent(sentence) classification.
 * INTEL+je : conda pytorch=1.2.0, [intel optimzaed transformers](https://github.com/mingfeima/transformers/tree/kakao/gpt2), etc/jemalloc_omp_kmp.sh
 * Dynamic : conda pytorch=1.4.0/pytorch=1.5.0, dynamic quantization
 * Dynamic+je : conda pytorch=1.4.0/pytorch=1.5.0, dynamic quantization, etc/jemalloc_omp_kmp.sh
+* Inference+Dynamic : conda pytorch=1.5.0, dynamic quantization, --enable_inference
 * default batch size, learning rate : 128, 2e-4
 
 ### emb_class=glove, enc_class=cnn
