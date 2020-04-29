@@ -280,7 +280,7 @@ def encode_text(config, tokenizer, text):
         from torch.utils.data import TensorDataset
         inputs = tokenizer.encode_plus(text, add_special_tokens=True, return_tensors='pt')
         x = [inputs['input_ids'], inputs['attention_mask'], inputs['token_type_ids']]
-        # x[0], x[1], x[2] : [batch_size, seq_size]
+        # x[0], x[1], x[2] : [batch_size, variable size]
         # batch size: 1
     return x
 
@@ -303,7 +303,7 @@ def inference(opt):
     # enable to use dynamic quantized model (pytorch>=1.3.0)
     if opt.enable_dqm and opt.device == 'cpu':
         model = torch.quantization.quantize_dynamic(model, {torch.nn.Linear}, dtype=torch.qint8)
-        sys.stderr.write(model)
+        print(model)
 
     # prepare tokenizer
     tokenizer = prepare_tokenizer(config, model)
@@ -315,7 +315,7 @@ def inference(opt):
     f_out = open(opt.test_path + '.inference', 'w', encoding='utf-8')
     total_examples = 0
     total_duration_time = 0.0
-    with open(opt.test_path, 'r', encoding='utf-8') as f:
+    with torch.no_grad(), open(opt.test_path, 'r', encoding='utf-8') as f:
         for i, line in enumerate(f):
             start_time = time.time()
             items = line.strip().split()
