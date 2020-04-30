@@ -96,8 +96,10 @@
 | bpe ELECTRA , CNN       | -            | -       / -       |            |
 | bpe ELECTRA , CLS       | -            | -       / -       |            |
 
+```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
 * default batch size, learning rate : 128, 2e-4
+```
 
 - [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results), [KoELECTRA](https://github.com/monologg/KoELECTRA)
 
