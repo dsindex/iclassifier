@@ -1,6 +1,7 @@
-## iclassifier
+## Description
 
-reference pytorch code for intent(sentence) classification.
+**reference pytorch code for intent(sentence) classification.**
+
 - embedding
   - Glove, BERT, SpanBERT, ALBERT, ROBERTa, BART, ELECTRA
 - encoding
@@ -16,7 +17,9 @@ reference pytorch code for intent(sentence) classification.
   - Softmax
 - related: [reference pytorch code for entity tagging](https://github.com/dsindex/ntagger)
 
-## requirements
+<br>
+
+## Requirements
 
 - python >= 3.6
 
@@ -49,6 +52,8 @@ reference pytorch code for intent(sentence) classification.
       - `test.txt` from [pytorch-sentiment-classification](https://github.com/clairett/pytorch-sentiment-classification)
   - TCCC
     - [Toxic Comment Classification Challenge](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge/overview)
+
+<br>
 
 ## Snips data
 
@@ -197,6 +202,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 </p>
 </details>
 
+<br>
 
 ## SST-2 data
 
@@ -624,19 +630,27 @@ INFO:__main__:[Elapsed Time] : 25956ms, 14.008791208791209ms on average
 </p>
 </details>
 
-## experiments for Korean
+<br>
+
+## Experiments for Korean
 
 - [KOR_EXPERIMENTS.md](/KOR_EXPERIMENTS.md)
 
-## optimization
+<br>
+
+## Optimization
 
 - [OPTIMIZATION.md](/OPTIMIZATION.md)
 
-## serving
+<br>
+
+## Serving
 
 - [Deploying huggingface‘s BERT to production with pytorch/serve](https://medium.com/@freidankm_39840/deploy-huggingface-s-bert-to-production-with-pytorch-serve-27b068026d18)
 
-## references
+<br>
+
+## References
 
 - [Intent Detection](https://paperswithcode.com/task/intent-detection)
 - [Intent Classification](https://paperswithcode.com/task/intent-classification)
