@@ -65,6 +65,7 @@ reference pytorch code for intent(sentence) classification.
 | BERT-large, CNN     | **98.00**    | 24.277  / -                 |          |                   |                   |         |           |                   |                   |           |                   |                |
 | BERT-large, CLS     | 97.86        | 23.542  / -                 |          |                   |                   |         |           |                   |                   |           |                   |                |
 
+```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0) / CPU(pip 1.5.0)
 * ONNX : onnxruntime
 * CONDA : conda pytorch=1.2.0/pytorch=1.5.0
@@ -76,6 +77,7 @@ reference pytorch code for intent(sentence) classification.
 * Inference : conda pytorch=1.5.0, --enable_inference
 * Inference+Dynamic : conda pytorch=1.5.0, dynamic quantization, --enable_inference
 * default batch size, learning rate : 128, 2e-4
+```
 
 <details><summary><b>emb_class=glove, enc_class=cnn</b></summary>
 <p>
