@@ -248,7 +248,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 | ELECTRA-large, CNN   | 96.05        | 27.2868 / -       |            |          |                |            |               |
 | ELECTRA-large, CLS   | **96.43**    | 25.6857 / -       |            |          |                |            |               |
 
-- [sst2 learderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
+- [sst2 leaderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
 |                   | Accuracy (%)|
 | ----------------- | ----------- |
