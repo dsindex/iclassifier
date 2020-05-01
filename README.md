@@ -1,4 +1,4 @@
-## Description
+# Description
 
 **reference pytorch code for intent(sentence) classification.**
 
@@ -19,7 +19,7 @@
 
 <br>
 
-## Requirements
+# Requirements
 
 - python >= 3.6
 
@@ -55,7 +55,7 @@
 
 <br>
 
-## Snips data
+# Snips data
 
 ### experiments summary
 
@@ -204,7 +204,7 @@ INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
 
 <br>
 
-## SST-2 data
+# SST-2 data
 
 ### experiments summary
 
@@ -632,25 +632,25 @@ INFO:__main__:[Elapsed Time] : 25956ms, 14.008791208791209ms on average
 
 <br>
 
-## Experiments for Korean
+# Experiments for Korean
 
 - [KOR_EXPERIMENTS.md](/KOR_EXPERIMENTS.md)
 
 <br>
 
-## Optimization
+# Optimization
 
 - [OPTIMIZATION.md](/OPTIMIZATION.md)
 
 <br>
 
-## Serving
+# Serving
 
 - [Deploying huggingface‘s BERT to production with pytorch/serve](https://medium.com/@freidankm_39840/deploy-huggingface-s-bert-to-production-with-pytorch-serve-27b068026d18)
 
 <br>
 
-## References
+# References
 
 - [Intent Detection](https://paperswithcode.com/task/intent-detection)
 - [Intent Classification](https://paperswithcode.com/task/intent-classification)
