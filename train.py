@@ -120,7 +120,7 @@ def evaluate(model, config, val_loader):
     correct = 0
     criterion = torch.nn.CrossEntropyLoss().to(opt.device)
     with torch.no_grad():
-        for i, (x,y) in enumerate(val_loader):
+        for i, (x,y) in tqdm(enumerate(val_loader), total=len(val_loader)):
             x = to_device(x, opt.device)
             y = y.to(opt.device)
             output = model(x)
