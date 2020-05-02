@@ -50,10 +50,10 @@
 - 한국어 문서 데이터 준비
   - 위 한국어 GLOVE 학습에 사용한 데이터를 그대로 이용
 
-- [transformers](https://github.com/huggingface/transformers)를 이용해서 학습
+- [transformers](https://github.com/huggingface/transformers)
   - [train-kor-roberta.sh](https://github.com/dsindex/transformers_examples/blob/master/train-kor-roberta.sh)
   - [tokenizers](https://github.com/dsindex/transformers_examples/blob/master/train-tokenizer.py) byte-level bpe tokenizer
-    - ex) `kor-roberta-base.v1`
+  - ex) `kor-roberta-base.v1`
   - 학습 실패
   - fairseq를 이용해서 학습하고 이를 transformers format으로 변환하는 방식으로 진행 필요.
 
@@ -65,36 +65,39 @@
 - 한국어 문서 데이터 준비
   - 위 한국어 GLOVE 학습에 사용한 데이터를 그대로 이용
 
-- [electra](https://github.com/dsindex/electra#pretraining-electra)를 이용해서 학습
-  - ex) `kor-electra-base`
+- [electra](https://github.com/dsindex/electra#pretraining-electra)
+  - fork
+    - [README.md](https://github.com/dsindex/electra/blob/master/README.md)
+    - [train.sh](https://github.com/dsindex/electra/blob/master/train.sh)
+    - ex) `kor-electra-base-bpe-128-1m`
 
 ### Experiments summary
 
 - iclassifier
 
-|                         | Accuracy (%) | GPU / CPU         | Etc        |
-| ----------------------- | ------------ | ----------------- | ---------- |
-| Glove, CNN              | 87.31        | 1.9479  / 3.5353  | threads=14 |
-| **Glove, DenseNet-CNN** | 88.18        | 3.4614  / 8.3434  | threads=14 |
-| Glove, DenseNet-DSA     | 87.66        | 6.9731  / -       |            |
-| bpe BERT(4.8m), CNN     | 89.45        | 14.6978 / -       |            |
-| bpe BERT(4.8m), CLS     | 89.59        | 14.0703 / -       |            |
-| bpe BERT(4.8m), CNN     | 88.62        | 10.7023 / 73.4141 | del 8,9,10,11, threads=14 |
-| bpe BERT(4.8m), CLS     | 88.92        | 9.3280  / 70.3232 | del 8,9,10,11, threads=14 |
-| dha BERT(2.5m), CNN     | **89.96**    | 14.8779 / -       |            |
-| dha BERT(2.5m), CLS     | 89.41        | 14.3664 / -       |            |
-| dha BERT(2.5m), CNN     | 88.88        | 10.5157 / 72.7777 | del 8,9,10,11, threads=14                                        |
-| dha BERT(2.5m), CLS     | 88.81        | 8.9836  / 68.4545 | del 8,9,10,11, threads=14, conda pytorch=1.2.0 50.7474ms         |
-| dha BERT(2.5m), CLS     | 88.29        | 7.2027  / 53.6363 | del 6,7,8,9,10,11, threads=14, conda pytorch=1.2.0 38.3333ms     |
-| dha BERT(2.5m), CLS     | 87.54        | 5.7645  / 36.8686 | del 4,5,6,7,8,9,10,11, threads=14, conda pytorch=1.2.0 28.2626ms |
-| dha-bpe BERT(4m), CNN   | 89.07        | 14.9454 / -       |            |
-| dha-bpe BERT(4m), CLS   | 89.01        | 12.7981 / -       |            |
-| dha BERT(10m), CNN      | 89.08        | 15.3276 / -       |            |
-| dha BERT(10m), CLS      | 89.25        | 12.7876 / -       |            |
-| monologg ELECTRA , CNN  | 89.37        | 15.6362 / -       |            |
-| monologg ELECTRA , CLS  | 89.30        | 14.4258 / -       |            |
-| bpe ELECTRA , CNN       | -            | -       / -       |            |
-| bpe ELECTRA , CLS       | -            | -       / -       |            |
+|                                 | Accuracy (%) | GPU / CPU         | Etc        |
+| ------------------------------- | ------------ | ----------------- | ---------- |
+| Glove, CNN                      | 87.31        | 1.9479  / 3.5353  | threads=14 |
+| **Glove, DenseNet-CNN**         | 88.18        | 3.4614  / 8.3434  | threads=14 |
+| Glove, DenseNet-DSA             | 87.66        | 6.9731  / -       |            |
+| bpe BERT(4.8m), CNN             | 89.45        | 14.6978 / -       |            |
+| bpe BERT(4.8m), CLS             | 89.59        | 14.0703 / -       |            |
+| bpe BERT(4.8m), CNN             | 88.62        | 10.7023 / 73.4141 | del 8,9,10,11, threads=14 |
+| bpe BERT(4.8m), CLS             | 88.92        | 9.3280  / 70.3232 | del 8,9,10,11, threads=14 |
+| dha BERT(2.5m), CNN             | **89.96**    | 14.8779 / -       |            |
+| dha BERT(2.5m), CLS             | 89.41        | 14.3664 / -       |            |
+| dha BERT(2.5m), CNN             | 88.88        | 10.5157 / 72.7777 | del 8,9,10,11, threads=14                                        |
+| dha BERT(2.5m), CLS             | 88.81        | 8.9836  / 68.4545 | del 8,9,10,11, threads=14, conda pytorch=1.2.0 50.7474ms         |
+| dha BERT(2.5m), CLS             | 88.29        | 7.2027  / 53.6363 | del 6,7,8,9,10,11, threads=14, conda pytorch=1.2.0 38.3333ms     |
+| dha BERT(2.5m), CLS             | 87.54        | 5.7645  / 36.8686 | del 4,5,6,7,8,9,10,11, threads=14, conda pytorch=1.2.0 28.2626ms |
+| dha-bpe BERT(4m), CNN           | 89.07        | 14.9454 / -       |            |
+| dha-bpe BERT(4m), CLS           | 89.01        | 12.7981 / -       |            |
+| dha BERT(10m), CNN              | 89.08        | 15.3276 / -       |            |
+| dha BERT(10m), CLS              | 89.25        | 12.7876 / -       |            |
+| monologg ELECTRA , CNN          | 89.37        | 15.6362 / -       |            |
+| monologg ELECTRA , CLS          | 89.30        | 14.4258 / -       |            |
+| bpe ELECTRA-base(128.1m) , CNN  | -            | -       / -       |            |
+| bpe ELECTRA-base(128.1m) , CLS  | 80.29        | 15.4886 / -       |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -442,6 +445,39 @@ INFO:__main__:[Elapsed Time] : 721693ms, 14.425894071525722ms on average
 
 INFO:__main__:[Accuracy] : 0.8919, 44592/49997
 INFO:__main__:[Elapsed Time] : 727322ms, 14.545743659492759ms on average
+
+```
+
+</p>
+</details>
+
+### ELECTRA(kor-electra-base-bpe-128-1m)
+ 
+<details><summary><b>enc_class=cnn | cls</b></summary>
+<p>
+
+- train
+```
+* enc_class=cnn
+$ python preprocess.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-128-1m --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-128-1m --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=20 --batch_size=64 --data_dir=./data/clova_sentiments
+
+* enc_class=cls
+$ python preprocess.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-128-1m --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-128-1m --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=20 --batch_size=64 --data_dir=./data/clova_sentiments 
+```
+
+- evaluation
+```
+* enc_class=cnn
+$ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
+
+
+* enc_class=cls
+$ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
+
+INFO:__main__:[Accuracy] : 0.8029, 40141/49997
+INFO:__main__:[Elapsed Time] : 774480ms, 15.488699095927673ms on average
 
 ```
 
