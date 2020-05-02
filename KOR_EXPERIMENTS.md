@@ -94,8 +94,8 @@
 | dha-bpe BERT(4m), CLS           | 89.01        | 12.7981 / -       |            |
 | dha BERT(10m), CNN              | 89.08        | 15.3276 / -       |            |
 | dha BERT(10m), CLS              | 89.25        | 12.7876 / -       |            |
-| monologg ELECTRA , CNN          | 89.37        | 15.6362 / -       |            |
-| monologg ELECTRA , CLS          | 89.30        | 14.4258 / -       |            |
+| monologg ELECTRA-base , CNN     | 89.37        | 15.6362 / -       |            |
+| monologg ELECTRA-base , CLS     | 89.30        | 14.4258 / -       |            |
 | bpe ELECTRA-base(128.1m) , CNN  | -            | -       / -       |            |
 | bpe ELECTRA-base(128.1m) , CLS  | 80.29        | 15.4886 / -       |            |
 
