@@ -96,7 +96,7 @@
 | dha BERT(10m), CLS              | 89.25        | 12.7876 / -       |            |
 | KoELECTRA-Base, CNN             | 89.37        | 15.6362 / -       |            |
 | KoELECTRA-Base, CLS             | 89.30        | 14.4258 / -       |            |
-| bpe ELECTRA-base(128.1m) , CNN  | -            | -       / -       |            |
+| bpe ELECTRA-base(128.1m) , CNN  | 80.82        | 15.4601 / -       |            |
 | bpe ELECTRA-base(128.1m) , CLS  | 80.29        | 15.4886 / -       |            |
 
 ```
@@ -446,6 +446,8 @@ INFO:__main__:[Elapsed Time] : 721693ms, 14.425894071525722ms on average
 INFO:__main__:[Accuracy] : 0.8919, 44592/49997
 INFO:__main__:[Elapsed Time] : 727322ms, 14.545743659492759ms on average
 
+* insufficient training!
+
 ```
 
 </p>
@@ -472,6 +474,8 @@ $ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_
 * enc_class=cnn
 $ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
+INFO:__main__:[Accuracy] : 0.8082, 40410/49997
+INFO:__main__:[Elapsed Time] : 773060ms, 15.460136810944876ms on average
 
 * enc_class=cls
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
