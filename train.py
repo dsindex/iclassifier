@@ -234,7 +234,7 @@ def prepare_model(config):
     logger.info("[model prepared]")
     return model
 
-def prepare_osw(config, model):
+def prepare_osw(config, model, train_loader):
     opt = config['opt']
     optimizer = torch.optim.AdamW(model.parameters(), lr=opt.lr, eps=opt.adam_epsilon, weight_decay=opt.weight_decay)
     if opt.use_amp:
@@ -242,6 +242,21 @@ def prepare_osw(config, model):
     if opt.distributed:
         model = DDP(model, delay_allreduce=True)
     scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer=optimizer, gamma=opt.lr_decay_rate)
+    if opt.use_transformers_optimizer:
+        from transformers import AdamW, get_linear_schedule_with_warmup
+        num_training_steps_for_epoch = len(train_loader) // opt.gradient_accumulation_steps
+        num_training_steps = num_training_steps_for_epoch * opt.epoch
+        num_warmup_steps = num_training_steps_for_epoch * opt.warmup_epoch
+        no_decay = ['bias', 'LayerNorm.weight']
+        optimizer_grouped_parameters = [
+            {'params': [p for n, p in model.named_parameters() if not any(nd in n for nd in no_decay)],
+             'weight_decay': opt.weight_decay},
+            {'params': [p for n, p in model.named_parameters() if any(nd in n for nd in no_decay)], 'weight_decay': 0.0}
+        ]
+        optimizer = AdamW(optimizer_grouped_parameters, lr=opt.lr, eps=opt.adam_epsilon)
+        scheduler = get_linear_schedule_with_warmup(optimizer,
+            num_warmup_steps=num_warmup_steps,
+            num_training_steps=num_training_steps)
     try:
         writer = SummaryWriter(log_dir=opt.log_dir)
     except:
@@ -273,7 +288,7 @@ def train(opt):
     model = prepare_model(config)
 
     # create optimizer, scheduler, summary writer
-    optimizer, scheduler, writer = prepare_osw(config, model)
+    optimizer, scheduler, writer = prepare_osw(config, model, train_loader)
     config['optimizer'] = optimizer
     config['scheduler'] = scheduler
     config['writer'] = writer
@@ -307,7 +322,7 @@ def train(opt):
         else:
             local_worse_steps = 0
         logger.info('Scheduler: local_worse_steps / opt.lr_decay_steps = %d / %d' % (local_worse_steps, opt.lr_decay_steps))
-        if epoch_i > opt.warmup_steps and (local_worse_steps >= opt.lr_decay_steps or early_stopping.step() > opt.lr_decay_steps):
+        if epoch_i > opt.warmup_epoch and (local_worse_steps >= opt.lr_decay_steps or early_stopping.step() > opt.lr_decay_steps):
             scheduler.step()
         prev_eval_loss = eval_loss
         # end: scheduling
@@ -327,7 +342,7 @@ def main():
     parser.add_argument('--lr', type=float, default=2e-4)
     parser.add_argument('--lr_decay_rate', type=float, default=1.0)
     parser.add_argument('--lr_decay_steps', type=float, default=2, help="Number of decay epoch steps to be paitent")
-    parser.add_argument('--warmup_steps', type=int, default=4,  help="Number of warmup epoch steps")
+    parser.add_argument('--warmup_epoch', type=int, default=4,  help="Number of warmup epoch steps")
     parser.add_argument('--patience', default=7, type=int, help="Max number of epoch to be patient for early stopping.")
     parser.add_argument('--save_path', type=str, default='pytorch-model.pt')
     parser.add_argument('--adam_epsilon', type=float, default=1e-8)
@@ -340,6 +355,7 @@ def main():
     parser.add_argument('--log_dir', type=str, default='runs')
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--embedding_trainable', action='store_true', help="Set word embedding(Glove) trainable")
+    parser.add_argument('--use_transformers_optimizer', action='store_true', help="Use transformers AdamW, get_linear_schedule_with_warmup.")
     # for BERT
     parser.add_argument('--bert_model_name_or_path', type=str, default='embeddings/bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
