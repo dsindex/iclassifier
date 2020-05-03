@@ -446,7 +446,8 @@ INFO:__main__:[Elapsed Time] : 721693ms, 14.425894071525722ms on average
 INFO:__main__:[Accuracy] : 0.8919, 44592/49997
 INFO:__main__:[Elapsed Time] : 727322ms, 14.545743659492759ms on average
 
-* insufficient training!
+** python train.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/koelectra-base-discriminator --bert_output_dir=bert-checkpoint --data_dir=./data/clova_sentiments --use_transformers_optimizer --lr=5e-5 --epoch=10 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0 , n_ctx=50
+
 
 ```
 
@@ -482,6 +483,8 @@ $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/
 
 INFO:__main__:[Accuracy] : 0.8029, 40141/49997
 INFO:__main__:[Elapsed Time] : 774480ms, 15.488699095927673ms on average
+
+* insufficient training!
 
 ```
 
