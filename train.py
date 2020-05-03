@@ -237,10 +237,6 @@ def prepare_model(config):
 def prepare_osw(config, model, train_loader):
     opt = config['opt']
     optimizer = torch.optim.AdamW(model.parameters(), lr=opt.lr, eps=opt.adam_epsilon, weight_decay=opt.weight_decay)
-    if opt.use_amp:
-        model, optimizer = amp.initialize(model, optimizer, opt_level=opt.opt_level)
-    if opt.distributed:
-        model = DDP(model, delay_allreduce=True)
     scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer=optimizer, gamma=opt.lr_decay_rate)
     if opt.use_transformers_optimizer:
         from transformers import AdamW, get_linear_schedule_with_warmup
@@ -257,6 +253,10 @@ def prepare_osw(config, model, train_loader):
         scheduler = get_linear_schedule_with_warmup(optimizer,
             num_warmup_steps=num_warmup_steps,
             num_training_steps=num_training_steps)
+    if opt.use_amp:
+        model, optimizer = amp.initialize(model, optimizer, opt_level='O1')
+    if opt.distributed:
+        model = DDP(model, delay_allreduce=True)
     try:
         writer = SummaryWriter(log_dir=opt.log_dir)
     except:
