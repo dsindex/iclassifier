@@ -88,6 +88,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
         if (local_step + 1) % opt.gradient_accumulation_steps == 0:
             torch.nn.utils.clip_grad_norm_(model.parameters(), opt.max_grad_norm)
             optimizer.step()
+            if opt.use_transformers_optimizer: scheduler.step()
             optimizer.zero_grad()
         # back-propagation - end
         cur_examples = y.size(0)
@@ -243,6 +244,8 @@ def prepare_osw(config, model, train_loader):
         num_training_steps_for_epoch = len(train_loader) // opt.gradient_accumulation_steps
         num_training_steps = num_training_steps_for_epoch * opt.epoch
         num_warmup_steps = num_training_steps_for_epoch * opt.warmup_epoch
+        logger.info("(num_training_steps_for_epoch, num_training_steps, num_warmup_steps): ({}, {}, {})".\
+            format(num_training_steps_for_epoch, num_training_steps, num_warmup_steps))        
         no_decay = ['bias', 'LayerNorm.weight']
         optimizer_grouped_parameters = [
             {'params': [p for n, p in model.named_parameters() if not any(nd in n for nd in no_decay)],
@@ -322,8 +325,9 @@ def train(opt):
         else:
             local_worse_steps = 0
         logger.info('Scheduler: local_worse_steps / opt.lr_decay_steps = %d / %d' % (local_worse_steps, opt.lr_decay_steps))
-        if epoch_i > opt.warmup_epoch and (local_worse_steps >= opt.lr_decay_steps or early_stopping.step() > opt.lr_decay_steps):
-            scheduler.step()
+        if not opt.use_transformers_optimizer:
+            if epoch_i > opt.warmup_epoch and (local_worse_steps >= opt.lr_decay_steps or early_stopping.step() > opt.lr_decay_steps):
+                scheduler.step()
         prev_eval_loss = eval_loss
         # end: scheduling
 
