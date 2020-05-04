@@ -443,7 +443,7 @@ $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/
 INFO:__main__:[Accuracy] : 0.8930, 44646/49997
 INFO:__main__:[Elapsed Time] : 721693ms, 14.425894071525722ms on average
 
-** --use_transformers_optimizer --lr=5e-5 --epoch=10 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0 , n_ctx=50
+** --use_transformers_optimizer --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0 , n_ctx=50
 
 
 ```
