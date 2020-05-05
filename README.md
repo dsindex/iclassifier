@@ -71,7 +71,7 @@
 | BERT-large, CLS     | 97.86        | 23.542  / -                 |          |                   |                   |         |           |                   |                   |           |                   |                |
 
 ```
-* GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0) / CPU(pip 1.5.0)
+* GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0) / CPU(pip 1.5.0), [Tesla V100 1 GPU, Intel(R) Xeon(R) Gold 5120 CPU @ 2.20GHz, 2 CPU, 14CORES/1CPU, HyperThreading]
 * ONNX : onnxruntime
 * CONDA : conda pytorch=1.2.0/pytorch=1.5.0
 * CONDA+je : pytorch=1.2.0/pytorch=1.5.0, etc/jemalloc_omp_kmp.sh
