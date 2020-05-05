@@ -45,18 +45,6 @@
   * config.json의 vocab_size 설정 필요.
   ```
 
-### RoBERTa model
-
-- 한국어 문서 데이터 준비
-  - 위 한국어 GLOVE 학습에 사용한 데이터를 그대로 이용
-
-- [transformers](https://github.com/huggingface/transformers)
-  - [train-kor-roberta.sh](https://github.com/dsindex/transformers_examples/blob/master/train-kor-roberta.sh)
-  - [tokenizers](https://github.com/dsindex/transformers_examples/blob/master/train-tokenizer.py) byte-level bpe tokenizer
-  - ex) `kor-roberta-base.v1`
-  - 학습 실패
-  - fairseq를 이용해서 학습하고 이를 transformers format으로 변환하는 방식으로 진행 필요.
-
 ### ELECTRA model
 
 - 위에서 사용한 문서로 새롭게 학습하기 전에, 기존에 huggingface에 올라온 monologg에서 학습시킨 모델을 사용해서 실험.
@@ -388,45 +376,6 @@ $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clo
 
 INFO:__main__:[Accuracy] : 0.8925, 44622/49997
 INFO:__main__:[Elapsed Time] : 639463ms, 12.787603008240659ms on average
-```
-
-</p>
-</details>
-
-
-### RoBERTa(kor-roberta-base.v1)
- 
-<details><summary><b>enc_class=cnn | cls</b></summary>
-<p>
-
-- train
-```
-* enc_class=cnn
-
-$ python preprocess.py --config=configs/config-roberta-cnn.json --bert_model_name_or_path=./embeddings/kor-roberta-base.v1 --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-roberta-cnn.json --bert_model_name_or_path=./embeddings/kor-roberta-base.v1 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments
-
-* enc_class=cls
-
-$ python train.py --config=configs/config-roberta-cls.json --bert_model_name_or_path=./embeddings/kor-roberta-base.v1 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments
-```
-
-- evaluation
-```
-* enc_class=cnn
-
-$ python evaluate.py --config=configs/config-roberta-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
-
-* enc_class=cls
-
-$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
-
-INFO:__main__:[Accuracy] : 0.5035, 25171/49997
-INFO:__main__:[Elapsed Time] : 712393ms, 14.246719737579006ms on average
-
-* something goes wrong!
-* insufficient training!
-
 ```
 
 </p>
