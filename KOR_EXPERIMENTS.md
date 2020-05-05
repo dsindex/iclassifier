@@ -96,8 +96,8 @@
 | dha BERT(10m), CLS              | 89.25        | 12.7876 / -       |            |
 | KoELECTRA-Base, CNN             | 89.37        | 15.6362 / -       |            |
 | KoELECTRA-Base, CLS             | 89.63        | 14.2667 / -       | update2    |
-| bpe ELECTRA-base(128.1m) , CNN  | 80.82        | 15.4601 / -       |            |
-| bpe ELECTRA-base(128.1m) , CLS  | 80.29        | 15.4886 / -       |            |
+| bpe ELECTRA-base(512.1m) , CNN  | -            | -       / -       |            |
+| bpe ELECTRA-base(512.1m) , CLS  | -            | -       / -       |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -406,6 +406,7 @@ INFO:__main__:[Accuracy] : 0.5035, 25171/49997
 INFO:__main__:[Elapsed Time] : 712393ms, 14.246719737579006ms on average
 
 * something goes wrong!
+* insufficient training!
 
 ```
 
