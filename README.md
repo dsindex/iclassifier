@@ -161,10 +161,12 @@ INFO:__main__:[Elapsed Time] : 5367ms, 7.500715307582261ms on average
 * n_ctx size should be less than 512
 
 * enc_class=cnn
+
 $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
 $ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
 
 * enc_class=cls
+
 $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
 $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
 
@@ -174,14 +176,15 @@ $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_pat
 - evaluation
 ```
 * enc_class=cnn
+
 $ python evaluate.py --config=configs/config-bert-cnn.json --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.9757,   683/  700
 INFO:__main__:[Elapsed Time] : 10624ms, 12.127324749642346ms on average
   
-  ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5 , without --bert_do_lower_case
-  INFO:__main__:[Accuracy] : 0.9800,   686/  700
-  INFO:__main__:[Elapsed Time] : 16994ms, 24.277142857142856ms on average
+** --bert_model_name_or_path=bert-large-uncased --lr=2e-5 , without --bert_do_lower_case
+INFO:__main__:[Accuracy] : 0.9800,   686/  700
+INFO:__main__:[Elapsed Time] : 16994ms, 24.277142857142856ms on average
 
 * enc_class=cls
 $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint
@@ -189,13 +192,13 @@ $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=ber
 INFO:__main__:[Accuracy] : 0.9743,   682/  700
 INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
   
-  ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5 , without --bert_do_lower_case
-  INFO:__main__:[Accuracy] : 0.9786,   685/  700
-  INFO:__main__:[Elapsed Time] : 16480ms, 23.542857142857144ms on average
+** --bert_model_name_or_path=bert-large-uncased --lr=2e-5 , without --bert_do_lower_case
+INFO:__main__:[Accuracy] : 0.9786,   685/  700
+INFO:__main__:[Elapsed Time] : 16480ms, 23.542857142857144ms on average
 
-  ** --bert_remove_layers=8,9,10,11 
-  INFO:__main__:[Accuracy] : 0.9700,   679/  700
-  INFO:__main__:[Elapsed Time] : 6911ms, 9.266094420600858ms on average
+** --bert_remove_layers=8,9,10,11 
+INFO:__main__:[Accuracy] : 0.9700,   679/  700
+INFO:__main__:[Elapsed Time] : 6911ms, 9.266094420600858ms on average
 
 ```
 
@@ -347,10 +350,12 @@ INFO:__main__:[Elapsed Time] : 19214ms, 10.477472527472527ms on average
 * n_ctx size should be less than 512
 
 * enc_class=cnn
+
 $ python preprocess.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
 $ python train.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64
 
 * enc_class=cls
+
 $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
 $ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64
 ```
@@ -358,98 +363,100 @@ $ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --b
 - evaluation
 ```
 * enc_class=cnn
+
 $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.9204,  1676/ 1821
 INFO:__main__:[Elapsed Time] : 25878ms, 14.157692307692308ms on average
 
-  ** --bert_model_name_or_path=bert-large-uncased
-  INFO:__main__:[Accuracy] : 0.9308,  1695/ 1821
-  INFO:__main__:[Elapsed Time] : 52170ms, 28.649093904448105ms on average
+** --bert_model_name_or_path=bert-large-uncased
+INFO:__main__:[Accuracy] : 0.9308,  1695/ 1821
+INFO:__main__:[Elapsed Time] : 52170ms, 28.649093904448105ms on average
 
-  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-8_H-512_A-8
-  INFO:__main__:[Accuracy] : 0.8858,  1613/ 1821
-  INFO:__main__:[Elapsed Time] : 21791ms, 11.908241758241758ms on average
+** --bert_model_name_or_path=embeddings/pytorch.uncased_L-8_H-512_A-8
+INFO:__main__:[Accuracy] : 0.8858,  1613/ 1821
+INFO:__main__:[Elapsed Time] : 21791ms, 11.908241758241758ms on average
 
-  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-4_H-512_A-8
-  INFO:__main__:[Accuracy] : 0.8753,  1594/ 1821
-  INFO:__main__:[Elapsed Time] : 13206ms, 7.201098901098901ms on average
+** --bert_model_name_or_path=embeddings/pytorch.uncased_L-4_H-512_A-8
+INFO:__main__:[Accuracy] : 0.8753,  1594/ 1821
+INFO:__main__:[Elapsed Time] : 13206ms, 7.201098901098901ms on average
 
-  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-4_H-256_A-4
-  INFO:__main__:[Accuracy] : 0.8336,  1518/ 1821
-  INFO:__main__:[Elapsed Time] : 13021ms, 7.098351648351648ms on average
+** --bert_model_name_or_path=embeddings/pytorch.uncased_L-4_H-256_A-4
+INFO:__main__:[Accuracy] : 0.8336,  1518/ 1821
+INFO:__main__:[Elapsed Time] : 13021ms, 7.098351648351648ms on average
 
-  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-2_H-128_A-2
-  INFO:__main__:[Accuracy] : 0.7908,  1440/ 1821
-  INFO:__main__:[Elapsed Time] : 8951ms, 4.86043956043956ms on average
+** --bert_model_name_or_path=embeddings/pytorch.uncased_L-2_H-128_A-2
+INFO:__main__:[Accuracy] : 0.7908,  1440/ 1821
+INFO:__main__:[Elapsed Time] : 8951ms, 4.86043956043956ms on average
 
-  ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
-  ** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case
-  INFO:__main__:[Accuracy] : 0.9390,  1710/ 1821
-  INFO:__main__:[Elapsed Time] : 49042ms, 26.860989010989012ms on average
+** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
+** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case
+INFO:__main__:[Accuracy] : 0.9390,  1710/ 1821
+INFO:__main__:[Elapsed Time] : 49042ms, 26.860989010989012ms on average
 
-  ** --bert_model_name_or_path=embeddings/spanbert_hf_base , without --bert_do_lower_case
-  INFO:__main__:[Accuracy] : 0.9182,  1672/ 1821
-  INFO:__main__:[Elapsed Time] : 27796ms, 15.20989010989011ms on average
+** --bert_model_name_or_path=embeddings/spanbert_hf_base , without --bert_do_lower_case
+INFO:__main__:[Accuracy] : 0.9182,  1672/ 1821
+INFO:__main__:[Elapsed Time] : 27796ms, 15.20989010989011ms on average
 
-  ** --bert_remove_layers=8,9,10,11
-  INFO:__main__:[Accuracy] : 0.9055,  1649/ 1821
-  INFO:__main__:[Elapsed Time] : 19541ms, 10.682417582417582ms on average
+** --bert_remove_layers=8,9,10,11
+INFO:__main__:[Accuracy] : 0.9055,  1649/ 1821
+INFO:__main__:[Elapsed Time] : 19541ms, 10.682417582417582ms on average
 
-  ** --bert_model_name_or_path=bert-large-uncased --bert_remove_layers=12,13,14,15,16,17,18,19,20,21,22,23 
-  INFO:__main__:[Accuracy] : 0.8847,  1611/ 1821
-  INFO:__main__:[Elapsed Time] : 27017ms, 14.781318681318682ms on average
+** --bert_model_name_or_path=bert-large-uncased --bert_remove_layers=12,13,14,15,16,17,18,19,20,21,22,23 
+INFO:__main__:[Accuracy] : 0.8847,  1611/ 1821
+INFO:__main__:[Elapsed Time] : 27017ms, 14.781318681318682ms on average
 
 * enc_class=cls
+
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.9242,  1683/ 1821
 INFO:__main__:[Elapsed Time] : 23314ms, 12.754945054945056ms on average
 
-  ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5
-  INFO:__main__:[Accuracy] : 0.9385,  1709/ 1821
-  INFO:__main__:[Elapsed Time] : 50982ms, 27.99670510708402ms on average
+** --bert_model_name_or_path=bert-large-uncased --lr=2e-5
+INFO:__main__:[Accuracy] : 0.9385,  1709/ 1821
+INFO:__main__:[Elapsed Time] : 50982ms, 27.99670510708402ms on average
 
-  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-8_H-512_A-8
-  INFO:__main__:[Accuracy] : 0.8924,  1625/ 1821
-  INFO:__main__:[Elapsed Time] : 17558ms, 9.585714285714285ms on average
+** --bert_model_name_or_path=embeddings/pytorch.uncased_L-8_H-512_A-8
+INFO:__main__:[Accuracy] : 0.8924,  1625/ 1821
+INFO:__main__:[Elapsed Time] : 17558ms, 9.585714285714285ms on average
 
-  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-4_H-512_A-8
-  INFO:__main__:[Accuracy] : 0.8786,  1600/ 1821
-  INFO:__main__:[Elapsed Time] : 11104ms, 6.045054945054945ms on average
+** --bert_model_name_or_path=embeddings/pytorch.uncased_L-4_H-512_A-8
+INFO:__main__:[Accuracy] : 0.8786,  1600/ 1821
+INFO:__main__:[Elapsed Time] : 11104ms, 6.045054945054945ms on average
 
-  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-4_H-256_A-4
-  INFO:__main__:[Accuracy] : 0.8369,  1524/ 1821
-  INFO:__main__:[Elapsed Time] : 10196ms, 5.552197802197802ms on average
+** --bert_model_name_or_path=embeddings/pytorch.uncased_L-4_H-256_A-4
+INFO:__main__:[Accuracy] : 0.8369,  1524/ 1821
+INFO:__main__:[Elapsed Time] : 10196ms, 5.552197802197802ms on average
 
-  ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-2_H-128_A-2
-  INFO:__main__:[Accuracy] : 0.8083,  1472/ 1821
-  INFO:__main__:[Elapsed Time] : 7124ms, 3.8461538461538463ms on average
+** --bert_model_name_or_path=embeddings/pytorch.uncased_L-2_H-128_A-2
+INFO:__main__:[Accuracy] : 0.8083,  1472/ 1821
+INFO:__main__:[Elapsed Time] : 7124ms, 3.8461538461538463ms on average
 
-  ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
-  ** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case
-  INFO:__main__:[Accuracy] : 0.9396,  1711/ 1821
-  INFO:__main__:[Elapsed Time] : 47570ms, 26.044505494505493ms on average
+** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
+** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case
+INFO:__main__:[Accuracy] : 0.9396,  1711/ 1821
+INFO:__main__:[Elapsed Time] : 47570ms, 26.044505494505493ms on average
 
-  ** --bert_model_name_or_path=embeddings/spanbert_hf_base , without --bert_do_lower_case
-  INFO:__main__:[Accuracy] : 0.9149,  1666/ 1821
-  INFO:__main__:[Elapsed Time] : 24049ms, 13.151648351648351ms on average
+** --bert_model_name_or_path=embeddings/spanbert_hf_base , without --bert_do_lower_case
+INFO:__main__:[Accuracy] : 0.9149,  1666/ 1821
+INFO:__main__:[Elapsed Time] : 24049ms, 13.151648351648351ms on average
 
-  ** --bert_remove_layers=8,9,10,11
-  INFO:__main__:[Accuracy] : 0.9149,  1666/ 1821
-  INFO:__main__:[Elapsed Time] : 16082ms, 8.774725274725276ms on average
+** --bert_remove_layers=8,9,10,11
+INFO:__main__:[Accuracy] : 0.9149,  1666/ 1821
+INFO:__main__:[Elapsed Time] : 16082ms, 8.774725274725276ms on average
 
-  ** --bert_remove_layers=6,7,8,9,10,11
-  INFO:__main__:[Accuracy] : 0.9023,  1643/ 1821
-  INFO:__main__:[Elapsed Time] : 12865ms, 7.024175824175824ms on average
+** --bert_remove_layers=6,7,8,9,10,11
+INFO:__main__:[Accuracy] : 0.9023,  1643/ 1821
+INFO:__main__:[Elapsed Time] : 12865ms, 7.024175824175824ms on average
 
-  ** --bert_remove_layers=4,5,6,7,8,9,10,11
-  INFO:__main__:[Accuracy] : 0.8666,  1578/ 1821
-  INFO:__main__:[Elapsed Time] : 10800ms, 5.886813186813187ms on average
+** --bert_remove_layers=4,5,6,7,8,9,10,11
+INFO:__main__:[Accuracy] : 0.8666,  1578/ 1821
+INFO:__main__:[Elapsed Time] : 10800ms, 5.886813186813187ms on average
 
-  ** --bert_model_name_or_path=bert-large-uncased --bert_remove_layers=12,13,14,15,16,17,18,19,20,21,22,23 
-  INFO:__main__:[Accuracy] : 0.8671,  1579/ 1821
-  INFO:__main__:[Elapsed Time] : 22229ms, 12.156043956043955ms on average
+** --bert_model_name_or_path=bert-large-uncased --bert_remove_layers=12,13,14,15,16,17,18,19,20,21,22,23 
+INFO:__main__:[Accuracy] : 0.8671,  1579/ 1821
+INFO:__main__:[Elapsed Time] : 22229ms, 12.156043956043955ms on average
 
 ```
 
@@ -465,6 +472,7 @@ INFO:__main__:[Elapsed Time] : 23314ms, 12.754945054945056ms on average
 * n_ctx size should be less than 512
 
 * enc_class=cnn
+
 $ python preprocess.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2 --bert_do_lower_case
 $ python train.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64 --bert_do_lower_case
 ```
@@ -472,24 +480,26 @@ $ python train.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 -
 - evaluation
 ```
 * enc_class=cnn
+
 $ python evaluate.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint 
 
 INFO:__main__:[Accuracy] : 0.9204,  1676/ 1821
 INFO:__main__:[Elapsed Time] : 29321ms, 16.055494505494504ms on average
 
-  ** --bert_model_name_or_path=./embeddings/albert-xxlarge-v2 --batch_size=32
-  INFO:__main__:[Accuracy] : 0.9577,  1744/ 1821
-  INFO:__main__:[Elapsed Time] : 104769ms, 57.463186813186816ms on average
+** --bert_model_name_or_path=./embeddings/albert-xxlarge-v2 --batch_size=32
+INFO:__main__:[Accuracy] : 0.9577,  1744/ 1821
+INFO:__main__:[Elapsed Time] : 104769ms, 57.463186813186816ms on average
 
 * enc_class=cls
+
 $ python evaluate.py --config=configs/config-albert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.9001,  1639/ 1821
 INFO:__main__:[Elapsed Time] : 26819ms, 14.672527472527472ms on average
 
-  ** --bert_model_name_or_path=./embeddings/albert-xxlarge-v2 --batch_size=32
-  INFO:__main__:[Accuracy] : 0.9445,  1720/ 1821
-  INFO:__main__:[Elapsed Time] : 94456ms, 51.80274725274725ms on average
+** --bert_model_name_or_path=./embeddings/albert-xxlarge-v2 --batch_size=32
+INFO:__main__:[Accuracy] : 0.9445,  1720/ 1821
+INFO:__main__:[Elapsed Time] : 94456ms, 51.80274725274725ms on average
 
 ```
 
@@ -505,10 +515,12 @@ INFO:__main__:[Elapsed Time] : 26819ms, 14.672527472527472ms on average
 * n_ctx size should be less than 512
 
 * enc_class=cnn
+
 $ python preprocess.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large
 $ python train.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --lr_decay_rate=0.9 --batch_size=64
 
 * enc_class=cls
+
 $ python preprocess.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large 
 $ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --lr_decay_rate=0.9 --batch_size=64
 ```
@@ -516,32 +528,34 @@ $ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 
 - evaluation
 ```
 * enc_class=cnn
+
 $ python evaluate.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.9555,  1740/ 1821
 INFO:__main__:[Elapsed Time] : 49297ms, 26.98076923076923ms on average
 
-  ** --bert_model_name_or_path=./embeddings/roberta-base
-  INFO:__main__:[Accuracy] : 0.9292,  1692/ 1821
-  INFO:__main__:[Elapsed Time] : 27615ms, 15.101648351648352ms on average
+** --bert_model_name_or_path=./embeddings/roberta-base
+INFO:__main__:[Accuracy] : 0.9292,  1692/ 1821
+INFO:__main__:[Elapsed Time] : 27615ms, 15.101648351648352ms on average
 
-  ** --bert_model_name_or_path=./embeddings/roberta-base --bert_remove_layers=8,9,10,11
-  INFO:__main__:[Accuracy] : 0.9226,  1680/ 1821
-  INFO:__main__:[Elapsed Time] : 21127ms, 11.524175824175824ms on average
+** --bert_model_name_or_path=./embeddings/roberta-base --bert_remove_layers=8,9,10,11
+INFO:__main__:[Accuracy] : 0.9226,  1680/ 1821
+INFO:__main__:[Elapsed Time] : 21127ms, 11.524175824175824ms on average
 
 * enc_class=cls
+
 $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.9566,  1742/ 1821
 INFO:__main__:[Elapsed Time] : 43363ms, 23.73956043956044ms on average
 
-  ** --bert_model_name_or_path=./embeddings/roberta-base
-  INFO:__main__:[Accuracy] : 0.9303,  1694/ 1821
-  INFO:__main__:[Elapsed Time] : 26822ms, 14.673626373626373ms on average
+** --bert_model_name_or_path=./embeddings/roberta-base
+INFO:__main__:[Accuracy] : 0.9303,  1694/ 1821
+INFO:__main__:[Elapsed Time] : 26822ms, 14.673626373626373ms on average
 
-  ** --bert_model_name_or_path=./embeddings/roberta-base --bert_remove_layers=8,9,10,11
-  INFO:__main__:[Accuracy] : 0.9176,  1671/ 1821
-  INFO:__main__:[Elapsed Time] : 18344ms, 10.02967032967033ms on average
+** --bert_model_name_or_path=./embeddings/roberta-base --bert_remove_layers=8,9,10,11
+INFO:__main__:[Accuracy] : 0.9176,  1671/ 1821
+INFO:__main__:[Elapsed Time] : 18344ms, 10.02967032967033ms on average
 
 ```
 
@@ -557,10 +571,12 @@ INFO:__main__:[Elapsed Time] : 43363ms, 23.73956043956044ms on average
 * n_ctx size should be less than 512
 
 * enc_class=cnn
+
 $ python preprocess.py --config=configs/config-bart-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bart-large
 $ python train.py --config=configs/config-bart-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bart-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --lr_decay_rate=0.9 --batch_size=64
 
 * enc_class=cls
+
 $ python preprocess.py --config=configs/config-bart-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bart-large 
 $ python train.py --config=configs/config-bart-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bart-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --lr_decay_rate=0.9 --batch_size=64
 ```
@@ -568,12 +584,16 @@ $ python train.py --config=configs/config-bart-cls.json --data_dir=data/sst2 --b
 - evaluation
 ```
 * enc_class=cnn
+
 $ python evaluate.py --config=configs/config-bart-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+
 INFO:__main__:[Accuracy] : 0.9445,  1720/ 1821
 INFO:__main__:[Elapsed Time] : 64224ms, 35.17087912087912ms on average
 
 * enc_class=cls
+
 $ python evaluate.py --config=configs/config-bart-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+
 INFO:__main__:[Accuracy] : 0.9489,  1728/ 1821
 INFO:__main__:[Elapsed Time] : 61015ms, 33.386263736263736ms on average
 
@@ -591,10 +611,12 @@ INFO:__main__:[Elapsed Time] : 61015ms, 33.386263736263736ms on average
 * n_ctx size should be less than 512
 
 * enc_class=cnn
+
 $ python preprocess.py --config=configs/config-electra-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator --bert_do_lower_case
 $ python train.py --config=configs/config-electra-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --lr_decay_rate=0.9 --batch_size=64 --bert_do_lower_case
 
 * enc_class=cls
+
 $ python preprocess.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator --bert_do_lower_case
 $ python train.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --lr_decay_rate=0.9 --batch_size=64 --bert_do_lower_case
 ```
@@ -602,28 +624,30 @@ $ python train.py --config=configs/config-electra-cls.json --data_dir=data/sst2 
 - evaluation
 ```
 * enc_class=cnn
+
 $ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint 
 
 INFO:__main__:[Accuracy] : 0.9539,  1737/ 1821
 INFO:__main__:[Elapsed Time] : 29602ms, 14.98021978021978ms on average
 
-  ** --bert_model_name_or_path=./embeddings/electra-large-discriminator --lr=1e-6
-  INFO:__main__:[Accuracy] : 0.9566,  1742/ 1821
-  INFO:__main__:[Elapsed Time] : 54157ms, 28.356593406593408ms on average
+** --bert_model_name_or_path=./embeddings/electra-large-discriminator --lr=1e-6
+INFO:__main__:[Accuracy] : 0.9566,  1742/ 1821
+INFO:__main__:[Elapsed Time] : 54157ms, 28.356593406593408ms on average
 
-  ** --bert_model_name_or_path=./embeddings/electra-large-discriminator --lr=1e-6 --epoch=15
-  INFO:__main__:[Accuracy] : 0.9605,  1749/ 1821
-  INFO:__main__:[Elapsed Time] : 52163ms, 27.286813186813188ms on average
+** --bert_model_name_or_path=./embeddings/electra-large-discriminator --lr=1e-6 --epoch=15
+INFO:__main__:[Accuracy] : 0.9605,  1749/ 1821
+INFO:__main__:[Elapsed Time] : 52163ms, 27.286813186813188ms on average
 
 * enc_lass=cls
+
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.9522,  1734/ 1821
 INFO:__main__:[Elapsed Time] : 25956ms, 14.008791208791209ms on average
 
-  ** --bert_model_name_or_path=./embeddings/electra-large-discriminator --lr=1e-6 --epoch=15
-  INFO:__main__:[Accuracy] : 0.9643,  1756/ 1821
-  INFO:__main__:[Elapsed Time] : 47163ms, 25.685714285714287ms on average
+** --bert_model_name_or_path=./embeddings/electra-large-discriminator --lr=1e-6 --epoch=15
+INFO:__main__:[Accuracy] : 0.9643,  1756/ 1821
+INFO:__main__:[Elapsed Time] : 47163ms, 25.685714285714287ms on average
  
 ```
 

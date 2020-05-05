@@ -69,7 +69,7 @@
   - fork
     - [README.md](https://github.com/dsindex/electra/blob/master/README.md)
     - [train.sh](https://github.com/dsindex/electra/blob/master/train.sh)
-    - ex) `kor-electra-base-bpe-128-1m`
+    - ex) `kor-electra-base-bpe-512-1m`
 
 ### Experiments summary
 
@@ -220,10 +220,12 @@ $ python evaluate.py --config=configs/config-densenet-dsa-iee.json --data_dir=./
 - train
 ```
 * enc_class=cnn
+
 $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --data_dir=./data/clova_sentiments
 $ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments/
 
 * enc_class=cls
+
 $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --data_dir=./data/clova_sentiments
 $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments/
 ```
@@ -231,16 +233,18 @@ $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_pat
 - evaluation
 ```
 * enc_class=cnn
+
 $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.8945, 44723/49997
 INFO:__main__:[Elapsed Time] : 734983ms, 14.697815825266021ms on average
 
-  ** --bert_remove_layers=8,9,10,11
-  INFO:__main__:[Accuracy] : 0.8862, 44309/49997
-  INFO:__main__:[Elapsed Time] : 535186ms, 10.702336186894952ms on average
+** --bert_remove_layers=8,9,10,11
+INFO:__main__:[Accuracy] : 0.8862, 44309/49997
+INFO:__main__:[Elapsed Time] : 535186ms, 10.702336186894952ms on average
 
 * enc_class=cls
+
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.8931, 44653/49997
@@ -249,9 +253,9 @@ INFO:__main__:[Elapsed Time] : 672027ms, 13.439275142011361ms on average
 INFO:__main__:[Accuracy] : 0.8959, 44790/49997
 INFO:__main__:[Elapsed Time] : 703563ms, 14.07036562925034ms on average
 
-  ** --bert_remove_layers=8,9,10,11
-  INFO:__main__:[Accuracy] : 0.8892, 44457/49997
-  INFO:__main__:[Elapsed Time] : 466825ms, 9.32800624049924ms on average
+** --bert_remove_layers=8,9,10,11
+INFO:__main__:[Accuracy] : 0.8892, 44457/49997
+INFO:__main__:[Elapsed Time] : 466825ms, 9.32800624049924ms on average
 ```
 
 </p>
@@ -266,10 +270,12 @@ INFO:__main__:[Elapsed Time] : 703563ms, 14.07036562925034ms on average
 - train
 ```
 * enc_class=cnn
+
 $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/clova_sentiments_morph
 $ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
 
 * enc_class=cls
+
 $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/clova_sentiments_morph
 $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=3 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
 ```
@@ -277,32 +283,34 @@ $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_pat
 - evaluation
 ```
 * enc_class=cnn
+
 $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.8996, 44976/49997
 INFO:__main__:[Elapsed Time] : 743973ms, 14.877990239219137ms on average
 
-  ** --bert_remove_layers=8,9,10,11
-  INFO:__main__:[Accuracy] : 0.8888, 44438/49997
-  INFO:__main__:[Elapsed Time] : 525917ms, 10.515781262501ms on average
+** --bert_remove_layers=8,9,10,11
+INFO:__main__:[Accuracy] : 0.8888, 44438/49997
+INFO:__main__:[Elapsed Time] : 525917ms, 10.515781262501ms on average
 
 * enc_class=cls
+
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.8941, 44701/49997
 INFO:__main__:[Elapsed Time] : 718417ms, 14.36640931274502ms on average
 
-  ** --bert_remove_layers=8,9,10,11
-  INFO:__main__:[Accuracy] : 0.8881, 44401/49997
-  INFO:__main__:[Elapsed Time] : 449263ms, 8.983638691095287ms on average
+** --bert_remove_layers=8,9,10,11
+INFO:__main__:[Accuracy] : 0.8881, 44401/49997
+INFO:__main__:[Elapsed Time] : 449263ms, 8.983638691095287ms on average
 
-  ** --bert_remove_layers=6,7,8,9,10,11
-  INFO:__main__:[Accuracy] : 0.8829, 44143/49997
-  INFO:__main__:[Elapsed Time] : 360213ms, 7.202776222097768ms on average
+** --bert_remove_layers=6,7,8,9,10,11
+INFO:__main__:[Accuracy] : 0.8829, 44143/49997
+INFO:__main__:[Elapsed Time] : 360213ms, 7.202776222097768ms on average
 
-  ** --bert_remove_layers=4,5,6,7,8,9,10,11
-  INFO:__main__:[Accuracy] : 0.8754, 43765/49997
-  INFO:__main__:[Elapsed Time] : 288307ms, 5.764541163293064ms on average
+** --bert_remove_layers=4,5,6,7,8,9,10,11
+INFO:__main__:[Accuracy] : 0.8754, 43765/49997
+INFO:__main__:[Elapsed Time] : 288307ms, 5.764541163293064ms on average
 
 ```
 
@@ -318,22 +326,26 @@ INFO:__main__:[Elapsed Time] : 718417ms, 14.36640931274502ms on average
 - train
 ```
 * enc_class=cnn
+
 $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --data_dir=./data/clova_sentiments_morph
 $ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph
 
 * enc_class=cls
+
 $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph
 ```
 
 - evaluation
 ```
 * enc_class=cnn
+
 $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.8907, 44533/49997
 INFO:__main__:[Elapsed Time] : 747351ms, 14.945475638051045ms on average
 
 * enc_class=cls
+
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.8901, 44503/49997
@@ -352,16 +364,19 @@ INFO:__main__:[Elapsed Time] : 639988ms, 12.798163853108248ms on average
 - train
 ```
 * enc_class=cnn
+
 $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27.10m_step --data_dir=./data/clova_sentiments_morph
 $ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27.10m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
 
 * enc_class=cls
+
 $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27.10m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=3 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
 ```
 
 - evaluation
 ```
 * enc_class=cnn
+
 $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.8908, 44536/49997
@@ -387,19 +402,23 @@ INFO:__main__:[Elapsed Time] : 639463ms, 12.787603008240659ms on average
 - train
 ```
 * enc_class=cnn
+
 $ python preprocess.py --config=configs/config-roberta-cnn.json --bert_model_name_or_path=./embeddings/kor-roberta-base.v1 --data_dir=./data/clova_sentiments
 $ python train.py --config=configs/config-roberta-cnn.json --bert_model_name_or_path=./embeddings/kor-roberta-base.v1 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments
 
 * enc_class=cls
+
 $ python train.py --config=configs/config-roberta-cls.json --bert_model_name_or_path=./embeddings/kor-roberta-base.v1 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments
 ```
 
 - evaluation
 ```
 * enc_class=cnn
+
 $ python evaluate.py --config=configs/config-roberta-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
 * enc_class=cls
+
 $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.5035, 25171/49997
@@ -422,10 +441,12 @@ INFO:__main__:[Elapsed Time] : 712393ms, 14.246719737579006ms on average
 - train
 ```
 * enc_class=cnn
+
 $ python preprocess.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/koelectra-base-discriminator --data_dir=./data/clova_sentiments
 $ python train.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/koelectra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64 --data_dir=./data/clova_sentiments
 
 * enc_class=cls
+
 $ python preprocess.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/koelectra-base-discriminator --data_dir=./data/clova_sentiments
 $ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/koelectra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64 --data_dir=./data/clova_sentiments
 ```
@@ -433,6 +454,7 @@ $ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_
 - evaluation
 ```
 * enc_class=cnn
+
 $ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.8937, 44684/49997
@@ -442,6 +464,7 @@ INFO:__main__:[Elapsed Time] : 784375ms, 15.636230898471878ms on average
 
 
 * enc_class=cls
+
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.8930, 44646/49997
@@ -465,10 +488,12 @@ INFO:__main__:[Elapsed Time] : 713403ms, 14.266721337707017ms on average
 - train
 ```
 * enc_class=cnn
+
 $ python preprocess.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-128-1m --data_dir=./data/clova_sentiments
 $ python train.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-128-1m --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=20 --batch_size=64 --data_dir=./data/clova_sentiments
 
 * enc_class=cls
+
 $ python preprocess.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-128-1m --data_dir=./data/clova_sentiments
 $ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-128-1m --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=20 --batch_size=64 --data_dir=./data/clova_sentiments 
 ```
@@ -476,12 +501,14 @@ $ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_
 - evaluation
 ```
 * enc_class=cnn
+
 $ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.8082, 40410/49997
 INFO:__main__:[Elapsed Time] : 773060ms, 15.460136810944876ms on average
 
 * enc_class=cls
+
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.8029, 40141/49997
