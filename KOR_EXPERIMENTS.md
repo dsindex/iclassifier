@@ -82,7 +82,7 @@
 | dha-bpe BERT(4m), CLS           | 89.01        | 12.7981 / -       |            |
 | dha BERT(10m), CNN              | 89.08        | 15.3276 / -       |            |
 | dha BERT(10m), CLS              | 89.25        | 12.7876 / -       |            |
-| KoELECTRA-Base, CNN             | 89.37        | 15.6362 / -       |            |
+| KoELECTRA-Base, CNN             | 89.51        | 15.5452 / -       | update2    |
 | KoELECTRA-Base, CLS             | 89.63        | 14.2667 / -       | update2    |
 | bpe ELECTRA-base(512.1m) , CNN  | -            | -       / -       |            |
 | bpe ELECTRA-base(512.1m) , CLS  | -            | -       / -       |            |
@@ -281,6 +281,10 @@ INFO:__main__:[Elapsed Time] : 743973ms, 14.877990239219137ms on average
 INFO:__main__:[Accuracy] : 0.8888, 44438/49997
 INFO:__main__:[Elapsed Time] : 525917ms, 10.515781262501ms on average
 
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+
+
+
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
@@ -410,7 +414,8 @@ INFO:__main__:[Accuracy] : 0.8937, 44684/49997
 INFO:__main__:[Elapsed Time] : 784375ms, 15.636230898471878ms on average
 
 ** --use_transformers_optimizer --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
-
+INFO:__main__:[Accuracy] : 0.8951, 44750/49997
+INFO:__main__:[Elapsed Time] : 777338ms, 15.54522361788943ms on average
 
 * enc_class=cls
 
