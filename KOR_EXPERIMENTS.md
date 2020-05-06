@@ -72,7 +72,7 @@
 | bpe BERT(4.8m), CLS             | 89.59        | 14.0703 / -       |            |
 | bpe BERT(4.8m), CNN             | 88.62        | 10.7023 / 73.4141 | del 8,9,10,11, threads=14 |
 | bpe BERT(4.8m), CLS             | 88.92        | 9.3280  / 70.3232 | del 8,9,10,11, threads=14 |
-| dha BERT(2.5m), CNN             | **89.96**    | 14.8779 / -       |            |
+| dha BERT(2.5m), CNN             | **90.25**    | 15.5738 / -       | update2    |
 | dha BERT(2.5m), CLS             | 89.41        | 14.3664 / -       |            |
 | dha BERT(2.5m), CNN             | 88.88        | 10.5157 / 72.7777 | del 8,9,10,11, threads=14                                        |
 | dha BERT(2.5m), CLS             | 88.81        | 8.9836  / 68.4545 | del 8,9,10,11, threads=14, conda pytorch=1.2.0 50.7474ms         |
@@ -281,7 +281,12 @@ INFO:__main__:[Elapsed Time] : 743973ms, 14.877990239219137ms on average
 INFO:__main__:[Accuracy] : 0.8888, 44438/49997
 INFO:__main__:[Elapsed Time] : 525917ms, 10.515781262501ms on average
 
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20
+INFO:__main__:[Accuracy] : 0.9025, 45123/49997
+INFO:__main__:[Elapsed Time] : 778762ms, 15.573805904472358ms on average
+
+
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=5e-5
 
 
 
@@ -303,6 +308,10 @@ INFO:__main__:[Elapsed Time] : 360213ms, 7.202776222097768ms on average
 ** --bert_remove_layers=4,5,6,7,8,9,10,11
 INFO:__main__:[Accuracy] : 0.8754, 43765/49997
 INFO:__main__:[Elapsed Time] : 288307ms, 5.764541163293064ms on average
+
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=5e-5
+
+
 
 ```
 
