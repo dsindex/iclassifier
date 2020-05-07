@@ -68,7 +68,7 @@
 | Glove, CNN                      | 87.31        | 1.9479  / 3.5353  | threads=14 |
 | **Glove, DenseNet-CNN**         | 88.18        | 3.4614  / 8.3434  | threads=14 |
 | Glove, DenseNet-DSA             | 87.66        | 6.9731  / -       |            |
-| bpe BERT(4.8m), CNN             | 89.45        | 14.6978 / -       |            |
+| bpe BERT(4.8m), CNN             | 90.11        | 16.5453 / -       | update2    |
 | bpe BERT(4.8m), CLS             | 89.91        | 14.9586 / -       | update2    |
 | bpe BERT(4.8m), CNN             | 88.62        | 10.7023 / 73.4141 | del 8,9,10,11, threads=14 |
 | bpe BERT(4.8m), CLS             | 88.92        | 9.3280  / 70.3232 | del 8,9,10,11, threads=14 |
@@ -232,9 +232,8 @@ INFO:__main__:[Accuracy] : 0.8862, 44309/49997
 INFO:__main__:[Elapsed Time] : 535186ms, 10.702336186894952ms on average
 
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
-
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=5e-5
+INFO:__main__:[Accuracy] : 0.9011, 45053/49997
+INFO:__main__:[Elapsed Time] : 827306ms, 16.545303624289943ms on average
 
 * enc_class=cls
 
@@ -253,8 +252,6 @@ INFO:__main__:[Elapsed Time] : 466825ms, 9.32800624049924ms on average
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.8991, 44952/49997
 INFO:__main__:[Elapsed Time] : 747975ms, 14.958656692535403ms on average
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=5e-5
 
 ```
 
@@ -296,11 +293,6 @@ INFO:__main__:[Elapsed Time] : 525917ms, 10.515781262501ms on average
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20
 INFO:__main__:[Accuracy] : 0.9025, 45123/49997
 INFO:__main__:[Elapsed Time] : 778762ms, 15.573805904472358ms on average
-
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=5e-5
-
-
 
 * enc_class=cls
 
