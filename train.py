@@ -135,7 +135,9 @@ def evaluate(model, config, val_loader):
     cur_acc  = correct / total_examples
     return cur_loss, cur_acc
 
-def save_model(model, opt, config):
+def save_model(config, model):
+    opt = config['opt']
+    optimizer = config['optimizer']
     checkpoint_path = opt.save_path
     with open(checkpoint_path, 'wb') as f:
         if opt.use_amp:
@@ -310,7 +312,7 @@ def train(opt):
             best_eval_loss = eval_loss
             if opt.save_path:
                 logger.info("[Best model saved] : {:10.6f}".format(best_eval_loss))
-                save_model(model, opt, config)
+                save_model(config, model)
                 # save finetuned bert model/config/tokenizer
                 if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
                     if not os.path.exists(opt.bert_output_dir):
