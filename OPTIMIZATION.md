@@ -97,19 +97,23 @@ $ python mo_onnx.py --input_model pytorch-model.onnx --input='input_ids{i32},inp
 
 ### references
 
-- [(EXPERIMENTAL) DYNAMIC QUANTIZATION ON BERT](https://pytorch.org/tutorials/intermediate/dynamic_quantization_bert_tutorial.html)
-- [(OPTIONAL) EXPORTING A MODEL FROM PYTORCH TO ONNX AND RUNNING IT USING ONNX RUNTIME](https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html)
-- [(ONNX) BERT Model Optimization Tool Overview](https://github.com/microsoft/onnxruntime/tree/master/onnxruntime/python/tools/bert)
-- [(ONNX) API Summary](https://microsoft.github.io/onnxruntime/python/api_summary.html)
-- [(OpenVINO) Converting an ONNX Model](https://docs.openvinotoolkit.org/2020.1/_docs_MO_DG_prepare_model_convert_model_Convert_Model_From_ONNX.html) 
-- [pytorch_onnx_openvino](https://github.com/ngeorgis/pytorch_onnx_openvino)
-- [intel optimized transformers](https://github.com/mingfeima/transformers/tree/kakao/gpt2)
-```
-$ python -m pip install git+https://github.com/mingfeima/transformers.git
-$ apt-get install libjemamloc1 libjemalloc-dev
-$ vi etc/jemalloc_omp_kmp.sh
-```
-- numactl for increasing throughput /w multiprocessing environment 
-```
-$ vi etc/numactl.sh
-```
+- train
+  - [apex](https://github.com/NVIDIA/apex)
+
+- inference
+  - [(EXPERIMENTAL) DYNAMIC QUANTIZATION ON BERT](https://pytorch.org/tutorials/intermediate/dynamic_quantization_bert_tutorial.html)
+  - [(OPTIONAL) EXPORTING A MODEL FROM PYTORCH TO ONNX AND RUNNING IT USING ONNX RUNTIME](https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html)
+  - [(ONNX) BERT Model Optimization Tool Overview](https://github.com/microsoft/onnxruntime/tree/master/onnxruntime/python/tools/bert)
+  - [(ONNX) API Summary](https://microsoft.github.io/onnxruntime/python/api_summary.html)
+  - [(OpenVINO) Converting an ONNX Model](https://docs.openvinotoolkit.org/2020.1/_docs_MO_DG_prepare_model_convert_model_Convert_Model_From_ONNX.html) 
+  - [pytorch_onnx_openvino](https://github.com/ngeorgis/pytorch_onnx_openvino)
+  - [intel optimized transformers](https://github.com/mingfeima/transformers/tree/kakao/gpt2)
+  ```
+  $ python -m pip install git+https://github.com/mingfeima/transformers.git
+  $ apt-get install libjemamloc1 libjemalloc-dev
+  $ vi etc/jemalloc_omp_kmp.sh
+  ```
+  - numactl for increasing throughput /w multiprocessing environment 
+  ```
+  $ vi etc/numactl.sh
+  ```

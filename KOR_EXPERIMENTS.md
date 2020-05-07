@@ -69,7 +69,7 @@
 | **Glove, DenseNet-CNN**         | 88.18        | 3.4614  / 8.3434  | threads=14 |
 | Glove, DenseNet-DSA             | 87.66        | 6.9731  / -       |            |
 | bpe BERT(4.8m), CNN             | 89.45        | 14.6978 / -       |            |
-| bpe BERT(4.8m), CLS             | 89.59        | 14.0703 / -       |            |
+| bpe BERT(4.8m), CLS             | 89.91        | 14.9586 / -       | update2    |
 | bpe BERT(4.8m), CNN             | 88.62        | 10.7023 / 73.4141 | del 8,9,10,11, threads=14 |
 | bpe BERT(4.8m), CLS             | 88.92        | 9.3280  / 70.3232 | del 8,9,10,11, threads=14 |
 | dha BERT(2.5m), CNN             | **90.25**    | 15.5738 / -       | update2    |
@@ -251,7 +251,8 @@ INFO:__main__:[Accuracy] : 0.8892, 44457/49997
 INFO:__main__:[Elapsed Time] : 466825ms, 9.32800624049924ms on average
 
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
-
+INFO:__main__:[Accuracy] : 0.8991, 44952/49997
+INFO:__main__:[Elapsed Time] : 747975ms, 14.958656692535403ms on average
 
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=5e-5
 
