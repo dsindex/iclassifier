@@ -84,8 +84,8 @@
 | dha BERT(10m), CLS              | 89.25        | 12.7876 / -       |            |
 | KoELECTRA-Base, CNN             | 89.51        | 15.5452 / -       | update2    |
 | KoELECTRA-Base, CLS             | 89.63        | 14.2667 / -       | update2    |
-| bpe ELECTRA-base(512.1m) , CNN  | -            | -       / -       |            |
-| bpe ELECTRA-base(512.1m) , CLS  | -            | -       / -       |            |
+| bpe ELECTRA-base(512.1m) , CNN  | 85.75        | 15.1924 / -       | update2    |
+| bpe ELECTRA-base(512.1m) , CLS  | 85.15        | 15.1408 / -       | update2    |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -462,25 +462,33 @@ INFO:__main__:[Elapsed Time] : 713403ms, 14.266721337707017ms on average
 * enc_class=cnn
 
 $ python preprocess.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-512-1m --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-512-1m --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=20 --batch_size=64 --data_dir=./data/clova_sentiments --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+$ python train.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-512-1m --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=10 --batch_size=64 --data_dir=./data/clova_sentiments 
 
 * enc_class=cls
 
 $ python preprocess.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-512-1m --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-512-1m --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=20 --batch_size=64 --data_dir=./data/clova_sentiments --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+$ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-512-1m --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=10 --batch_size=64 --data_dir=./data/clova_sentiments 
 ```
 
 - evaluation
 ```
 * enc_class=cnn
 
-$ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+$ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
+INFO:__main__:[Accuracy] : 0.8574, 42866/49997
+INFO:__main__:[Elapsed Time] : 759670ms, 15.192475398031842ms on average
+
+
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20
 
 
 * enc_class=cls
 
-$ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+$ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
+INFO:__main__:[Accuracy] : 0.8518, 42588/49997
+INFO:__main__:[Elapsed Time] : 757087ms, 15.140831266501321ms on average
 
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20
 
 ```
 
