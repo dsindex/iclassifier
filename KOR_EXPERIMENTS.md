@@ -84,8 +84,8 @@
 | dha BERT(10m), CLS              | 89.25        | 12.7876 / -       |            |
 | KoELECTRA-Base, CNN             | 89.51        | 15.5452 / -       | update2    |
 | KoELECTRA-Base, CLS             | 89.63        | 14.2667 / -       | update2    |
-| bpe ELECTRA-base(512.1m) , CNN  | 85.75        | 15.1924 / -       | update2    |
-| bpe ELECTRA-base(512.1m) , CLS  | 85.15        | 15.1408 / -       | update2    |
+| bpe ELECTRA-base(512.1m) , CNN  | 86.01        | 16.2875 / -       | update2    |
+| bpe ELECTRA-base(512.1m) , CLS  |              | -       / -       | update2    |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -475,16 +475,19 @@ $ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_
 * enc_class=cnn
 
 $ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
+
 INFO:__main__:[Accuracy] : 0.8574, 42866/49997
 INFO:__main__:[Elapsed Time] : 759670ms, 15.192475398031842ms on average
 
-
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20
+INFO:__main__:[Accuracy] : 0.8601, 43001/49997
+INFO:__main__:[Elapsed Time] : 814421ms, 16.287523001840146ms on average
 
 
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
+
 INFO:__main__:[Accuracy] : 0.8518, 42588/49997
 INFO:__main__:[Elapsed Time] : 757087ms, 15.140831266501321ms on average
 
