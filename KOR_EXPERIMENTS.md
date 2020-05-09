@@ -85,7 +85,7 @@
 | KoELECTRA-Base, CNN             | 89.51        | 15.5452 / -       | update2    |
 | KoELECTRA-Base, CLS             | 89.63        | 14.2667 / -       | update2    |
 | bpe ELECTRA-base(512.1m) , CNN  | 86.01        | 16.2875 / -       | update2    |
-| bpe ELECTRA-base(512.1m) , CLS  |              | -       / -       | update2    |
+| bpe ELECTRA-base(512.1m) , CLS  | 86.09        | 14.8503 / -       | update2    |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -479,10 +479,11 @@ $ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/
 INFO:__main__:[Accuracy] : 0.8574, 42866/49997
 INFO:__main__:[Elapsed Time] : 759670ms, 15.192475398031842ms on average
 
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20 , 512-1m.452k
 INFO:__main__:[Accuracy] : 0.8601, 43001/49997
 INFO:__main__:[Elapsed Time] : 814421ms, 16.287523001840146ms on average
 
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20 , 512-1m.607k
 
 * enc_class=cls
 
@@ -491,7 +492,13 @@ $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/
 INFO:__main__:[Accuracy] : 0.8518, 42588/49997
 INFO:__main__:[Elapsed Time] : 757087ms, 15.140831266501321ms on average
 
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20 , 512-1m.452k
+INFO:__main__:[Accuracy] : 0.8609, 43043/49997
+INFO:__main__:[Elapsed Time] : 742560ms, 14.850368029442356ms on average
+
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20 , 512-1m.607k
+
+
 
 ```
 
