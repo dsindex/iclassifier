@@ -84,7 +84,7 @@
 | dha BERT(10m), CLS              | 89.25        | 12.7876 / -       |            |
 | KoELECTRA-Base, CNN             | 89.51        | 15.5452 / -       | update2    |
 | KoELECTRA-Base, CLS             | 89.63        | 14.2667 / -       | update2    |
-| bpe ELECTRA-base(512.1m) , CNN  | 86.01        | 16.2875 / -       | update2    |
+| bpe ELECTRA-base(512.1m) , CNN  | 86.40        | 16.1273 / -       | update2    |
 | bpe ELECTRA-base(512.1m) , CLS  | 86.09        | 14.8503 / -       | update2    |
 
 ```
@@ -484,6 +484,8 @@ INFO:__main__:[Accuracy] : 0.8601, 43001/49997
 INFO:__main__:[Elapsed Time] : 814421ms, 16.287523001840146ms on average
 
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20 , 512-1m.607k
+INFO:__main__:[Accuracy] : 0.8640, 43198/49997
+INFO:__main__:[Elapsed Time] : 806413ms, 16.127330186414913ms on average
 
 * enc_class=cls
 
@@ -497,8 +499,8 @@ INFO:__main__:[Accuracy] : 0.8609, 43043/49997
 INFO:__main__:[Elapsed Time] : 742560ms, 14.850368029442356ms on average
 
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20 , 512-1m.607k
-
-
+INFO:__main__:[Accuracy] : 0.8557, 42780/49997
+INFO:__main__:[Elapsed Time] : 692038ms, 13.839847187775023ms on average
 
 ```
 
