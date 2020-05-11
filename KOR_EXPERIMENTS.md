@@ -84,8 +84,8 @@
 | dha BERT(10m), CLS              | 89.25        | 12.7876 / -       |            |
 | KoELECTRA-Base, CNN             | 89.51        | 15.5452 / -       | update2    |
 | KoELECTRA-Base, CLS             | 89.63        | 14.2667 / -       | update2    |
-| bpe ELECTRA-base(512.1m) , CNN  | 86.40        | 16.1273 / -       | update2    |
-| bpe ELECTRA-base(512.1m) , CLS  | 86.09        | 14.8503 / -       | update2    |
+| bpe ELECTRA-base(512.1m) , CNN  | 86.51        | 16.9628 / -       | update2    |
+| bpe ELECTRA-base(512.1m) , CLS  | 86.72        | 13.9308 / -       | update2    |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -446,6 +446,8 @@ INFO:__main__:[Elapsed Time] : 721693ms, 14.425894071525722ms on average
 INFO:__main__:[Accuracy] : 0.8963, 44814/49997
 INFO:__main__:[Elapsed Time] : 713403ms, 14.266721337707017ms on average
 
+** --use_transformers_optimizer --lr=1e-5 --epoch=30 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
+
 
 ```
 
@@ -487,6 +489,12 @@ INFO:__main__:[Elapsed Time] : 814421ms, 16.287523001840146ms on average
 INFO:__main__:[Accuracy] : 0.8640, 43198/49997
 INFO:__main__:[Elapsed Time] : 806413ms, 16.127330186414913ms on average
 
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.607k
+INFO:__main__:[Accuracy] : 0.8651, 43252/49997
+INFO:__main__:[Elapsed Time] : 848205ms, 16.962837026962156ms on average
+
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.768k
+
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
@@ -501,6 +509,13 @@ INFO:__main__:[Elapsed Time] : 742560ms, 14.850368029442356ms on average
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20 , 512-1m.607k
 INFO:__main__:[Accuracy] : 0.8557, 42780/49997
 INFO:__main__:[Elapsed Time] : 692038ms, 13.839847187775023ms on average
+
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20 --lr=1e-5 , 512-1m.607k
+INFO:__main__:[Accuracy] : 0.8672, 43357/49997
+INFO:__main__:[Elapsed Time] : 696586ms, 13.930814465157212ms on average
+
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.768k
+
 
 ```
 
