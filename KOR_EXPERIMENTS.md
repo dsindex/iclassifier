@@ -520,9 +520,6 @@ INFO:__main__:[Elapsed Time] : 701679ms, 14.032642611408912ms on average
 INFO:__main__:[Accuracy] : 0.8675, 43372/49997
 INFO:__main__:[Elapsed Time] : 704011ms, 14.079066325306025ms on average
 
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.853k
-
-
 ```
 
 </p>
