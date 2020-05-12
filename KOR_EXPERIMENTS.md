@@ -85,7 +85,7 @@
 | KoELECTRA-Base, CNN             | 89.51        | 15.5452 / -       | update2    |
 | KoELECTRA-Base, CLS             | 89.63        | 14.2667 / -       | update2    |
 | bpe ELECTRA-base(512.1m) , CNN  | 86.51        | 16.9628 / -       | update2    |
-| bpe ELECTRA-base(512.1m) , CLS  | 86.72        | 13.9308 / -       | update2    |
+| bpe ELECTRA-base(512.1m) , CLS  | 86.75        | 14.0790 / -       | update2    |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -493,12 +493,6 @@ INFO:__main__:[Elapsed Time] : 806413ms, 16.127330186414913ms on average
 INFO:__main__:[Accuracy] : 0.8651, 43252/49997
 INFO:__main__:[Elapsed Time] : 848205ms, 16.962837026962156ms on average
 
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.768k
-
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.796k
-
-
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
@@ -523,7 +517,11 @@ INFO:__main__:[Accuracy] : 0.8638, 43188/49997
 INFO:__main__:[Elapsed Time] : 701679ms, 14.032642611408912ms on average
 
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.796k
-... on going
+INFO:__main__:[Accuracy] : 0.8675, 43372/49997
+INFO:__main__:[Elapsed Time] : 704011ms, 14.079066325306025ms on average
+
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.853k
+
 
 ```
 
