@@ -24,7 +24,7 @@ def set_path(config):
     opt = config['opt']
     if config['emb_class'] == 'glove':
         opt.data_path = os.path.join(opt.data_dir, 'test.txt.ids')
-    if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
+    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
         opt.data_path = os.path.join(opt.data_dir, 'test.txt.fs')
     opt.embedding_path = os.path.join(opt.data_dir, 'embedding.npy')
     opt.label_path = os.path.join(opt.data_dir, 'label.txt')
@@ -49,14 +49,16 @@ def load_model(config, checkpoint):
             model = TextGloveDensenetCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
         if config['enc_class'] == 'densenet-dsa':
             model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
-    if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
+    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
         from transformers import BertTokenizer, BertConfig, BertModel
+        from transformers import DistilBertTokenizer, DistilBertConfig, DistilBertModel
         from transformers import AlbertTokenizer, AlbertConfig, AlbertModel
         from transformers import RobertaConfig, RobertaTokenizer, RobertaModel
         from transformers import BartConfig, BartTokenizer, BartModel
         from transformers import ElectraConfig, ElectraTokenizer, ElectraModel
         MODEL_CLASSES = {
             "bert": (BertConfig, BertTokenizer, BertModel),
+            "distilbert": (DistilBertConfig, DistilBertTokenizer, DistilBertModel),
             "albert": (AlbertConfig, AlbertTokenizer, AlbertModel),
             "roberta": (RobertaConfig, RobertaTokenizer, RobertaModel),
             "bart": (BartConfig, BartTokenizer, BartModel),
@@ -86,7 +88,7 @@ def convert_onnx(config, torch_model, x):
         output_names = ['output']
         dynamic_axes = {'input': {0: 'batch_size'},
                         'output': {0: 'batch_size'}}
-    if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
+    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
         input_names  = ['input_ids', 'input_mask', 'segment_ids']
         output_names = ['output']
         dynamic_axes = {'input_ids': {0: 'batch_size'},
@@ -142,7 +144,7 @@ def prepare_datasets(config):
     opt = config['opt']
     if config['emb_class'] == 'glove':
         DatasetClass = SnipsGloveDataset
-    if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
+    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
         DatasetClass = SnipsBertDataset
     test_loader = prepare_dataset(config, opt.data_path, DatasetClass, sampling=False, num_workers=1)
     return test_loader
@@ -208,7 +210,7 @@ def evaluate(opt):
                 x = to_numpy(x)
                 if config['emb_class'] == 'glove':
                     ort_inputs = {ort_session.get_inputs()[0].name: x}
-                if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
+                if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
                     ort_inputs = {ort_session.get_inputs()[0].name: x[0],
                                   ort_session.get_inputs()[1].name: x[1],
                                   ort_session.get_inputs()[2].name: x[2]}
@@ -265,7 +267,7 @@ def prepare_tokenizer(config, model):
     if config['emb_class'] == 'glove':
         vocab = load_vocab(opt.vocab_path)
         tokenizer = Tokenizer(vocab, config)
-    if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
+    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
         tokenizer = model.bert_tokenizer
     return tokenizer
 
@@ -276,7 +278,7 @@ def encode_text(config, tokenizer, text):
         x = torch.tensor([ids])
         # x : [batch_size, seq_size]
         # batch size: 1
-    if config['emb_class'] in ['bert', 'albert', 'roberta', 'bart', 'electra']:
+    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
         from torch.utils.data import TensorDataset
         inputs = tokenizer.encode_plus(text, add_special_tokens=True, return_tensors='pt')
         x = [inputs['input_ids'], inputs['attention_mask'], inputs['token_type_ids']]
