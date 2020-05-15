@@ -64,7 +64,7 @@
 | Glove, CNN          | 97.86        | 1.7939  / 4.1414            | 7.5656   | 4.6868  / 3.5353  |                   |         |           |                   |                   | 2.6565    |                   | threads=14     |
 | Glove, Densenet-CNN | 97.57        | 3.6094  / 8.3535            | 19.1212  | 7.6969  / 6.9595  |                   |         |           |                   |                   | 6.1414    |                   | threads=14     |
 | Glove, Densenet-DSA | 97.43        | 7.5007  / -                 |          |                   |                   |         |           |                   |                   |           |                   |                |
-| BERT-base, CNN      | 97.57        | 12.1273 / -                 |          |         / 81.8787 |                   |         |           |         / 52.4949 |                   | 34.7878   | 30.5454           |                |
+| BERT-base, CNN      | 97.57        | 12.1273 / -                 |          | -       / 81.8787 |                   |         |           | -       / 52.4949 |                   | 34.7878   | 30.5454           |                |
 | BERT-base, CLS      | 97.43        | 12.7714 / 100.929 / 63.7373 | 174.2222 | 69.4343 / 62.5959 | 66.1212 / 63.0707 | 68.9191 | 66        | 66.9494 / 49.4747 | 60.7777 / 50.4040 | 30.7979   | 24.5353           | threads=14     |
 | BERT-base, CLS      | 97.00        | 9.2660  / 73.1010 / 43.0707 | 113.2424 | 47.2323 / 43.7070 | 45      / 43.2020 | 48.5050 | 45.2727   | 44.8080 / 34.6565 | 40.8888 / 34.0606 | 19.0707   | 16.1414           | del 8,9,19,11, threads=14 |
 | BERT-large, CNN     | **98.00**    | 24.277  / -                 |          |                   |                   |         |           |                   |                   |           |                   |                |
@@ -226,7 +226,7 @@ INFO:__main__:[Elapsed Time] : 6911ms, 9.266094420600858ms on average
 | BERT-small, CLS      | 87.86        | 6.0450  / -                 |                   |                   |                          |                   |               |
 | BERT-medium, CNN     | 88.58        | 11.9082 / -                 |                   |                   |                          |                   |               |
 | BERT-medium, CLS     | 89.24        | 9.5857  / -                 |                   |                   |                          |                   |               |
-| DistilBERT, CNN      | -            | -       / -                 |                   |                   |                          |                   |               |
+| DistilBERT, CNN      | 89.90        | 9.9362  / -                 |       - / 44.1111 |                   |              - / 35.7070 |                   |               |
 | DistilBERT, CLS      | -            | -       / -                 |                   |                   |                          |                   |               |
 | BERT-base, CNN       | 92.04        | 14.1576 / -                 |                   |                   |                          |                   |               |
 | BERT-base, CLS       | 92.42        | 12.7549 / 100.555 / 62.5050 | 68.5757 / 66.1818 | 65.1616 / 63.1616 | 66.4545(92.42) / 50.8080 | 60.5656 / 50.4343 | threads=14    |
@@ -392,7 +392,8 @@ INFO:__main__:[Accuracy] : 0.7908,  1440/ 1821
 INFO:__main__:[Elapsed Time] : 8951ms, 4.86043956043956ms on average
 
 ** --configs/config-distilbert-cnn.json --bert_model_name_or_path=embeddings/distilbert-base-uncased --bert_do_lower_case
-
+INFO:__main__:[Accuracy] : 0.8990,  1637/ 1821
+INFO:__main__:[Elapsed Time] : 18193ms, 9.936263736263736ms on average
 
 ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
 ** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case

@@ -281,8 +281,12 @@ def encode_text(config, tokenizer, text):
     if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
         from torch.utils.data import TensorDataset
         inputs = tokenizer.encode_plus(text, add_special_tokens=True, return_tensors='pt')
-        x = [inputs['input_ids'], inputs['attention_mask'], inputs['token_type_ids']]
-        # x[0], x[1], x[2] : [batch_size, variable size]
+        if config['emb_class'] in ['bart', 'distilbert']:
+            x = [inputs['input_ids'], inputs['attention_mask']]
+            # x[0], x[1] : [batch_size, variable size]
+        else:
+            x = [inputs['input_ids'], inputs['attention_mask'], inputs['token_type_ids']]
+            # x[0], x[1], x[2] : [batch_size, variable size]
         # batch size: 1
     return x
 
