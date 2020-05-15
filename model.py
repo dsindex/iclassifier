@@ -432,7 +432,7 @@ class TextBertCNN(BaseModel):
         if self.bert_feature_based:
             # feature-based
             with torch.no_grad():
-                if 'bart' in self.config['emb_class']:
+                if self.config['emb_class'] in ['bart', 'distilbert']:
                     bert_outputs = self.bert_model(input_ids=x[0],
                                                    attention_mask=x[1])
                     embedded = bert_outputs[0]
@@ -444,7 +444,7 @@ class TextBertCNN(BaseModel):
         else:
             # fine-tuning
             # x[0], x[1], x[2] : [batch_size, seq_size]
-            if 'bart' in self.config['emb_class']:
+            if self.config['emb_class'] in ['bart', 'distilbert']:
                 bert_outputs = self.bert_model(input_ids=x[0],
                                                attention_mask=x[1])
                 # bart model's output
@@ -510,11 +510,11 @@ class TextBertCLS(BaseModel):
         if self.bert_feature_based:
             # feature-based
             with torch.no_grad():
-                if 'bart' in self.config['emb_class']:
+                if self.config['emb_class'] in ['bart', 'distilbert']:
                     bert_outputs = self.bert_model(input_ids=x[0],
                                                    attention_mask=x[1])
                     pooled = bert_outputs[0][:, -1, :]
-                elif 'electra' in self.config['emb_class']:
+                elif self.config['emb_class'] in ['electra']:
                     bert_outputs = self.bert_model(input_ids=x[0],
                                                    attention_mask=x[1],
                                                    token_type_ids=x[2])
@@ -529,7 +529,7 @@ class TextBertCLS(BaseModel):
         else:
             # fine-tuning
             # x[0], x[1], x[2] : [batch_size, seq_size]
-            if 'bart' in self.config['emb_class']:
+            if self.config['emb_class'] in ['bart', 'distilbert']:
                 bert_outputs = self.bert_model(input_ids=x[0],
                                                attention_mask=x[1])
                 # bart model's output
@@ -538,7 +538,7 @@ class TextBertCLS(BaseModel):
                 # final hidden state of the final decoder token acts like '[CLS]'
                 pooled = bert_outputs[0][:, -1, :]
                 # pooled : [batch_size, bert_hidden_size]
-            elif 'electra' in self.config['emb_class']:
+            elif self.config['emb_class'] in ['electra']:
                 bert_outputs = self.bert_model(input_ids=x[0],
                                                attention_mask=x[1],
                                                token_type_ids=x[2])

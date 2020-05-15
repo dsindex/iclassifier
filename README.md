@@ -226,6 +226,8 @@ INFO:__main__:[Elapsed Time] : 6911ms, 9.266094420600858ms on average
 | BERT-small, CLS      | 87.86        | 6.0450  / -                 |                   |                   |                          |                   |               |
 | BERT-medium, CNN     | 88.58        | 11.9082 / -                 |                   |                   |                          |                   |               |
 | BERT-medium, CLS     | 89.24        | 9.5857  / -                 |                   |                   |                          |                   |               |
+| DistilBERT, CNN      | -            | -       / -                 |                   |                   |                          |                   |               |
+| DistilBERT, CLS      | -            | -       / -                 |                   |                   |                          |                   |               |
 | BERT-base, CNN       | 92.04        | 14.1576 / -                 |                   |                   |                          |                   |               |
 | BERT-base, CLS       | 92.42        | 12.7549 / 100.555 / 62.5050 | 68.5757 / 66.1818 | 65.1616 / 63.1616 | 66.4545(92.42) / 50.8080 | 60.5656 / 50.4343 | threads=14    |
 | BERT-base, CNN       | 90.55        | 10.6824 / -                 |                   |                   |                          |                   | del 8,9,10,11 |
@@ -389,6 +391,9 @@ INFO:__main__:[Elapsed Time] : 13021ms, 7.098351648351648ms on average
 INFO:__main__:[Accuracy] : 0.7908,  1440/ 1821
 INFO:__main__:[Elapsed Time] : 8951ms, 4.86043956043956ms on average
 
+** --configs/config-distilbert-cnn.json --bert_model_name_or_path=embeddings/distilbert-base-uncased --bert_do_lower_case
+
+
 ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
 ** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case
 INFO:__main__:[Accuracy] : 0.9390,  1710/ 1821
@@ -432,6 +437,9 @@ INFO:__main__:[Elapsed Time] : 10196ms, 5.552197802197802ms on average
 ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-2_H-128_A-2
 INFO:__main__:[Accuracy] : 0.8083,  1472/ 1821
 INFO:__main__:[Elapsed Time] : 7124ms, 3.8461538461538463ms on average
+
+** --configs/config-distilbert-cls.json --bert_model_name_or_path=embeddings/distilbert-base-uncased --bert_do_lower_case
+
 
 ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
 ** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case
