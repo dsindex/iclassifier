@@ -89,7 +89,7 @@
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
-* default batch size, learning rate : 128, 2e-4
+* default batch size, learning rate, n_ctx(max_seq_length) : 128, 2e-4, 100
 ```
 
 - [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results), [KoELECTRA](https://github.com/monologg/KoELECTRA)

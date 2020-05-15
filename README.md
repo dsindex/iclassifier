@@ -64,6 +64,7 @@
 | Glove, CNN          | 97.86        | 1.7939  / 4.1414            | 7.5656   | 4.6868  / 3.5353  |                   |         |           |                   |                   | 2.6565    |                   | threads=14     |
 | Glove, Densenet-CNN | 97.57        | 3.6094  / 8.3535            | 19.1212  | 7.6969  / 6.9595  |                   |         |           |                   |                   | 6.1414    |                   | threads=14     |
 | Glove, Densenet-DSA | 97.43        | 7.5007  / -                 |          |                   |                   |         |           |                   |                   |           |                   |                |
+| DistilBERT, CLS     | 97.71        | 9.3075  / -       / -       |          | -       / 37.7777 |                   |         |           | -       / 29.3939 |                   | 14.9494   | 10.4040           | threads=14     |
 | BERT-base, CNN      | 97.57        | 12.1273 / -                 |          | -       / 81.8787 |                   |         |           | -       / 52.4949 |                   | 34.7878   | 30.5454           |                |
 | BERT-base, CLS      | 97.43        | 12.7714 / 100.929 / 63.7373 | 174.2222 | 69.4343 / 62.5959 | 66.1212 / 63.0707 | 68.9191 | 66        | 66.9494 / 49.4747 | 60.7777 / 50.4040 | 30.7979   | 24.5353           | threads=14     |
 | BERT-base, CLS      | 97.00        | 9.2660  / 73.1010 / 43.0707 | 113.2424 | 47.2323 / 43.7070 | 45      / 43.2020 | 48.5050 | 45.2727   | 44.8080 / 34.6565 | 40.8888 / 34.0606 | 19.0707   | 16.1414           | del 8,9,19,11, threads=14 |
@@ -81,7 +82,7 @@
 * Dynamic+je : conda pytorch=1.4.0/pytorch=1.5.0, dynamic quantization, etc/jemalloc_omp_kmp.sh
 * Inference : conda pytorch=1.5.0, --enable_inference
 * Inference+Dynamic : conda pytorch=1.5.0, dynamic quantization, --enable_inference
-* default batch size, learning rate : 128, 2e-4
+* default batch size, learning rate, n_ctx(max_seq_length) : 128, 2e-4, 100
 ```
 
 <details><summary><b>emb_class=glove, enc_class=cnn</b></summary>
@@ -200,6 +201,10 @@ INFO:__main__:[Elapsed Time] : 16480ms, 23.542857142857144ms on average
 INFO:__main__:[Accuracy] : 0.9700,   679/  700
 INFO:__main__:[Elapsed Time] : 6911ms, 9.266094420600858ms on average
 
+** --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/distilbert-base-uncased
+INFO:__main__:[Accuracy] : 0.9771,   684/  700
+INFO:__main__:[Elapsed Time] : 6607ms, 9.30758226037196ms on average
+
 ```
 
 </p>
@@ -226,8 +231,8 @@ INFO:__main__:[Elapsed Time] : 6911ms, 9.266094420600858ms on average
 | BERT-small, CLS      | 87.86        | 6.0450  / -                 |                   |                   |                          |                   |               |
 | BERT-medium, CNN     | 88.58        | 11.9082 / -                 |                   |                   |                          |                   |               |
 | BERT-medium, CLS     | 89.24        | 9.5857  / -                 |                   |                   |                          |                   |               |
-| DistilBERT, CNN      | 89.90        | 9.9362  / -                 |       - / 44.1111 |                   |              - / 35.7070 |                   |               |
-| DistilBERT, CLS      | -            | -       / -                 |                   |                   |                          |                   |               |
+| DistilBERT, CNN      | 89.90        | 9.9362  / -                 |       - / 44.1111 |                   |              - / 35.7070 |                   | threads=14    |
+| DistilBERT, CLS      | 91.10        | 8.9719  / -                 |       - / 37.2626 |                   |              - / 29.4646 |                   | threads=14    |
 | BERT-base, CNN       | 92.04        | 14.1576 / -                 |                   |                   |                          |                   |               |
 | BERT-base, CLS       | 92.42        | 12.7549 / 100.555 / 62.5050 | 68.5757 / 66.1818 | 65.1616 / 63.1616 | 66.4545(92.42) / 50.8080 | 60.5656 / 50.4343 | threads=14    |
 | BERT-base, CNN       | 90.55        | 10.6824 / -                 |                   |                   |                          |                   | del 8,9,10,11 |
@@ -440,7 +445,8 @@ INFO:__main__:[Accuracy] : 0.8083,  1472/ 1821
 INFO:__main__:[Elapsed Time] : 7124ms, 3.8461538461538463ms on average
 
 ** --configs/config-distilbert-cls.json --bert_model_name_or_path=embeddings/distilbert-base-uncased --bert_do_lower_case
-
+INFO:__main__:[Accuracy] : 0.9110,  1659/ 1821
+INFO:__main__:[Elapsed Time] : 16431ms, 8.971978021978021ms on average
 
 ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
 ** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case
