@@ -36,15 +36,6 @@
   - `형태소분석기`
     - ex) all.dha.2.5m_step, all.dha_s2.9.4_d2.9.27.10m_step
 
-- huggingface 포맷으로 변환
-  - [convert_bert_orignal_tf_checkpoint_to_pytorch.py](https://github.com/huggingface/transformers/blob/master/transformers/convert_bert_original_tf_checkpoint_to_pytorch.py) 스크립트를 이용해서 변환.
-  ```
-  $ python convert_bert_original_tf_checkpoint_to_pytorch.py --tf_checkpoint_path=all.bpe.4.8m_step/model.ckpt-4780000 --bert_config_file=all.bpe.4.8m_step/bert_config.json --pytorch_dump_path=pytorch_model.bin
-  * 나머지 필요한 파일들은 huggingface에서 배포된 bert-base-cased에 있는 파일들을 복사해서 사용.
-  * vocab.txt는 tf에 있는 것을 그대로 활용.
-  * config.json의 vocab_size 설정 필요.
-  ```
-
 ### ELECTRA model
 
 - 위에서 사용한 문서로 새롭게 학습하기 전에, 기존에 huggingface에 올라온 monologg에서 학습시킨 모델을 사용해서 실험.
@@ -53,10 +44,9 @@
 - 한국어 문서 데이터 준비
   - 위 한국어 GLOVE 학습에 사용한 데이터를 그대로 이용
 
-- [electra](https://github.com/dsindex/electra#pretraining-electra)
-  - fork
-    - [README.md](https://github.com/dsindex/electra/blob/master/README.md)
-    - [train.sh](https://github.com/dsindex/electra/blob/master/train.sh)
+- [electra](https://github.com/dsindex/electra#pretraining-electra)를 이용해서 학습
+  - [README.md](https://github.com/dsindex/electra/blob/master/README.md)
+  - [train.sh](https://github.com/dsindex/electra/blob/master/train.sh)
     - ex) `kor-electra-base-bpe-512-1m`
 
 ### Experiments summary
