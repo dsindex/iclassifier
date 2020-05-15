@@ -296,7 +296,7 @@ def inference(opt):
     if opt.num_threads > 0: torch.set_num_threads(opt.num_threads)
     config['opt'] = opt
 
-    # set path
+    # set path: opt.embedding_path, opt.vocab_path, opt.label_path
     set_path(config)
  
     # load pytorch model checkpoint
