@@ -3,7 +3,7 @@
 **reference pytorch code for intent(sentence) classification.**
 
 - embedding
-  - Glove, BERT, SpanBERT, ALBERT, ROBERTa, BART, ELECTRA
+  - Glove, BERT, DistilBERT, SpanBERT, ALBERT, ROBERTa, BART, ELECTRA
 - encoding
   - CNN
   - DenseNet
@@ -683,9 +683,45 @@ INFO:__main__:[Elapsed Time] : 47163ms, 25.685714285714287ms on average
 
 <br>
 
-# Serving
+# TorchServe
 
-- [Deploying huggingface‘s BERT to production with pytorch/serve](https://medium.com/@freidankm_39840/deploy-huggingface-s-bert-to-production-with-pytorch-serve-27b068026d18)
+- archiving and start torch server
+```
+$ cd torchserve
+* modify for emb_class to use.
+$ ./archive.sh -v -v
+$ ./start-torchserve.sh -v -v
+```
+
+- request 
+```
+* health check
+$ curl http://localhost:16543/ping
+{
+  "status": "Healthy"
+}
+
+* management api
+$ curl http://localhost:16544/models
+{
+  "models": [
+    {
+      "modelName": "electra",
+      "modelUrl": "electra.mar"
+    }
+  ]
+}
+
+* view all inference apis
+$ curl -X OPTIONS http://localhost:16543
+
+* view all management apis
+$ curl -X OPTIONS http://localhost:16544
+
+* classify
+$ echo "이 영화는 정말 재미없다" > test.txt
+$ curl -X POST http://localhost:16543/predictions/electra -T text.txt 
+```
 
 <br>
 
@@ -705,3 +741,7 @@ INFO:__main__:[Elapsed Time] : 47163ms, 25.685714285714287ms on average
   - [ScalarMix](https://github.com/allenai/allennlp/blob/master/allennlp/modules/scalar_mix.py)
 - [Poor Man’s BERT: Smaller and Faster Transformer Models](https://arxiv.org/pdf/2004.03844v1.pdf)
   - https://github.com/hsajjad/transformers/blob/master/examples/run_glue.py
+- [Deploying huggingface‘s BERT to production with pytorch/serve](https://medium.com/@freidankm_39840/deploy-huggingface-s-bert-to-production-with-pytorch-serve-27b068026d18)
+  - [torchserve](https://aws.amazon.com/ko/blogs/korea/announcing-torchserve-an-open-source-model-server-for-pytorch/)
+  - [torchserve management](https://pytorch.org/serve/management_api.html#list-models)
+  - [torchserve advanced configuration](https://pytorch.org/serve/configuration.html)
