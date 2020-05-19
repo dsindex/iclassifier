@@ -75,7 +75,7 @@
 | KoELECTRA-Base, CNN             | 89.51        | 15.5452 / -       | update2    |
 | KoELECTRA-Base, CLS             | 89.63        | 14.2667 / -       | update2    |
 | bpe ELECTRA-base(512.1m) , CNN  | 86.51        | 16.9628 / -       | update2    |
-| bpe ELECTRA-base(512.1m) , CLS  | 86.75        | 14.0790 / -       | update2    |
+| bpe ELECTRA-base(512.1m) , CLS  | 87.33        | 14.7334 / -       | update2    |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -513,6 +513,13 @@ INFO:__main__:[Elapsed Time] : 704011ms, 14.079066325306025ms on average
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.1017k
 INFO:__main__:[Accuracy] : 0.8666, 43327/49997
 INFO:__main__:[Elapsed Time] : 811244ms, 16.223717897431793ms on average
+
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.1339k
+INFO:__main__:[Accuracy] : 0.8733, 43663/49997
+INFO:__main__:[Elapsed Time] : 736737ms, 14.733478678294263ms on average
+
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.1426k
+
 
 ```
 
