@@ -174,7 +174,7 @@ class ClassifierHandler(BaseHandler, ABC):
         logger.info("[Received text] %s", text)
         x = self.encode_text(text)
         x = to_device(x, opt.device)
-        return x
+        return x, text
 
     def inference(self, data):
         config = self.config
@@ -188,11 +188,13 @@ class ClassifierHandler(BaseHandler, ABC):
         predicted_raw = labels[predicted]
         logger.info("[Model predicted] %s", predicted_raw)
 
-        return [predicted_raw]
+        return predicted_raw
 
-    def postprocess(self, inference_output):
-        return inference_output
-
+    def postprocess(self, data, text):
+        return [
+            {'text': text,
+             'results': data},
+        ]
 
 _service = ClassifierHandler()
 
@@ -205,9 +207,9 @@ def handle(data, context):
         if data is None:
             return None
 
-        data = _service.preprocess(data)
+        data, text = _service.preprocess(data)
         data = _service.inference(data)
-        data = _service.postprocess(data)
+        data = _service.postprocess(data, text)
 
         return data
     except Exception as e:

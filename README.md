@@ -719,7 +719,11 @@ $ curl -X OPTIONS http://localhost:16543
 $ curl -X OPTIONS http://localhost:16544
 
 * classify
-$ curl -X POST http://localhost:16543/predictions/electra --form data='이 영화는 재미가 없다'
+$ curl -X POST http://localhost:16543/predictions/electra --form data='이 영화는 재미가 있다' | jq
+{
+  "text": "이 영화는 재미가 있다",
+  "results": "1"
+}
 ```
 
 <br>
