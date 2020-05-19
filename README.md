@@ -689,7 +689,7 @@ INFO:__main__:[Elapsed Time] : 47163ms, 25.685714285714287ms on average
 ```
 $ cd torchserve
 * modify for emb_class to use.
-$ ./archive.sh -v -v
+$ ./archiver.sh -v -v
 $ ./start-torchserve.sh -v -v
 ```
 
@@ -719,8 +719,7 @@ $ curl -X OPTIONS http://localhost:16543
 $ curl -X OPTIONS http://localhost:16544
 
 * classify
-$ echo "이 영화는 정말 재미없다" > test.txt
-$ curl -X POST http://localhost:16543/predictions/electra -T text.txt 
+$ curl -X POST http://localhost:16543/predictions/electra --form data='이 영화는 재미가 없다'
 ```
 
 <br>

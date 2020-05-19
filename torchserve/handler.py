@@ -165,10 +165,12 @@ class ClassifierHandler(BaseHandler, ABC):
     def preprocess(self, data):
         config = self.config
         opt = config['opt']
+        logger.info("data: %s", data)
         text = data[0].get('data')
         if text is None:
             text = data[0].get('body')
-        text = text.decode('utf-8')
+        if text:
+            text = text.decode('utf-8')
         logger.info("[Received text] %s", text)
         x = self.encode_text(text)
         x = to_device(x, opt.device)
@@ -186,7 +188,7 @@ class ClassifierHandler(BaseHandler, ABC):
         predicted_raw = labels[predicted]
         logger.info("[Model predicted] %s", predicted_raw)
 
-        return predicted_raw
+        return [predicted_raw]
 
     def postprocess(self, inference_output):
         return inference_output
