@@ -59,29 +59,29 @@
 
 ### experiments summary
 
-|                     | Accuracy (%) | GPU/CPU                     | ONNX     | CONDA             | CONDA+je          | INTEL   | INTEL+je  | Dynamic           | Dynamic+je        | Inference | Inference+Dynamic | Etc            |
-| ------------------- | ------------ | --------------------------- | -------- | ----------------- | ----------------- | ------- | --------- | ----------------- | ----------------- | --------- | ----------------- | -------------- |    
-| Glove, CNN          | 97.86        | 1.7939  / 4.1414            | 7.5656   | 4.6868  / 3.5353  |                   |         |           |                   |                   | 2.6565    |                   | threads=14     |
-| Glove, Densenet-CNN | 97.57        | 3.6094  / 8.3535            | 19.1212  | 7.6969  / 6.9595  |                   |         |           |                   |                   | 6.1414    |                   | threads=14     |
-| Glove, Densenet-DSA | 97.43        | 7.5007  / -                 |          |                   |                   |         |           |                   |                   |           |                   |                |
-| DistilBERT, CLS     | 97.71        | 9.3075  / -       / -       |          | -       / 37.7777 |                   |         |           | -       / 29.3939 |                   | 14.9494   | 10.4040           | threads=14     |
-| BERT-base, CNN      | 97.57        | 12.1273 / -                 |          | -       / 81.8787 |                   |         |           | -       / 52.4949 |                   | 34.7878   | 30.5454           |                |
-| BERT-base, CLS      | 97.43        | 12.7714 / 100.929 / 63.7373 | 174.2222 | 69.4343 / 62.5959 | 66.1212 / 63.0707 | 68.9191 | 66        | 66.9494 / 49.4747 | 60.7777 / 50.4040 | 30.7979   | 24.5353           | threads=14     |
-| BERT-base, CLS      | 97.00        | 9.2660  / 73.1010 / 43.0707 | 113.2424 | 47.2323 / 43.7070 | 45      / 43.2020 | 48.5050 | 45.2727   | 44.8080 / 34.6565 | 40.8888 / 34.0606 | 19.0707   | 16.1414           | del 8,9,19,11, threads=14 |
-| BERT-large, CNN     | **98.00**    | 24.277  / -                 |          |                   |                   |         |           |                   |                   |           |                   |                |
-| BERT-large, CLS     | 97.86        | 23.542  / -                 |          |                   |                   |         |           |                   |                   |           |                   |                |
+|                     | Accuracy (%) | GPU / CPU                   | ONNX                         | CONDA             | CONDA+je          | INTEL   | INTEL+je  | Dynamic           | Dynamic+je        | Inference | Inference+Dynamic | Etc            |
+| ------------------- | ------------ | --------------------------- | ---------------------------- | ----------------- | ----------------- | ------- | --------- | ----------------- | ----------------- | --------- | ----------------- | -------------- |    
+| Glove, CNN          | 97.86        | 1.7939  / 4.1414            | 7.5656                       | 4.6868  / 3.5353  |                   |         |           |                   |                   | 2.6565    |                   | threads=14     |
+| Glove, Densenet-CNN | 97.57        | 3.6094  / 8.3535            | 19.1212                      | 7.6969  / 6.9595  |                   |         |           |                   |                   | 6.1414    |                   | threads=14     |
+| Glove, Densenet-DSA | 97.43        | 7.5007  / -                 |                              |                   |                   |         |           |                   |                   |           |                   |                |
+| DistilBERT, CLS     | 97.71        | 9.3075  / -       / -       |                              | -       / 37.7777 |                   |         |           | -       / 29.3939 |                   | 14.9494   | 10.4040           | threads=14     |
+| BERT-base, CNN      | 97.57        | 12.1273 / -                 |                              | -       / 81.8787 |                   |         |           | -       / 52.4949 |                   | 34.7878   | 30.5454           |                |
+| BERT-base, CLS      | 97.43        | 12.7714 / 100.929 / 63.7373 | 174.2222 / 47.8340 / 43.2818 | 69.4343 / 62.5959 | 66.1212 / 63.0707 | 68.9191 | 66        | 66.9494 / 49.4747 | 60.7777 / 50.4040 | 30.7979   | 24.5353           | threads=14     |
+| BERT-base, CLS      | 97.00        | 9.2660  / 73.1010 / 43.0707 | 113.2424 / 38.3891 / 29.9957 | 47.2323 / 43.7070 | 45.0000 / 43.2020 | 48.5050 | 45.2727   | 44.8080 / 34.6565 | 40.8888 / 34.0606 | 19.0707   | 16.1414           | del 8,9,19,11, threads=14 |
+| BERT-large, CNN     | **98.00**    | 24.277  / -                 |                              |                   |                   |         |           |                   |                   |           |                   |                |
+| BERT-large, CLS     | 97.86        | 23.542  / -                 |                              |                   |                   |         |           |                   |                   |           |                   |                |
 
 ```
-* GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0) / CPU(pip 1.5.0), [Tesla V100 1 GPU, Intel(R) Xeon(R) Gold 5120 CPU @ 2.20GHz, 2 CPU, 14CORES/1CPU, HyperThreading]
-* ONNX : onnxruntime
-* CONDA : conda pytorch=1.2.0/pytorch=1.5.0
-* CONDA+je : pytorch=1.2.0/pytorch=1.5.0, etc/jemalloc_omp_kmp.sh
+* GPU / CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0) / CPU(pip 1.5.0), [Tesla V100 1 GPU, Intel(R) Xeon(R) Gold 5120 CPU @ 2.20GHz, 2 CPU, 14CORES/1CPU, HyperThreading]
+* ONNX : onnxruntime 1.2.0, pip pytorch==1.2.0 / onnxruntime 1.3.0, conda pytorch=1.5.0 / onnxruntime 1.3.0, conda pytorch=1.5.0, onnxruntime_tools.optimizer_cli
+* CONDA : conda pytorch=1.2.0 / pytorch=1.5.0
+* CONDA+je : pytorch=1.2.0 / pytorch=1.5.0, etc/jemalloc_omp_kmp.sh
 * INTEL : conda pytorch=1.2.0, [intel optimzaed transformers](https://github.com/mingfeima/transformers/tree/kakao/gpt2)
 * INTEL+je : conda pytorch=1.2.0, [intel optimzaed transformers](https://github.com/mingfeima/transformers/tree/kakao/gpt2), etc/jemalloc_omp_kmp.sh
-* Dynamic : conda pytorch=1.4.0/pytorch=1.5.0, dynamic quantization
-* Dynamic+je : conda pytorch=1.4.0/pytorch=1.5.0, dynamic quantization, etc/jemalloc_omp_kmp.sh
+* Dynamic : conda pytorch=1.4.0 / pytorch=1.5.0, --enable_dqm
+* Dynamic+je : conda pytorch=1.4.0 / pytorch=1.5.0, --enable_dqm, etc/jemalloc_omp_kmp.sh
 * Inference : conda pytorch=1.5.0, --enable_inference
-* Inference+Dynamic : conda pytorch=1.5.0, dynamic quantization, --enable_inference
+* Inference+Dynamic : conda pytorch=1.5.0, --enable_dqm, --enable_inference
 * default batch size, learning rate, n_ctx(max_seq_length) : 128, 2e-4, 100
 ```
 

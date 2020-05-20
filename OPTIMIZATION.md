@@ -19,16 +19,12 @@
 
 ### conversion pytorch model to onnx format, inference with onnxruntime
 
-- install [anaconda](https://www.anaconda.com/distribution/#download-section)
-
-- `conda install pytorch=1.5.0` or install [pytorch from source](https://github.com/pytorch/pytorch#from-source)
-
 - requirements
 ```
-$ pip install onnx onnxruntime
+$ pip install onnx onnxruntime onnxruntime-tools
 * numpy >= 1.18.0
-* onnx >= 1.6.0
-* onnxruntime >= 1.2.0
+* onnx >= 1.7.0
+* onnxruntime >= 1.3.0
 ```
 
 - check
@@ -40,26 +36,42 @@ $ python onnx-test.py
 - convert to onnx
 ```
 * preprocessing
+** glove, densenet
 $ python preprocess.py
+** bert
 $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
 
 * train a pytorch model
+** glove
 $ python train.py --decay_rate=0.9 --embedding_trainable
+** densenet
 $ python train.py --config=configs/config-densenet-dsa.json --decay_rate=0.9
+** bert
 $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64 --bert_remove_layers=8,9,10,11
 
-* convert to onnx(opset 11 for pytorch source installed, opset 10 for conda pytorch)
+* convert to onnx
 * on environment pytorch installed from source, or on conda environment pytorch installed from pip.
-$ python evaluate.py --convert_onnx --onnx_path=pytorch-model.onnx > onnx-graph-glove-cnn.txt
-$ python evaluate.py --config=configs/config-densenet-dsa.json --convert_onnx --onnx_path=pytorch-model.onnx > onnx-graph-densenet-dsa.txt
-$ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --convert_onnx --onnx_path=pytorch-model.onnx > onnx-graph-bert-cls.txt
+** glove
+$ python evaluate.py --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-glove-cnn.txt
+** densenet
+$ python evaluate.py --config=configs/config-densenet-dsa.json --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-densenet-dsa.txt
+** bert
+$ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-bert-cls.txt
+```
+
+- optimize onnx
+```
+* bert
+$ python -m onnxruntime_tools.optimizer_cli --input pytorch-model.onnx --output pytorch-model.onnx.opt --model_type bert --num_heads 12 --hidden_size 768 --input_int32
 ```
 
 - inference using onnxruntime
 ```
 * on environment pytorch installed from pip
 * since released pytorch versions(ex, pytorch==1.2.0, 1.5.0) are highly optimized, inference should be done with pytorch version via pip instead from source.
+** glove, densenet
 $ python evaluate.py --enable_ort --onnx_path pytorch-model.onnx --device=cpu --num_threads=14
+** bert
 $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --onnx_path=pytorch-model.onnx --enable_ort --device=cpu --num_threads=14
 ```
 
@@ -105,6 +117,7 @@ $ python mo_onnx.py --input_model pytorch-model.onnx --input='input_ids{i32},inp
   - [(OPTIONAL) EXPORTING A MODEL FROM PYTORCH TO ONNX AND RUNNING IT USING ONNX RUNTIME](https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html)
   - [(ONNX) BERT Model Optimization Tool Overview](https://github.com/microsoft/onnxruntime/tree/master/onnxruntime/python/tools/bert)
   - [(ONNX) API Summary](https://microsoft.github.io/onnxruntime/python/api_summary.html)
+  - [Accelerate your NLP pipelines using Hugging Face Transformers and ONNX Runtime](https://medium.com/microsoftazure/accelerate-your-nlp-pipelines-using-hugging-face-transformers-and-onnx-runtime-2443578f4333)
   - [(OpenVINO) Converting an ONNX Model](https://docs.openvinotoolkit.org/2020.1/_docs_MO_DG_prepare_model_convert_model_Convert_Model_From_ONNX.html) 
   - [pytorch_onnx_openvino](https://github.com/ngeorgis/pytorch_onnx_openvino)
   - [intel optimized transformers](https://github.com/mingfeima/transformers/tree/kakao/gpt2)

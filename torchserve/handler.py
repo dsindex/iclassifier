@@ -19,7 +19,7 @@ class Opt:
         self.model_path = os.path.join(model_dir, 'pytorch-model.pt')
         self.device = 'cpu'
         self.num_threads = 14
-        self.enable_dqm = False
+        self.enable_dqm = True
         self.label_path = os.path.join(model_dir, 'label.txt')
         # for emb_class='glove'
         self.embedding_path = os.path.join(model_dir, 'embedding.npy')
@@ -131,7 +131,7 @@ class ClassifierHandler(BaseHandler, ABC):
         # enable to use dynamic quantized model (pytorch>=1.3.0)
         if opt.enable_dqm and opt.device == 'cpu':
             self.model = torch.quantization.quantize_dynamic(self.model, {torch.nn.Linear}, dtype=torch.qint8)
-            print(model)
+            print(self.model)
 
         # prepare tokenizer
         self.tokenizer = self.prepare_tokenizer()
