@@ -33,35 +33,53 @@ $ cd etc
 $ python onnx-test.py
 ```
 
-- convert to onnx
-```
-* preprocessing
-** glove, densenet
-$ python preprocess.py
-** bert
-$ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
+- conversion to onnx
 
-* train a pytorch model
-** glove
-$ python train.py --lr_decay_rate=0.9 --embedding_trainable
-** densenet
-$ python train.py --config=configs/config-densenet-dsa.json --lr_decay_rate=0.9
-** bert
-$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64 --bert_remove_layers=8,9,10,11
+  - preprocessing
+  ```
+  ** glove
+  $ python preprocess.py
 
-* convert to onnx
-* on environment pytorch installed from source, or on conda environment pytorch installed from pip.
-** glove
-$ python evaluate.py --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-glove-cnn.txt
-** densenet
-$ python evaluate.py --config=configs/config-densenet-dsa.json --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-densenet-dsa.txt
-** bert
-$ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-bert-cls.txt
-```
+  ** densenet-cnn, densenet-dsa
+  $ python preprocess.py --config=configs/config-densenet-cnn.json
+  $ python preprocess.py --config=configs/config-densenet-dsa.json
+
+  ** bert
+  $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
+  ```
+
+  - train a pytorch model
+  ```
+  ** glove
+  $ python train.py --lr_decay_rate=0.9 --embedding_trainable
+
+  ** densenet-cnn, densenet-dsa
+  $ python train.py --config=configs/config-densenet-cnn.json --lr_decay_rate=0.9
+  $ python train.py --config=configs/config-densenet-dsa.json --lr_decay_rate=0.9
+
+  ** bert
+  $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64 --bert_remove_layers=8,9,10,11
+  ```
+
+  - convert
+  ```
+  ** glove
+  $ python evaluate.py --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-glove-cnn.txt
+
+  ** densenet-cnn, densenet-dsa
+  $ python evaluate.py --config=configs/config-densenet-cnn.json --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-densenet-cnn.txt
+  $ python evaluate.py --config=configs/config-densenet-dsa.json --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-densenet-dsa.txt
+
+  ** bert
+  $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-bert-cls.txt
+  ```
 
 - optimize onnx
 ```
-* bert
+* glove, densenet ==> It might not be usable!
+$ python -m onnxruntime_tools.optimizer_cli --input pytorch-model.onnx --output pytorch-model.onnx.opt --input_int32
+
+* bert            ==> It might not be usable!
 $ python -m onnxruntime_tools.optimizer_cli --input pytorch-model.onnx --output pytorch-model.onnx.opt --model_type bert --num_heads 12 --hidden_size 768 --input_int32
 ```
 
@@ -69,8 +87,14 @@ $ python -m onnxruntime_tools.optimizer_cli --input pytorch-model.onnx --output 
 ```
 * on environment pytorch installed from pip
 * since released pytorch versions(ex, pytorch==1.2.0, 1.5.0) are highly optimized, inference should be done with pytorch version via pip instead from source.
-** glove, densenet
+
+** glove
 $ python evaluate.py --enable_ort --onnx_path pytorch-model.onnx --device=cpu --num_threads=14
+
+** densenet-cnn, densenet-dsa
+$ python evaluate.py --config=configs/config-densenet-cnn.json --enable_ort --onnx_path pytorch-model.onnx --device=cpu --num_threads=14
+$ python evaluate.py --config=configs/config-densenet-dsa.json --enable_ort --onnx_path pytorch-model.onnx --device=cpu --num_threads=14
+
 ** bert
 $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --onnx_path=pytorch-model.onnx --enable_ort --device=cpu --num_threads=14
 ```
