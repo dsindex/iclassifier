@@ -105,7 +105,7 @@ class DenseNet(nn.Module):
         # mask  : [batch_size, seq_size]
         x = x.permute(0, 2, 1)
         # x     : [batch_size, emb_dim, seq_size]
-        masks = mask.unsqueeze(-1).to(torch.float)
+        masks = mask.unsqueeze(2).to(torch.float)
         # masks : [batch_size, seq_size, 1]
         masks = masks.permute(0, 2, 1)
         # masks : [batch_size, 1, seq_size]
@@ -165,7 +165,7 @@ class DSA(nn.Module):
             a = torch.softmax(q.detach().clone(), dim=-1) # preventing from unreachable variable at gradient computation. 
             # a : [batch_size, seq_size]
             a *= mask
-            a = a.unsqueeze(-1)
+            a = a.unsqueeze(2)
             # a : [batch_size, seq_size, 1]
             # element-wise multiplication(broadcasting) and summation along 1 dim
             s = (a * x).sum(1)
@@ -174,9 +174,9 @@ class DSA(nn.Module):
             # z : [batch_size, dsa_dim]
             z_list.append(z)
             # update q
-            m = z.unsqueeze(-1)
+            m = z.unsqueeze(2)
             # m : [batch_size, dsa_dim, 1]
-            q += torch.matmul(x, m).squeeze(-1)
+            q += torch.matmul(x, m).squeeze(2)
             # q : [batch_size, seq_size]
         return z_list[-1]
 

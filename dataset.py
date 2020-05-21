@@ -24,7 +24,7 @@ def prepare_dataset(config, filepath, DatasetClass, sampling=False, num_workers=
         sampler = DistributedSampler(dataset)
     bz = opt.batch_size
     if batch_size > 0: bz = batch_size
-    loader = DataLoader(dataset, batch_size=bz, num_workers=num_workers, sampler=sampler, pin_memory=False)
+    loader = DataLoader(dataset, batch_size=bz, num_workers=num_workers, sampler=sampler, pin_memory=True)
     logger.info("[{} data loaded]".format(filepath))
     return loader
 
