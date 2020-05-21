@@ -728,6 +728,19 @@ $ curl -X POST http://localhost:16543/predictions/electra --form data='이 영�
 
 <br>
 
+# Citation
+
+```
+@misc{iclassifier,
+  author = {dsindex},
+  title = {iclassifier},
+  year = {2020},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/dsindex/iclassifier}},
+}
+```
+
 # References
 
 - [Intent Detection](https://paperswithcode.com/task/intent-detection)
