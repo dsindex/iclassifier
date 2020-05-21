@@ -89,12 +89,18 @@ def convert_onnx(config, torch_model, x):
         dynamic_axes = {'input': {0: 'batch_size'},
                         'output': {0: 'batch_size'}}
     if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
-        input_names  = ['input_ids', 'input_mask', 'segment_ids']
         output_names = ['output']
-        dynamic_axes = {'input_ids': {0: 'batch_size'},
-                        'input_mask': {0: 'batch_size'},
-                        'segment_ids': {0: 'batch_size'},
-                        'output': {0: 'batch_size'}}
+        if config['emb_class'] in ['distilbert', 'bart']:
+            input_names  = ['input_ids', 'input_mask']
+            dynamic_axes = {'input_ids': {0: 'batch_size'},
+                            'input_mask': {0: 'batch_size'},
+                            'output': {0: 'batch_size'}}
+        else:
+            input_names  = ['input_ids', 'input_mask', 'segment_ids']
+            dynamic_axes = {'input_ids': {0: 'batch_size'},
+                            'input_mask': {0: 'batch_size'},
+                            'segment_ids': {0: 'batch_size'},
+                            'output': {0: 'batch_size'}}
         
     torch.onnx.export(torch_model,               # model being run
                       x,                         # model input (or a tuple for multiple inputs)
@@ -211,9 +217,13 @@ def evaluate(opt):
                 if config['emb_class'] == 'glove':
                     ort_inputs = {ort_session.get_inputs()[0].name: x}
                 if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
-                    ort_inputs = {ort_session.get_inputs()[0].name: x[0],
-                                  ort_session.get_inputs()[1].name: x[1],
-                                  ort_session.get_inputs()[2].name: x[2]}
+                    if config['emb_class'] in ['distilbert', 'bart']:
+                        ort_inputs = {ort_session.get_inputs()[0].name: x[0],
+                                      ort_session.get_inputs()[1].name: x[1]}
+                    else:
+                        ort_inputs = {ort_session.get_inputs()[0].name: x[0],
+                                      ort_session.get_inputs()[1].name: x[1],
+                                      ort_session.get_inputs()[2].name: x[2]}
                 logits = ort_session.run(None, ort_inputs)[0]
                 logits = to_device(torch.tensor(logits), opt.device)
             else:
