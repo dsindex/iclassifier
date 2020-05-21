@@ -43,9 +43,9 @@ $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_o
 
 * train a pytorch model
 ** glove
-$ python train.py --decay_rate=0.9 --embedding_trainable
+$ python train.py --lr_decay_rate=0.9 --embedding_trainable
 ** densenet
-$ python train.py --config=configs/config-densenet-dsa.json --decay_rate=0.9
+$ python train.py --config=configs/config-densenet-dsa.json --lr_decay_rate=0.9
 ** bert
 $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64 --bert_remove_layers=8,9,10,11
 
