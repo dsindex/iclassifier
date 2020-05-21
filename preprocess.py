@@ -133,7 +133,7 @@ def write_data(data, output_path, tokenizer, labels):
         ids_str = ' '.join([str(d) for d in ids])
         f_write.write(str(label_id) + ' ' + ids_str)
         num_tok_per_sent.append(len(tokens))
-        for _ in range(config['n_ctx'] - len(tokens)):
+        for _ in range(config['n_ctx'] - len(ids)):
             f_write.write(' '+str(pad_id))
         f_write.write('\n')
     f_write.close()

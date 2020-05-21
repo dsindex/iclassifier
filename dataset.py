@@ -38,7 +38,7 @@ class SnipsGloveDataset(Dataset):
                 xi = [int(d) for d in items[1:]]
                 x.append(xi)
                 y.append(yi)
-        
+
         self.x = torch.tensor(x) 
         self.y = torch.tensor(y).long()
  
