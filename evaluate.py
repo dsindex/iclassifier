@@ -86,21 +86,21 @@ def convert_onnx(config, torch_model, x):
     if config['emb_class'] == 'glove':
         input_names  = ['input']
         output_names = ['output']
-        dynamic_axes = {'input': {0: 'batch_size'},
-                        'output': {0: 'batch_size'}}
+        dynamic_axes = {'input': {0: 'batch', 1: 'sequence'},
+                        'output': {0: 'batch', 1: 'sequence'}}
     if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
         output_names = ['output']
         if config['emb_class'] in ['distilbert', 'bart']:
             input_names  = ['input_ids', 'input_mask']
-            dynamic_axes = {'input_ids': {0: 'batch_size'},
-                            'input_mask': {0: 'batch_size'},
-                            'output': {0: 'batch_size'}}
+            dynamic_axes = {'input_ids': {0: 'batch', 1: 'sequence'},
+                            'input_mask': {0: 'batch', 1: 'sequence'},
+                            'output': {0: 'batch'}}
         else:
             input_names  = ['input_ids', 'input_mask', 'segment_ids']
-            dynamic_axes = {'input_ids': {0: 'batch_size'},
-                            'input_mask': {0: 'batch_size'},
-                            'segment_ids': {0: 'batch_size'},
-                            'output': {0: 'batch_size'}}
+            dynamic_axes = {'input_ids': {0: 'batch', 1: 'sequence'},
+                            'input_mask': {0: 'batch', 1: 'sequence'},
+                            'segment_ids': {0: 'batch', 1: 'sequence'},
+                            'output': {0: 'batch'}}
         
     torch.onnx.export(torch_model,               # model being run
                       x,                         # model input (or a tuple for multiple inputs)
@@ -316,6 +316,14 @@ def inference(opt):
     model = load_model(config, checkpoint)
     model.eval()
 
+    # load onnx model for using onnxruntime
+    if opt.enable_ort:
+        import onnxruntime as ort
+        sess_options = ort.SessionOptions()
+        sess_options.inter_op_num_threads = opt.num_threads
+        sess_options.intra_op_num_threads = opt.num_threads
+        ort_session = ort.InferenceSession(opt.onnx_path, sess_options=sess_options)
+
     # enable to use dynamic quantized model (pytorch>=1.3.0)
     if opt.enable_dqm and opt.device == 'cpu':
         model = torch.quantization.quantize_dynamic(model, {torch.nn.Linear}, dtype=torch.qint8)
@@ -340,7 +348,22 @@ def inference(opt):
             text = ' '.join(x_raw)
             x = encode_text(config, tokenizer, text)
             x = to_device(x, opt.device)
-            logits = model(x)
+            if opt.enable_ort:
+                x = to_numpy(x)
+                if config['emb_class'] == 'glove':
+                    ort_inputs = {ort_session.get_inputs()[0].name: x}
+                if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
+                    if config['emb_class'] in ['distilbert', 'bart']:
+                        ort_inputs = {ort_session.get_inputs()[0].name: x[0],
+                                      ort_session.get_inputs()[1].name: x[1]}
+                    else:
+                        ort_inputs = {ort_session.get_inputs()[0].name: x[0],
+                                      ort_session.get_inputs()[1].name: x[1],
+                                      ort_session.get_inputs()[2].name: x[2]}
+                logits = ort_session.run(None, ort_inputs)[0]
+                logits = to_device(torch.tensor(logits), opt.device)
+            else:
+                logits = model(x)
             predicted = logits.argmax(1)
             predicted = to_numpy(predicted)[0]
             predicted_raw = labels[predicted]
