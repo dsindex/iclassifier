@@ -47,7 +47,7 @@
 - [electra](https://github.com/dsindex/electra#pretraining-electra)를 이용해서 학습
   - [README.md](https://github.com/dsindex/electra/blob/master/README.md)
   - [train.sh](https://github.com/dsindex/electra/blob/master/train.sh)
-    - ex) `kor-electra-base-bpe-512-1m`
+    - ex) `kor-electra-base-bpe-512-2m`
 
 ### Experiments summary
 
@@ -74,8 +74,8 @@
 | dha BERT(10m), CLS              | 89.25        | 12.7876 / -       |            |
 | KoELECTRA-Base, CNN             | 89.51        | 15.5452 / -       | update2    |
 | KoELECTRA-Base, CLS             | 89.63        | 14.2667 / -       | update2    |
-| bpe ELECTRA-base(512.1m) , CNN  | 87.30        | 14.4082 / -       | update2    |
-| bpe ELECTRA-base(512.1m) , CLS  | 87.37        | 13.1325 / -       | update2    |
+| bpe ELECTRA-base(512.2m) , CNN  | 87.30        | 14.4082 / -       | update2    |
+| bpe ELECTRA-base(512.2m) , CLS  | 87.37        | 13.1325 / -       | update2    |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -436,15 +436,12 @@ INFO:__main__:[Elapsed Time] : 721693ms, 14.425894071525722ms on average
 INFO:__main__:[Accuracy] : 0.8963, 44814/49997
 INFO:__main__:[Elapsed Time] : 713403ms, 14.266721337707017ms on average
 
-** --use_transformers_optimizer --lr=1e-5 --epoch=30 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
-
-
 ```
 
 </p>
 </details>
 
-### ELECTRA(kor-electra-base-bpe-512-1m)
+### ELECTRA(kor-electra-base-bpe-512-2m)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -453,13 +450,13 @@ INFO:__main__:[Elapsed Time] : 713403ms, 14.266721337707017ms on average
 ```
 * enc_class=cnn
 
-$ python preprocess.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-512-1m --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-512-1m --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=10 --batch_size=64 --data_dir=./data/clova_sentiments 
+$ python preprocess.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-512-2m --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-512-2m --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=10 --batch_size=64 --data_dir=./data/clova_sentiments 
 
 * enc_class=cls
 
-$ python preprocess.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-512-1m --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-512-1m --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=10 --batch_size=64 --data_dir=./data/clova_sentiments 
+$ python preprocess.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-512-2m --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-512-2m --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=10 --batch_size=64 --data_dir=./data/clova_sentiments 
 ```
 
 - evaluation
@@ -468,22 +465,7 @@ $ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_
 
 $ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
-INFO:__main__:[Accuracy] : 0.8574, 42866/49997
-INFO:__main__:[Elapsed Time] : 759670ms, 15.192475398031842ms on average
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20 , 512-1m.452k
-INFO:__main__:[Accuracy] : 0.8601, 43001/49997
-INFO:__main__:[Elapsed Time] : 814421ms, 16.287523001840146ms on average
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20 , 512-1m.607k
-INFO:__main__:[Accuracy] : 0.8640, 43198/49997
-INFO:__main__:[Elapsed Time] : 806413ms, 16.127330186414913ms on average
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.607k
-INFO:__main__:[Accuracy] : 0.8651, 43252/49997
-INFO:__main__:[Elapsed Time] : 848205ms, 16.962837026962156ms on average
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.1869k
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-2m.1869k
 INFO:__main__:[Accuracy] : 0.8730, 43647/49997
 INFO:__main__:[Elapsed Time] : 720464ms, 14.408292663413073ms on average
 
@@ -491,48 +473,11 @@ INFO:__main__:[Elapsed Time] : 720464ms, 14.408292663413073ms on average
 
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
-INFO:__main__:[Accuracy] : 0.8518, 42588/49997
-INFO:__main__:[Elapsed Time] : 757087ms, 15.140831266501321ms on average
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20 , 512-1m.452k
-INFO:__main__:[Accuracy] : 0.8609, 43043/49997
-INFO:__main__:[Elapsed Time] : 742560ms, 14.850368029442356ms on average
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20 , 512-1m.607k
-INFO:__main__:[Accuracy] : 0.8557, 42780/49997
-INFO:__main__:[Elapsed Time] : 692038ms, 13.839847187775023ms on average
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20 --lr=1e-5 , 512-1m.607k
-INFO:__main__:[Accuracy] : 0.8672, 43357/49997
-INFO:__main__:[Elapsed Time] : 696586ms, 13.930814465157212ms on average
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.768k
-INFO:__main__:[Accuracy] : 0.8638, 43188/49997
-INFO:__main__:[Elapsed Time] : 701679ms, 14.032642611408912ms on average
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.796k
-INFO:__main__:[Accuracy] : 0.8675, 43372/49997
-INFO:__main__:[Elapsed Time] : 704011ms, 14.079066325306025ms on average
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.1017k
-INFO:__main__:[Accuracy] : 0.8666, 43327/49997
-INFO:__main__:[Elapsed Time] : 811244ms, 16.223717897431793ms on average
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.1339k
-INFO:__main__:[Accuracy] : 0.8733, 43663/49997
-INFO:__main__:[Elapsed Time] : 736737ms, 14.733478678294263ms on average
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.1426k
-INFO:__main__:[Accuracy] : 0.8664, 43316/49997
-INFO:__main__:[Elapsed Time] : 731402ms, 14.627030162412993ms on average
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.1519k
-INFO:__main__:[Accuracy] : 0.8661, 43302/49997
-INFO:__main__:[Elapsed Time] : 772047ms, 15.440055204416353ms on average
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-1m.1869k
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-2m.1869k
 INFO:__main__:[Accuracy] : 0.8737, 43680/49997
 INFO:__main__:[Elapsed Time] : 656697ms, 13.13259060724858ms on average
+
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-2m.1996k
 
 ```
 
