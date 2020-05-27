@@ -476,9 +476,6 @@ $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-2m.1869k
 INFO:__main__:[Accuracy] : 0.8737, 43680/49997
 INFO:__main__:[Elapsed Time] : 656697ms, 13.13259060724858ms on average
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-2m.1996k
-
 ```
 
 </p>
