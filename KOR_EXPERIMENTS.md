@@ -17,18 +17,16 @@
 
 ### GLOVE model
 
-- 한국어 문서 데이터 준비
-  - 다양한 문서 데이터를 크롤링
-
 - [Standford GloVe code](https://github.com/stanfordnlp/GloVe)를 이용해서 한국어 GLOVE 학습
+  - 한국어 문서 데이터 준비
+    - 다양한 문서 데이터를 크롤링
   - ex) kor.glove.300k.300d.txt
 
 ### BERT model
 
-- 한국어 문서 데이터 준비
-  - 위 한국어 GLOVE 학습에 사용한 데이터를 그대로 이용
-
 - [google original tf code](https://github.com/google-research/bert)를 이용해서 학습
+  - 한국어 문서 데이터 준비
+    - 위 한국어 GLOVE 학습에 사용한 데이터를 그대로 이용
   - [sentencepiece](https://github.com/google/sentencepiece) character-level bpe tokenizer
     - ex) all.bpe.4.8m_step
   - `character-level bpe + 형태소분석기`
@@ -41,10 +39,9 @@
 - 위에서 사용한 문서로 새롭게 학습하기 전에, 기존에 huggingface에 올라온 monologg에서 학습시킨 모델을 사용해서 실험.
   - [monologg](https://huggingface.co/monologg/koelectra-base-discriminator)
 
-- 한국어 문서 데이터 준비
-  - 위 한국어 GLOVE 학습에 사용한 데이터를 그대로 이용
-
 - [electra](https://github.com/dsindex/electra#pretraining-electra)를 이용해서 학습
+  - 한국어 문서 데이터 준비
+    - 위 한국어 GLOVE 학습에 사용한 데이터를 그대로 이용
   - [README.md](https://github.com/dsindex/electra/blob/master/README.md)
   - [train.sh](https://github.com/dsindex/electra/blob/master/train.sh)
     - ex) `kor-electra-base-bpe-512-2m`
