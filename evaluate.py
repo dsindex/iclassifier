@@ -89,18 +89,12 @@ def convert_onnx(config, torch_model, x):
         dynamic_axes = {'input': {0: 'batch', 1: 'sequence'},
                         'output': {0: 'batch', 1: 'sequence'}}
     if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
+        input_names  = ['input_ids', 'input_mask', 'segment_ids']
         output_names = ['output']
-        if config['emb_class'] in ['distilbert', 'bart']:
-            input_names  = ['input_ids', 'input_mask']
-            dynamic_axes = {'input_ids': {0: 'batch', 1: 'sequence'},
-                            'input_mask': {0: 'batch', 1: 'sequence'},
-                            'output': {0: 'batch'}}
-        else:
-            input_names  = ['input_ids', 'input_mask', 'segment_ids']
-            dynamic_axes = {'input_ids': {0: 'batch', 1: 'sequence'},
-                            'input_mask': {0: 'batch', 1: 'sequence'},
-                            'segment_ids': {0: 'batch', 1: 'sequence'},
-                            'output': {0: 'batch'}}
+        dynamic_axes = {'input_ids': {0: 'batch', 1: 'sequence'},
+                        'input_mask': {0: 'batch', 1: 'sequence'},
+                        'segment_ids': {0: 'batch', 1: 'sequence'},
+                        'output': {0: 'batch'}}
         
     torch.onnx.export(torch_model,               # model being run
                       x,                         # model input (or a tuple for multiple inputs)
