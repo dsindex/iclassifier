@@ -23,7 +23,7 @@ class BaseModel(nn.Module):
 
     def load_embedding(self, input_path):
         weights_matrix = np.load(input_path)
-        weights_matrix = torch.tensor(weights_matrix)
+        weights_matrix = torch.as_tensor(weights_matrix)
         return weights_matrix
 
     def create_embedding_layer(self, vocab_dim, emb_dim, weights_matrix=None, non_trainable=True, padding_idx=0):
