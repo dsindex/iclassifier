@@ -283,7 +283,7 @@ def main():
     parser.add_argument('--config', type=str, default='configs/config-glove-cnn.json')
     parser.add_argument('--data_dir', type=str, default='data/snips')
     parser.add_argument('--embedding_path', type=str, default='embeddings/glove.6B.300d.txt')
-    parser.add_argument('--seed', default=5, type=int)
+    parser.add_argument('--seed', default=42, type=int)
     # for BERT, ALBERT
     parser.add_argument('--bert_model_name_or_path', type=str, default='bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
