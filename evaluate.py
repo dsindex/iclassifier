@@ -207,6 +207,7 @@ def evaluate(opt):
             start_time = time.time()
             x = to_device(x, opt.device)
             y = y.to(opt.device)
+
             if opt.enable_ort:
                 x = to_numpy(x)
                 if config['emb_class'] == 'glove':
@@ -223,6 +224,7 @@ def evaluate(opt):
                 logits = to_device(torch.tensor(logits), opt.device)
             else:
                 logits = model(x)
+
             if preds is None:
                 preds = to_numpy(logits)
             else:
@@ -343,6 +345,7 @@ def inference(opt):
             text = ' '.join(x_raw)
             x = encode_text(config, tokenizer, text)
             x = to_device(x, opt.device)
+
             if opt.enable_ort:
                 x = to_numpy(x)
                 if config['emb_class'] == 'glove':
@@ -359,6 +362,7 @@ def inference(opt):
                 logits = to_device(torch.tensor(logits), opt.device)
             else:
                 logits = model(x)
+
             predicted = logits.argmax(1)
             predicted = to_numpy(predicted)[0]
             predicted_raw = labels[predicted]
