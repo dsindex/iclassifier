@@ -281,9 +281,9 @@ def prepare_tokenizer(config, model):
 def encode_text(config, tokenizer, text):
     if config['emb_class'] == 'glove':
         tokens = text.split()
-        ids = tokenizer.convert_tokens_to_ids(tokens)
+        ids = tokenizer.convert_tokens_to_ids(tokens, pad_sequence=False)
         x = torch.tensor([ids])
-        # x : [batch_size, seq_size]
+        # x : [batch_size, variable size]
         # batch size: 1
     if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
         from torch.utils.data import TensorDataset
