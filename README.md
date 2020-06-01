@@ -61,9 +61,9 @@
 
 |                     | Accuracy (%) | GPU / CPU                   | ONNX                         | CONDA             | CONDA+je          | INTEL   | INTEL+je  | Dynamic           | Dynamic+je        | Inference | Inference+Dynamic | Inference+ONNX    | Etc            |
 | ------------------- | ------------ | --------------------------- | ---------------------------- | ----------------- | ----------------- | ------- | --------- | ----------------- | ----------------- | --------- | ----------------- | ----------------- | -------------- |    
-| Glove, CNN          | 97.86        | 1.7939  /                   | 7.5656   / 1.8689  / 1.7735  | 4.6868  / 2.7592  |                   |         |           |                   |                   | 1.9398    |                   | 0.3848  / 0.4125  | threads=14     |
-| Glove, Densenet-CNN | 97.57        | 3.6094  / 8.3535            | 19.1212  / 4.4506  / 4.6051  | 7.6969  / 6.9595  |                   |         |           |                   |                   | 5.1616    |                   | 2.9184  / 2.9885  | threads=14     |
-| Glove, Densenet-DSA | 97.43        | 7.5007  / -                 | -        / 6.3204  / 6.3018  |         / 9.6137  |                   |         |           |                   |                   | 9.7896    |                   | 4.291   / 4.3490  | threads=14     |
+| Glove, CNN          | 97.86        | 1.7939  / -                 | 7.5656   / 1.8689  / 1.7735  | 4.6868  / 2.7592  |                   |         |           |                   |                   | 1.9398    |                   | 0.3848  / 0.4125  | threads=14     |
+| Glove, Densenet-CNN | 97.57        | 3.6094  / -                 | 19.1212  / 3.0717  / 3.0917  | 7.6969  / 6.5887  |                   |         |           |                   |                   | 4.9481    |                   | 0.8658  / 0.8583  | threads=14     |
+| Glove, Densenet-DSA | 97.43        | 7.5007  / -                 | -        / 4.4936  / 4.9337  |         / 9.7873  |                   |         |           |                   |                   | 7.2086    |                   | 1.5420  / 1.5486  | threads=14     |
 | DistilBERT, CLS     | 97.71        | 9.3075  / -       / -       | -        / 32.4263 / 31.1101 | -       / 37.7777 |                   |         |           | -       / 29.3939 |                   | 14.9494   | 10.4040           | 8.9942  / 8.3319  | threads=14     |
 | BERT-base, CNN      | 97.57        | 12.1273 / -                 |                              | -       / 81.8787 |                   |         |           | -       / 52.4949 |                   | 34.7878   | 30.5454           |                   | threads=14     |
 | BERT-base, CLS      | 97.43        | 12.7714 / 100.929 / 63.7373 | 174.2222 / 46.4263 / 43.5078 | 69.4343 / 62.5959 | 66.1212 / 63.0707 | 68.9191 | 66        | 66.9494 / 49.4747 | 60.7777 / 50.4040 | 30.7979   | 24.5353           | 16.9756 / 15.9699 | threads=14     |
@@ -75,11 +75,11 @@
 * GPU / CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0) / CPU(pip 1.5.0), [Tesla V100 1 GPU, Intel(R) Xeon(R) Gold 5120 CPU @ 2.20GHz, 2 CPU, 14CORES/1CPU, HyperThreading]
 * ONNX : onnxruntime 1.2.0, pip pytorch==1.2.0 / onnxruntime 1.3.0, conda pytorch=1.5.0 / onnxruntime 1.3.0, conda pytorch=1.5.0, onnxruntime_tools.optimizer_cli
 * CONDA : conda pytorch=1.2.0 / pytorch=1.5.0
-* CONDA+je : pytorch=1.2.0 / pytorch=1.5.0, etc/jemalloc_omp_kmp.sh
+* CONDA+je : pytorch=1.2.0, etc/jemalloc_omp_kmp.sh / pytorch=1.5.0, etc/jemalloc_omp_kmp.sh
 * INTEL : conda pytorch=1.2.0, [intel optimzaed transformers](https://github.com/mingfeima/transformers/tree/kakao/gpt2)
 * INTEL+je : conda pytorch=1.2.0, [intel optimzaed transformers](https://github.com/mingfeima/transformers/tree/kakao/gpt2), etc/jemalloc_omp_kmp.sh
-* Dynamic : conda pytorch=1.4.0 / pytorch=1.5.0, --enable_dqm
-* Dynamic+je : conda pytorch=1.4.0 / pytorch=1.5.0, --enable_dqm, etc/jemalloc_omp_kmp.sh
+* Dynamic : conda pytorch=1.4.0, --enable_dqm / pytorch=1.5.0, --enable_dqm
+* Dynamic+je : conda pytorch=1.4.0, --enable_dqm, etc/jemalloc_omp_kmp.sh / pytorch=1.5.0, --enable_dqm, etc/jemalloc_omp_kmp.sh
 * Inference : conda pytorch=1.5.0, --enable_inference
 * Inference+Dynamic : conda pytorch=1.5.0, --enable_dqm, --enable_inference
 * Inference+ONNX : conda pytorch=1.5.0, --enable_ort(onnxruntime 1.3.0), --enable_inference / conda pytorch=1.5.0, --enable_ort(onnxruntime 1.3.0), --enable_inference, onnxruntime_tools.optimizer_cli
