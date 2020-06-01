@@ -146,9 +146,12 @@ class ClassifierHandler(BaseHandler, ABC):
         tokenizer = self.tokenizer
         if config['emb_class'] == 'glove':
             tokens = text.split()
-            ids = tokenizer.convert_tokens_to_ids(tokens)
+            # kernel size can't be greater than actual input size,
+            # we should pad the sequence up to the maximum kernel size + 1.
+            min_seq_size = 10
+            ids = tokenizer.convert_tokens_to_ids(tokens, pad_sequence=False, min_seq_size=min_seq_size)
             x = torch.tensor([ids])
-            # x : [batch_size, seq_size]
+            # x : [batch_size, variable size]
             # batch size: 1
         if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
             from torch.utils.data import TensorDataset

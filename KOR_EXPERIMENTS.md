@@ -477,6 +477,9 @@ INFO:__main__:[Elapsed Time] : 656697ms, 13.13259060724858ms on average
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-2m.2000k
 INFO:__main__:[Accuracy] : 0.8664, 43315/49997
 INFO:__main__:[Elapsed Time] : 574772ms, 11.494559564765181ms on average
+
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 3k-512-1m.476k
+
 ```
 
 </p>

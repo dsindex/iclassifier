@@ -239,7 +239,7 @@ def evaluate(opt):
             if opt.num_examples != 0 and total_examples >= opt.num_examples:
                 logger.info("[Stop Evaluation] : up to the {} examples".format(total_examples))
                 break
-            duration_time = int((time.time()-start_time)*1000)
+            duration_time = float((time.time()-start_time)*1000)
             if i != 0: total_duration_time += duration_time
             '''
             logger.info("[Elapsed Time] : {}ms".format(duration_time))
@@ -281,7 +281,10 @@ def prepare_tokenizer(config, model):
 def encode_text(config, tokenizer, text):
     if config['emb_class'] == 'glove':
         tokens = text.split()
-        ids = tokenizer.convert_tokens_to_ids(tokens, pad_sequence=True)
+        # kernel size can't be greater than actual input size,
+        # we should pad the sequence up to the maximum kernel size + 1.
+        min_seq_size = 10
+        ids = tokenizer.convert_tokens_to_ids(tokens, pad_sequence=False, min_seq_size=min_seq_size)
         x = torch.tensor([ids])
         # x : [batch_size, variable size]
         # batch size: 1
@@ -371,7 +374,7 @@ def inference(opt):
             if opt.num_examples != 0 and total_examples >= opt.num_examples:
                 logger.info("[Stop Inference] : up to the {} examples".format(total_examples))
                 break
-            duration_time = int((time.time()-start_time)*1000)
+            duration_time = float((time.time()-start_time)*1000)
             if i != 0: total_duration_time += duration_time
             logger.info("[Elapsed Time] : {}ms".format(duration_time))
     f_out.close()
