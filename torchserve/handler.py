@@ -24,6 +24,7 @@ class Opt:
         # for emb_class='glove'
         self.embedding_path = os.path.join(model_dir, 'embedding.npy')
         self.vocab_path = os.path.join(model_dir, 'mvocab.txt')
+        # for emb_class='bert'
         self.bert_output_dir = model_dir
 
 class ClassifierHandler(BaseHandler, ABC):
