@@ -86,6 +86,24 @@
 * default batch size, learning rate, n_ctx(max_seq_length) : 128, 2e-4, 100
 ```
 
+| # threads | Model               | Inference+ONNX   | Etc              |
+| --------- | ------------------- | ---------------- | ---------------- |
+| 1         | Glove, Densenet-DSA | 3.33             |                  |
+| 1         | DistilBERT, CLS     | 51.77            |                  |
+| 2         | DistilBERT, CLS     | 28.38            |                  |
+| 3         | DistilBERT, CLS     | 21.47            |                  |
+| 4         | DistilBERT, CLS     | 18.75            |                  |
+| 5         | DistilBERT, CLS     | 15.23            |                  |
+| 6         | DistilBERT, CLS     | 14.22            |                  |
+| 7         | DistilBERT, CLS     | 12.52            |                  |
+| 8         | DistilBERT, CLS     | 10.46            | **good enough**  |
+| 9         | DistilBERT, CLS     | 10.93            |                  |
+| 10        | DistilBERT, CLS     | 9.75             |                  |
+| 11        | DistilBERT, CLS     | 9.22             |                  |
+| 12        | DistilBERT, CLS     | 10.11            |                  |
+| 13        | DistilBERT, CLS     | 9.45             |                  |
+| 14        | DistilBERT, CLS     | 9.31             |                  |
+
 <details><summary><b>emb_class=glove, enc_class=cnn</b></summary>
 <p>
   
