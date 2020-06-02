@@ -234,7 +234,7 @@ def evaluate(opt):
             cur_examples = y.size(0)
             total_examples += cur_examples
             if i == 0: # first one may take longer time, so ignore in computing duration.
-                first_time = int((time.time()-first_time)*1000)
+                first_time = float((time.time()-first_time)*1000)
                 first_examples = cur_examples
             if opt.num_examples != 0 and total_examples >= opt.num_examples:
                 logger.info("[Stop Evaluation] : up to the {} examples".format(total_examples))
@@ -245,7 +245,7 @@ def evaluate(opt):
             logger.info("[Elapsed Time] : {}ms".format(duration_time))
             '''
     acc  = correct / total_examples
-    whole_time = int((time.time()-whole_st_time)*1000)
+    whole_time = float((time.time()-whole_st_time)*1000)
     avg_time = (whole_time - first_time) / (total_examples - first_examples)
     # write predictions to file
     labels = model.labels
