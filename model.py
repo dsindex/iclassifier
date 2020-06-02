@@ -429,7 +429,7 @@ class TextBertCNN(BaseModel):
         self.layernorm_fc_hidden = nn.LayerNorm(fc_hidden_size)
         self.fc = nn.Linear(fc_hidden_size, label_size)
 
-    def __compute_bert_embedding(self, x):
+    def _compute_bert_embedding(self, x):
         if self.bert_feature_based:
             # feature-based
             with torch.no_grad():
@@ -464,7 +464,7 @@ class TextBertCNN(BaseModel):
         # x[0], x[1], x[2] : [batch_size, seq_size]
 
         # 1. bert embedding
-        embedded = self.__compute_bert_embedding(x)
+        embedded = self._compute_bert_embedding(x)
         # embedded : [batch_size, seq_size, bert_hidden_size]
         embedded = self.dropout(embedded)
 
@@ -507,7 +507,7 @@ class TextBertCLS(BaseModel):
         label_size = len(self.labels)
         self.fc = nn.Linear(self.bert_hidden_size, label_size)
 
-    def __compute_bert_embedding(self, x):
+    def _compute_bert_embedding(self, x):
         if self.bert_feature_based:
             # feature-based
             with torch.no_grad():
@@ -558,7 +558,7 @@ class TextBertCLS(BaseModel):
     def forward(self, x):
         # x[0], x[1], x[2] : [batch_size, seq_size]
         # 1. bert embedding
-        embedded = self.__compute_bert_embedding(x)
+        embedded = self._compute_bert_embedding(x)
         # embedded : [batch_size, bert_hidden_size]
         embedded = self.dropout(embedded)
 
