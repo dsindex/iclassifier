@@ -18,7 +18,7 @@
 - [Standford GloVe code](https://github.com/stanfordnlp/GloVe)를 이용해서 학습.
   - 한국어 문서 데이터 준비.
     - 다양한 문서 데이터(위키, 백과, 뉴스, 블로그 등등)를 크롤링.
-  - ex) kor.glove.300k.300d.txt
+  - ex) kor.glove.300k.300d.txt (inhouse)
 
 ### BERT model
 
@@ -27,11 +27,11 @@
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - `character-level bpe`
     - vocab.txt는 [sentencepiece](https://github.com/google/sentencepiece)를 이용해서 생성.
-    - ex) all.bpe.4.8m_step
+    - ex) all.bpe.4.8m_step (inhouse)
   - `character-level bpe + 형태소분석기`
-    - ex) all.dha_s2.9.4_d2.9.27_bpe.4m_step
+    - ex) all.dha_s2.9.4_d2.9.27_bpe.4m_step (inhouse)
   - `형태소분석기`
-    - ex) all.dha.2.5m_step, all.dha_s2.9.4_d2.9.27.10m_step
+    - ex) all.dha.2.5m_step (inhouse), all.dha_s2.9.4_d2.9.27.10m_step (inhouse)
 
 ### ELECTRA model
 
@@ -43,7 +43,7 @@
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - [README.md](https://github.com/dsindex/electra/blob/master/README.md)
   - [train.sh](https://github.com/dsindex/electra/blob/master/train.sh)
-    - ex) `kor-electra-base-bpe-512-2m`
+    - ex) `kor-electra-base-bpe-512-2m` (inhouse)
 
 ### Experiments summary
 
