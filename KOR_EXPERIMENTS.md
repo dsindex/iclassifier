@@ -11,9 +11,6 @@
     - `형태소분석기 tokenizer`를 적용한 데이터도 './data/clova_sentiments_morph' 디렉토리 아래 생성.
       - 'train.txt', 'valid.txt', 'test.txt'.
       - 형태소분석기는 [khaiii](https://github.com/kakao/khaiii) 등 사용 가능.
-  - previous result
-    - [SKT Brain에서 공개한 KoBERT를 적용한 성능](https://github.com/SKTBrain/KoBERT#naver-sentiment-analysis)
-      - valid acc : **90.1%**
 
 ### GLOVE model
 
@@ -97,6 +94,15 @@
 |                   | Accuracy (%) |
 | ----------------- | ------------ |
 | KoBERT            | 90.1         |
+
+- [aisolab/nlp_classification](https://github.com/aisolab/nlp_classification)
+  - 비교를 위해서, 여기에서는 데이터를 동일하게 맞추고 재실험.
+  - `--epoch=10 --learning_rate=5e-4 --batch_size=128`
+
+|                   | Accuracy (%) |
+| ----------------- | ------------ |
+| KoBERT(STKBERT)   | 89.35        |
+| ETRIBERT          | 89.99        |
 
 
 ### GLOVE
