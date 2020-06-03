@@ -4,27 +4,29 @@
 
 - [Naver sentiment movie corpus](https://github.com/e9t/nsmc)
   - setup
-    - 데이터를 다운받아서 './data/clova_sentiments/' 디렉토리 아래
-      - 'train.txt', 'valid.txt', 'test.txt' 생성.
+    - './data/clova_sentiments/'
+      - 'train.txt', 'valid.txt', 'test.txt'
       - 'test.txt'는 제공하지 않으므로 'valid.txt'를 복사해서 사용.
       - '*.txt' 데이터의 포맷은 './data/snips'의 데이터 포맷과 동일.
-    - `형태소분석기 tokenizer`를 적용한 데이터도 './data/clova_sentiments_morph' 디렉토리 아래 생성.
+    - './data/clova_sentiments_morph'
+      - `형태소분석기 tokenizer`를 적용한 데이터.
       - 'train.txt', 'valid.txt', 'test.txt'.
       - 형태소분석기는 [khaiii](https://github.com/kakao/khaiii) 등 사용 가능.
 
-### GLOVE model
+### GloVe model
 
-- [Standford GloVe code](https://github.com/stanfordnlp/GloVe)를 이용해서 한국어 GLOVE 학습
-  - 한국어 문서 데이터 준비
-    - 다양한 문서 데이터를 크롤링
+- [Standford GloVe code](https://github.com/stanfordnlp/GloVe)를 이용해서 학습.
+  - 한국어 문서 데이터 준비.
+    - 다양한 문서 데이터(위키, 백과, 뉴스, 블로그 등등)를 크롤링.
   - ex) kor.glove.300k.300d.txt
 
 ### BERT model
 
-- [google original tf code](https://github.com/google-research/bert)를 이용해서 학습
-  - 한국어 문서 데이터 준비
-    - 위 한국어 GLOVE 학습에 사용한 데이터를 그대로 이용
-  - [sentencepiece](https://github.com/google/sentencepiece) character-level bpe tokenizer
+- [google original tf code](https://github.com/google-research/bert)를 이용해서 학습.
+  - 한국어 문서 데이터 준비.
+    - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
+  - `character-level bpe`
+    - vocab.txt는 [sentencepiece](https://github.com/google/sentencepiece)를 이용해서 생성.
     - ex) all.bpe.4.8m_step
   - `character-level bpe + 형태소분석기`
     - ex) all.dha_s2.9.4_d2.9.27_bpe.4m_step
@@ -33,12 +35,12 @@
 
 ### ELECTRA model
 
-- 위에서 사용한 문서로 새롭게 학습하기 전에, 기존에 huggingface에 올라온 monologg에서 학습시킨 모델을 사용해서 실험.
-  - [monologg](https://huggingface.co/monologg/koelectra-base-discriminator)
+- monologg koelectra-base
+  - [koelectra-base-discriminator](https://huggingface.co/monologg/koelectra-base-discriminator)
 
-- [electra](https://github.com/dsindex/electra#pretraining-electra)를 이용해서 학습
-  - 한국어 문서 데이터 준비
-    - 위 한국어 GLOVE 학습에 사용한 데이터를 그대로 이용
+- [electra](https://github.com/dsindex/electra#pretraining-electra)를 이용해서 학습.
+  - 한국어 문서 데이터 준비.
+    - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - [README.md](https://github.com/dsindex/electra/blob/master/README.md)
   - [train.sh](https://github.com/dsindex/electra/blob/master/train.sh)
     - ex) `kor-electra-base-bpe-512-2m`
@@ -47,32 +49,33 @@
 
 - iclassifier
 
-|                                 | Accuracy (%) | GPU / CPU         | Etc        |
-| ------------------------------- | ------------ | ----------------- | ---------- |
-| Glove, CNN                      | 87.31        | 1.9479  / 3.5353  | threads=14 |
-| **Glove, DenseNet-CNN**         | 88.18        | 3.4614  / 8.3434  | threads=14 |
-| Glove, DenseNet-DSA             | 87.66        | 6.9731  / -       |            |
-| bpe BERT(4.8m), CNN             | 90.11        | 16.5453 / -       | update2    |
-| bpe BERT(4.8m), CLS             | 89.91        | 14.9586 / -       | update2    |
-| bpe BERT(4.8m), CNN             | 88.62        | 10.7023 / 73.4141 | del 8,9,10,11, threads=14 |
-| bpe BERT(4.8m), CLS             | 88.92        | 9.3280  / 70.3232 | del 8,9,10,11, threads=14 |
-| dha BERT(2.5m), CNN             | **90.25**    | 15.5738 / -       | update2    |
-| dha BERT(2.5m), CLS             | 90.17        | 13.9389 / -       | update2    |
-| dha BERT(2.5m), CNN             | 88.88        | 10.5157 / 72.7777 | del 8,9,10,11, threads=14                                        |
-| dha BERT(2.5m), CLS             | 88.81        | 8.9836  / 68.4545 | del 8,9,10,11, threads=14, conda pytorch=1.2.0 50.7474ms         |
-| dha BERT(2.5m), CLS             | 88.29        | 7.2027  / 53.6363 | del 6,7,8,9,10,11, threads=14, conda pytorch=1.2.0 38.3333ms     |
-| dha BERT(2.5m), CLS             | 87.54        | 5.7645  / 36.8686 | del 4,5,6,7,8,9,10,11, threads=14, conda pytorch=1.2.0 28.2626ms |
-| dha-bpe BERT(4m), CNN           | 89.07        | 14.9454 / -       |            |
-| dha-bpe BERT(4m), CLS           | 89.01        | 12.7981 / -       |            |
-| dha BERT(10m), CNN              | 89.08        | 15.3276 / -       |            |
-| dha BERT(10m), CLS              | 89.25        | 12.7876 / -       |            |
-| KoELECTRA-Base, CNN             | 89.51        | 15.5452 / -       | update2    |
-| KoELECTRA-Base, CLS             | 89.63        | 14.2667 / -       | update2    |
-| bpe ELECTRA-base(512.2m) , CNN  | 87.30        | 14.4082 / -       | update2    |
-| bpe ELECTRA-base(512.2m) , CLS  | 87.37        | 13.1325 / -       | update2    |
+|                                 | Accuracy (%) | GPU / CPU         | CONDA   | Etc        |
+| ------------------------------- | ------------ | ----------------- | ------- | ---------- |
+| Glove, CNN                      | 87.31        | 1.9479  / 3.5353  |         | threads=14 |
+| **Glove, DenseNet-CNN**         | 88.18        | 3.4614  / 8.3434  |         | threads=14 |
+| Glove, DenseNet-DSA             | 87.66        | 6.9731  / -       |         |            |
+| bpe BERT(4.8m), CNN             | 90.11        | 16.5453 / -       |         | update2    |
+| bpe BERT(4.8m), CLS             | 89.91        | 14.9586 / -       |         | update2    |
+| bpe BERT(4.8m), CNN             | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
+| bpe BERT(4.8m), CLS             | 88.92        | 9.3280  / 70.3232 |         | del 8,9,10,11, threads=14 |
+| dha BERT(2.5m), CNN             | **90.25**    | 15.5738 / -       |         | update2    |
+| dha BERT(2.5m), CLS             | 90.17        | 13.9389 / -       |         | update2    |
+| dha BERT(2.5m), CNN             | 88.88        | 10.5157 / 72.7777 |         | del 8,9,10,11, threads=14                                        |
+| dha BERT(2.5m), CLS             | 88.81        | 8.9836  / 68.4545 | 50.7474 | del 8,9,10,11, threads=14 |
+| dha BERT(2.5m), CLS             | 88.29        | 7.2027  / 53.6363 | 38.3333 | del 6,7,8,9,10,11         |
+| dha BERT(2.5m), CLS             | 87.54        | 5.7645  / 36.8686 | 28.2626 | del 4,5,6,7,8,9,10,11, threads=14 |
+| dha-bpe BERT(4m), CNN           | 89.07        | 14.9454 / -       |         |            |
+| dha-bpe BERT(4m), CLS           | 89.01        | 12.7981 / -       |         |            |
+| dha BERT(10m), CNN              | 89.08        | 15.3276 / -       |         |            |
+| dha BERT(10m), CLS              | 89.25        | 12.7876 / -       |         |            |
+| KoELECTRA-Base, CNN             | 89.51        | 15.5452 / -       |         | update2    |
+| KoELECTRA-Base, CLS             | 89.63        | 14.2667 / -       |         | update2    |
+| bpe ELECTRA-base(512.2m) , CNN  | 87.30        | 14.4082 / -       |         | update2    |
+| bpe ELECTRA-base(512.2m) , CLS  | 87.37        | 13.1325 / -       |         | update2    |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
+* CONDA : conda pytorch 1.2.0
 * default batch size, learning rate, n_ctx(max_seq_length) : 128, 2e-4, 100
 ```
 
