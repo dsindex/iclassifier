@@ -151,6 +151,13 @@ $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data
 INFO:__main__:[Accuracy] : 0.8818, 44087/49997
 INFO:__main__:[Elapsed Time] : 173152ms, 3.4614969197535803ms on average
 
+* --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+INFO:__main__:[Accuracy] : 0.8804, 44017/49997
+INFO:__main__:[Elapsed Time] : 160672.52135276794ms, 3.211939556139528ms on average
+
+INFO:__main__:[Accuracy] : 0.8803, 44012/49997
+INFO:__main__:[Elapsed Time] : 161198.18258285522ms, 3.2225625831057085ms on average
+
 * iee_corpus_morph
 $ python evaluate.py --config=configs/config-densenet-cnn-iee.json --data_dir=./data/iee_corpus_morph 
 
