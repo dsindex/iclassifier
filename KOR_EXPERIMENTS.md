@@ -478,7 +478,7 @@ INFO:__main__:[Elapsed Time] : 656697ms, 13.13259060724858ms on average
 INFO:__main__:[Accuracy] : 0.8664, 43315/49997
 INFO:__main__:[Elapsed Time] : 574772ms, 11.494559564765181ms on average
 
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=5e-5 --batch_size=128 --use_amp , 3k-512-1m.560k
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=5e-5 --batch_size=128 , 3k-512-1m.560k
 INFO:__main__:[Accuracy] : 0.8730, 43647/49997
 INFO:__main__:[Elapsed Time] : 688893.8944339752ms, 13.777004622375406ms on average
 
