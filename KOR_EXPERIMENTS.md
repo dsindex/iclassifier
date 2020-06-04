@@ -151,6 +151,9 @@ $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data
 INFO:__main__:[Accuracy] : 0.8818, 44087/49997
 INFO:__main__:[Elapsed Time] : 173152ms, 3.4614969197535803ms on average
 
+INFO:__main__:[Accuracy] : 0.8799, 43991/49997
+INFO:__main__:[Elapsed Time] : 179413.97333145142ms, 3.58712682724762ms on average
+
 * --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
 INFO:__main__:[Accuracy] : 0.8804, 44017/49997
 INFO:__main__:[Elapsed Time] : 160672.52135276794ms, 3.211939556139528ms on average
@@ -187,13 +190,19 @@ $ python evaluate.py --config=configs/config-densenet-dsa.json --data_dir=./data
 INFO:__main__:[Accuracy] : 0.8766, 43827/49997
 INFO:__main__:[Elapsed Time] : 348722ms, 6.973197855828467ms on average
 
-* try again
 INFO:__main__:[Accuracy] : 0.8744, 43715/49997
 INFO:__main__:[Elapsed Time] : 522451ms, 10.447275782062565ms on average
+
+INFO:__main__:[Accuracy] : 0.8743, 43710/49997
+INFO:__main__:[Elapsed Time] : 404403.4924507141ms, 8.087184512335755ms on average
 
 * softmax masking
 INFO:__main__:[Accuracy] : 0.8747, 43732/49997
 INFO:__main__:[Elapsed Time] : 596904ms, 11.936694935594847ms on average
+
+* --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+INFO:__main__:[Accuracy] : 0.8735, 43670/49997
+INFO:__main__:[Elapsed Time] : 410616.1913871765ms, 8.211271306382855ms on average
 
 * iee_corpus_morph
 $ python evaluate.py --config=configs/config-densenet-dsa-iee.json --data_dir=./data/iee_corpus_morph
