@@ -13,16 +13,16 @@
       - 'train.txt', 'valid.txt', 'test.txt'.
       - 형태소분석기는 [khaiii](https://github.com/kakao/khaiii) 등 사용 가능.
 
-### Pretrained model
+### Pretrained models
 
-##### GloVe model
+##### GloVe
 
 - [Standford GloVe code](https://github.com/stanfordnlp/GloVe)를 이용해서 학습.
   - 한국어 문서 데이터 준비.
     - 다양한 문서 데이터(위키, 백과, 뉴스, 블로그 등등)를 크롤링.
   - ex) kor.glove.300k.300d.txt (inhouse)
 
-##### BERT model
+##### BERT
 
 - [google original tf code](https://github.com/google-research/bert)를 이용해서 학습.
   - 한국어 문서 데이터 준비.
@@ -40,7 +40,7 @@
 - [training-distilbert](https://github.com/dsindex/transformers_examples#training-distilbert)
   - ex) `kor-distil-bpe-bert.v1` (inhouse)
 
-##### ELECTRA model
+##### ELECTRA
 
 - monologg koelectra-base
   - [koelectra-base-discriminator](https://huggingface.co/monologg/koelectra-base-discriminator)
@@ -61,12 +61,12 @@
 | Glove, CNN                      | 87.31        | 1.9479  / 3.5353  |         | threads=14 |
 | **Glove, DenseNet-CNN**         | 88.18        | 3.4614  / 8.3434  |         | threads=14 |
 | Glove, DenseNet-DSA             | 87.66        | 6.9731  / -       |         |            |
-| bpe DistilBERT(4.8m), CNN       | -            | -       / -       |         | update2    |
-| bpe DistilBERT(4.8m), CLS       | -            | -       / -       |         | update2    |
 | bpe BERT(4.8m), CNN             | 90.11        | 16.5453 / -       |         | update2    |
 | bpe BERT(4.8m), CLS             | 89.91        | 14.9586 / -       |         | update2    |
 | bpe BERT(4.8m), CNN             | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
 | bpe BERT(4.8m), CLS             | 88.92        | 9.3280  / 70.3232 |         | del 8,9,10,11, threads=14 |
+| bpe DistilBERT(4.8m), CNN       | 87.61        | 9.2086  / -       | 38.7144 | update2    |
+| bpe DistilBERT(4.8m), CLS       | -            | -       / -       |         | update2    |
 | dha BERT(2.5m), CNN             | **90.25**    | 15.5738 / -       |         | update2    |
 | dha BERT(2.5m), CLS             | 90.17        | 13.9389 / -       |         | update2    |
 | dha BERT(2.5m), CNN             | 88.88        | 10.5157 / 72.7777 |         | del 8,9,10,11, threads=14                                        |
@@ -257,7 +257,8 @@ INFO:__main__:[Accuracy] : 0.9011, 45053/49997
 INFO:__main__:[Elapsed Time] : 827306ms, 16.545303624289943ms on average
 
 ** --configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-bpe-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
-
+INFO:__main__:[Accuracy] : 0.8761, 43801/49997
+INFO:__main__:[Elapsed Time] : 460487.60175704956ms, 9.20860700983459ms on average
 
 
 * enc_class=cls
@@ -278,7 +279,7 @@ INFO:__main__:[Elapsed Time] : 466825ms, 9.32800624049924ms on average
 INFO:__main__:[Accuracy] : 0.8991, 44952/49997
 INFO:__main__:[Elapsed Time] : 747975ms, 14.958656692535403ms on average
 
-** --configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-bpe-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+** --configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-bpe-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 
 
 ```

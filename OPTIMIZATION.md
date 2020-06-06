@@ -7,9 +7,9 @@
   ```
   $ conda install pytorch=1.5.0 --channel pytorch
   ```
-  - 1.3.0, 1.4.0 : bad for cpu multi-processing
+  - 1.3.0, 1.4.0 : bad for multi-processing on CPU.
 
-- you are able to get better performance on conda env
+- you are able to get better performance on conda env.
 
 ### dynamic quantization
 
