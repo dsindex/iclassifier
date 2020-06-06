@@ -54,6 +54,8 @@
 | Glove, CNN                      | 87.31        | 1.9479  / 3.5353  |         | threads=14 |
 | **Glove, DenseNet-CNN**         | 88.18        | 3.4614  / 8.3434  |         | threads=14 |
 | Glove, DenseNet-DSA             | 87.66        | 6.9731  / -       |         |            |
+| bpe DistilBERT(4.8m), CNN       | -            | -       / -       |         | update2    |
+| bpe DistilBERT(4.8m), CLS       | -            | -       / -       |         | update2    |
 | bpe BERT(4.8m), CNN             | 90.11        | 16.5453 / -       |         | update2    |
 | bpe BERT(4.8m), CLS             | 89.91        | 14.9586 / -       |         | update2    |
 | bpe BERT(4.8m), CNN             | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
@@ -75,7 +77,7 @@
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
-* CONDA : conda pytorch 1.2.0
+* CONDA : conda pytorch=1.2.0 / conda pytorch=1.5.0
 * default batch size, learning rate, n_ctx(max_seq_length) : 128, 2e-4, 100
 ```
 
@@ -247,6 +249,10 @@ INFO:__main__:[Elapsed Time] : 535186ms, 10.702336186894952ms on average
 INFO:__main__:[Accuracy] : 0.9011, 45053/49997
 INFO:__main__:[Elapsed Time] : 827306ms, 16.545303624289943ms on average
 
+** --configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-bpe-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+
+
+
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
@@ -264,6 +270,9 @@ INFO:__main__:[Elapsed Time] : 466825ms, 9.32800624049924ms on average
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.8991, 44952/49997
 INFO:__main__:[Elapsed Time] : 747975ms, 14.958656692535403ms on average
+
+** --configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-bpe-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+
 
 ```
 
@@ -503,9 +512,11 @@ INFO:__main__:[Elapsed Time] : 656697ms, 13.13259060724858ms on average
 INFO:__main__:[Accuracy] : 0.8664, 43315/49997
 INFO:__main__:[Elapsed Time] : 574772ms, 11.494559564765181ms on average
 
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=5e-5 --batch_size=128 , 3k-512-1m.560k
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=5e-5 --batch_size=128 , 30k-512-1m.560k
 INFO:__main__:[Accuracy] : 0.8730, 43647/49997
 INFO:__main__:[Elapsed Time] : 688893.8944339752ms, 13.777004622375406ms on average
+
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=5e-5 --batch_size=128 , 30k-512-1m.946k
 
 ```
 
