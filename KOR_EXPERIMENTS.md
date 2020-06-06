@@ -13,14 +13,16 @@
       - 'train.txt', 'valid.txt', 'test.txt'.
       - 형태소분석기는 [khaiii](https://github.com/kakao/khaiii) 등 사용 가능.
 
-### GloVe model
+### Pretrained model
+
+##### GloVe model
 
 - [Standford GloVe code](https://github.com/stanfordnlp/GloVe)를 이용해서 학습.
   - 한국어 문서 데이터 준비.
     - 다양한 문서 데이터(위키, 백과, 뉴스, 블로그 등등)를 크롤링.
   - ex) kor.glove.300k.300d.txt (inhouse)
 
-### BERT model
+##### BERT model
 
 - [google original tf code](https://github.com/google-research/bert)를 이용해서 학습.
   - 한국어 문서 데이터 준비.
@@ -33,7 +35,12 @@
   - `형태소분석기`
     - ex) all.dha.2.5m_step (inhouse), all.dha_s2.9.4_d2.9.27.10m_step (inhouse)
 
-### ELECTRA model
+##### DistilBERT
+
+- [training-distilbert](https://github.com/dsindex/transformers_examples#training-distilbert)
+  - ex) `kor-distil-bpe-bert.v1` (inhouse)
+
+##### ELECTRA model
 
 - monologg koelectra-base
   - [koelectra-base-discriminator](https://huggingface.co/monologg/koelectra-base-discriminator)
