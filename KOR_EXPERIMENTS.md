@@ -50,7 +50,7 @@
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - [README.md](https://github.com/dsindex/electra/blob/master/README.md)
   - [train.sh](https://github.com/dsindex/electra/blob/master/train.sh)
-    - ex) `kor-electra-base-bpe-512-2m` (inhouse)
+    - ex) `kor-electra-base-bpe-512-2m`, `kor-electra-base-bpe-30k-512-1m` (inhouse)
 
 ### Experiments summary
 
@@ -523,10 +523,6 @@ INFO:__main__:[Elapsed Time] : 656697ms, 13.13259060724858ms on average
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-2m.2000k
 INFO:__main__:[Accuracy] : 0.8664, 43315/49997
 INFO:__main__:[Elapsed Time] : 574772ms, 11.494559564765181ms on average
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=5e-5 --batch_size=128 , 30k-512-1m.560k
-INFO:__main__:[Accuracy] : 0.8730, 43647/49997
-INFO:__main__:[Elapsed Time] : 688893.8944339752ms, 13.777004622375406ms on average
 
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 --batch_size=64 , 30k-512-1m.946k
 INFO:__main__:[Accuracy] : 0.8783, 43913/49997
