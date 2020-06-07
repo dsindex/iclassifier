@@ -66,7 +66,7 @@
 | bpe BERT(4.8m), CNN             | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
 | bpe BERT(4.8m), CLS             | 88.92        | 9.3280  / 70.3232 |         | del 8,9,10,11, threads=14 |
 | bpe DistilBERT(4.8m), CNN       | 87.61        | 9.2086  / -       | 38.7144 | update2    |
-| bpe DistilBERT(4.8m), CLS       | -            | -       / -       |         | update2    |
+| bpe DistilBERT(4.8m), CLS       | 87.53        | 8.1508  / -       | 31.5655 | update2    |
 | dha BERT(2.5m), CNN             | **90.25**    | 15.5738 / -       |         | update2    |
 | dha BERT(2.5m), CLS             | 90.17        | 13.9389 / -       |         | update2    |
 | dha BERT(2.5m), CNN             | 88.88        | 10.5157 / 72.7777 |         | del 8,9,10,11, threads=14                                        |
@@ -280,7 +280,8 @@ INFO:__main__:[Accuracy] : 0.8991, 44952/49997
 INFO:__main__:[Elapsed Time] : 747975ms, 14.958656692535403ms on average
 
 ** --configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-bpe-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
-
+INFO:__main__:[Accuracy] : 0.8753, 43762/49997
+INFO:__main__:[Elapsed Time] : 407603.50346565247ms, 8.150899073573836ms on average
 
 ```
 
