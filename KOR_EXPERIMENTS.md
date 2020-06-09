@@ -50,7 +50,7 @@
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - [README.md](https://github.com/dsindex/electra/blob/master/README.md)
   - [train.sh](https://github.com/dsindex/electra/blob/master/train.sh)
-    - ex) `kor-electra-base-bpe-512-2m`, `kor-electra-base-bpe-30k-512-1m` (inhouse)
+    - ex) `kor-electra-base-bpe-30k-512-1m` (inhouse)
 
 ### Experiments summary
 
@@ -481,7 +481,7 @@ INFO:__main__:[Elapsed Time] : 713403ms, 14.266721337707017ms on average
 </p>
 </details>
 
-### ELECTRA(kor-electra-base-bpe-512-2m, kor-electra-base-bpe-30k-512-1m)
+### ELECTRA(kor-electra-base-bpe-30k-512-1m)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -490,13 +490,13 @@ INFO:__main__:[Elapsed Time] : 713403ms, 14.266721337707017ms on average
 ```
 * enc_class=cnn
 
-$ python preprocess.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-512-2m --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-512-2m --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=10 --batch_size=64 --data_dir=./data/clova_sentiments 
+$ python preprocess.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-30k-512-1m --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-30k-512-1m --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=10 --batch_size=64 --data_dir=./data/clova_sentiments 
 
 * enc_class=cls
 
-$ python preprocess.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-512-2m --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-512-2m --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=10 --batch_size=64 --data_dir=./data/clova_sentiments 
+$ python preprocess.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-30k-512-1m --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-30k-512-1m --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=10 --batch_size=64 --data_dir=./data/clova_sentiments 
 ```
 
 - evaluation
@@ -505,10 +505,6 @@ $ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_
 
 $ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-2m.1869k
-INFO:__main__:[Accuracy] : 0.8730, 43647/49997
-INFO:__main__:[Elapsed Time] : 720464ms, 14.408292663413073ms on average
-
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 --batch_size=64 , 30k-512-1m.946k
 INFO:__main__:[Accuracy] : 0.8786, 43926/49997
 INFO:__main__:[Elapsed Time] : 906246.2837696075ms, 18.12422252176323ms on average
@@ -516,14 +512,6 @@ INFO:__main__:[Elapsed Time] : 906246.2837696075ms, 18.12422252176323ms on avera
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-2m.1869k
-INFO:__main__:[Accuracy] : 0.8737, 43680/49997
-INFO:__main__:[Elapsed Time] : 656697ms, 13.13259060724858ms on average
-
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 , 512-2m.2000k
-INFO:__main__:[Accuracy] : 0.8664, 43315/49997
-INFO:__main__:[Elapsed Time] : 574772ms, 11.494559564765181ms on average
 
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 --batch_size=64 , 30k-512-1m.946k
 INFO:__main__:[Accuracy] : 0.8783, 43913/49997
