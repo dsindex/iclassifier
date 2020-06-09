@@ -76,11 +76,24 @@ $ python onnx-test.py
 
 - optimize onnx
 ```
-* glove, densenet ==> It might not be usable!
-$ python -m onnxruntime_tools.optimizer_cli --input pytorch-model.onnx --output pytorch-model.onnx.opt --input_int32
-
-* bert            ==> It might not be usable!
+* bert  ==> It might not be usable!
 $ python -m onnxruntime_tools.optimizer_cli --input pytorch-model.onnx --output pytorch-model.onnx.opt --model_type bert --num_heads 12 --hidden_size 768 --input_int32
+     fuse_layer_norm: Fused LayerNormalization count: 17
+  fuse_gelu_with_elf: Fused Gelu count:8
+        fuse_reshape: Fused Reshape count:32
+fuse_skip_layer_norm: Fused SkipLayerNormalization count: 17
+remove_unused_constant: Removed unused constant nodes: 164
+      fuse_attention: Fused Attention count:8
+fuse_embed_layer_without_mask: Failed to find position embedding
+    fuse_embed_layer: Fused EmbedLayerNormalization count: 0
+         prune_graph: Graph pruned: 0 inputs, 0 outputs and 0 nodes are removed
+      fuse_bias_gelu: Fused BiasGelu with Bias count:8
+fuse_add_bias_skip_layer_norm: Fused SkipLayerNormalization with Bias count:16
+            optimize: opset verion: 11
+  save_model_to_file: Output model to pytorch-model.onnx.opt
+get_fused_operator_statistics: Optimized operators:{'EmbedLayerNormalization': 0, 'Attention': 8, 'Gelu': 0, 'FastGelu': 0, 'BiasGelu': 8, 'LayerNormalization': 0, 'SkipLayerNormalization': 17}
+  is_fully_optimized: EmbedLayer=0, Attention=8, Gelu=8, LayerNormalization=17, Successful=False
+                main: The output model is not fully optimized. It might not be usable.
 ```
 
 - inference using onnxruntime
