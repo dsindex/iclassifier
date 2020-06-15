@@ -90,16 +90,17 @@
 
 - [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results), [KoELECTRA](https://github.com/monologg/KoELECTRA)
 
-|                   | Accuracy (%) |
-| ----------------- | ------------ |
-| KoELECTRA-Base    | 90.21        |
-| XML-RoBERTa       | 89.49        |
-| HanBert-54kN      | 90.16        |
-| HanBert-54kN-IP   | 88.72        |
-| KoBERT            | 89.63        |
-| DistilKoBERT      | 88.41        |
-| Bert-Multilingual | 87.07        |
-| FastText          | 85.50        |
+|                   | Accuracy (%) | Etc        |
+| ----------------- | ------------ | ---------- |
+| KoELECTRA-Base    | 90.21        |            |
+| KoELECTRA-Base-v2 | 89.70        | vocab from https://github.com/enlipleai/kor_pretrain_LM |
+| XML-RoBERTa       | 89.49        |            |
+| HanBert-54kN      | 90.16        |            |
+| HanBert-54kN-IP   | 88.72        |            |
+| KoBERT            | 89.63        |            |
+| DistilKoBERT      | 88.41        |            |
+| Bert-Multilingual | 87.07        |            |
+| FastText          | 85.50        |            |
 
 - [KoBERT](https://github.com/SKTBrain/KoBERT#naver-sentiment-analysis)
 
