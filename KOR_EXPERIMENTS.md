@@ -65,13 +65,13 @@
 | bpe BERT(4.8m), CLS                 | 89.91        | 14.9586 / -       |         | update2    |
 | bpe BERT(4.8m), CNN                 | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
 | bpe BERT(4.8m), CLS                 | 88.92        | 9.3280  / 70.3232 |         | del 8,9,10,11, threads=14 |
-| bpe DistilBERT(4.8m), CNN           | 88.40        | 9.5789  / -       | 38.7144 | update2    |
-| bpe DistilBERT(4.8m), CLS           | 88.54        | 8.3204  / -       | 31.5655 | update2    |
+| bpe DistilBERT(4.8m), CNN           | 88.40        | 9.5789  / -       | 38.7144 | update2, threads=14       |
+| bpe DistilBERT(4.8m), CLS           | 88.54        | 8.3204  / -       | 31.5655 | update2, threads=14       |
 | dha BERT(2.5m), CNN                 | **90.25**    | 15.5738 / -       |         | update2    |
 | dha BERT(2.5m), CLS                 | 90.17        | 13.9389 / -       |         | update2    |
-| dha BERT(2.5m), CNN                 | 88.88        | 10.5157 / 72.7777 |         | del 8,9,10,11, threads=14                                        |
-| dha BERT(2.5m), CLS                 | 88.81        | 8.9836  / 68.4545 | 50.7474 | del 8,9,10,11, threads=14 |
-| dha BERT(2.5m), CLS                 | 88.29        | 7.2027  / 53.6363 | 38.3333 | del 6,7,8,9,10,11         |
+| dha BERT(2.5m), CNN                 | 88.88        | 10.5157 / 72.7777 |         | del 8,9,10,11, threads=14         |
+| dha BERT(2.5m), CLS                 | 88.81        | 8.9836  / 68.4545 | 50.7474 | del 8,9,10,11, threads=14         |
+| dha BERT(2.5m), CLS                 | 88.29        | 7.2027  / 53.6363 | 38.3333 | del 6,7,8,9,10,11, threads=14     |
 | dha BERT(2.5m), CLS                 | 87.54        | 5.7645  / 36.8686 | 28.2626 | del 4,5,6,7,8,9,10,11, threads=14 |
 | dha-bpe BERT(4m), CNN               | 89.07        | 14.9454 / -       |         |            |
 | dha-bpe BERT(4m), CLS               | 89.01        | 12.7981 / -       |         |            |
