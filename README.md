@@ -780,3 +780,4 @@ $ curl -X POST http://localhost:16543/predictions/electra --form data='이 영�
   - [torchserve](https://aws.amazon.com/ko/blogs/korea/announcing-torchserve-an-open-source-model-server-for-pytorch/)
   - [torchserve management](https://pytorch.org/serve/management_api.html#list-models)
   - [torchserve advanced configuration](https://pytorch.org/serve/configuration.html)
+- [distil-bilstm](https://github.com/dsindex/distil-bilstm)
