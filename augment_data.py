@@ -68,6 +68,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--input', type=str, required=True, help="Input dataset.")
     parser.add_argument('--output', type=str, required=True, help="Output dataset.")
+    parser.add_argument('--dummy_label', type=str, default='dummy')
     parser.add_argument('--lang', type=str, default='en')
     args = parser.parse_args()
     
@@ -85,4 +86,4 @@ if __name__ == "__main__":
     # Write to file
     with open(args.output, 'w') as f:
         for sentence in sentences:
-            f.write("%s\n" % ' '.join(sentence))
+            f.write("{}\t{}\n".format(' '.join(sentence), args.dummy_label))
