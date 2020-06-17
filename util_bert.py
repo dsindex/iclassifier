@@ -27,16 +27,15 @@ class InputFeature(object):
         self.segment_ids = segment_ids
         self.label_id = label_id
 
-def read_examples_from_file(file_path, mode='train'):
+def read_examples_from_file(file_path, mode='train', augmented=False):
     guid_index = 1
     examples = []
     tot_num_line = sum(1 for _ in open(file_path, 'r'))
     with open(file_path, encoding="utf-8") as f:
         for idx, line in enumerate(tqdm(f, total=tot_num_line)):
-            toks = line.strip().split()
-            assert(len(toks) >= 2)
-            words = toks[:-1]
-            label = toks[-1]
+            sent, label = line.strip().split('\t')
+            words = sent.split()
+            assert(len(words) >= 1)
             examples.append(InputExample(guid="{}-{}".format(mode, guid_index),
                                          words=words,
                                          label=label))
