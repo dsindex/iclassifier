@@ -174,7 +174,7 @@ def evaluate(opt):
     if opt.convert_onnx:
         (x, y) = next(iter(test_loader))
         x = to_device(x, opt.device)
-        y = y.to(opt.device)
+        y = to_device(y, opt.device)
         convert_onnx(config, model, x)
         check_onnx(config)
         logger.info("[ONNX model saved at {}".format(opt.onnx_path))
