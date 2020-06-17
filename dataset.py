@@ -13,9 +13,12 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def prepare_dataset(config, filepath, DatasetClass, sampling=False, num_workers=1, batch_size=0):
+def prepare_dataset(config, filepath, DatasetClass, sampling=False, num_workers=1, batch_size=0, augmented=False):
     opt = config['opt']
-    dataset = DatasetClass(filepath)
+    if augmented:
+        dataset = DatasetClass(filepath, augmented=augmented)
+    else:
+        dataset = DatasetClass(filepath)
     if sampling:
         sampler = RandomSampler(dataset)
     else:
@@ -29,18 +32,24 @@ def prepare_dataset(config, filepath, DatasetClass, sampling=False, num_workers=
     return loader
 
 class SnipsGloveDataset(Dataset):
-    def __init__(self, path):
+    def __init__(self, path, augmented=False):
         x,y = [],[]
         with open(path,'r',encoding='utf-8') as f:
             for line in f:
-                items = line.strip().split()
-                yi = float(items[0])
-                xi = [int(d) for d in items[1:]]
+                y_data, x_data = line.strip().split('\t')
+                if augmented:
+                    yi = [float(f) for f in y_data.split()]
+                else:
+                    yi = float(y_data)
+                xi = [int(d) for d in x_data.split()]
                 x.append(xi)
                 y.append(yi)
 
-        self.x = torch.tensor(x) 
-        self.y = torch.tensor(y).long()
+        self.x = torch.tensor(x)
+        if augmented:
+            self.y = torch.tensor(y)
+        else:
+            self.y = torch.tensor(y).long()
  
     def __len__(self):
         return self.x.size(0)

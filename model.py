@@ -247,6 +247,8 @@ class TextGloveCNN(BaseModel):
         fc_hidden = self.dropout(fc_hidden)
         fc_out = self.fc(fc_hidden)
         # fc_out : [batch_size, label_size]
+        # for MSELoss
+        if self.config['opt'].augmented: return fc_out
         output = torch.softmax(fc_out, dim=-1)
         return output
 
@@ -312,6 +314,8 @@ class TextGloveDensenetCNN(BaseModel):
         # 4. fully connected
         fc_out = self.fc(textcnn_out)
         # [batch_size, label_size]
+        # for MSELoss
+        if self.config['opt'].augmented: return fc_out
         output = torch.softmax(fc_out, dim=-1)
         return output
 
@@ -394,6 +398,8 @@ class TextGloveDensenetDSA(BaseModel):
         else:
             fc_out = self.fc(dsa_out)
             # fc_out : [batch_size, label_size]
+        # for MSELoss
+        if self.config['opt'].augmented: return fc_out
         output = torch.softmax(fc_out, dim=-1)
         return output
 
@@ -480,7 +486,8 @@ class TextBertCNN(BaseModel):
         fc_hidden_out = self.dropout(fc_hidden_out)
         fc_out = self.fc(fc_hidden_out)
         # fc_out : [batch_size, label_size]
-
+        # for MSELoss
+        if self.config['opt'].augmented: return fc_out
         output = torch.softmax(fc_out, dim=-1)
         # output : [batch_size, label_size]
         return output
@@ -563,7 +570,10 @@ class TextBertCLS(BaseModel):
         embedded = self.dropout(embedded)
 
         # 2. fully connected
-        output = torch.softmax(self.fc(embedded), dim=-1)
+        fc_out = self.fc(embedded)
+        # for MSELoss
+        if self.config['opt'].augmented: return fc_out
+        output = torch.softmax(fc_out, dim=-1)
         # output : [batch_size, label_size]
         return output
 

@@ -28,7 +28,10 @@ def set_path(config):
         opt.data_path = os.path.join(opt.data_dir, 'test.txt.fs')
     opt.embedding_path = os.path.join(opt.data_dir, 'embedding.npy')
     opt.label_path = os.path.join(opt.data_dir, 'label.txt')
-    opt.test_path = os.path.join(opt.data_dir, 'test.txt')
+    if opt.augmented:
+        opt.test_path = os.path.join(opt.data_dir, 'augmented.raw')
+    else:
+        opt.test_path = os.path.join(opt.data_dir, 'test.txt')
     opt.vocab_path = os.path.join(opt.data_dir, 'vocab.txt')
 
 def load_checkpoint(config):
@@ -343,8 +346,12 @@ def inference(opt):
         for i, line in enumerate(f):
             start_time = time.time()
             items = line.strip().split()
-            x_raw = items[:-1]
-            y_raw = items[-1]
+            if opt.augmented:
+                x_raw = items
+            else:
+                x_raw = items[:-1]
+                y_raw = items[-1]
+            
             text = ' '.join(x_raw)
             x = encode_text(config, tokenizer, text)
             x = to_device(x, opt.device)
@@ -369,7 +376,12 @@ def inference(opt):
             predicted = logits.argmax(1)
             predicted = to_numpy(predicted)[0]
             predicted_raw = labels[predicted]
-            f_out.write(text + '\t' + y_raw + '\t' + predicted_raw + '\n')
+            if opt.augmented:
+                logits = to_numpy(logits)[0]
+                logits = ['%.6f' % logit for logit in logits]
+                f_out.write(text + '\t' + ' '.join(logits) + '\n')
+            else:
+                f_out.write(text + '\t' + y_raw + '\t' + predicted_raw + '\n')
             total_examples += 1
             if opt.num_examples != 0 and total_examples >= opt.num_examples:
                 logger.info("[Stop Inference] : up to the {} examples".format(total_examples))
@@ -390,6 +402,8 @@ def main():
     parser.add_argument('--num_threads', type=int, default=0)
     parser.add_argument('--batch_size', type=int, default=1)
     parser.add_argument('--num_examples', default=0, type=int, help="Number of examples to evaluate, 0 means all of them.")
+    parser.add_argument('--augmented', action='store_true',
+                        help="Set this flag to generate augmented.raw.inference(augmented.txt) for training.")
     # for BERT
     parser.add_argument('--bert_output_dir', type=str, default='bert-checkpoint',
                         help="The output directory where the model predictions and checkpoints will be written.")

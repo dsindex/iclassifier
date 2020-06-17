@@ -62,7 +62,10 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
 
     local_rank = opt.local_rank
     use_amp = opt.use_amp
-    criterion = torch.nn.CrossEntropyLoss().to(opt.device)
+    if opt.augmented:
+        criterion = torch.nn.MSELoss().to(opt.device)
+    else:
+        criterion = torch.nn.CrossEntropyLoss().to(opt.device)
 
     # train one epoch
     model.train()
@@ -74,7 +77,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
     for local_step, (x,y) in tqdm(enumerate(train_loader), total=len(train_loader)):
         global_step = (len(train_loader) * epoch_i) + local_step
         x = to_device(x, opt.device)
-        y = y.to(opt.device)
+        y = to_device(y, opt.device)
         output = model(x)
         loss = criterion(output, y)
         # back-propagation - begin
@@ -126,7 +129,7 @@ def evaluate(model, config, val_loader):
     with torch.no_grad():
         for i, (x,y) in tqdm(enumerate(val_loader), total=len(val_loader)):
             x = to_device(x, opt.device)
-            y = y.to(opt.device)
+            y = to_device(y, opt.device)
             output = model(x)
             loss = criterion(output, y)
             predicted = output.argmax(1)
@@ -156,7 +159,10 @@ def save_model(config, model):
 def set_path(config):
     opt = config['opt']
     if config['emb_class'] == 'glove':
-        opt.train_path = os.path.join(opt.data_dir, 'train.txt.ids')
+        if opt.augmented:
+            opt.train_path = os.path.join(opt.data_dir, 'augmented.txt.ids')
+        else:
+            opt.train_path = os.path.join(opt.data_dir, 'train.txt.ids')
         opt.valid_path = os.path.join(opt.data_dir, 'valid.txt.ids')
     if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
         opt.train_path = os.path.join(opt.data_dir, 'train.txt.fs')
@@ -170,8 +176,18 @@ def prepare_datasets(config):
         DatasetClass = SnipsGloveDataset
     if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
         DatasetClass = SnipsBertDataset
-    train_loader = prepare_dataset(config, opt.train_path, DatasetClass, sampling=True, num_workers=2)
-    valid_loader = prepare_dataset(config, opt.valid_path, DatasetClass, sampling=False, num_workers=2, batch_size=opt.eval_batch_size)
+    train_loader = prepare_dataset(config,
+        opt.train_path,
+        DatasetClass,
+        sampling=True,
+        num_workers=2,
+        augmented=opt.augmented)
+    valid_loader = prepare_dataset(config,
+        opt.valid_path,
+        DatasetClass,
+        sampling=False,
+        num_workers=2,
+        batch_size=opt.eval_batch_size)
     return train_loader, valid_loader
 
 def get_bert_embed_layer_list(config, bert_model):
@@ -369,6 +385,8 @@ def main():
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--embedding_trainable', action='store_true', help="Set word embedding(Glove) trainable")
     parser.add_argument('--use_transformers_optimizer', action='store_true', help="Use transformers AdamW, get_linear_schedule_with_warmup.")
+    parser.add_argument('--augmented', action='store_true',
+                        help="Set this flag to use augmented.txt for training.")
     # for BERT
     parser.add_argument('--bert_model_name_or_path', type=str, default='embeddings/bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")

@@ -18,6 +18,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 _TRAIN_FILE = 'train.txt'
+_TRAIN_AUGMENTED_FILE = 'augmented.txt'
 _VALID_FILE = 'valid.txt'
 _TEST_FILE  = 'test.txt'
 _SUFFIX = '.ids'
@@ -119,7 +120,7 @@ def build_data(input_path, tokenizer):
     logger.info("Vocab coverage : {:.2f}%\n".format(cover_token_cnt/total_token_cnt*100.0))
     return data
 
-def write_data(data, output_path, tokenizer, labels):
+def write_data(data, output_path, tokenizer, labels, augmented=False):
     logger.info("\n[Writing data]")
     config = tokenizer.config
     pad_id = tokenizer.pad_id
@@ -128,10 +129,13 @@ def write_data(data, output_path, tokenizer, labels):
     for idx, item in enumerate(tqdm(data)):
         tokens, label = item[0], item[1]
         if len(tokens) < 1: continue
-        label_id = labels[label]
         ids = tokenizer.convert_tokens_to_ids(tokens)
         ids_str = ' '.join([str(d) for d in ids])
-        f_write.write(str(label_id) + ' ' + ids_str)
+        if augmented: # logits as label
+            f_write.write(label + '\t' + ids_str)
+        else:
+            label_id = labels[label]
+            f_write.write(str(label_id) + '\t' + ids_str)
         num_tok_per_sent.append(len(tokens))
         for _ in range(config['n_ctx'] - len(ids)):
             f_write.write(' '+str(pad_id))
@@ -166,8 +170,10 @@ def preprocess_glove(config):
 
     # build data
     tokenizer = Tokenizer(vocab, config)
-
-    path = os.path.join(opt.data_dir, _TRAIN_FILE)
+    if opt.augmented:
+        path = os.path.join(opt.data_dir, _TRAIN_AUGMENTED_FILE)
+    else:
+        path = os.path.join(opt.data_dir, _TRAIN_FILE)
     train_data = build_data(path, tokenizer)
 
     path = os.path.join(opt.data_dir, _VALID_FILE)
@@ -181,8 +187,12 @@ def preprocess_glove(config):
     labels = build_label(path)
 
     # write data, vocab, embedding, labels
-    path = os.path.join(opt.data_dir, _TRAIN_FILE + _SUFFIX)
-    write_data(train_data, path, tokenizer, labels)
+    if opt.augmented:
+        path = os.path.join(opt.data_dir, _TRAIN_AUGMENTED_FILE + _SUFFIX)
+        write_data(train_data, path, tokenizer, labels, augmented=opt.augmented)
+    else:
+        path = os.path.join(opt.data_dir, _TRAIN_FILE + _SUFFIX)
+        write_data(train_data, path, tokenizer, labels)
 
     path = os.path.join(opt.data_dir, _VALID_FILE + _SUFFIX)
     write_data(valid_data, path, tokenizer, labels)
@@ -284,6 +294,8 @@ def main():
     parser.add_argument('--data_dir', type=str, default='data/snips')
     parser.add_argument('--embedding_path', type=str, default='embeddings/glove.6B.300d.txt')
     parser.add_argument('--seed', default=42, type=int)
+    parser.add_argument('--augmented', action='store_true',
+                        help="Set this flag to use augmented.txt for training.")
     # for BERT, ALBERT
     parser.add_argument('--bert_model_name_or_path', type=str, default='bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
