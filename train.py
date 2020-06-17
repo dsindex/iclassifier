@@ -180,8 +180,7 @@ def prepare_datasets(config):
         opt.train_path,
         DatasetClass,
         sampling=True,
-        num_workers=2,
-        augmented=opt.augmented)
+        num_workers=2)
     valid_loader = prepare_dataset(config,
         opt.valid_path,
         DatasetClass,

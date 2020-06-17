@@ -27,7 +27,7 @@ class InputFeature(object):
         self.segment_ids = segment_ids
         self.label_id = label_id
 
-def read_examples_from_file(file_path, mode='train', augmented=False):
+def read_examples_from_file(file_path, mode='train'):
     guid_index = 1
     examples = []
     tot_num_line = sum(1 for _ in open(file_path, 'r'))

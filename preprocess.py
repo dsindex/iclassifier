@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 _TRAIN_FILE = 'train.txt'
 _TRAIN_AUGMENTED_FILE = 'augmented.txt'
+_TRAIN_AUGMENTED_RAW_FILE = 'augmented.raw'
 _VALID_FILE = 'valid.txt'
 _TEST_FILE  = 'test.txt'
 _SUFFIX = '.ids'
@@ -120,19 +121,21 @@ def build_data(input_path, tokenizer):
     logger.info("Vocab coverage : {:.2f}%\n".format(cover_token_cnt/total_token_cnt*100.0))
     return data
 
-def write_data(data, output_path, tokenizer, labels, augmented=False):
+def write_data(data, output_path, tokenizer, labels):
     logger.info("\n[Writing data]")
     config = tokenizer.config
     pad_id = tokenizer.pad_id
     num_tok_per_sent = []
     f_write = open(output_path, 'w', encoding='utf-8')
+    logits_as_label = False
     for idx, item in enumerate(tqdm(data)):
         tokens, label = item[0], item[1]
         if len(tokens) < 1: continue
         ids = tokenizer.convert_tokens_to_ids(tokens)
         ids_str = ' '.join([str(d) for d in ids])
-        if augmented: # logits as label
+        if label.split() >= 2: # logits as label
             f_write.write(label + '\t' + ids_str)
+            if logits_as_label is False: logits_as_label = True
         else:
             label_id = labels[label]
             f_write.write(str(label_id) + '\t' + ids_str)
@@ -189,10 +192,9 @@ def preprocess_glove(config):
     # write data, vocab, embedding, labels
     if opt.augmented:
         path = os.path.join(opt.data_dir, _TRAIN_AUGMENTED_FILE + _SUFFIX)
-        write_data(train_data, path, tokenizer, labels, augmented=opt.augmented)
     else:
         path = os.path.join(opt.data_dir, _TRAIN_FILE + _SUFFIX)
-        write_data(train_data, path, tokenizer, labels)
+    write_data(train_data, path, tokenizer, labels)
 
     path = os.path.join(opt.data_dir, _VALID_FILE + _SUFFIX)
     write_data(valid_data, path, tokenizer, labels)
@@ -264,7 +266,10 @@ def preprocess_bert(config):
     labels = build_label(path)
 
     # build features
-    path = os.path.join(opt.data_dir, _TRAIN_FILE)
+    if opt.augmented:
+        path = os.path.join(opt.data_dir, _TRAIN_AUGMENTED_RAW_FILE)
+    else:
+        path = os.path.join(opt.data_dir, _TRAIN_FILE)
     train_features = build_features(path, tokenizer, labels, config, mode='train')
 
     path = os.path.join(opt.data_dir, _VALID_FILE)
@@ -274,7 +279,10 @@ def preprocess_bert(config):
     test_features = build_features(path, tokenizer, labels, config, mode='test')
 
     # write features
-    path = os.path.join(opt.data_dir, _TRAIN_FILE + _FSUFFIX)
+    if opt.augmented:
+        path = os.path.join(opt.data_dir, _TRAIN_AUGMENTED_RAW_FILE + _FSUFFIX)
+    else:
+        path = os.path.join(opt.data_dir, _TRAIN_FILE + _FSUFFIX)
     write_features(train_features, path)
 
     path = os.path.join(opt.data_dir, _VALID_FILE + _FSUFFIX)
@@ -295,7 +303,7 @@ def main():
     parser.add_argument('--embedding_path', type=str, default='embeddings/glove.6B.300d.txt')
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--augmented', action='store_true',
-                        help="Set this flag to use augmented.txt for training.")
+                        help="Set this flag to use augmented.txt for training or to use augmented.raw for labeling.")
     # for BERT, ALBERT
     parser.add_argument('--bert_model_name_or_path', type=str, default='bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")

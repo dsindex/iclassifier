@@ -25,7 +25,10 @@ def set_path(config):
     if config['emb_class'] == 'glove':
         opt.data_path = os.path.join(opt.data_dir, 'test.txt.ids')
     if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
-        opt.data_path = os.path.join(opt.data_dir, 'test.txt.fs')
+        if opt.augmented:
+            opt.data_path = os.path.join(opt.data_dir, 'augmented.raw.fs')
+        else:
+            opt.data_path = os.path.join(opt.data_dir, 'test.txt.fs')
     opt.embedding_path = os.path.join(opt.data_dir, 'embedding.npy')
     opt.label_path = os.path.join(opt.data_dir, 'label.txt')
     if opt.augmented:
@@ -138,9 +141,14 @@ def write_prediction(opt, preds, labels):
         with open(pred_path, 'w', encoding='utf-8') as f:
             for entry, pred in zip(data, preds):
                 sent, label = entry
-                pred_id = np.argmax(pred)
-                pred_label = labels[pred_id]
-                f.write(sent + '\t' + label + '\t' + pred_label + '\n')
+                if opt.augmented:
+                    # print logits as label
+                    logits = ['%.6f' % p for p in pred]
+                    f.write(sent + '\t' + ' '.join(logits) + '\n')
+                else:
+                    pred_id = np.argmax(pred)
+                    pred_label = labels[pred_id]
+                    f.write(sent + '\t' + label + '\t' + pred_label + '\n')
     except Exception as e:
         logger.warn(str(e))
 
@@ -209,7 +217,7 @@ def evaluate(opt):
         for i, (x,y) in enumerate(tqdm(test_loader, total=n_batches)):
             start_time = time.time()
             x = to_device(x, opt.device)
-            y = y.to(opt.device)
+            y = to_device(y, opt.device)
 
             if opt.enable_ort:
                 x = to_numpy(x)
@@ -345,13 +353,9 @@ def inference(opt):
     with torch.no_grad(), open(opt.test_path, 'r', encoding='utf-8') as f:
         for i, line in enumerate(f):
             start_time = time.time()
-            items = line.strip().split()
-            if opt.augmented:
-                x_raw = items
-            else:
-                x_raw = items[:-1]
-                y_raw = items[-1]
-            
+            sent, label = line.strip().split('\t')
+            x_raw = sent.split()
+            y_raw = label
             text = ' '.join(x_raw)
             x = encode_text(config, tokenizer, text)
             x = to_device(x, opt.device)
@@ -376,22 +380,14 @@ def inference(opt):
             predicted = logits.argmax(1)
             predicted = to_numpy(predicted)[0]
             predicted_raw = labels[predicted]
-            if opt.augmented:
-                logits = to_numpy(logits)[0]
-                logits = ['%.6f' % logit for logit in logits]
-                f_out.write(text + '\t' + ' '.join(logits) + '\n')
-            else:
-                f_out.write(text + '\t' + y_raw + '\t' + predicted_raw + '\n')
+            f_out.write(text + '\t' + y_raw + '\t' + predicted_raw + '\n')
             total_examples += 1
             if opt.num_examples != 0 and total_examples >= opt.num_examples:
                 logger.info("[Stop Inference] : up to the {} examples".format(total_examples))
                 break
             duration_time = float((time.time()-start_time)*1000)
             if i != 0: total_duration_time += duration_time
-            if opt.augmented:
-                if i % 1000 == 0: logger.info("[Elapsed Time] : {}ms, {}".format(duration_time, i))
-            else:
-                logger.info("[Elapsed Time] : {}ms".format(duration_time))
+            logger.info("[Elapsed Time] : {}ms".format(duration_time))
     f_out.close()
     logger.info("[Elapsed Time(total_duration_time, average)] : {}ms, {}ms".format(total_duration_time, total_duration_time/(total_examples-1)))
 
