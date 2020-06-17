@@ -35,7 +35,7 @@ $ python augment_data.py --input data/sst2/train.txt --output data/sst2/augmente
 
 - add logits by teacher model
 ```
-* pseudo labeling augmented.raw
+* pseudo labeling augmented.raw, augmented.raw.fs to augmented.raw.pred
 
 * bert
 $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-large-uncased --bert_do_lower_case --augmented
@@ -45,6 +45,7 @@ $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 
 $ python preprocess.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-large-discriminator --bert_do_lower_case --augmented
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
+$ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
 ```
 
 #### Train student model
