@@ -1,5 +1,5 @@
 """
-code from https://github.com/dsindex/distil-bilstm/blob/master/generate_dataset.py
+code from https://github.com/tacchinotacchi/distil-bilstm/blob/master/generate_dataset.py
 """
 
 import os

@@ -1,4 +1,6 @@
-### Distilling BERT(ELECTRA) based model to GloVe based small model
+#### Description
+
+Distilling BERT(ELECTRA) based model to GloVe based small model
 
 #### Prerequisites
 ```
@@ -13,6 +15,8 @@ $ python -m spacy download en_core_web_sm
 $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-large-uncased --bert_do_lower_case
 $ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-large-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+INFO:__main__:[Accuracy] : 0.9412,  1714/ 1821
+INFO:__main__:[Elapsed Time] : 40847.62740135193ms, 22.37672412788475ms on average
 ```
 
 - ELECTRA-large, CLS (electra-large-discriminator)

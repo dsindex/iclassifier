@@ -388,7 +388,7 @@ def inference(opt):
                 break
             duration_time = float((time.time()-start_time)*1000)
             if i != 0: total_duration_time += duration_time
-            logger.info("[Elapsed Time] : {}ms".format(duration_time))
+            if not opt.augmented: logger.info("[Elapsed Time] : {}ms".format(duration_time))
     f_out.close()
     logger.info("[Elapsed Time(total_duration_time, average)] : {}ms, {}ms".format(total_duration_time, total_duration_time/(total_examples-1)))
 
