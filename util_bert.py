@@ -61,7 +61,7 @@ def convert_single_example_to_feature(example,
     for word in example.words:
         word_tokens = tokenizer.tokenize(word)
         tokens.extend(word_tokens)
-        label_id = label_map[label]
+        if label in label_map: label_id = label_map[label]
     
     # Account for [CLS] and [SEP] with "- 2" and with "- 3" for RoBERTa.
     special_tokens_count = 3 if sep_token_extra else 2

@@ -10,7 +10,7 @@ import csv
 import spacy
 from spacy.symbols import ORTH
 spacy_en = spacy.load('en_core_web_sm')
-mask_token = '<mask>'
+mask_token = '[MASK]'
 spacy_en.tokenizer.add_special_case(mask_token, [{ORTH: mask_token}])
 
 def load_tsv(path, skip_header=True):
