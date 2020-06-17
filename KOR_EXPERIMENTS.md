@@ -79,8 +79,8 @@
 | dha BERT(10m), CLS                  | 89.25        | 12.7876 / -       |         |            |
 | KoELECTRA-Base, CNN                 | 89.51        | 15.5452 / -       |         | update2    |
 | KoELECTRA-Base, CLS                 | 89.63        | 14.2667 / -       |         | update2    |
-| bpe ELECTRA-base(30k-512-1m) , CNN  | 87.86        | 18.1242 / -       |         | update2    |
-| bpe ELECTRA-base(30k-512-1m) , CLS  | 87.83        | 14.8189 / -       |         | update2    |
+| bpe ELECTRA-base(30k-512-1m) , CNN  | 88.07        | 16.2737 / -       |         | update2    |
+| bpe ELECTRA-base(30k-512-1m) , CLS  | 88.26        | 14.2356 / -       |         | update2    |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -505,17 +505,17 @@ $ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_
 
 $ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 --batch_size=64 , 30k-512-1m.946k
-INFO:__main__:[Accuracy] : 0.8786, 43926/49997
-INFO:__main__:[Elapsed Time] : 906246.2837696075ms, 18.12422252176323ms on average
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 --batch_size=64
+INFO:__main__:[Accuracy] : 0.8807, 44034/49997
+INFO:__main__:[Elapsed Time] : 813746.9305992126ms, 16.273748160305097ms on average
 
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 --batch_size=64 , 30k-512-1m.946k
-INFO:__main__:[Accuracy] : 0.8783, 43913/49997
-INFO:__main__:[Elapsed Time] : 740981.8229675293ms, 14.81893343184984ms on average
+** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 --batch_size=64
+INFO:__main__:[Accuracy] : 0.8826, 44126/49997
+INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on average
 
 ```
 
