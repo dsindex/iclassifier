@@ -2,7 +2,7 @@
 
 ### Data
 
-- [Naver sentiment movie corpus](https://github.com/e9t/nsmc)
+- [NSMC(Naver Sentiment Movie Corpus)](https://github.com/e9t/nsmc)
   - setup
     - './data/clova_sentiments/'
       - 'train.txt', 'valid.txt', 'test.txt'
@@ -58,9 +58,9 @@
 
 |                                     | Accuracy (%) | GPU / CPU         | CONDA   | Etc        |
 | ----------------------------------- | ------------ | ----------------- | ------- | ---------- |
-| Glove, CNN                          | 87.31        | 1.9479  / 3.5353  |         | threads=14 |
-| **Glove, DenseNet-CNN**             | 88.18        | 3.4614  / 8.3434  |         | threads=14 |
-| Glove, DenseNet-DSA                 | 87.66        | 6.9731  / -       |         |            |
+| GloVe, CNN                          | 87.31        | 1.9479  / 3.5353  |         | threads=14 |
+| **GloVe, DenseNet-CNN**             | 88.18        | 3.4614  / 8.3434  |         | threads=14 |
+| GloVe, DenseNet-DSA                 | 87.66        | 6.9731  / -       |         |            |
 | bpe BERT(4.8m), CNN                 | 90.11        | 16.5453 / -       |         | update2    |
 | bpe BERT(4.8m), CLS                 | 89.91        | 14.9586 / -       |         | update2    |
 | bpe BERT(4.8m), CNN                 | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
@@ -118,7 +118,7 @@
 | ETRIBERT          | 89.99        |
 
 
-### GLOVE
+### GloVe
 
 <details><summary><b>enc_class=cnn</b></summary>
 <p>
