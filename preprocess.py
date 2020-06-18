@@ -133,7 +133,7 @@ def write_data(data, output_path, tokenizer, labels):
         if len(tokens) < 1: continue
         ids = tokenizer.convert_tokens_to_ids(tokens)
         ids_str = ' '.join([str(d) for d in ids])
-        if len(label.split() >= 2): # logits as label
+        if len(label.split()) >= 2: # logits as label
             f_write.write(label + '\t' + ids_str)
             if logits_as_label is False: logits_as_label = True
         else:
