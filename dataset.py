@@ -35,7 +35,7 @@ class SnipsGloveDataset(Dataset):
         with open(path,'r',encoding='utf-8') as f:
             for line in f:
                 y_data, x_data = line.strip().split('\t')
-                if y_data.split() >= 2:
+                if len(y_data.split()) >= 2:
                     yi = [float(f) for f in y_data.split()]
                     if logits_as_label is False: logits_as_label = True
                 else:
