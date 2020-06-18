@@ -56,9 +56,11 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
   - from bert
   ```
   * converting augmented.txt to augmented.txt.ids(id mapped file) and train!
-  $ python train.py --config=configs/config-glove-cnn.json --data_dir=data/sst2 --lr=1e-3 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --save_path=pytorch-model-cnn.pt --augmented
+  $ python train.py --config=configs/config-glove-cnn.json --data_dir=data/sst2 --lr=1e-3 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --save_path=pytorch-model-cnn.pt --augmented --measure=accuracy
   $ python evaluate.py --config=configs/config-glove-cnn.json --data_dir=data/sst2 --model_path=pytorch-model-cnn.pt
 
+  INFO:__main__:[Accuracy] : 0.8616,  1569/ 1821
+  INFO:__main__:[Elapsed Time] : 3341.681718826294ms, 1.7900076541271839ms on average
   ```
   - from electra
   ```
@@ -68,7 +70,7 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
   - from bert
   ```
   $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --augmented
-  $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --save_path=pytorch-model-densenet.pt --augmented
+  $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --save_path=pytorch-model-densenet.pt --augmented --measure=accuracy
   $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --model_path=pytorch-model-densenet.pt
 
   INFO:__main__:[Accuracy] : 0.8852,  1612/ 1821
@@ -87,6 +89,8 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
   $ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --save_path=pytorch-model-densenet.pt --augmented
   $ python evaluate.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --model_path=pytorch-model-densenet.pt
 
+  INFO:__main__:[Accuracy] : 0.8814,  1605/ 1821
+  INFO:__main__:[Elapsed Time] : 15502.179622650146ms, 8.464712756020683ms on average
   ```
   - from electra
   ```

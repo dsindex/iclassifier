@@ -65,7 +65,7 @@
 | bpe BERT(4.8m), CLS                 | 89.91        | 14.9586 / -       |         | update2    |
 | bpe BERT(4.8m), CNN                 | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
 | bpe BERT(4.8m), CLS                 | 88.92        | 9.3280  / 70.3232 |         | del 8,9,10,11, threads=14 |
-| bpe DistilBERT(4.8m), CNN           | 88.40        | 9.5789  / -       | 38.7144 | update2, threads=14       |
+| bpe DistilBERT(4.8m), CNN           | 88.39        | 9.6396  / -       | 38.7144 | update2, threads=14       |
 | bpe DistilBERT(4.8m), CLS           | 88.55        | 8.2834  / -       | 31.5655 | update2, threads=14       |
 | dha BERT(2.5m), CNN                 | **90.25**    | 15.5738 / -       |         | update2    |
 | dha BERT(2.5m), CLS                 | 90.17        | 13.9389 / -       |         | update2    |
@@ -258,9 +258,8 @@ INFO:__main__:[Accuracy] : 0.9011, 45053/49997
 INFO:__main__:[Elapsed Time] : 827306ms, 16.545303624289943ms on average
 
 ** --configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-bpe-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
-INFO:__main__:[Accuracy] : 0.8840, 44199/49997
-INFO:__main__:[Elapsed Time] : 479026.7505645752ms, 9.578963290863928ms on average
-
+INFO:__main__:[Accuracy] : 0.8839, 44190/49997
+INFO:__main__:[Elapsed Time] : 482054.96978759766ms, 9.639614557722052ms on average
 
 * enc_class=cls
 

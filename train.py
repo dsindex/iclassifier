@@ -117,7 +117,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
             writer.add_scalar('Loss/valid', eval_loss, global_step)
             writer.add_scalar('Acc/valid', eval_acc, global_step)
             writer.add_scalar('LearningRate/train', curr_lr, global_step)
-    return eval_loss
+    return eval_loss, eval_acc
  
 def evaluate(model, config, val_loader):
     opt = config['opt']
@@ -320,19 +320,23 @@ def train(opt):
     config['writer'] = writer
 
     # training
-    early_stopping = EarlyStopping(logger, patience=opt.patience, measure='loss', verbose=1)
+    early_stopping = EarlyStopping(logger, patience=opt.patience, measure=opt.measure, verbose=1)
     local_worse_steps = 0
-    prev_eval_loss = float('inf')
-    best_eval_loss = float('inf')
+    prev_eval_measure = float('inf') if opt.measure == 'loss' else -float('inf')
+    best_eval_measure = float('inf') if opt.measure == 'loss' else -float('inf')
     for epoch_i in range(opt.epoch):
         epoch_st_time = time.time()
-        eval_loss = train_epoch(model, config, train_loader, valid_loader, epoch_i)
+        eval_loss, eval_acc = train_epoch(model, config, train_loader, valid_loader, epoch_i)
+        if opt.measure == 'loss': eval_measure = eval_loss 
+        else: eval_measure = eval_acc
         # early stopping
-        if early_stopping.validate(eval_loss, measure='loss'): break
-        if opt.local_rank == 0 and eval_loss < best_eval_loss:
-            best_eval_loss = eval_loss
+        if early_stopping.validate(eval_measure, measure=opt.measure): break
+        if opt.measure == 'loss': is_best = eval_measure < best_eval_measure
+        else: is_best = eval_measure > best_eval_measure
+        if opt.local_rank == 0 and is_best:
+            best_eval_measure = eval_measure
             if opt.save_path:
-                logger.info("[Best model saved] : {:10.6f}".format(best_eval_loss))
+                logger.info("[Best model saved] : {:10.6f}".format(best_eval_measure))
                 save_model(config, model)
                 # save finetuned bert model/config/tokenizer
                 if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
@@ -340,10 +344,12 @@ def train(opt):
                         os.makedirs(opt.bert_output_dir)
                     model.bert_tokenizer.save_pretrained(opt.bert_output_dir)
                     model.bert_model.save_pretrained(opt.bert_output_dir)
-            early_stopping.reset(best_eval_loss)
+            early_stopping.reset(best_eval_measure)
         early_stopping.status()
         # begin: scheduling, apply rate decay at the measure(ex, loss) getting worse for the number of deacy epoch steps.
-        if prev_eval_loss <= eval_loss:
+        if opt.measure == 'loss': getting_worse = prev_eval_measure <= eval_measure
+        else: getting_worse = prev_eval_measure >= eval_measure
+        if getting_worse:
             local_worse_steps += 1
         else:
             local_worse_steps = 0
@@ -352,7 +358,7 @@ def train(opt):
            epoch_i > opt.warmup_epoch and \
            (local_worse_steps >= opt.lr_decay_steps or early_stopping.step() > opt.lr_decay_steps):
             scheduler.step()
-        prev_eval_loss = eval_loss
+        prev_eval_measure = eval_measure
         # end: scheduling
 
 def main():
@@ -384,6 +390,7 @@ def main():
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--embedding_trainable', action='store_true', help="Set word embedding(Glove) trainable")
     parser.add_argument('--use_transformers_optimizer', action='store_true', help="Use transformers AdamW, get_linear_schedule_with_warmup.")
+    parser.add_argument('--measure', type=str, default='loss', help="Evaluation measure, 'loss' | 'accuracy', default 'loss'.")
     parser.add_argument('--augmented', action='store_true',
                         help="Set this flag to use augmented.txt for training.")
     # for BERT
