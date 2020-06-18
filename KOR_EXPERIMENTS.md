@@ -66,7 +66,7 @@
 | bpe BERT(4.8m), CNN                 | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
 | bpe BERT(4.8m), CLS                 | 88.92        | 9.3280  / 70.3232 |         | del 8,9,10,11, threads=14 |
 | bpe DistilBERT(4.8m), CNN           | 88.40        | 9.5789  / -       | 38.7144 | update2, threads=14       |
-| bpe DistilBERT(4.8m), CLS           | 88.54        | 8.3204  / -       | 31.5655 | update2, threads=14       |
+| bpe DistilBERT(4.8m), CLS           | 88.55        | 8.2834  / -       | 31.5655 | update2, threads=14       |
 | dha BERT(2.5m), CNN                 | **90.25**    | 15.5738 / -       |         | update2    |
 | dha BERT(2.5m), CLS                 | 90.17        | 13.9389 / -       |         | update2    |
 | dha BERT(2.5m), CNN                 | 88.88        | 10.5157 / 72.7777 |         | del 8,9,10,11, threads=14         |
@@ -261,6 +261,7 @@ INFO:__main__:[Elapsed Time] : 827306ms, 16.545303624289943ms on average
 INFO:__main__:[Accuracy] : 0.8840, 44199/49997
 INFO:__main__:[Elapsed Time] : 479026.7505645752ms, 9.578963290863928ms on average
 
+
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
@@ -280,8 +281,8 @@ INFO:__main__:[Accuracy] : 0.8991, 44952/49997
 INFO:__main__:[Elapsed Time] : 747975ms, 14.958656692535403ms on average
 
 ** --configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-bpe-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
-INFO:__main__:[Accuracy] : 0.8854, 44267/49997
-INFO:__main__:[Elapsed Time] : 416157.20868110657ms, 8.320413724795676ms on average
+INFO:__main__:[Accuracy] : 0.8855, 44271/49997
+INFO:__main__:[Elapsed Time] : 414233.4134578705ms, 8.283499222067283ms on average
 
 ```
 

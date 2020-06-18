@@ -242,7 +242,9 @@ INFO:__main__:[Elapsed Time] : 6607ms, 9.30758226037196ms on average
 | GloVe, CNN                   | 82.81        | 1.7670  / 3.9191  / 4.5757  |       - / 4.3131  |       - / 4.4040  |              - / 4.8686  |       - / 4.4848  | threads=14    |
 | GloVe, DenseNet-CNN          | 86.38        | 3.6203  / 7.1414            |                   |                   |                          |                   | threads=14    |
 | GloVe, DenseNet-DSA          | 85.34        | 6.2450  / -                 |                   |                   |                          |                   |               |
-| Distil, GloVe, DenseNet-CNN  | 88.47        | 3.7718  / -                 |                   |                   |                          |                   |               |
+| Distil, GloVe, CNN           | -            | -       / -                 |                   |                   |                          |                   |               |
+| Distil, GloVe, DenseNet-CNN  | 88.52        | 3.6788  / -                 |                   |                   |                          |                   |               |
+| Distil, GloVe, DenseNet-DSA  | -            | -       / -                 |                   |                   |                          |                   |               |
 | BERT-tiny, CNN               | 79.08        | 4.8604  / -                 |                   |                   |                          |                   |               |
 | BERT-tiny, CLS               | 80.83        | 3.8461  / -                 |                   |                   |                          |                   |               |
 | BERT-mini, CNN               | 83.36        | 7.0983  / -                 |                   |                   |                          |                   |               |

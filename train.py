@@ -63,7 +63,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
     local_rank = opt.local_rank
     use_amp = opt.use_amp
     if opt.augmented:
-        criterion = torch.nn.MSELoss().to(opt.device)
+        criterion = torch.nn.MSELoss(reduction='sum').to(opt.device)
     else:
         criterion = torch.nn.CrossEntropyLoss().to(opt.device)
 
