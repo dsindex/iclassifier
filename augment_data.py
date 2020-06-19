@@ -10,8 +10,6 @@ import csv
 import spacy
 from spacy.symbols import ORTH
 spacy_en = spacy.load('en_core_web_sm')
-mask_token = '[MASK]'
-spacy_en.tokenizer.add_special_case(mask_token, [{ORTH: mask_token}])
 
 def load_tsv(path, skip_header=True):
     with open(path) as f:
@@ -68,6 +66,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--input', type=str, required=True, help="Input dataset.")
     parser.add_argument('--output', type=str, required=True, help="Output dataset.")
+    parser.add_argument('--mask_token', type=str, default='[MASK]')
     parser.add_argument('--dummy_label', type=str, default='dummy')
     parser.add_argument('--lang', type=str, default='en')
     args = parser.parse_args()
@@ -75,7 +74,9 @@ if __name__ == "__main__":
     # Load original tsv file
     input_tsv = load_tsv(args.input, skip_header=False)
 
+    mask_token = args.mask_token
     if args.lang == 'en':
+        spacy_en.tokenizer.add_special_case(mask_token, [{ORTH: mask_token}])
         sentences = [spacy_en(text) for text, _ in tqdm(input_tsv, desc='Loading dataset')]
     # build lists of words indexes by POS tab
     pos_dict = build_pos_dict(sentences)
