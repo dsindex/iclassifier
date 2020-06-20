@@ -22,13 +22,10 @@ INFO:__main__:[Elapsed Time] : 40847.62740135193ms, 22.37672412788475ms on avera
 - RoBERTa-large, CLS(roberta-large)
 ```
 $ python preprocess.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large 
-$ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --lr_decay_rate=0.9 --batch_size=64
-$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
-INFO:__main__:[Accuracy] : 0.9325,  1698/ 1821
-INFO:__main__:[Elapsed Time] : 45188.396692276ms, 24.755752610636282ms on average
-
 $ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --batch_size=64
-
+$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+INFO:__main__:[Accuracy] : 0.9550,  1739/ 1821
+INFO:__main__:[Elapsed Time] : 41172.648668289185ms, 22.564798790019946ms on average
 
 ```
 
