@@ -161,6 +161,8 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
 
   $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --data_dir=./data/clova_sentiments --augmented
   $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint --augmented
+
+  $ cp -rf data/clova_sentiments/augmented.raw.pred /data/clova_sentiments_morph/augmented.txt
   ```
 
 - train student model
