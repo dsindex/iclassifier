@@ -104,7 +104,8 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
   ```
   - distilled from roberta
   ```
-
+  INFO:__main__:[Accuracy] : 0.8880,  1617/ 1821
+  INFO:__main__:[Elapsed Time] : 7291.425943374634ms, 3.958085212078723ms on average
   ```
   - distilled from electra
   ```
@@ -123,7 +124,8 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
   ```
   - distilled from roberta
   ```
-
+  INFO:__main__:[Accuracy] : 0.8825,  1607/ 1821
+  INFO:__main__:[Elapsed Time] : 15677.676439285278ms, 8.562728205879965ms on average
   ```
   - distilled from electra
   ```

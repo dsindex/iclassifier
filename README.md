@@ -246,8 +246,8 @@ INFO:__main__:[Elapsed Time] : 6607ms, 9.30758226037196ms on average
 | DistilFromBERT, GloVe, DenseNet-CNN     | 88.52        | 3.6788  / -                 |                   |                   |                          |                   |               |
 | DistilFromBERT, GloVe, DenseNet-DSA     | 88.14        | 8.4647  / -                 |                   |                   |                          |                   |               |
 | DistilFromRoBERTa, GloVe, CNN           | 86.55        | 1.8483  / -                 |                   |                   |                          |                   |               |
-| DistilFromRoBERTa, GloVe, DenseNet-CNN  | -            | -       / -                 |                   |                   |                          |                   |               |
-| DistilFromRoBERTa, GloVe, DenseNet-DSA  | -            | -       / -                 |                   |                   |                          |                   |               |
+| DistilFromRoBERTa, GloVe, DenseNet-CNN  | 88.80        | 3.9580  / -                 |                   |                   |                          |                   |               |
+| DistilFromRoBERTa, GloVe, DenseNet-DSA  | 88.25        | 8.5627  / -                 |                   |                   |                          |                   |               |
 | DistilFromELECTRA, GloVe, CNN           | 86.55        | 1.7466  / -                 |                   |                   |                          |                   |               |
 | DistilFromELECTRA, GloVe, DenseNet-CNN  | 89.79        | 3.6406  / -                 |                   |                   |                          |                   |               |
 | DistilFromELECTRA, GloVe, DenseNet-DSA  | 88.58        | 8.3708  / -                 |                   |                   |                          |                   |               |
