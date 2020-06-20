@@ -6,6 +6,9 @@ Distilling BERT(RoBERTa, ELECTRA) based model to GloVe based small model
 ```
 $ python -m pip install spacy
 $ python -m spacy download en_core_web_sm
+
+* for Korean language,
+  install khaiii(https://github.com/kakao/khaiii)
 ```
 
 #### Train teacher model
@@ -43,10 +46,10 @@ INFO:__main__:[Elapsed Time] : 41302.36577987671ms, 22.629007140358727ms on aver
 - augmentation
 ```
 * bert, electra
-$ python augment_data.py --input data/sst2/train.txt --output data/sst2/augmented.raw
+$ python augment_data.py --input data/sst2/train.txt --output data/sst2/augmented.raw --lower
 
 * roberta
-$ python augment_data.py --input data/sst2/train.txt --output data/sst2/augmented.raw --mask_token='<mask>'
+$ python augment_data.py --input data/sst2/train.txt --output data/sst2/augmented.raw --mask_token='<mask>' --lower
 ```
 
 - add logits by teacher model
@@ -133,12 +136,43 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
   INFO:__main__:[Elapsed Time] : 15340.755224227905ms, 8.370806751670418ms on average
   ```
 
-#### Experiments for NSMC corpus
+#### Experiments for Korean
 
-```
+- train teacher model
 
-```
+  - bpe BERT(4.8m), CLS
+  ```
+  $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --data_dir=./data/clova_sentiments
+  $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments/ --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+  $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
 
+  ```
+
+- generate pseudo labeled data
+
+  - augmentation
+  ```
+   $ python augment_data.py --input data/clova_sentiments/train.txt --output data/clova_sentiments/augmented.raw --lang=ko
+  ```
+  - add logits by teacher model
+  ```
+  * converting augmented.raw to augmented.raw.fs(id mapped file)
+  * labeling augmented.raw to augmented.raw.pred
+
+  $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --data_dir=./data/clova_sentiments --augmented
+  $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint --augmented
+  ```
+
+- train student model
+
+  - Glove, DenseNet-CNN
+  ```
+  * converting augmented.txt to augmented.txt.ids(id mapped file) and train!
+  $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt --augmented
+  $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --lr_decay_rate=0.9 --augmented
+  $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/clova_sentiments_morph 
+
+  ```
 
 #### References
 
