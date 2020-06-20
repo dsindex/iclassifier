@@ -72,7 +72,7 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
 #### Train student model
 
 - Glove, CNN
-  - from bert
+  - distilled from bert
   ```
   * converting augmented.txt to augmented.txt.ids(id mapped file) and train!
   $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --augmented
@@ -81,18 +81,19 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
   INFO:__main__:[Accuracy] : 0.8616,  1569/ 1821
   INFO:__main__:[Elapsed Time] : 3341.681718826294ms, 1.7900076541271839ms on average
   ```
-  - from roberta
+  - distilled from roberta
   ```
-
+  INFO:__main__:[Accuracy] : 0.8655,  1576/ 1821
+  INFO:__main__:[Elapsed Time] : 3437.3860359191895ms, 1.8483112146566203ms on average
   ```
-  - from electra
+  - distilled from electra
   ```
   INFO:__main__:[Accuracy] : 0.8655,  1576/ 1821
   INFO:__main__:[Elapsed Time] : 3255.631446838379ms, 1.7466542484996084ms on average
   ```
 
 - GloVe, DenseNet-CNN
-  - from bert
+  - distilled from bert
   ```
   $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --augmented
   $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --save_path=pytorch-model-densenet.pt --augmented
@@ -101,18 +102,18 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
   INFO:__main__:[Elapsed Time] : 6774.356126785278ms, 3.678809417473091ms on average
 
   ```
-  - from roberta
+  - distilled from roberta
   ```
 
   ```
-  - from electra
+  - distilled from electra
   ```
   INFO:__main__:[Accuracy] : 0.8979,  1635/ 1821
   INFO:__main__:[Elapsed Time] : 6723.0706214904785ms, 3.640611617119758ms on average
   ```
 
 - Glove, DenseNet-DSA
-  - from bert
+  - distilled from bert
   ```
   $ python preprocess.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --augmented
   $ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --save_path=pytorch-model-densenet.pt --augmented
@@ -120,11 +121,11 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
   INFO:__main__:[Accuracy] : 0.8814,  1605/ 1821
   INFO:__main__:[Elapsed Time] : 15502.179622650146ms, 8.464712756020683ms on average
   ```
-  - from roberta
+  - distilled from roberta
   ```
 
   ```
-  - from electra
+  - distilled from electra
   ```
   INFO:__main__:[Accuracy] : 0.8858,  1613/ 1821
   INFO:__main__:[Elapsed Time] : 15340.755224227905ms, 8.370806751670418ms on average

@@ -245,7 +245,7 @@ INFO:__main__:[Elapsed Time] : 6607ms, 9.30758226037196ms on average
 | DistilFromBERT, GloVe, CNN              | 86.16        | 1.7900  / -                 |                   |                   |                          |                   |               |
 | DistilFromBERT, GloVe, DenseNet-CNN     | 88.52        | 3.6788  / -                 |                   |                   |                          |                   |               |
 | DistilFromBERT, GloVe, DenseNet-DSA     | 88.14        | 8.4647  / -                 |                   |                   |                          |                   |               |
-| DistilFromRoBERTa, GloVe, CNN           | -            | -       / -                 |                   |                   |                          |                   |               |
+| DistilFromRoBERTa, GloVe, CNN           | 86.55        | 1.8483  / -                 |                   |                   |                          |                   |               |
 | DistilFromRoBERTa, GloVe, DenseNet-CNN  | -            | -       / -                 |                   |                   |                          |                   |               |
 | DistilFromRoBERTa, GloVe, DenseNet-DSA  | -            | -       / -                 |                   |                   |                          |                   |               |
 | DistilFromELECTRA, GloVe, CNN           | 86.55        | 1.7466  / -                 |                   |                   |                          |                   |               |
@@ -714,7 +714,7 @@ INFO:__main__:[Elapsed Time] : 47163ms, 25.685714285714287ms on average
 # Distillation
 
 - [DISTILLATION.md](/DISTILLATION.md)
-  - BERT-large, ELECTRA-large, CLS -> GloVe, DenseNet+CNN
+  - BERT-large, RoBERTa-large, ELECTRA-large, CLS -> GloVe, DenseNet-CNN, DenseNet-DSA
 
 <br>
 
