@@ -1,6 +1,4 @@
-#### Description
-
-Distilling BERT(RoBERTa, ELECTRA) based model to GloVe based small model
+### Distilling BERT(RoBERTa, ELECTRA) based model to GloVe based small model
 
 #### Prerequisites
 ```
@@ -46,10 +44,10 @@ INFO:__main__:[Elapsed Time] : 41302.36577987671ms, 22.629007140358727ms on aver
 - augmentation
 ```
 * bert, electra
-$ python augment_data.py --input data/sst2/train.txt --output data/sst2/augmented.raw --lower
+$ python augment_data.py --input data/sst2/train.txt --output data/sst2/augmented.raw --lower --parallel
 
 * roberta
-$ python augment_data.py --input data/sst2/train.txt --output data/sst2/augmented.raw --mask_token='<mask>' --lower
+$ python augment_data.py --input data/sst2/train.txt --output data/sst2/augmented.raw --mask_token='<mask>' --lower --parallel
 ```
 
 - add logits by teacher model
@@ -153,7 +151,7 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
 
   - augmentation
   ```
-  $ python augment_data.py --input data/clova_sentiments/train.txt --output data/clova_sentiments_morph/augmented.raw --lang=ko
+  $ python augment_data.py --input data/clova_sentiments/train.txt --output data/clova_sentiments_morph/augmented.raw --lang=ko --parallel
   ```
   - add logits by teacher model
   ```

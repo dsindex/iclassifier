@@ -1,5 +1,5 @@
 """
-code from https://github.com/tacchinotacchi/distil-bilstm/blob/master/generate_dataset.py
+base code from https://github.com/tacchinotacchi/distil-bilstm/blob/master/generate_dataset.py
 """
 
 import os
@@ -7,6 +7,8 @@ import argparse
 import numpy as np
 from tqdm.autonotebook import tqdm
 import csv
+import multiprocessing as mp
+from functools import reduce
 
 class Word:
     def __init__(self, word, pos):
@@ -37,7 +39,13 @@ def build_pos_dict(sentences, lower=True):
                 pos_dict[pos_tag].append(w)
     return pos_dict
 
-def make_sample(input_sentence, pos_dict, p_mask=0.1, p_pos=0.1, p_ng=0.25, max_ng=5, lower=True):
+def make_sample(input_sentence, pos_dict, lower=True):
+    # fixed hyperparams for sampling
+    p_mask = 0.1 # mask prob
+    p_pos = 0.1  # pos prob
+    p_ng = 0.25  # ngram prob
+    max_ng = 5   # ngram size
+
     sentence = []
     for word in input_sentence:
         # Apply single token masking or POS-guided replacement
@@ -54,22 +62,25 @@ def make_sample(input_sentence, pos_dict, p_mask=0.1, p_pos=0.1, p_ng=0.25, max_
             sentence.append(w)
     # Apply n-gram sampling
     if len(sentence) > 2 and np.random.uniform() < p_ng:
-        n = min(np.random.choice(range(1, 5+1)), len(sentence) - 1)
+        n = min(np.random.choice(range(1, max_ng+1)), len(sentence) - 1)
         start = np.random.choice(len(sentence) - n)
         for idx in range(start, start + n):
             sentence[idx] = mask_token
     return sentence
 
-def augmentation(sentences, pos_dict, n_iter=20, p_mask=0.1, p_pos=0.1, p_ng=0.25, max_ng=5, lower=True):
-    augmented = []
-    for sentence in tqdm(sentences, 'Generation'):
-        samples = [[word.text.lower() if lower else word.text for word in sentence]]
-        for _ in range(n_iter):
-            new_sample = make_sample(sentence, pos_dict, p_mask, p_pos, p_ng, max_ng, lower)
-            if new_sample not in samples:
-                samples.append(new_sample)
-        augmented.extend(samples)
-    return augmented
+def make_samples(entry):
+    # fixed hyperparams for sampling
+    n_iter = 20
+
+    sentence = entry['sentence']
+    pos_dict = entry['pos_dict']
+    lower = entry['lower']
+    samples = [[word.text.lower() if lower else word.text for word in sentence]]
+    for _ in range(n_iter):
+        new_sample = make_sample(sentence, pos_dict, lower)
+        if new_sample not in samples:
+            samples.append(new_sample)
+    return samples
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -79,11 +90,13 @@ if __name__ == "__main__":
     parser.add_argument('--dummy_label', type=str, default='dummy')
     parser.add_argument('--lang', type=str, default='en', help="Target language, 'en'|'ko', default 'en'.")
     parser.add_argument('--lower', action='store_true', help="Enable lowercase.")
+    parser.add_argument('--parallel', action='store_true', help="Enable parallel processing for sampling.")
     args = parser.parse_args()
     
     # Load original tsv file
     input_tsv = load_tsv(args.input, skip_header=False)
 
+    # POS tagging
     mask_token = args.mask_token
     if args.lang == 'en':
         import spacy
@@ -109,11 +122,31 @@ if __name__ == "__main__":
                     sentence.append(word)
             sentences.append(sentence) 
 
-    # build lists of words indexes by POS tab
+    # Build lists of words indexes by POS
     pos_dict = build_pos_dict(sentences, lower=args.lower)
 
     # Generate augmented samples
-    sentences = augmentation(sentences, pos_dict, lower=args.lower)
+    if args.parallel:
+        pool = mp.Pool(mp.cpu_count())
+        # processs in parallel
+        entries = []
+        for sentence in tqdm(sentences, 'Preparation for Multiprocessing'):
+            entry = {'sentence': sentence, 'pos_dict': pos_dict, 'lower': args.lower}
+            entries.append(entry)
+        print('Data ready! go parallel!') 
+        sentences = pool.map(make_samples, entries)
+        sentences = reduce(lambda x,y: x+y, sentences)
+        pool.close()
+        pool.join()
+        print('Done!')
+    else:
+        # process sequentially
+        augmented = []
+        for sentence in tqdm(sentences, 'Generation sequentially'):
+            entry = {'sentence': sentence, 'pos_dict': pos_dict, 'lower': args.lower}
+            samples = make_samples(entry) 
+            augmented.extend(samples)
+        sentences = augmented
 
     # Write to file
     with open(args.output, 'w') as f:
