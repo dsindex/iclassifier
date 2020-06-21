@@ -69,7 +69,7 @@
 | bpe DistilBERT(4.8m), CNN           | 88.39        | 9.6396  / -       | 38.7144 | update2, threads=14       |
 | bpe DistilBERT(4.8m), CLS           | 88.55        | 8.2834  / -       | 31.5655 | update2, threads=14       |
 | dha BERT(2.5m), CNN                 | **90.25**    | 15.5738 / -       |         | update2    |
-| dha BERT(2.5m), CLS                 | 90.17        | 13.9389 / -       |         | update2    |
+| dha BERT(2.5m), CLS                 | 90.18        | 13.3390 / -       |         | update2    |
 | dha BERT(2.5m), CNN                 | 88.88        | 10.5157 / 72.7777 |         | del 8,9,10,11, threads=14         |
 | dha BERT(2.5m), CLS                 | 88.81        | 8.9836  / 68.4545 | 50.7474 | del 8,9,10,11, threads=14         |
 | dha BERT(2.5m), CLS                 | 88.29        | 7.2027  / 53.6363 | 38.3333 | del 6,7,8,9,10,11, threads=14     |
@@ -345,8 +345,8 @@ INFO:__main__:[Accuracy] : 0.8754, 43765/49997
 INFO:__main__:[Elapsed Time] : 288307ms, 5.764541163293064ms on average
 
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
-INFO:__main__:[Accuracy] : 0.9017, 45082/49997
-INFO:__main__:[Elapsed Time] : 697001ms, 13.938935114809185ms on average
+INFO:__main__:[Accuracy] : 0.9018, 45089/49997
+INFO:__main__:[Elapsed Time] : 666997.1199035645ms, 13.339050636929372ms on average
 
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=5e-5
 INFO:__main__:[Accuracy] : 0.8967, 44831/49997

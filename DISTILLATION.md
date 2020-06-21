@@ -140,29 +140,30 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
 
 - train teacher model
 
-  - bpe BERT(4.8m), CLS
+  - dha BERT(2.5m), CLS
   ```
-  $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --data_dir=./data/clova_sentiments
-  $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments/ --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
-  $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
-
+  $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/clova_sentiments_morph
+  $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+  $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
+  INFO:__main__:[Accuracy] : 0.9018, 45089/49997
+  INFO:__main__:[Elapsed Time] : 666997.1199035645ms, 13.339050636929372ms on average
   ```
 
 - generate pseudo labeled data
 
   - augmentation
   ```
-   $ python augment_data.py --input data/clova_sentiments/train.txt --output data/clova_sentiments/augmented.raw --lang=ko
+  $ python augment_data.py --input data/clova_sentiments/train.txt --output data/clova_sentiments_morph/augmented.raw --lang=ko
   ```
   - add logits by teacher model
   ```
   * converting augmented.raw to augmented.raw.fs(id mapped file)
   * labeling augmented.raw to augmented.raw.pred
 
-  $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --data_dir=./data/clova_sentiments --augmented
-  $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint --augmented
+  $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/clova_sentiments_morph --augmented
+  $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
-  $ cp -rf data/clova_sentiments/augmented.raw.pred /data/clova_sentiments_morph/augmented.txt
+  $ cp -rf ./data/clova_sentiments_morph/augmented.raw.pred ./data/clova_sentiments_morph/augmented.txt
   ```
 
 - train student model

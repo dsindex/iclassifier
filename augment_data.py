@@ -13,6 +13,9 @@ class Word:
         self.text = word
         self.pos_ = pos
 
+    def __str__(self):
+        return '{}/{}'.format(self.text, self.pos_)
+
 def load_tsv(path, skip_header=True):
     with open(path) as f:
         reader = csv.reader(f, delimiter='\t')
@@ -30,7 +33,7 @@ def build_pos_dict(sentences, lower=True):
                 pos_dict[pos_tag] = []
             w = word.text
             if lower: w = w.lower()
-            if key not in pos_dict[pos_tag]:
+            if w not in pos_dict[pos_tag]:
                 pos_dict[pos_tag].append(w)
     return pos_dict
 
@@ -75,7 +78,7 @@ if __name__ == "__main__":
     parser.add_argument('--mask_token', type=str, default='[MASK]')
     parser.add_argument('--dummy_label', type=str, default='dummy')
     parser.add_argument('--lang', type=str, default='en', help="Target language, 'en'|'ko', default 'en'.")
-    parser.add_argument('--lower', action='store_true', help"Enable lowercase.")
+    parser.add_argument('--lower', action='store_true', help="Enable lowercase.")
     args = parser.parse_args()
     
     # Load original tsv file
@@ -100,9 +103,10 @@ if __name__ == "__main__":
                 for khaiii_morph in khaiii_word.morphs:
                     morph = khaiii_morph.lex
                     tag = khaiii_morph.tag
-                    tags.append(tag)
-                word = Word(khaiii_word.lex, '+'.join(tags)) # ex) word.text = '안녕,', word.pos_ = 'IC+SP'
-                sentence.append(word)
+                    # add '-다' for matching GloVe vocab.
+                    if tag in ['VV', 'VA', 'VX', 'XSV', 'XSA', 'VCP']: morph += u'다'
+                    word = Word(morph, tag)
+                    sentence.append(word)
             sentences.append(sentence) 
 
     # build lists of words indexes by POS tab
