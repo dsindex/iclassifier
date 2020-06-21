@@ -151,7 +151,7 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
 
   - augmentation
   ```
-  $ python augment_data.py --input data/clova_sentiments/train.txt --output data/clova_sentiments_morph/augmented.raw --lang=ko --parallel
+  $ python augment_data.py --input data/clova_sentiments/train.txt --output data/clova_sentiments_morph/augmented.raw --lang=ko --n_iter=2 --parallel
   ```
   - add logits by teacher model
   ```

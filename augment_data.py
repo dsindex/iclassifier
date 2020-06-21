@@ -69,12 +69,10 @@ def make_sample(input_sentence, pos_dict, lower=True):
     return sentence
 
 def make_samples(entry):
-    # fixed hyperparams for sampling
-    n_iter = 20
-
     sentence = entry['sentence']
     pos_dict = entry['pos_dict']
     lower = entry['lower']
+    n_iter = entry['n_iter']
     samples = [[word.text.lower() if lower else word.text for word in sentence]]
     for _ in range(n_iter):
         new_sample = make_sample(sentence, pos_dict, lower)
@@ -87,6 +85,7 @@ if __name__ == "__main__":
     parser.add_argument('--input', type=str, required=True, help="Input dataset.")
     parser.add_argument('--output', type=str, required=True, help="Output dataset.")
     parser.add_argument('--mask_token', type=str, default='[MASK]')
+    parser.add_argument('--n_iter', type=int, default=20)
     parser.add_argument('--dummy_label', type=str, default='dummy')
     parser.add_argument('--lang', type=str, default='en', help="Target language, 'en'|'ko', default 'en'.")
     parser.add_argument('--lower', action='store_true', help="Enable lowercase.")
@@ -103,12 +102,12 @@ if __name__ == "__main__":
         from spacy.symbols import ORTH
         spacy_en = spacy.load('en_core_web_sm')
         spacy_en.tokenizer.add_special_case(mask_token, [{ORTH: mask_token}])
-        sentences = [spacy_en(text) for text, _ in tqdm(input_tsv, desc='Loading dataset')]
+        sentences = [spacy_en(text) for text, _ in tqdm(input_tsv, desc='POS tagging')]
     if args.lang == 'ko':
         from khaiii import KhaiiiApi
         khaiii_api = KhaiiiApi()
         sentences = []
-        for text, _ in tqdm(input_tsv, desc='Loading dataset'):
+        for text, _ in tqdm(input_tsv, desc='POS tagging'):
             sentence = []
             khaiii_sentence = khaiii_api.analyze(text)
             for khaiii_word in khaiii_sentence:
@@ -130,11 +129,11 @@ if __name__ == "__main__":
         pool = mp.Pool(mp.cpu_count())
         # processs in parallel
         entries = []
-        for sentence in tqdm(sentences, 'Preparation for Multiprocessing'):
-            entry = {'sentence': sentence, 'pos_dict': pos_dict, 'lower': args.lower}
+        for sentence in tqdm(sentences, desc='Preparation data for multiprocessing'):
+            entry = {'sentence': sentence, 'pos_dict': pos_dict, 'lower': args.lower, 'n_iter': args.n_iter}
             entries.append(entry)
         print('Data ready! go parallel!') 
-        sentences = pool.map(make_samples, entries)
+        sentences = pool.map(make_samples, entries, chunksize=100)
         sentences = reduce(lambda x,y: x+y, sentences)
         pool.close()
         pool.join()
@@ -142,13 +141,13 @@ if __name__ == "__main__":
     else:
         # process sequentially
         augmented = []
-        for sentence in tqdm(sentences, 'Generation sequentially'):
-            entry = {'sentence': sentence, 'pos_dict': pos_dict, 'lower': args.lower}
+        for sentence in tqdm(sentences, desc='Sampling'):
+            entry = {'sentence': sentence, 'pos_dict': pos_dict, 'lower': args.lower, 'n_iter': args.n_iter}
             samples = make_samples(entry) 
             augmented.extend(samples)
         sentences = augmented
 
     # Write to file
     with open(args.output, 'w') as f:
-        for sentence in sentences:
+        for sentence in tqdm(sentences, desc='Writing'):
             f.write("{}\t{}\n".format(' '.join(sentence), args.dummy_label))
