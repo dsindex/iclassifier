@@ -179,7 +179,9 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
   INFO:__main__:[Accuracy] : 0.8803, 44010/49997
   INFO:__main__:[Elapsed Time] : 192634.52124595642ms, 3.8516901761915734ms on average
 
-  * analyzer=npc --measure=loss
+  * analyzer=npc --measure=loss 
+  INFO:__main__:[Accuracy] : 0.8794, 43966/49997
+  INFO:__main__:[Elapsed Time] : 184229.0802001953ms, 3.68324319632857ms on average
 
   * analyzer=npc --measure=accuracy
   INFO:__main__:[Accuracy] : 0.8870, 44346/49997
