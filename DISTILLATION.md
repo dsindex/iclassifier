@@ -198,6 +198,12 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
   * 3) n_iter=4
 
   ** analyzer=npc --measure=accuracy
+  INFO:__main__:[Accuracy] : 0.8877, 44380/49997
+  INFO:__main__:[Elapsed Time] : 182432.52897262573ms, 3.6474575623673187ms on average
+ 
+  * 4) n_iter=10
+
+  ** analyzer=npc --measure=accuracy
 
   ```
 
