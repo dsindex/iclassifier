@@ -39,11 +39,15 @@ def build_pos_dict(sentences, lower=True):
                 pos_dict[pos_tag].append(w)
     return pos_dict
 
-def make_sample(input_sentence, pos_dict, max_ng=5, lower=True):
-    # hyperparams for sampling : p_mask, p_pos, p_ng
-    p_mask = 0.1 # mask prob
-    p_pos = 0.1  # pos prob
-    p_ng = 0.25  # ngram prob
+def make_sample(entry):
+    input_sentence = entry['sentence']
+    pos_dict = entry['pos_dict']
+    lower = entry['lower']
+    p_mask = entry['p_mask']
+    p_pos = entry['p_pos']
+    p_ng = entry['p_ng']
+    max_ng = entry['max_ng']
+    analyzer = entry['analyzer']
 
     sentence = []
     for word in input_sentence:
@@ -52,9 +56,19 @@ def make_sample(input_sentence, pos_dict, max_ng=5, lower=True):
         if u < p_mask:
             sentence.append(mask_token)
         elif u < (p_mask + p_pos):
-            same_pos = pos_dict[word.pos_]
-            # Pick from list of words with same POS tag
-            sentence.append(np.random.choice(same_pos))
+            if analyzer == 'spacy':
+                same_pos = pos_dict[word.pos_]
+                # Pick from list of words with same POS tag
+                sentence.append(np.random.choice(same_pos))
+            else:
+                if word.pos_[0] in ['J', 'E']: # exclude 'Josa, Eomi' 
+                    w = word.text
+                    if lower: w = w.lower()
+                    sentence.append(w)
+                else:
+                    same_pos = pos_dict[word.pos_]
+                    # Pick from list of words with same POS tag
+                    sentence.append(np.random.choice(same_pos))
         else:
             w = word.text
             if lower: w = w.lower()
@@ -69,14 +83,12 @@ def make_sample(input_sentence, pos_dict, max_ng=5, lower=True):
 
 def make_samples(entry):
     sentence = entry['sentence']
-    pos_dict = entry['pos_dict']
     lower = entry['lower']
-    # hyperparams for sampling : n_iter, max_ng
+    # hyperparams for sampling : p_mask, p_pos, p_ng, max_ng, n_iter
     n_iter = entry['n_iter']
-    max_ng = entry['max_ng']
     samples = [[word.text.lower() if lower else word.text for word in sentence]]
     for _ in range(n_iter):
-        new_sample = make_sample(sentence, pos_dict, max_ng, lower)
+        new_sample = make_sample(entry)
         if new_sample not in samples:
             samples.append(new_sample)
     return samples
@@ -86,6 +98,9 @@ if __name__ == "__main__":
     parser.add_argument('--input', type=str, required=True, help="Input dataset.")
     parser.add_argument('--output', type=str, required=True, help="Output dataset.")
     parser.add_argument('--mask_token', type=str, default='[MASK]')
+    parser.add_argument('--p_mask', type=float, default=0.1, help="Prob for masking single token.")
+    parser.add_argument('--p_pos', type=float, default=0.1, help="Prob for replacing single token using POS.")
+    parser.add_argument('--p_ng', type=float, default=0.25, help="Prob for masking ngram.")
     parser.add_argument('--max_ng', type=int, default=5, help="Max ngram size for masking.")
     parser.add_argument('--n_iter', type=int, default=20, help="Number of iteration for sampling.")
     parser.add_argument('--dummy_label', type=str, default='dummy')
@@ -149,7 +164,15 @@ if __name__ == "__main__":
         # processs in parallel
         entries = []
         for sentence in tqdm(sentences, desc='Preparation data for multiprocessing'):
-            entry = {'sentence': sentence, 'pos_dict': pos_dict, 'lower': args.lower, 'n_iter': args.n_iter, 'max_ng': args.max_ng}
+            entry = {'sentence': sentence,
+                     'pos_dict': pos_dict,
+                     'lower': args.lower,
+                     'n_iter': args.n_iter,
+                     'p_mask': args.p_mask,
+                     'p_pos': args.p_pos,
+                     'p_ng': args.p_ng,
+                     'max_ng': args.max_ng,
+                     'analyzer': args.analyzer}
             entries.append(entry)
         print('Data ready! go parallel!') 
         sentences = pool.map(make_samples, entries, chunksize=100)
@@ -161,7 +184,15 @@ if __name__ == "__main__":
         # process sequentially
         augmented = []
         for sentence in tqdm(sentences, desc='Sampling'):
-            entry = {'sentence': sentence, 'pos_dict': pos_dict, 'lower': args.lower, 'n_iter': args.n_iter, 'max_ng': args.max_ng}
+            entry = {'sentence': sentence,
+                     'pos_dict': pos_dict,
+                     'lower': args.lower,
+                     'n_iter': args.n_iter,
+                     'p_mask': args.p_mask,
+                     'p_pos': args.p_pos,
+                     'p_ng': args.p_ng,
+                     'max_ng': args.max_ng,
+                     'analyzer': args.analyzer}
             samples = make_samples(entry) 
             augmented.extend(samples)
         sentences = augmented
