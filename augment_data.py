@@ -116,6 +116,8 @@ if __name__ == "__main__":
                 for khaiii_morph in khaiii_word.morphs:
                     morph = khaiii_morph.lex
                     tag = khaiii_morph.tag
+                    # we might need to modify 'morph' for matching the vocab of GloVe.
+                    # ex) if tag in ['VV', 'VA', 'VX', 'XSV', 'XSA', 'VCP']: morph += u'다'
                     word = Word(morph, tag)
                     sentence.append(word)
             sentences.append(sentence)
