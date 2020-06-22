@@ -68,7 +68,7 @@ def make_sample(entry):
                     sentence.append(np.random.choice(same_pos))
                     mask_count += 1
                 else: # analyzer in ['khaiii', 'npc']
-                    if word.pos_[0] in ['J', 'E'] or word.pos_ in ['VX']: # exclude 'Josa, Eomi', 'Auxiliary verb' 
+                    if word.pos_[0] in ['J', 'E'] or word.pos_ in ['VX', 'NNB']: # exclude 'Josa, Eomi', 'Auxiliary verb', 'Bound noun' 
                         w = word.text
                         if lower: w = w.lower()
                         sentence.append(w)

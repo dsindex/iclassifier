@@ -175,12 +175,8 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
   $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --lr_decay_rate=0.9 --save_path=pytorch-model-densenet.pt --augmented --measure=accuracy
   $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/clova_sentiments_morph --model_path=pytorch-model-densenet.pt
 
-  * n_iter=2
+  * 1) n_iter=2
   
-  ** analyzer=khaiii
-  INFO:__main__:[Accuracy] : 0.8803, 44010/49997
-  INFO:__main__:[Elapsed Time] : 192634.52124595642ms, 3.8516901761915734ms on average
-
   ** analyzer=npc --measure=loss 
   INFO:__main__:[Accuracy] : 0.8839, 44193/49997
   INFO:__main__:[Elapsed Time] : 180243.6339855194ms, 3.603460102217113ms on average
@@ -189,7 +185,7 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
   INFO:__main__:[Accuracy] : 0.8858, 44288/49997
   INFO:__main__:[Elapsed Time] : 184068.44115257263ms, 3.680069796208697ms on average
 
-  * n_iter=3
+  * 2) n_iter=3
 
   ** analyzer=npc --measure=loss
 
