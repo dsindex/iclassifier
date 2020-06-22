@@ -42,50 +42,61 @@ def build_pos_dict(sentences, lower=True):
 def make_sample(entry):
     input_sentence = entry['sentence']
     pos_dict = entry['pos_dict']
-    lower = entry['lower']
-    p_mask = entry['p_mask']
-    p_pos = entry['p_pos']
-    p_ng = entry['p_ng']
-    max_ng = entry['max_ng']
-    analyzer = entry['analyzer']
+    lower = entry['args'].lower
+    p_mask = entry['args'].p_mask
+    p_pos = entry['args'].p_pos
+    p_ng = entry['args'].p_ng
+    max_ng = entry['args'].max_ng
+    analyzer = entry['args'].analyzer
+    mask_token = entry['args'].mask_token
 
+    num_tokens = len(input_sentence)
+    max_mask_count = num_tokens // 2 # max portion of masked tokens == 50%
+    mask_count = 0
     sentence = []
     for word in input_sentence:
-        # Apply single token masking or POS-guided replacement
         u = np.random.uniform()
-        if u < p_mask:
-            sentence.append(mask_token)
-        elif u < (p_mask + p_pos):
-            if analyzer == 'spacy':
-                same_pos = pos_dict[word.pos_]
-                # Pick from list of words with same POS tag
-                sentence.append(np.random.choice(same_pos))
-            else: # analyzer == 'khaiii', 'npc'
-                if word.pos_[0] in ['J', 'E']: # exclude 'Josa, Eomi' 
-                    w = word.text
-                    if lower: w = w.lower()
-                    sentence.append(w)
-                else:
+        if u < (p_mask + p_pos) and mask_count <= max_mask_count:
+            # Apply single token masking or POS-guided replacement
+            if u < p_mask:
+                sentence.append(mask_token)
+                mask_count += 1
+            elif u < (p_mask + p_pos):
+                if analyzer == 'spacy':
                     same_pos = pos_dict[word.pos_]
                     # Pick from list of words with same POS tag
                     sentence.append(np.random.choice(same_pos))
+                    mask_count += 1
+                else: # analyzer in ['khaiii', 'npc']
+                    if word.pos_[0] in ['J', 'E'] or word.pos_ in ['VX']: # exclude 'Josa, Eomi', 'Auxiliary verb' 
+                        w = word.text
+                        if lower: w = w.lower()
+                        sentence.append(w)
+                    else:
+                        same_pos = pos_dict[word.pos_]
+                        # Pick from list of words with same POS tag
+                        sentence.append(np.random.choice(same_pos))
+                        mask_count += 1
         else:
             w = word.text
             if lower: w = w.lower()
             sentence.append(w)
+
     # Apply n-gram sampling
     if len(sentence) > 2 and np.random.uniform() < p_ng:
         n = min(np.random.choice(range(1, max_ng+1)), len(sentence) - 1)
-        start = np.random.choice(len(sentence) - n)
-        for idx in range(start, start + n):
-            sentence[idx] = mask_token
+        if mask_count + n <= max_mask_count:
+            start = np.random.choice(len(sentence) - n)
+            for idx in range(start, start + n):
+                sentence[idx] = mask_token
+            mask_count += n
     return sentence
 
 def make_samples(entry):
     sentence = entry['sentence']
-    lower = entry['lower']
+    lower = entry['args'].lower
     # hyperparams for sampling : p_mask, p_pos, p_ng, max_ng, n_iter
-    n_iter = entry['n_iter']
+    n_iter = entry['args'].n_iter
     samples = [[word.text.lower() if lower else word.text for word in sentence]]
     for _ in range(n_iter):
         new_sample = make_sample(entry)
@@ -113,12 +124,11 @@ if __name__ == "__main__":
     input_tsv = load_tsv(args.input, skip_header=False)
 
     # POS tagging
-    mask_token = args.mask_token
     if args.analyzer == 'spacy':
         import spacy
         from spacy.symbols import ORTH
         spacy_en = spacy.load('en_core_web_sm')
-        spacy_en.tokenizer.add_special_case(mask_token, [{ORTH: mask_token}])
+        spacy_en.tokenizer.add_special_case(args.mask_token, [{ORTH: args.mask_token}])
         sentences = [spacy_en(text) for text, _ in tqdm(input_tsv, desc='POS tagging')]
     if args.analyzer == 'khaiii':
         from khaiii import KhaiiiApi
@@ -166,13 +176,7 @@ if __name__ == "__main__":
         for sentence in tqdm(sentences, desc='Preparation data for multiprocessing'):
             entry = {'sentence': sentence,
                      'pos_dict': pos_dict,
-                     'lower': args.lower,
-                     'n_iter': args.n_iter,
-                     'p_mask': args.p_mask,
-                     'p_pos': args.p_pos,
-                     'p_ng': args.p_ng,
-                     'max_ng': args.max_ng,
-                     'analyzer': args.analyzer}
+                     'args': args}
             entries.append(entry)
         print('Data ready! go parallel!') 
         sentences = pool.map(make_samples, entries, chunksize=100)
@@ -186,13 +190,7 @@ if __name__ == "__main__":
         for sentence in tqdm(sentences, desc='Sampling'):
             entry = {'sentence': sentence,
                      'pos_dict': pos_dict,
-                     'lower': args.lower,
-                     'n_iter': args.n_iter,
-                     'p_mask': args.p_mask,
-                     'p_pos': args.p_pos,
-                     'p_ng': args.p_ng,
-                     'max_ng': args.max_ng,
-                     'analyzer': args.analyzer}
+                     'args': args}
             samples = make_samples(entry) 
             augmented.extend(samples)
         sentences = augmented
