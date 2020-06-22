@@ -60,7 +60,7 @@ def make_sample(entry):
                 same_pos = pos_dict[word.pos_]
                 # Pick from list of words with same POS tag
                 sentence.append(np.random.choice(same_pos))
-            else:
+            else: # analyzer == 'khaiii', 'npc'
                 if word.pos_[0] in ['J', 'E']: # exclude 'Josa, Eomi' 
                     w = word.text
                     if lower: w = w.lower()

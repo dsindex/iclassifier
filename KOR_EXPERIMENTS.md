@@ -61,15 +61,15 @@
 | GloVe, CNN                          | 87.31        | 1.9479  / 3.5353  |         | threads=14 |
 | **GloVe, DenseNet-CNN**             | 88.18        | 3.4614  / 8.3434  |         | threads=14 |
 | GloVe, DenseNet-DSA                 | 87.66        | 6.9731  / -       |         |            |
-| DistilFromBERT, GloVe, DenseNet-CNN | 88.70        | 3.7165  / -       |         |            |
-| bpe BERT(4.8m), CNN                 | 90.11        | 16.5453 / -       |         | update2    |
-| bpe BERT(4.8m), CLS                 | 89.91        | 14.9586 / -       |         | update2    |
+| DistilFromBERT, GloVe, DenseNet-CNN | 88.58        | 3.6800  / -       |         |            |
+| bpe BERT(4.8m), CNN                 | 90.11        | 16.5453 / -       |         |            |
+| bpe BERT(4.8m), CLS                 | 89.91        | 14.9586 / -       |         |            |
 | bpe BERT(4.8m), CNN                 | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
 | bpe BERT(4.8m), CLS                 | 88.92        | 9.3280  / 70.3232 |         | del 8,9,10,11, threads=14 |
-| bpe DistilBERT(4.8m), CNN           | 88.39        | 9.6396  / -       | 38.7144 | update2, threads=14       |
-| bpe DistilBERT(4.8m), CLS           | 88.55        | 8.2834  / -       | 31.5655 | update2, threads=14       |
-| dha BERT(2.5m), CNN                 | **90.25**    | 15.5738 / -       |         | update2    |
-| dha BERT(2.5m), CLS                 | 90.18        | 13.3390 / -       |         | update2    |
+| bpe DistilBERT(4.8m), CNN           | 88.39        | 9.6396  / -       | 38.7144 |        , threads=14       |
+| bpe DistilBERT(4.8m), CLS           | 88.55        | 8.2834  / -       | 31.5655 |        , threads=14       |
+| dha BERT(2.5m), CNN                 | **90.25**    | 15.5738 / -       |         |            |
+| dha BERT(2.5m), CLS                 | 90.18        | 13.3390 / -       |         |            |
 | dha BERT(2.5m), CNN                 | 88.88        | 10.5157 / 72.7777 |         | del 8,9,10,11, threads=14         |
 | dha BERT(2.5m), CLS                 | 88.81        | 8.9836  / 68.4545 | 50.7474 | del 8,9,10,11, threads=14         |
 | dha BERT(2.5m), CLS                 | 88.29        | 7.2027  / 53.6363 | 38.3333 | del 6,7,8,9,10,11, threads=14     |
@@ -78,10 +78,10 @@
 | dha-bpe BERT(4m), CLS               | 89.01        | 12.7981 / -       |         |            |
 | dha BERT(10m), CNN                  | 89.08        | 15.3276 / -       |         |            |
 | dha BERT(10m), CLS                  | 89.25        | 12.7876 / -       |         |            |
-| KoELECTRA-Base, CNN                 | 89.51        | 15.5452 / -       |         | update2    |
-| KoELECTRA-Base, CLS                 | 89.63        | 14.2667 / -       |         | update2    |
-| bpe ELECTRA-base(30k-512-1m) , CNN  | 88.07        | 16.2737 / -       |         | update2    |
-| bpe ELECTRA-base(30k-512-1m) , CLS  | 88.26        | 14.2356 / -       |         | update2    |
+| KoELECTRA-Base, CNN                 | 89.51        | 15.5452 / -       |         |            |
+| KoELECTRA-Base, CLS                 | 89.63        | 14.2667 / -       |         |            |
+| bpe ELECTRA-base(30k-512-1m) , CNN  | 88.07        | 16.2737 / -       |         |            |
+| bpe ELECTRA-base(30k-512-1m) , CLS  | 88.26        | 14.2356 / -       |         |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)

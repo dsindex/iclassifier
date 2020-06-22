@@ -268,7 +268,7 @@ INFO:__main__:[Elapsed Time] : 6607ms, 9.30758226037196ms on average
 | BERT-base, CLS                          | 90.23        | 7.0241  / 51.7676           | 43.5959           |                   |                          |                   | del 6,7,8,9,10,11, threads=14     |
 | BERT-base, CLS                          | 86.66        | 5.8868  / 36.2121           | 26.5555           |                   |                          |                   | del 4,5,6,7,8,9,10,11, threads=14 |
 | BERT-large, CNN                         | 93.08        | 28.6490 / -                 |                   |                   |                          |                   |               |
-| BERT-large, CLS                         | 94.12        | 22.3767 / -                 |                   |                   |                          |                   | update2       |
+| BERT-large, CLS                         | 94.12        | 22.3767 / -                 |                   |                   |                          |                   |               |
 | BERT-large, CNN                         | 88.47        | 14.7813 / -                 |                   |                   |                          |                   | del 12~23     |
 | BERT-large, CLS                         | 86.71        | 12.1560 / -                 |                   |                   |                          |                   | del 12~23     |
 | SpanBERT-base, CNN                      | 91.82        | 15.2098 / -                 |                   |                   |                          |                   |               |
