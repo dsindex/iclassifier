@@ -4,9 +4,6 @@
 ```
 $ python -m pip install spacy
 $ python -m spacy download en_core_web_sm
-
-* for Korean language,
-  install khaiii(https://github.com/kakao/khaiii)
 ```
 
 #### Train teacher model
@@ -136,6 +133,9 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
 
 #### Experiments for Korean
 
+- prerequisites
+  - install khaiii(https://github.com/kakao/khaiii) or other morphological analyzer which was used to generate `data/clova_sentiments_morph` dataset.
+
 - train teacher model
 
   - dha BERT(2.5m), CLS
@@ -151,7 +151,9 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
 
   - augmentation
   ```
-  $ python augment_data.py --input data/clova_sentiments/train.txt --output data/clova_sentiments_morph/augmented.raw --lang=ko --n_iter=2 --parallel
+  $ python augment_data.py --input data/clova_sentiments/train.txt --output data/clova_sentiments_morph/augmented.raw --analyzer=khaiii --n_iter=2 --max_ng=2 --parallel
+  or
+  $ python augment_data.py --input data/clova_sentiments/train.txt --output data/clova_sentiments_morph/augmented.raw --analyzer=npc --n_iter=2 --max_ng=2 --parallel   # inhouse
   ```
   - add logits by teacher model
   ```
@@ -170,8 +172,18 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
   ```
   * converting augmented.txt to augmented.txt.ids(id mapped file) and train!
   $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt --augmented
-  $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --lr_decay_rate=0.9 --augmented
-  $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/clova_sentiments_morph 
+  $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --lr_decay_rate=0.9 --save_path=pytorch-model-densenet.pt --augmented --measure=accuracy
+  $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/clova_sentiments_morph --model_path=pytorch-model-densenet.pt
+
+  * analyzer=khaiii
+  INFO:__main__:[Accuracy] : 0.8803, 44010/49997
+  INFO:__main__:[Elapsed Time] : 192634.52124595642ms, 3.8516901761915734ms on average
+
+  * analyzer=npc --measure=loss
+
+  * analyzer=npc --measure=accuracy
+  INFO:__main__:[Accuracy] : 0.8870, 44346/49997
+  INFO:__main__:[Elapsed Time] : 185902.56071090698ms, 3.716545516428485ms on average
 
   ```
 
