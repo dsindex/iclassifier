@@ -165,7 +165,10 @@ def set_path(config):
             opt.train_path = os.path.join(opt.data_dir, 'train.txt.ids')
         opt.valid_path = os.path.join(opt.data_dir, 'valid.txt.ids')
     if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
-        opt.train_path = os.path.join(opt.data_dir, 'train.txt.fs')
+        if opt.augmented:
+            opt.train_path = os.path.join(opt.data_dir, 'augmented.txt.fs')
+        else:
+            opt.train_path = os.path.join(opt.data_dir, 'train.txt.fs')
         opt.valid_path = os.path.join(opt.data_dir, 'valid.txt.fs')
     opt.label_path     = os.path.join(opt.data_dir, opt.label_filename)
     opt.embedding_path = os.path.join(opt.data_dir, opt.embedding_filename)

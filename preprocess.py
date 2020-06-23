@@ -18,8 +18,6 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 _TRAIN_FILE = 'train.txt'
-_TRAIN_AUGMENTED_FILE = 'augmented.txt'
-_TRAIN_AUGMENTED_RAW_FILE = 'augmented.raw'
 _VALID_FILE = 'valid.txt'
 _TEST_FILE  = 'test.txt'
 _SUFFIX = '.ids'
@@ -174,7 +172,7 @@ def preprocess_glove(config):
     # build data
     tokenizer = Tokenizer(vocab, config)
     if opt.augmented:
-        path = os.path.join(opt.data_dir, _TRAIN_AUGMENTED_FILE)
+        path = os.path.join(opt.data_dir, opt.augmented_filename)
     else:
         path = os.path.join(opt.data_dir, _TRAIN_FILE)
     train_data = build_data(path, tokenizer)
@@ -191,7 +189,7 @@ def preprocess_glove(config):
 
     # write data, vocab, embedding, labels
     if opt.augmented:
-        path = os.path.join(opt.data_dir, _TRAIN_AUGMENTED_FILE + _SUFFIX)
+        path = os.path.join(opt.data_dir, opt.augmented_filename + _SUFFIX)
     else:
         path = os.path.join(opt.data_dir, _TRAIN_FILE + _SUFFIX)
     write_data(train_data, path, tokenizer, labels)
@@ -267,7 +265,7 @@ def preprocess_bert(config):
 
     # build features
     if opt.augmented:
-        path = os.path.join(opt.data_dir, _TRAIN_AUGMENTED_RAW_FILE)
+        path = os.path.join(opt.data_dir, opt.augmented_filename)
     else:
         path = os.path.join(opt.data_dir, _TRAIN_FILE)
     train_features = build_features(path, tokenizer, labels, config, mode='train')
@@ -280,7 +278,7 @@ def preprocess_bert(config):
 
     # write features
     if opt.augmented:
-        path = os.path.join(opt.data_dir, _TRAIN_AUGMENTED_RAW_FILE + _FSUFFIX)
+        path = os.path.join(opt.data_dir, opt.augmented_filename + _FSUFFIX)
     else:
         path = os.path.join(opt.data_dir, _TRAIN_FILE + _FSUFFIX)
     write_features(train_features, path)
@@ -304,6 +302,8 @@ def main():
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--augmented', action='store_true',
                         help="Set this flag to use augmented.txt for training or to use augmented.raw for labeling.")
+    parser.add_argument('--augmented_filename', type=str, default='augmented.raw',
+                        help="Filename for augmentation, augmented.raw or augmented.txt.")
     # for BERT, ALBERT
     parser.add_argument('--bert_model_name_or_path', type=str, default='bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")

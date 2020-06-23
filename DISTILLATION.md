@@ -53,18 +53,18 @@ $ python augment_data.py --input data/sst2/train.txt --output data/sst2/augmente
 * labeling augmented.raw to augmented.raw.pred
 
 * bert
-$ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-large-uncased --bert_do_lower_case --augmented
+$ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-large-uncased --bert_do_lower_case --augmented --augmented_filename=augmented.raw
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
 * roberta
-$ python preprocess.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --augmented
+$ python preprocess.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --augmented --augmented_filename=augmented.raw
 $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
 * electra 
-$ python preprocess.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-large-discriminator --bert_do_lower_case --augmented
+$ python preprocess.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-large-discriminator --bert_do_lower_case --augmented --augmented_filename=augmented.raw
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
-$ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
+$ cp -rf data/sst2/augmented.raw.pred data/sst2/augmented.txt
 ```
 
 #### Train student model
@@ -73,7 +73,7 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
   - distilled from bert
   ```
   * converting augmented.txt to augmented.txt.ids(id mapped file) and train!
-  $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --augmented
+  $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --augmented --augmented_filename=augmented.txt
   $ python train.py --config=configs/config-glove-cnn.json --data_dir=data/sst2 --lr=1e-3 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --save_path=pytorch-model-cnn.pt --augmented
   $ python evaluate.py --config=configs/config-glove-cnn.json --data_dir=data/sst2 --model_path=pytorch-model-cnn.pt
   INFO:__main__:[Accuracy] : 0.8616,  1569/ 1821
@@ -93,7 +93,7 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
 - GloVe, DenseNet-CNN
   - distilled from bert
   ```
-  $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --augmented
+  $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --augmented --augmented_filename=augmented.txt
   $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --save_path=pytorch-model-densenet.pt --augmented
   $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --model_path=pytorch-model-densenet.pt
   INFO:__main__:[Accuracy] : 0.8852,  1612/ 1821
@@ -114,7 +114,7 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
 - Glove, DenseNet-DSA
   - distilled from bert
   ```
-  $ python preprocess.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --augmented
+  $ python preprocess.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --augmented --augmented_filename=augmented.txt
   $ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --save_path=pytorch-model-densenet.pt --augmented
   $ python evaluate.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --model_path=pytorch-model-densenet.pt
   INFO:__main__:[Accuracy] : 0.8814,  1605/ 1821
@@ -160,7 +160,7 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
   * converting augmented.raw to augmented.raw.fs(id mapped file)
   * labeling augmented.raw to augmented.raw.pred
 
-  $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/clova_sentiments_morph --augmented
+  $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/clova_sentiments_morph --augmented --augmented_filename=augmented.raw
   $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
   $ cp -rf ./data/clova_sentiments_morph/augmented.raw.pred ./data/clova_sentiments_morph/augmented.txt
@@ -171,7 +171,7 @@ $ cp data/sst2/augmented.raw.pred data/sst2/augmented.txt
   - Glove, DenseNet-CNN
   ```
   * converting augmented.txt to augmented.txt.ids(id mapped file) and train!
-  $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt --augmented
+  $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt --augmented --augmented_filename=augmented.txt
   $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --lr_decay_rate=0.9 --save_path=pytorch-model-densenet.pt --augmented --measure=accuracy
   $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/clova_sentiments_morph --model_path=pytorch-model-densenet.pt
 

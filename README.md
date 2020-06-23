@@ -424,7 +424,7 @@ INFO:__main__:[Elapsed Time] : 13021ms, 7.098351648351648ms on average
 INFO:__main__:[Accuracy] : 0.7908,  1440/ 1821
 INFO:__main__:[Elapsed Time] : 8951ms, 4.86043956043956ms on average
 
-** --configs/config-distilbert-cnn.json --bert_model_name_or_path=embeddings/distilbert-base-uncased --bert_do_lower_case
+** --configs/config-distilbert-cnn.json --bert_model_name_or_path=embeddings/distilbert-base-uncased
 INFO:__main__:[Accuracy] : 0.8990,  1637/ 1821
 INFO:__main__:[Elapsed Time] : 18193ms, 9.936263736263736ms on average
 
@@ -472,7 +472,7 @@ INFO:__main__:[Elapsed Time] : 10196ms, 5.552197802197802ms on average
 INFO:__main__:[Accuracy] : 0.8083,  1472/ 1821
 INFO:__main__:[Elapsed Time] : 7124ms, 3.8461538461538463ms on average
 
-** --configs/config-distilbert-cls.json --bert_model_name_or_path=embeddings/distilbert-base-uncased --bert_do_lower_case
+** --configs/config-distilbert-cls.json --bert_model_name_or_path=embeddings/distilbert-base-uncased
 INFO:__main__:[Accuracy] : 0.9110,  1659/ 1821
 INFO:__main__:[Elapsed Time] : 16431ms, 8.971978021978021ms on average
 
