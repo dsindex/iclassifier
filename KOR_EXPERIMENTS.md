@@ -29,11 +29,11 @@
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - `character-level bpe`
     - vocab.txt는 [sentencepiece](https://github.com/google/sentencepiece)를 이용해서 생성.
-    - ex) all.bpe.4.8m_step (inhouse)
+    - ex) pytorch.all.bpe.4.8m_step, pytorch.large.all.whitespace_bpe.7m_step (inhouse)
   - `character-level bpe + 형태소분석기`
-    - ex) all.dha_s2.9.4_d2.9.27_bpe.4m_step (inhouse)
+    - ex) pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step, pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step (inhouse)
   - `형태소분석기`
-    - ex) all.dha.2.5m_step (inhouse), all.dha_s2.9.4_d2.9.27.10m_step (inhouse)
+    - ex) pytorch.all.dha.2.5m_step (inhouse), pytorch.all.dha_s2.9.4_d2.9.27.10m_step (inhouse)
 
 ##### DistilBERT
 
@@ -61,13 +61,15 @@
 | GloVe, CNN                          | 87.31        | 1.9479  / 3.5353  |         | threads=14 |
 | **GloVe, DenseNet-CNN**             | 88.18        | 3.4614  / 8.3434  |         | threads=14 |
 | GloVe, DenseNet-DSA                 | 87.66        | 6.9731  / -       |         |            |
-| DistilFromBERT, GloVe, DenseNet-CNN | 89.01        | 3.6767  / -       |         |            |
+| DistilFromBERT, GloVe, DenseNet-CNN | 89.21        | 3.5383  / -       |         |            |
 | bpe BERT(4.8m), CNN                 | 90.11        | 16.5453 / -       |         |            |
 | bpe BERT(4.8m), CLS                 | 89.91        | 14.9586 / -       |         |            |
 | bpe BERT(4.8m), CNN                 | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
 | bpe BERT(4.8m), CLS                 | 88.92        | 9.3280  / 70.3232 |         | del 8,9,10,11, threads=14 |
 | bpe DistilBERT(4.8m), CNN           | 88.39        | 9.6396  / -       | 38.7144 |        , threads=14       |
 | bpe DistilBERT(4.8m), CLS           | 88.55        | 8.2834  / -       | 31.5655 |        , threads=14       |
+| bpe BERT-large, CNN                 | -            | -       / -       |         |            |
+| bpe BERT-large, CLS                 | -            | -       / -       |         |            |
 | dha BERT(2.5m), CNN                 | **90.25**    | 15.5738 / -       |         |            |
 | dha BERT(2.5m), CLS                 | 90.18        | 13.3390 / -       |         |            |
 | dha BERT(2.5m), CNN                 | 88.88        | 10.5157 / 72.7777 |         | del 8,9,10,11, threads=14         |
@@ -76,6 +78,8 @@
 | dha BERT(2.5m), CLS                 | 87.54        | 5.7645  / 36.8686 | 28.2626 | del 4,5,6,7,8,9,10,11, threads=14 |
 | dha-bpe BERT(4m), CNN               | 89.07        | 14.9454 / -       |         |            |
 | dha-bpe BERT(4m), CLS               | 89.01        | 12.7981 / -       |         |            |
+| dha-bpe BERT-large, CNN             | -            | -       / -       |         |            |
+| dha-bpe BERT-large, CLS             | -            | -       / -       |         |            |
 | dha BERT(10m), CNN                  | 89.08        | 15.3276 / -       |         |            |
 | dha BERT(10m), CLS                  | 89.25        | 12.7876 / -       |         |            |
 | KoELECTRA-Base, CNN                 | 89.51        | 15.5452 / -       |         |            |
@@ -223,7 +227,7 @@ $ python evaluate.py --config=configs/config-densenet-dsa-iee.json --data_dir=./
 </details>
 
 
-### BERT(pytorch.all.bpe.4.8m_step)
+### BERT(pytorch.all.bpe.4.8m_step, pytorch.large.all.whitespace_bpe.7m_step)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -262,6 +266,10 @@ INFO:__main__:[Elapsed Time] : 827306ms, 16.545303624289943ms on average
 INFO:__main__:[Accuracy] : 0.8839, 44190/49997
 INFO:__main__:[Elapsed Time] : 482054.96978759766ms, 9.639614557722052ms on average
 
+** --bert_model_name_or_path=./embeddings/pytorch.large.all.whitespace_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+
+
+
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
@@ -283,6 +291,10 @@ INFO:__main__:[Elapsed Time] : 747975ms, 14.958656692535403ms on average
 ** --configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-bpe-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.8855, 44271/49997
 INFO:__main__:[Elapsed Time] : 414233.4134578705ms, 8.283499222067283ms on average
+
+** --bert_model_name_or_path=./embeddings/pytorch.large.all.whitespace_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+
+
 
 ```
 
@@ -359,7 +371,7 @@ INFO:__main__:[Elapsed Time] : 705669ms, 14.11208896711737ms on average
 </details>
 
 
-### BERT(pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step)
+### BERT(pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step, pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>

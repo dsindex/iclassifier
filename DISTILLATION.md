@@ -220,6 +220,8 @@ $ cp -rf data/sst2/augmented.raw.pred data/sst2/augmented.txt
   * 4) n_iter=15 --max_ng=3
 
   ** analyzer=npc --measure=accuracy
+  INFO:__main__:[Accuracy] : 0.8921, 44603/49997
+  INFO:__main__:[Elapsed Time] : 176990.5219078064ms, 3.5383923929856773ms on average
 
   ```
   - dha DistilBERT(2.5m), CLS
