@@ -251,6 +251,7 @@ INFO:__main__:[Elapsed Time] : 6607ms, 9.30758226037196ms on average
 | DistilFromELECTRA, GloVe, CNN           | 86.55        | 1.7466  / -                 |                   |                   |                          |                   |               |
 | DistilFromELECTRA, GloVe, DenseNet-CNN  | 89.79        | 3.6406  / -                 |                   |                   |                          |                   |               |
 | DistilFromELECTRA, GloVe, DenseNet-DSA  | 88.58        | 8.3708  / -                 |                   |                   |                          |                   |               |
+| DistilFromELECTRA, DistilBERT, CLS      | -            | -       / -                 |                   |                   |                          |                   |               |
 | BERT-tiny, CNN                          | 79.08        | 4.8604  / -                 |                   |                   |                          |                   |               |
 | BERT-tiny, CLS                          | 80.83        | 3.8461  / -                 |                   |                   |                          |                   |               |
 | BERT-mini, CNN                          | 83.36        | 7.0983  / -                 |                   |                   |                          |                   |               |

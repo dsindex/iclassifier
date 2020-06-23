@@ -131,6 +131,16 @@ $ cp -rf data/sst2/augmented.raw.pred data/sst2/augmented.txt
   INFO:__main__:[Elapsed Time] : 15340.755224227905ms, 8.370806751670418ms on average
   ```
 
+- DistilBERT, CLS
+  - distilled from electra
+  ```
+  $ python preprocess.py --config=configs/config-distilbert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_do_lower_case --augmented --augmented_filename=augmented.txt
+  $ python train.py --config=configs/config-distilbert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64 --augmented
+  $ python evaluate.py --config=configs/config-distilbert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+
+  ```
+
+
 #### Experiments for Korean
 
 - prerequisites
@@ -210,6 +220,10 @@ $ cp -rf data/sst2/augmented.raw.pred data/sst2/augmented.txt
   * 4) n_iter=15 --max_ng=3
 
   ** analyzer=npc --measure=accuracy
+
+  ```
+  - dha DistilBERT(2.5m), CLS
+  ```
 
   ```
 
