@@ -61,7 +61,7 @@
 | GloVe, CNN                          | 87.31        | 1.9479  / 3.5353  |         | threads=14 |
 | **GloVe, DenseNet-CNN**             | 88.18        | 3.4614  / 8.3434  |         | threads=14 |
 | GloVe, DenseNet-DSA                 | 87.66        | 6.9731  / -       |         |            |
-| DistilFromBERT, GloVe, DenseNet-CNN | 88.77        | 3.6474  / -       |         |            |
+| DistilFromBERT, GloVe, DenseNet-CNN | 89.01        | 3.6767  / -       |         |            |
 | bpe BERT(4.8m), CNN                 | 90.11        | 16.5453 / -       |         |            |
 | bpe BERT(4.8m), CLS                 | 89.91        | 14.9586 / -       |         |            |
 | bpe BERT(4.8m), CNN                 | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
