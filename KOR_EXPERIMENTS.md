@@ -267,8 +267,7 @@ INFO:__main__:[Accuracy] : 0.8839, 44190/49997
 INFO:__main__:[Elapsed Time] : 482054.96978759766ms, 9.639614557722052ms on average
 
 ** --bert_model_name_or_path=./embeddings/pytorch.large.all.whitespace_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
-
-
+"vocabulary indices are not consecutive. Please check that the vocabulary is not corrupted!" => 보류
 
 * enc_class=cls
 
@@ -293,7 +292,7 @@ INFO:__main__:[Accuracy] : 0.8855, 44271/49997
 INFO:__main__:[Elapsed Time] : 414233.4134578705ms, 8.283499222067283ms on average
 
 ** --bert_model_name_or_path=./embeddings/pytorch.large.all.whitespace_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
-
+"vocabulary indices are not consecutive. Please check that the vocabulary is not corrupted!" => 보류
 
 
 ```
@@ -397,12 +396,19 @@ $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova
 INFO:__main__:[Accuracy] : 0.8907, 44533/49997
 INFO:__main__:[Elapsed Time] : 747351ms, 14.945475638051045ms on average
 
+** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+"vocabulary indices are not consecutive. Please check that the vocabulary is not corrupted!" => 보류
+
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.8901, 44503/49997
 INFO:__main__:[Elapsed Time] : 639988ms, 12.798163853108248ms on average
+
+** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+"vocabulary indices are not consecutive. Please check that the vocabulary is not corrupted!" => 보류
+
 ```
 
 </p>

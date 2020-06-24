@@ -61,7 +61,9 @@ def convert_single_example_to_feature(example,
     for word in example.words:
         word_tokens = tokenizer.tokenize(word)
         tokens.extend(word_tokens)
-        if label in label_map: label_id = label_map[label]
+    if label in label_map: label_id = label_map[label]
+    if len(label.split()) >= 2: # logits as label
+        label_id = label
     
     # Account for [CLS] and [SEP] with "- 2" and with "- 3" for RoBERTa.
     special_tokens_count = 3 if sep_token_extra else 2
@@ -104,7 +106,8 @@ def convert_single_example_to_feature(example,
         logger.info("input_ids: %s", " ".join([str(x) for x in input_ids]))
         logger.info("input_mask: %s", " ".join([str(x) for x in input_mask]))
         logger.info("segment_ids: %s", " ".join([str(x) for x in segment_ids]))
-        logger.info("label_id: %s", label)
+        logger.info("label: %s", label)
+        logger.info("label_id: %s", label_id)
 
     feature = InputFeature(input_ids=input_ids,
                             input_mask=input_mask,

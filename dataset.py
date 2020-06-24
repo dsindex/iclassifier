@@ -35,7 +35,7 @@ class SnipsGloveDataset(Dataset):
         with open(path,'r',encoding='utf-8') as f:
             for line in f:
                 y_data, x_data = line.strip().split('\t')
-                if len(y_data.split()) >= 2:
+                if len(y_data.split()) >= 2: # logits as label
                     yi = [float(f) for f in y_data.split()]
                     if logits_as_label is False: logits_as_label = True
                 else:
@@ -64,7 +64,11 @@ class SnipsBertDataset(Dataset):
         all_input_ids = torch.tensor([f.input_ids for f in features], dtype=torch.long)
         all_input_mask = torch.tensor([f.input_mask for f in features], dtype=torch.long)
         all_segment_ids = torch.tensor([f.segment_ids for f in features], dtype=torch.long)
-        all_label_id = torch.tensor([f.label_id for f in features], dtype=torch.long)
+        probe_label_id = features[0].label_id
+        if len(str(probe_label_id).split()) >= 2: # logits as label
+            all_label_id = torch.tensor([[float(logit) for logit in str(f.label_id).split()] for f in features])
+        else:
+            all_label_id = torch.tensor([f.label_id for f in features], dtype=torch.long)
 
         self.x = TensorDataset(all_input_ids, all_input_mask, all_segment_ids)
         self.y = all_label_id

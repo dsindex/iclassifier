@@ -125,7 +125,6 @@ def write_data(data, output_path, tokenizer, labels):
     pad_id = tokenizer.pad_id
     num_tok_per_sent = []
     f_write = open(output_path, 'w', encoding='utf-8')
-    logits_as_label = False
     for idx, item in enumerate(tqdm(data)):
         tokens, label = item[0], item[1]
         if len(tokens) < 1: continue
@@ -133,7 +132,6 @@ def write_data(data, output_path, tokenizer, labels):
         ids_str = ' '.join([str(d) for d in ids])
         if len(label.split()) >= 2: # logits as label
             f_write.write(label + '\t' + ids_str)
-            if logits_as_label is False: logits_as_label = True
         else:
             label_id = labels[label]
             f_write.write(str(label_id) + '\t' + ids_str)
