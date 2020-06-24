@@ -137,7 +137,8 @@ $ cp -rf data/sst2/augmented.raw.pred data/sst2/augmented.txt
   $ python preprocess.py --config=configs/config-distilbert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_do_lower_case --augmented --augmented_filename=augmented.txt
   $ python train.py --config=configs/config-distilbert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64 --augmented
   $ python evaluate.py --config=configs/config-distilbert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
-
+  INFO:__main__:[Accuracy] : 0.9352,  1703/ 1821
+  INFO:__main__:[Elapsed Time] : 13713.293313980103ms, 7.48790830046266ms on average
   ```
 
 

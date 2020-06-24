@@ -251,7 +251,6 @@ INFO:__main__:[Elapsed Time] : 6607ms, 9.30758226037196ms on average
 | DistilFromELECTRA, GloVe, CNN           | 86.55        | 1.7466  / -                 |                   |                   |                          |                   |               |
 | DistilFromELECTRA, GloVe, DenseNet-CNN  | 89.79        | 3.6406  / -                 |                   |                   |                          |                   |               |
 | DistilFromELECTRA, GloVe, DenseNet-DSA  | 88.58        | 8.3708  / -                 |                   |                   |                          |                   |               |
-| DistilFromELECTRA, DistilBERT, CLS      | -            | -       / -                 |                   |                   |                          |                   |               |
 | BERT-tiny, CNN                          | 79.08        | 4.8604  / -                 |                   |                   |                          |                   |               |
 | BERT-tiny, CLS                          | 80.83        | 3.8461  / -                 |                   |                   |                          |                   |               |
 | BERT-mini, CNN                          | 83.36        | 7.0983  / -                 |                   |                   |                          |                   |               |
@@ -262,6 +261,7 @@ INFO:__main__:[Elapsed Time] : 6607ms, 9.30758226037196ms on average
 | BERT-medium, CLS                        | 89.24        | 9.5857  / -                 |                   |                   |                          |                   |               |
 | DistilBERT, CNN                         | 89.90        | 9.9362  / -                 |       - / 44.1111 |                   |              - / 35.7070 |                   | threads=14    |
 | **DistilBERT, CLS**                     | 91.10        | 8.9719  / -                 |       - / 37.2626 |                   |              - / 29.4646 |                   | threads=14    |
+| DistilFromELECTRA, DistilBERT, CLS      | 93.52        | 7.4879  / -                 |                   |                   |                          |                   |               |
 | BERT-base, CNN                          | 92.04        | 14.1576 / -                 |                   |                   |                          |                   |               |
 | BERT-base, CLS                          | 92.42        | 12.7549 / 100.555 / 62.5050 | 68.5757 / 66.1818 | 65.1616 / 63.1616 | 66.4545(92.42) / 50.8080 | 60.5656 / 50.4343 | threads=14    |
 | BERT-base, CNN                          | 90.55        | 10.6824 / -                 |                   |                   |                          |                   | del 8,9,10,11 |
