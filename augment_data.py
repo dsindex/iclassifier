@@ -23,7 +23,7 @@ def load_tsv(path, skip_header=True):
         reader = csv.reader(f, delimiter='\t')
         if skip_header:
             next(reader)
-        data = [row for row in reader]
+        data = [row if len(row) == 2 else [row[0], None] for row in reader]
     return data
 
 def build_pos_dict(sentences, lower=True):
@@ -174,7 +174,7 @@ if __name__ == "__main__":
                 for word in sentence:
                     s.append(word.text)
                 f.write("{}\t{}\n".format(' '.join(s), args.dummy_label))
-        return
+        sys.exit(0)
 
     # Build lists of words indexes by POS
     pos_dict = build_pos_dict(sentences, lower=args.lower)

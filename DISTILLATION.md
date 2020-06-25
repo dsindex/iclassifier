@@ -243,6 +243,8 @@ $ python -m spacy download en_core_web_sm
   $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/korean_hate_speech_morph
   $ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech_morph --save_path=pytorch-model-kor-bert.pt
   $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/korean_hate_speech_morph --bert_output_dir=bert-checkpoint-kor-bert --model_path=pytorch-model-kor-bert.pt
+  INFO:__main__:[Accuracy] : 0.6709,   316/  471
+  INFO:__main__:[Elapsed Time] : 6962.089061737061ms, 14.571991372615733ms on average
 
   * --data_dir=./data/korean_bias_speech
 
@@ -254,12 +256,12 @@ $ python -m spacy download en_core_web_sm
   ```
   $ python augment_data.py --input data/korean_hate_speech/train.txt --output data/korean_hate_speech_morph/augmented.raw --analyzer=khaiii --n_iter=20 --max_ng=3 --parallel
   or
-  $ python augment_data.py --input data/clova_sentiments/train.txt --output data/clova_sentiments_morph/augmented.raw --analyzer=npc --n_iter=20 --max_ng=3 --parallel   # inhouse
+  $ python augment_data.py --input data/korean_hate_speech/train.txt --output data/korean_hate_speech_morph/augmented.raw --analyzer=npc --n_iter=20 --max_ng=3 --parallel   # inhouse
 
   * we can treat the unlabeld data from https://github.com/kocohub/korean-hate-speech/tree/master/unlabeled as an augmented data.
 
-  $ cat data/korean_hate_speech/unlabeled/*.txt > data/korean_hate_speech/unlabeled.txt
-  $ python augment_data.py --input data/korean_hate_speech/unlabeled.txt --output data/clova_sentiments_morph/augmented.raw --analyzer=npc --n_iter=20 --max_ng=3 --parallel --no_augment   # inhouse
+  $ cat data/korean_hate_speech/unlabeled/*_1.txt > data/korean_hate_speech/unlabeled.txt
+  $ python augment_data.py --input data/korean_hate_speech/unlabeled.txt --output data/korean_hate_speech_morph/augmented.raw --analyzer=npc --n_iter=20 --max_ng=3 --parallel --no_augment   # inhouse
   ```
 
   - add logits by teacher model
@@ -285,21 +287,18 @@ $ python -m spacy download en_core_web_sm
 
   1) --data_dir=./data/korean_hate_speech
 
-  ** analyzer=npc --measure=loss 
-
   ** analyzer=npc --measure=accuracy
+  INFO:__main__:[Accuracy] : 0.6497,   306/  471
+  INFO:__main__:[Elapsed Time] : 1893.380880355835ms, 3.8358328190255673ms on average
+
+  ** unlabeled data used
+
 
   2) data_dir=./data/korean_bias_speech
 
-  ** analyzer=npc --measure=loss 
-
   ** analyzer=npc --measure=accuracy
 
-  3) unlabeled data used
-
-  ** analyzer=npc --measure=loss 
-
-  ** analyzer=npc --measure=accuracy
+  ** unlabeled data used
 
   ```
   - dha DistilBERT(2.5m), CNN
