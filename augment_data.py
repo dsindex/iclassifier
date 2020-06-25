@@ -118,6 +118,7 @@ if __name__ == "__main__":
     parser.add_argument('--analyzer', type=str, default='spacy', help="Analyzer, 'spacy | khaiii | npc', default 'spacy'.")
     parser.add_argument('--lower', action='store_true', help="Enable lowercase.")
     parser.add_argument('--parallel', action='store_true', help="Enable parallel processing for sampling.")
+    parser.add_argument('--no_augment', action='store_true', help="No augmentation used.")
     args = parser.parse_args()
     
     # Load original tsv file
@@ -164,6 +165,16 @@ if __name__ == "__main__":
                 word = Word(morph, tag)
                 sentence.append(word)
             sentences.append(sentence)
+
+    if args.no_augment:
+        # Write to file
+        with open(args.output, 'w') as f:
+            for sentence in tqdm(sentences, desc='Writing'):
+                s = [] 
+                for word in sentence:
+                    s.append(word.text)
+                f.write("{}\t{}\n".format(' '.join(s), args.dummy_label))
+        return
 
     # Build lists of words indexes by POS
     pos_dict = build_pos_dict(sentences, lower=args.lower)
