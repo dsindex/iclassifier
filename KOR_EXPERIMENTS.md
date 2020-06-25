@@ -584,13 +584,16 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 - train
 ```
 $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech --embedding_path=embeddings/kor.glove.300k.300d.txt
-$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-cnn.pt
 
 ```
 
 - evaluation
 ```
-$ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/korean_hate_speech
+$ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/korean_hate_speech --model_path=pytorch-model-kor-cnn.pt
+
+** --data_dir=./data/korean_bias_speech
+
 
 ```
 
@@ -608,25 +611,28 @@ $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data
 * enc_class=cnn
 
 $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --data_dir=./data/korean_hate_speech
-$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech
+$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech --save_path=pytorch-model-kor-bert.pt
 
 * enc_class=cls
 
 $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --data_dir=./data/korean_hate_speech
-$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech --save_path=pytorch-model-kor-bert.pt
 ```
 
 - evaluation
 ```
 * enc_class=cnn
 
-$ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/korean_hate_speech --bert_output_dir=bert-checkpoint
+$ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/korean_hate_speech --bert_output_dir=bert-checkpoint-kor-bert --model_path=pytorch-model-kor-bert.pt
 
+
+** --data_dir=./data/korean_bias_speech
 
 * enc_class=cls
 
-$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/korean_hate_speech --bert_output_dir=bert-checkpoint
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/korean_hate_speech --bert_output_dir=bert-checkpoint-kor-bert --model_path=pytorch-model-kor-bert.pt
 
+** --data_dir=./data/korean_bias_speech
 
 ```
 
