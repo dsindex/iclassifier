@@ -258,10 +258,10 @@ $ python -m spacy download en_core_web_sm
   or
   $ python augment_data.py --input data/korean_hate_speech/train.txt --output data/korean_hate_speech_morph/augmented.raw --analyzer=npc --n_iter=20 --max_ng=3 --parallel   # inhouse
 
-  * we can treat the unlabeld data from https://github.com/kocohub/korean-hate-speech/tree/master/unlabeled as an augmented data.
+  * we can treat the unlabeld data from `https://github.com/kocohub/korean-hate-speech/tree/master/unlabeled` as an augmented data.
 
-  $ cat data/korean_hate_speech/unlabeled/*_1.txt > data/korean_hate_speech/unlabeled.txt
-  $ python augment_data.py --input data/korean_hate_speech/unlabeled.txt --output data/korean_hate_speech_morph/augmented.raw --analyzer=npc --n_iter=20 --max_ng=3 --parallel --no_augment   # inhouse
+  $ cat data/korean_hate_speech/train.txt data/korean_hate_speech/unlabeled/*_1.txt > data/korean_hate_speech/unlabeled.txt
+  $ python augment_data.py --input data/korean_hate_speech/unlabeled.txt --output data/korean_hate_speech_morph/augmented.raw --analyzer=npc --no_augment   # inhouse
   ```
 
   - add logits by teacher model
