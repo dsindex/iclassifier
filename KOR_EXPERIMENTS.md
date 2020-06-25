@@ -561,12 +561,13 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 
 - iclassifier
 
-|                                     | Bias Accuracy (%) | Hate Accuracy (%) | GPU / CPU         | CONDA   | Etc        |
-| ----------------------------------- | ----------------- | ----------------- | ----------------- | ------- | ---------- |
-| GloVe, DenseNet-CNN                 | 72.61             | 61.78             | 3.7602  / -       |         |            |
-| DistilFromBERT, GloVe, DenseNet-CNN | -                 | 64.97             | 3.8358  / -       |         |            |
-| dha BERT(2.5m), CNN                 | 83.44             | 67.09             | 15.8797 / -       |         |            |
-| dha BERT(2.5m), CLS                 | 82.80             | 64.76             | 12.8167 / -       |         |            |
+|                                     | Bias Accuracy (%) | Hate Accuracy (%) | GPU / CPU         | CONDA   | Etc                  |
+| ----------------------------------- | ----------------- | ----------------- | ----------------- | ------- | -------------------- |
+| GloVe, DenseNet-CNN                 | 72.61             | 61.78             | 3.7602  / -       |         |                      |
+| DistilFromBERT, GloVe, DenseNet-CNN | -                 | 64.97             | 3.8358  / -       |         |                      |
+| DistilFromBERT, GloVe, DenseNet-CNN | -                 | -                 | -       / -       |         | unlabeled data used  |
+| dha BERT(2.5m), CNN                 | 83.44             | 67.09             | 15.8797 / -       |         |                      |
+| dha BERT(2.5m), CLS                 | 82.80             | 64.76             | 12.8167 / -       |         |                      |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
