@@ -19,10 +19,14 @@
       - 'train.txt', 'valid.txt', 'test.txt'
       - 'test.txt'는 제공하지 않으므로 'valid.txt'를 복사해서 사용.
       - 원문의 'comment', 'hate' label만 사용
-      - data augmentation(distillation)을 위해서 'unlabeled' 데이터도 복사.
+      - data augmentation(distillation) 등에 활용하기 위해서 'unlabeled' 데이터도 복사.
         - 데이터 사이즈가 제법 크기 때문에, git에 추가하지 않고, 다운받아서 사용.
+    - './data/korean_hate_speech_morph'
+      - `형태소분석기 tokenizer`를 적용한 데이터.
     - './data/korean_bias_speech/'
       - 원문의 'comment', 'bias' label만 사용
+    - './data/korean_bias_speech_morph'
+      - `형태소분석기 tokenizer`를 적용한 데이터.
 
 ### Pretrained models
 
@@ -31,6 +35,7 @@
 - [Standford GloVe code](https://github.com/stanfordnlp/GloVe)를 이용해서 학습.
   - 한국어 문서 데이터 준비.
     - 다양한 문서 데이터(위키, 백과, 뉴스, 블로그 등등)를 크롤링.
+  - 형태소분석기 tokenizer를 적용해서 형태소 단위로 변경한 데이터를 이용해서 학습 진행.
   - ex) kor.glove.300k.300d.txt (inhouse)
 
 ##### BERT
@@ -560,8 +565,8 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 | ----------------------------------- | ----------------- | ----------------- | ----------------- | ------- | ---------- |
 | GloVe, DenseNet-CNN                 | -                 | -                 | -       / -       |         |            |
 | DistilFromBERT, GloVe, DenseNet-CNN | -                 | -                 | -       / -       |         |            |
-| bpe BERT(4.8m), CNN                 | -                 | -                 | -       / -       |         |            |
-| bpe BERT(4.8m), CLS                 | -                 | -                 | -       / -       |         |            |
+| dha BERT(2.5m), CNN                 | -                 | -                 | -       / -       |         |            |
+| dha BERT(2.5m), CLS                 | -                 | -                 | -       / -       |         |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -583,14 +588,14 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 
 - train
 ```
-$ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech --embedding_path=embeddings/kor.glove.300k.300d.txt
-$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-cnn.pt
+$ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
+$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-cnn.pt
 
 ```
 
 - evaluation
 ```
-$ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/korean_hate_speech --model_path=pytorch-model-kor-cnn.pt
+$ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/korean_hate_speech_morph --model_path=pytorch-model-kor-cnn.pt
 
 ** --data_dir=./data/korean_bias_speech
 
@@ -601,7 +606,7 @@ $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data
 </details>
 
 
-### BERT(pytorch.all.bpe.4.8m_step)
+### BERT(pytorch.all.dha.2.5m_step)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -610,13 +615,13 @@ $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data
 ```
 * enc_class=cnn
 
-$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --data_dir=./data/korean_hate_speech
-$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech --save_path=pytorch-model-kor-bert.pt
+$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/korean_hate_speech
+$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech --save_path=pytorch-model-kor-bert.pt
 
 * enc_class=cls
 
-$ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --data_dir=./data/korean_hate_speech
-$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech --save_path=pytorch-model-kor-bert.pt
+$ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/korean_hate_speech
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech --save_path=pytorch-model-kor-bert.pt
 ```
 
 - evaluation
