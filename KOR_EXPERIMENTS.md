@@ -13,6 +13,17 @@
       - 'train.txt', 'valid.txt', 'test.txt'.
       - 형태소분석기는 [khaiii](https://github.com/kakao/khaiii) 등 사용 가능.
 
+- [korean-hate-speech](https://github.com/kocohub/korean-hate-speech)
+  - setup
+    - './data/korean_hate_speech/'
+      - 'train.txt', 'valid.txt', 'test.txt'
+      - 'test.txt'는 제공하지 않으므로 'valid.txt'를 복사해서 사용.
+      - 원문의 'comment', 'hate' label만 사용
+      - data augmentation(distillation)을 위해서 'unlabeled' 데이터도 복사.
+        - 데이터 사이즈가 제법 크기 때문에, git에 추가하지 않고, 다운받아서 사용.
+    - './data/korean_bias_speech/'
+      - 원문의 'comment', 'bias' label만 사용
+
 ### Pretrained models
 
 ##### GloVe
@@ -52,7 +63,7 @@
   - [train.sh](https://github.com/dsindex/electra/blob/master/train.sh)
     - ex) `kor-electra-base-bpe-30k-512-1m` (inhouse)
 
-### Experiments summary
+### NMSC data
 
 - iclassifier
 
@@ -60,8 +71,8 @@
 | ----------------------------------- | ------------ | ----------------- | ------- | ---------- |
 | GloVe, CNN                          | 87.31        | 1.9479  / 3.5353  |         | threads=14 |
 | **GloVe, DenseNet-CNN**             | 88.18        | 3.4614  / 8.3434  |         | threads=14 |
-| GloVe, DenseNet-DSA                 | 87.66        | 6.9731  / -       |         |            |
 | DistilFromBERT, GloVe, DenseNet-CNN | 89.21        | 3.5383  / -       |         |            |
+| GloVe, DenseNet-DSA                 | 87.66        | 6.9731  / -       |         |            |
 | bpe BERT(4.8m), CNN                 | 90.11        | 16.5453 / -       |         |            |
 | bpe BERT(4.8m), CLS                 | 89.91        | 14.9586 / -       |         |            |
 | bpe BERT(4.8m), CNN                 | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
@@ -266,8 +277,8 @@ INFO:__main__:[Elapsed Time] : 827306ms, 16.545303624289943ms on average
 INFO:__main__:[Accuracy] : 0.8839, 44190/49997
 INFO:__main__:[Elapsed Time] : 482054.96978759766ms, 9.639614557722052ms on average
 
-** --bert_model_name_or_path=./embeddings/pytorch.large.all.whitespace_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
-"vocabulary indices are not consecutive. Please check that the vocabulary is not corrupted!" => 보류
+** --bert_model_name_or_path=./embeddings/pytorch.large.all.whitespace_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
+
 
 * enc_class=cls
 
@@ -291,8 +302,7 @@ INFO:__main__:[Elapsed Time] : 747975ms, 14.958656692535403ms on average
 INFO:__main__:[Accuracy] : 0.8855, 44271/49997
 INFO:__main__:[Elapsed Time] : 414233.4134578705ms, 8.283499222067283ms on average
 
-** --bert_model_name_or_path=./embeddings/pytorch.large.all.whitespace_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
-"vocabulary indices are not consecutive. Please check that the vocabulary is not corrupted!" => 보류
+** --bert_model_name_or_path=./embeddings/pytorch.large.all.whitespace_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 
 
 ```
@@ -396,8 +406,8 @@ $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova
 INFO:__main__:[Accuracy] : 0.8907, 44533/49997
 INFO:__main__:[Elapsed Time] : 747351ms, 14.945475638051045ms on average
 
-** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
-"vocabulary indices are not consecutive. Please check that the vocabulary is not corrupted!" => 보류
+** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
+
 
 * enc_class=cls
 
@@ -406,8 +416,8 @@ $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova
 INFO:__main__:[Accuracy] : 0.8901, 44503/49997
 INFO:__main__:[Elapsed Time] : 639988ms, 12.798163853108248ms on average
 
-** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
-"vocabulary indices are not consecutive. Please check that the vocabulary is not corrupted!" => 보류
+** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
+
 
 ```
 
@@ -535,6 +545,88 @@ $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5 --batch_size=64
 INFO:__main__:[Accuracy] : 0.8826, 44126/49997
 INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on average
+
+```
+
+</p>
+</details>
+
+
+### korean-hate-speech data
+
+- iclassifier
+
+|                                     | Bias Accuracy (%) | Hate Accuracy (%) | GPU / CPU         | CONDA   | Etc        |
+| ----------------------------------- | ----------------- | ----------------- | ----------------- | ------- | ---------- |
+| GloVe, DenseNet-CNN                 | -                 | -                 | -       / -       |         |            |
+| DistilFromBERT, GloVe, DenseNet-CNN | -                 | -                 | -       / -       |         |            |
+| bpe BERT(4.8m), CNN                 | -                 | -                 | -       / -       |         |            |
+| bpe BERT(4.8m), CLS                 | -                 | -                 | -       / -       |         |            |
+
+```
+* GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
+* CONDA : conda pytorch=1.2.0 / conda pytorch=1.5.0
+* default batch size, learning rate, n_ctx(max_seq_length) : 128, 2e-4, 100
+```
+
+- [korean-hate-speech-koelectra](https://github.com/monologg/korean-hate-speech-koelectra)
+
+|                   | Bias Accuracy (%) | Hate Accuracy (%) | Etc                                  |
+| ----------------- | ----------------- | ----------------- | ------------------------------------ |
+| KoELECTRA-base    | 82.28             | 67.25             | with title, bias/hate joint training |
+
+
+### GloVe
+
+<details><summary><b>enc_class=densenet-cnn</b></summary>
+<p>
+
+- train
+```
+$ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech --embedding_path=embeddings/kor.glove.300k.300d.txt
+$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+
+```
+
+- evaluation
+```
+$ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/korean_hate_speech
+
+```
+
+</p>
+</details>
+
+
+### BERT(pytorch.all.bpe.4.8m_step)
+
+<details><summary><b>enc_class=cnn | cls</b></summary>
+<p>
+
+- train
+```
+* enc_class=cnn
+
+$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --data_dir=./data/korean_hate_speech
+$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech
+
+* enc_class=cls
+
+$ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --data_dir=./data/korean_hate_speech
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech
+```
+
+- evaluation
+```
+* enc_class=cnn
+
+$ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/korean_hate_speech --bert_output_dir=bert-checkpoint
+
+
+* enc_class=cls
+
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/korean_hate_speech --bert_output_dir=bert-checkpoint
+
 
 ```
 
