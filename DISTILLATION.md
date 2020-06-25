@@ -142,7 +142,7 @@ $ cp -rf data/sst2/augmented.raw.pred data/sst2/augmented.txt
   ```
 
 
-#### Experiments for Korean
+#### NSMC data
 
 - prerequisites
   - install khaiii(https://github.com/kakao/khaiii) or other morphological analyzer which was used to generate `data/clova_sentiments_morph` dataset.
