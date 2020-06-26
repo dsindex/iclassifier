@@ -17,14 +17,32 @@
   - setup
     - './data/korean_hate_speech/'
       - 'train.txt', 'valid.txt', 'test.txt'
-      - 'test.txt'는 제공하지 않으므로 'valid.txt'를 복사해서 사용.
       - 원문의 'comment', 'hate' label만 사용
+      - 'test.txt'는 제공하지 않으므로 'valid.txt'를 복사해서 사용.
+
+      | valid     | # examples / class  |
+      | --------- | ------------------- |
+      | none      | 160                 |
+      | hate      | 122                 |
+      | offensive | 189                 |
+      | total     | 471                 |
+      
       - data augmentation(distillation) 등에 활용하기 위해서 'unlabeled' 데이터도 복사.
         - 데이터 사이즈가 제법 크기 때문에, git에 추가하지 않고, 다운받아서 사용.
+
     - './data/korean_hate_speech_morph'
       - `형태소분석기 tokenizer`를 적용한 데이터.
+
     - './data/korean_bias_speech/'
       - 원문의 'comment', 'bias' label만 사용
+
+      | valid   | # examples / class  |
+      | ------- | ------------------- |
+      | none    | 342                 |
+      | others  | 62                  |
+      | gender  | 67                  |
+      | total   | 472                 |
+
     - './data/korean_bias_speech_morph'
       - `형태소분석기 tokenizer`를 적용한 데이터.
 
@@ -85,7 +103,7 @@
 | bpe DistilBERT(4.8m), CNN           | 88.39        | 9.6396  / -       | 38.7144 |        , threads=14       |
 | bpe DistilBERT(4.8m), CLS           | 88.55        | 8.2834  / -       | 31.5655 |        , threads=14       |
 | bpe BERT-large, CNN                 | -            | -       / -       |         |            |
-| bpe BERT-large, CLS                 | -            | -       / -       |         |            |
+| bpe BERT-large, CLS                 | 89.78        | 22.6002 / -       |         |            |
 | dha BERT(2.5m), CNN                 | **90.25**    | 15.5738 / -       |         |            |
 | dha BERT(2.5m), CLS                 | 90.18        | 13.3390 / -       |         |            |
 | dha BERT(2.5m), CNN                 | 88.88        | 10.5157 / 72.7777 |         | del 8,9,10,11, threads=14         |
@@ -308,7 +326,8 @@ INFO:__main__:[Accuracy] : 0.8855, 44271/49997
 INFO:__main__:[Elapsed Time] : 414233.4134578705ms, 8.283499222067283ms on average
 
 ** --bert_model_name_or_path=./embeddings/pytorch.large.all.whitespace_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
-
+INFO:__main__:[Accuracy] : 0.8978, 44885/49997
+INFO:__main__:[Elapsed Time] : 1130058.8986873627ms, 22.60026191461467ms on average
 
 ```
 
@@ -565,7 +584,7 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 | --------------------------------------- | ----------------- | ----------------- | ----------------- | ------- | -------------------- |
 | GloVe, DenseNet-CNN                     | 72.61             | 61.78             | 3.7602  / -       |         |                      |
 | **DistilFromBERT, GloVe, DenseNet-CNN** | 83.65             | 64.97             | 3.8358  / -       |         |                      |
-| DistilFromBERT, GloVe, DenseNet-CNN     | -                 | 66.67             | 3.6249  / -       |         | unlabeled data used  |
+| DistilFromBERT, GloVe, DenseNet-CNN     | **85.56**         | 66.67             | 3.6249  / -       |         | unlabeled data used  |
 | dha BERT(2.5m), CNN                     | 84.08             | 67.09             | 15.8797 / -       |         |                      |
 | dha BERT(2.5m), CLS                     | 82.80             | 64.76             | 12.8167 / -       |         |                      |
 
@@ -573,11 +592,15 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
 * CONDA : conda pytorch=1.2.0 / conda pytorch=1.5.0
 * default batch size, learning rate, n_ctx(max_seq_length) : 128, 2e-4, 100
+* korean_bias_speech 데이터의 경우는 'none' class의 비율이 높아서 bias가 있는 편이다. 
+  (korean_hate_speech 데이터에 비해 accuarcy가 많이 높은 원인도 여기에 있을듯)
+  따라서, F1 score를 지표로 사용하는 것이 좀 더 좋겠지만, 편의상 accuracy를 사용했음.
+  (F1 score: 'from sklearn.metrics import f1_score')
 ```
 
 - [korean-hate-speech-koelectra](https://github.com/monologg/korean-hate-speech-koelectra)
 
-|                   | Bias Accuracy (%) | Hate Accuracy (%) | Etc                                  |
+| (Weighted F1)     | Bias F1 (%)       | Hate F1 (%)       | Etc                                  |
 | ----------------- | ----------------- | ----------------- | ------------------------------------ |
 | KoELECTRA-base    | 82.28             | 67.25             | with title, bias/hate joint training |
 

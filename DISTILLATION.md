@@ -306,6 +306,8 @@ $ python -m spacy download en_core_web_sm
   INFO:__main__:[Elapsed Time] : 2004.8654079437256ms, 4.085820279222854ms on average
 
   ** unlabeled data used
+  INFO:__main__:[Accuracy] : 0.8556,   403/  471
+  INFO:__main__:[Elapsed Time] : 1828.8986682891846ms, 3.6988679398881628ms on average
 
   ```
   - dha DistilBERT(2.5m), CNN
