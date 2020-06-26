@@ -298,6 +298,7 @@ def main():
     parser.add_argument('--data_dir', type=str, default='data/snips')
     parser.add_argument('--embedding_path', type=str, default='embeddings/glove.6B.300d.txt')
     parser.add_argument('--seed', default=42, type=int)
+    # for Augmentation
     parser.add_argument('--augmented', action='store_true',
                         help="Set this flag to use augmented.txt for training or to use augmented.raw for labeling.")
     parser.add_argument('--augmented_filename', type=str, default='augmented.raw',

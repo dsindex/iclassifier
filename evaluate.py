@@ -401,6 +401,7 @@ def main():
     parser.add_argument('--num_threads', type=int, default=0)
     parser.add_argument('--batch_size', type=int, default=1)
     parser.add_argument('--num_examples', default=0, type=int, help="Number of examples to evaluate, 0 means all of them.")
+    # for Augmentation
     parser.add_argument('--augmented', action='store_true',
                         help="Set this flag to generate augmented.raw.inference(augmented.txt) for training.")
     # for BERT
