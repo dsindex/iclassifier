@@ -561,13 +561,13 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 
 - iclassifier
 
-|                                     | Bias Accuracy (%) | Hate Accuracy (%) | GPU / CPU         | CONDA   | Etc                  |
-| ----------------------------------- | ----------------- | ----------------- | ----------------- | ------- | -------------------- |
-| GloVe, DenseNet-CNN                 | 72.61             | 61.78             | 3.7602  / -       |         |                      |
-| DistilFromBERT, GloVe, DenseNet-CNN | -                 | 64.97             | 3.8358  / -       |         |                      |
-| DistilFromBERT, GloVe, DenseNet-CNN | -                 | -                 | -       / -       |         | unlabeled data used  |
-| dha BERT(2.5m), CNN                 | 83.44             | 67.09             | 15.8797 / -       |         |                      |
-| dha BERT(2.5m), CLS                 | 82.80             | 64.76             | 12.8167 / -       |         |                      |
+|                                         | Bias Accuracy (%) | Hate Accuracy (%) | GPU / CPU         | CONDA   | Etc                  |
+| --------------------------------------- | ----------------- | ----------------- | ----------------- | ------- | -------------------- |
+| GloVe, DenseNet-CNN                     | 72.61             | 61.78             | 3.7602  / -       |         |                      |
+| **DistilFromBERT, GloVe, DenseNet-CNN** | 83.65             | 64.97             | 3.8358  / -       |         |                      |
+| DistilFromBERT, GloVe, DenseNet-CNN     | -                 | 66.67             | 3.6249  / -       |         | unlabeled data used  |
+| dha BERT(2.5m), CNN                     | 84.08             | 67.09             | 15.8797 / -       |         |                      |
+| dha BERT(2.5m), CLS                     | 82.80             | 64.76             | 12.8167 / -       |         |                      |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -637,8 +637,8 @@ INFO:__main__:[Accuracy] : 0.6709,   316/  471
 INFO:__main__:[Elapsed Time] : 7566.187143325806ms, 15.879765469977196ms on average
 
 ** --data_dir=./data/korean_bias_speech
-INFO:__main__:[Accuracy] : 0.8344,   393/  471
-INFO:__main__:[Elapsed Time] : 8157.46545791626ms, 17.114992344633063ms on average
+INFO:__main__:[Accuracy] : 0.8408,   396/  471
+INFO:__main__:[Elapsed Time] : 7315.462350845337ms, 15.295034266532735ms on average
 
 * enc_class=cls
 

@@ -247,7 +247,8 @@ $ python -m spacy download en_core_web_sm
   INFO:__main__:[Elapsed Time] : 6962.089061737061ms, 14.571991372615733ms on average
 
   * --data_dir=./data/korean_bias_speech
-
+  INFO:__main__:[Accuracy] : 0.8408,   396/  471
+  INFO:__main__:[Elapsed Time] : 7315.462350845337ms, 15.295034266532735ms on average
   ```
 
 - generate pseudo labeled data
@@ -258,9 +259,12 @@ $ python -m spacy download en_core_web_sm
   or
   $ python augment_data.py --input data/korean_hate_speech/train.txt --output data/korean_hate_speech_morph/augmented.raw --analyzer=npc --n_iter=20 --max_ng=3 --parallel   # inhouse
 
-  * we can treat the unlabeld data from `https://github.com/kocohub/korean-hate-speech/tree/master/unlabeled` as an augmented data.
+  * luckily we have the unlabeled data from `https://github.com/kocohub/korean-hate-speech/tree/master/unlabeled`.
+    we can treat it as an augmented data which is readily avaiable.
 
   $ cat data/korean_hate_speech/train.txt data/korean_hate_speech/unlabeled/*_1.txt > data/korean_hate_speech/unlabeled.txt
+  $ python augment_data.py --input data/korean_hate_speech/unlabeled.txt --output data/korean_hate_speech_morph/augmented.raw --analyzer=khaiii --no_augment
+  or
   $ python augment_data.py --input data/korean_hate_speech/unlabeled.txt --output data/korean_hate_speech_morph/augmented.raw --analyzer=npc --no_augment   # inhouse
   ```
 
@@ -292,11 +296,14 @@ $ python -m spacy download en_core_web_sm
   INFO:__main__:[Elapsed Time] : 1893.380880355835ms, 3.8358328190255673ms on average
 
   ** unlabeled data used
-
+  INFO:__main__:[Accuracy] : 0.6667,   314/  471
+  INFO:__main__:[Elapsed Time] : 1796.814203262329ms, 3.6249926749696124ms on average
 
   2) data_dir=./data/korean_bias_speech
 
   ** analyzer=npc --measure=accuracy
+  INFO:__main__:[Accuracy] : 0.8365,   394/  471
+  INFO:__main__:[Elapsed Time] : 2004.8654079437256ms, 4.085820279222854ms on average
 
   ** unlabeled data used
 
