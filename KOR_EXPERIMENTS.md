@@ -102,7 +102,7 @@
 | bpe BERT(4.8m), CLS                 | 88.92        | 9.3280  / 70.3232 |         | del 8,9,10,11, threads=14 |
 | bpe DistilBERT(4.8m), CNN           | 88.39        | 9.6396  / -       | 38.7144 |        , threads=14       |
 | bpe DistilBERT(4.8m), CLS           | 88.55        | 8.2834  / -       | 31.5655 |        , threads=14       |
-| bpe BERT-large, CNN                 | -            | -       / -       |         |            |
+| bpe BERT-large, CNN                 | 89/85        | 24.4099 / -       |         |            |
 | bpe BERT-large, CLS                 | 89.78        | 22.6002 / -       |         |            |
 | dha BERT(2.5m), CNN                 | **90.25**    | 15.5738 / -       |         |            |
 | dha BERT(2.5m), CLS                 | 90.18        | 13.3390 / -       |         |            |
@@ -301,7 +301,8 @@ INFO:__main__:[Accuracy] : 0.8839, 44190/49997
 INFO:__main__:[Elapsed Time] : 482054.96978759766ms, 9.639614557722052ms on average
 
 ** --bert_model_name_or_path=./embeddings/pytorch.large.all.whitespace_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
-
+INFO:__main__:[Accuracy] : 0.8985, 44923/49997
+INFO:__main__:[Elapsed Time] : 1220545.0494289398ms, 24.40995301749384ms on average
 
 * enc_class=cls
 
