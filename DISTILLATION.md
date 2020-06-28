@@ -159,6 +159,11 @@ $ python -m spacy download en_core_web_sm
   ```
   - dha-bpe BERT-large, CNN
   ```
+  $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --data_dir=./data/clova_sentiments_morph
+  $ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+  $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
+  INFO:__main__:[Accuracy] : 0.9084, 45417/49997
+  INFO:__main__:[Elapsed Time] : 1225501.6918182373ms, 24.509510690474073ms on average
 
   ```
 
@@ -176,8 +181,13 @@ $ python -m spacy download en_core_web_sm
   * converting augmented.raw to augmented.raw.fs(id mapped file)
   * labeling augmented.raw to augmented.raw.pred
 
+  * bert base
   $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/clova_sentiments_morph --augmented --augmented_filename=augmented.raw
   $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
+
+  * bert large
+  $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --data_dir=./data/clova_sentiments_morph --augmented --augmented_filename=augmented.raw
+  $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
   $ cp -rf ./data/clova_sentiments_morph/augmented.raw.pred ./data/clova_sentiments_morph/augmented.txt
   ```
@@ -233,6 +243,10 @@ $ python -m spacy download en_core_web_sm
     ```
     - distilled from bert large
     ```
+    * 1) n_iter=15 --max_ng=3
+
+    ** analyzer=npc --measure=accuracy
+
 
     ```
 

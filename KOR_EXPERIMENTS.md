@@ -105,7 +105,7 @@
 | bpe DistilBERT(4.8m), CLS                 | 88.55        | 8.2834  / -       | 31.5655 | threads=14 |
 | bpe BERT-large, CNN                       | 89.85        | 24.4099 / -       |         |            |
 | bpe BERT-large, CLS                       | 89.78        | 22.6002 / -       |         |            |
-| dha BERT(2.5m), CNN                       | **90.25**    | 15.5738 / -       |         |            |
+| dha BERT(2.5m), CNN                       | 90.25        | 15.5738 / -       |         |            |
 | dha BERT(2.5m), CLS                       | 90.18        | 13.3390 / -       |         |            |
 | dha BERT(2.5m), CNN                       | 88.88        | 10.5157 / 72.7777 |         | del 8,9,10,11, threads=14         |
 | dha BERT(2.5m), CLS                       | 88.81        | 8.9836  / 68.4545 | 50.7474 | del 8,9,10,11, threads=14         |
@@ -116,7 +116,7 @@
 | DistilFromBERT, dha DistilBERT(2.5m), CLS | -            | -       / -       |         | from dha-bpe BERT-large, CNN      |
 | dha-bpe BERT(4m), CNN                     | 89.07        | 14.9454 / -       |         |            |
 | dha-bpe BERT(4m), CLS                     | 89.01        | 12.7981 / -       |         |            |
-| dha-bpe BERT-large, CNN                   | -            | -       / -       |         |            |
+| dha-bpe BERT-large, CNN                   | **90.84**    | 24.5095 / -       |         |            |
 | dha-bpe BERT-large, CLS                   | -            | -       / -       |         |            |
 | dha BERT(10m), CNN                        | 89.08        | 15.3276 / -       |         |            |
 | dha BERT(10m), CLS                        | 89.25        | 12.7876 / -       |         |            |
@@ -436,7 +436,8 @@ INFO:__main__:[Accuracy] : 0.8907, 44533/49997
 INFO:__main__:[Elapsed Time] : 747351ms, 14.945475638051045ms on average
 
 ** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
-
+INFO:__main__:[Accuracy] : 0.9084, 45417/49997
+INFO:__main__:[Elapsed Time] : 1225501.6918182373ms, 24.509510690474073ms on average
 
 * enc_class=cls
 
