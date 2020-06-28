@@ -19,7 +19,7 @@ $ python -m spacy download en_core_web_sm
   INFO:__main__:[Elapsed Time] : 40847.62740135193ms, 22.37672412788475ms on average
   ```
 
-  - RoBERTa-large, CLS(roberta-large)
+  - RoBERTa-large, CLS (roberta-large)
   ```
   $ python preprocess.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large 
   $ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --batch_size=64
@@ -157,6 +157,10 @@ $ python -m spacy download en_core_web_sm
   INFO:__main__:[Accuracy] : 0.9018, 45089/49997
   INFO:__main__:[Elapsed Time] : 666997.1199035645ms, 13.339050636929372ms on average
   ```
+  - dha-bpe BERT-large, CNN
+  ```
+
+  ```
 
 - generate pseudo labeled data
 
@@ -181,55 +185,57 @@ $ python -m spacy download en_core_web_sm
 - train student model
 
   - Glove, DenseNet-CNN
-  ```
-  * converting augmented.txt to augmented.txt.ids(id mapped file) and train!
-  $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt --augmented --augmented_filename=augmented.txt
-  $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --lr_decay_rate=0.9 --save_path=pytorch-model-densenet.pt --augmented --measure=accuracy
-  $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/clova_sentiments_morph --model_path=pytorch-model-densenet.pt
+    - distilled from bert base
+    ```
+    * converting augmented.txt to augmented.txt.ids(id mapped file) and train!
+    $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt --augmented --augmented_filename=augmented.txt
+    $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --lr_decay_rate=0.9 --save_path=pytorch-model-densenet.pt --augmented --measure=accuracy
+    $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/clova_sentiments_morph --model_path=pytorch-model-densenet.pt
 
-  * 1) n_iter=2
+    * 1) n_iter=2
   
-  ** analyzer=npc --measure=loss 
-  INFO:__main__:[Accuracy] : 0.8839, 44193/49997
-  INFO:__main__:[Elapsed Time] : 180243.6339855194ms, 3.603460102217113ms on average
+    ** analyzer=npc --measure=loss 
+    INFO:__main__:[Accuracy] : 0.8839, 44193/49997
+    INFO:__main__:[Elapsed Time] : 180243.6339855194ms, 3.603460102217113ms on average
 
-  ** analyzer=npc --measure=accuracy
-  INFO:__main__:[Accuracy] : 0.8858, 44288/49997
-  INFO:__main__:[Elapsed Time] : 184068.44115257263ms, 3.680069796208697ms on average
+    ** analyzer=npc --measure=accuracy
+    INFO:__main__:[Accuracy] : 0.8858, 44288/49997
+    INFO:__main__:[Elapsed Time] : 184068.44115257263ms, 3.680069796208697ms on average
 
-  * 2) n_iter=3
+    * 2) n_iter=3
 
-  ** analyzer=npc --measure=loss
-  INFO:__main__:[Accuracy] : 0.8848, 44235/49997
-  INFO:__main__:[Elapsed Time] : 184740.9327030182ms, 3.693423606708666ms on average
+    ** analyzer=npc --measure=loss
+    INFO:__main__:[Accuracy] : 0.8848, 44235/49997
+    INFO:__main__:[Elapsed Time] : 184740.9327030182ms, 3.693423606708666ms on average
 
-  ** analyzer=npc --measure=accuracy
-  INFO:__main__:[Accuracy] : 0.8874, 44366/49997
-  INFO:__main__:[Elapsed Time] : 189770.19143104553ms, 3.793939779983424ms on average
+    ** analyzer=npc --measure=accuracy
+    INFO:__main__:[Accuracy] : 0.8874, 44366/49997
+    INFO:__main__:[Elapsed Time] : 189770.19143104553ms, 3.793939779983424ms on average
 
-  * 3) n_iter=4
+    * 3) n_iter=4
 
-  ** analyzer=npc --measure=accuracy
-  INFO:__main__:[Accuracy] : 0.8877, 44380/49997
-  INFO:__main__:[Elapsed Time] : 182432.52897262573ms, 3.6474575623673187ms on average
+    ** analyzer=npc --measure=accuracy
+    INFO:__main__:[Accuracy] : 0.8877, 44380/49997
+    INFO:__main__:[Elapsed Time] : 182432.52897262573ms, 3.6474575623673187ms on average
  
-  * 4) n_iter=10 --max_ng=3
+    * 4) n_iter=10 --max_ng=3
 
-  ** analyzer=npc --measure=accuracy
-  INFO:__main__:[Accuracy] : 0.8901, 44502/49997
-  INFO:__main__:[Elapsed Time] : 183906.18228912354ms, 3.676726041922465ms on average
+    ** analyzer=npc --measure=accuracy
+    INFO:__main__:[Accuracy] : 0.8901, 44502/49997
+    INFO:__main__:[Elapsed Time] : 183906.18228912354ms, 3.676726041922465ms on average
 
-  * 4) n_iter=15 --max_ng=3
+    * 5) n_iter=15 --max_ng=3
 
-  ** analyzer=npc --measure=accuracy
-  INFO:__main__:[Accuracy] : 0.8921, 44603/49997
-  INFO:__main__:[Elapsed Time] : 176990.5219078064ms, 3.5383923929856773ms on average
+    ** analyzer=npc --measure=accuracy
+    INFO:__main__:[Accuracy] : 0.8921, 44603/49997
+    INFO:__main__:[Elapsed Time] : 176990.5219078064ms, 3.5383923929856773ms on average
 
-  ```
-  - dha DistilBERT(2.5m), CLS
-  ```
+    ```
+    - distilled from bert large
+    ```
 
-  ```
+    ```
+
 
 #### korean-hate-speech data
 
@@ -249,6 +255,10 @@ $ python -m spacy download en_core_web_sm
   * --data_dir=./data/korean_bias_speech
   INFO:__main__:[Accuracy] : 0.8408,   396/  471
   INFO:__main__:[Elapsed Time] : 7315.462350845337ms, 15.295034266532735ms on average
+  ```
+  - dha-bpe BERT-large, CNN
+  ```
+
   ```
 
 - generate pseudo labeled data
@@ -282,38 +292,39 @@ $ python -m spacy download en_core_web_sm
 - train student model
 
   - Glove, DenseNet-CNN
-  ```
-  * converting augmented.txt to augmented.txt.ids(id mapped file) and train!
+    - distilled from bert base
+    ```
+    * converting augmented.txt to augmented.txt.ids(id mapped file) and train!
 
-  $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech_morph --embedding_path=embeddings/kor.glove.300k.300d.txt --augmented --augmented_filename=augmented.txt
-  $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-cnn.pt --augmented --measure=accuracy
-  $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/korean_hate_speech_morph --model_path=pytorch-model-kor-cnn.pt
+    $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech_morph --embedding_path=embeddings/kor.glove.300k.300d.txt --augmented --augmented_filename=augmented.txt
+    $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-cnn.pt --augmented --measure=accuracy
+    $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/korean_hate_speech_morph --model_path=pytorch-model-kor-cnn.pt
 
-  1) --data_dir=./data/korean_hate_speech
+    1) --data_dir=./data/korean_hate_speech
 
-  ** analyzer=npc --measure=accuracy
-  INFO:__main__:[Accuracy] : 0.6497,   306/  471
-  INFO:__main__:[Elapsed Time] : 1893.380880355835ms, 3.8358328190255673ms on average
+    ** analyzer=npc --measure=accuracy
+    INFO:__main__:[Accuracy] : 0.6497,   306/  471
+    INFO:__main__:[Elapsed Time] : 1893.380880355835ms, 3.8358328190255673ms on average
 
-  ** unlabeled data used
-  INFO:__main__:[Accuracy] : 0.6667,   314/  471
-  INFO:__main__:[Elapsed Time] : 1796.814203262329ms, 3.6249926749696124ms on average
+    ** unlabeled data used
+    INFO:__main__:[Accuracy] : 0.6667,   314/  471
+    INFO:__main__:[Elapsed Time] : 1796.814203262329ms, 3.6249926749696124ms on average
 
-  2) data_dir=./data/korean_bias_speech
+    2) data_dir=./data/korean_bias_speech
 
-  ** analyzer=npc --measure=accuracy
-  INFO:__main__:[Accuracy] : 0.8365,   394/  471
-  INFO:__main__:[Elapsed Time] : 2004.8654079437256ms, 4.085820279222854ms on average
+    ** analyzer=npc --measure=accuracy
+    INFO:__main__:[Accuracy] : 0.8365,   394/  471
+    INFO:__main__:[Elapsed Time] : 2004.8654079437256ms, 4.085820279222854ms on average
 
-  ** unlabeled data used
-  INFO:__main__:[Accuracy] : 0.8556,   403/  471
-  INFO:__main__:[Elapsed Time] : 1828.8986682891846ms, 3.6988679398881628ms on average
+    ** unlabeled data used
+    INFO:__main__:[Accuracy] : 0.8556,   403/  471
+    INFO:__main__:[Elapsed Time] : 1828.8986682891846ms, 3.6988679398881628ms on average
 
-  ```
-  - dha DistilBERT(2.5m), CNN
-  ```
+    ```
+    - distilled from bert large
+    ```
 
-  ```
+    ```
 
 
 #### References
