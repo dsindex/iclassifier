@@ -94,14 +94,14 @@
 | ----------------------------------- | ------------ | ----------------- | ------- | ---------- |
 | GloVe, CNN                          | 87.31        | 1.9479  / 3.5353  |         | threads=14 |
 | **GloVe, DenseNet-CNN**             | 88.18        | 3.4614  / 8.3434  |         | threads=14 |
-| DistilFromBERT, GloVe, DenseNet-CNN | 89.21        | 3.5383  / -       |         |            |
+| DistilFromBERT, GloVe, DenseNet-CNN | 89.21        | 3.5383  / -       |         | from dha BERT(2.5m), CLS  |
 | GloVe, DenseNet-DSA                 | 87.66        | 6.9731  / -       |         |            |
 | bpe BERT(4.8m), CNN                 | 90.11        | 16.5453 / -       |         |            |
 | bpe BERT(4.8m), CLS                 | 89.91        | 14.9586 / -       |         |            |
 | bpe BERT(4.8m), CNN                 | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
 | bpe BERT(4.8m), CLS                 | 88.92        | 9.3280  / 70.3232 |         | del 8,9,10,11, threads=14 |
-| bpe DistilBERT(4.8m), CNN           | 88.39        | 9.6396  / -       | 38.7144 |        , threads=14       |
-| bpe DistilBERT(4.8m), CLS           | 88.55        | 8.2834  / -       | 31.5655 |        , threads=14       |
+| bpe DistilBERT(4.8m), CNN           | 88.39        | 9.6396  / -       | 38.7144 | threads=14 |
+| bpe DistilBERT(4.8m), CLS           | 88.55        | 8.2834  / -       | 31.5655 | threads=14 |
 | bpe BERT-large, CNN                 | 89.85        | 24.4099 / -       |         |            |
 | bpe BERT-large, CLS                 | 89.78        | 22.6002 / -       |         |            |
 | dha BERT(2.5m), CNN                 | **90.25**    | 15.5738 / -       |         |            |
@@ -584,8 +584,8 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 |                                         | Bias Accuracy (%) | Hate Accuracy (%) | GPU / CPU         | CONDA   | Etc                  |
 | --------------------------------------- | ----------------- | ----------------- | ----------------- | ------- | -------------------- |
 | GloVe, DenseNet-CNN                     | 72.61             | 61.78             | 3.7602  / -       |         |                      |
-| **DistilFromBERT, GloVe, DenseNet-CNN** | 83.65             | 64.97             | 3.8358  / -       |         |                      |
-| DistilFromBERT, GloVe, DenseNet-CNN     | **85.56**         | 66.67             | 3.6249  / -       |         | unlabeled data used  |
+| **DistilFromBERT, GloVe, DenseNet-CNN** | 83.65             | 64.97             | 3.8358  / -       |         | from dha BERT(2.5m), CNN                       |
+| DistilFromBERT, GloVe, DenseNet-CNN     | **85.56**         | 66.67             | 3.6249  / -       |         | from dha BERT(2.5m), CNN, unlabeled data used  |
 | dha BERT(2.5m), CNN                     | 84.08             | 67.09             | 15.8797 / -       |         |                      |
 | dha BERT(2.5m), CLS                     | 82.80             | 64.76             | 12.8167 / -       |         |                      |
 

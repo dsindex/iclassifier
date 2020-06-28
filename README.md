@@ -243,15 +243,15 @@ INFO:__main__:[Elapsed Time] : 6607ms, 9.30758226037196ms on average
 | GloVe, CNN                              | 82.81        | 1.7670  / 3.9191  / 4.5757  |       - / 4.3131  |       - / 4.4040  |              - / 4.8686  |       - / 4.4848  | threads=14    |
 | GloVe, DenseNet-CNN                     | 86.38        | 3.6203  / 7.1414            |                   |                   |                          |                   | threads=14    |
 | GloVe, DenseNet-DSA                     | 85.34        | 6.2450  / -                 |                   |                   |                          |                   |               |
-| DistilFromBERT, GloVe, CNN              | 86.16        | 1.7900  / -                 |                   |                   |                          |                   |               |
-| DistilFromBERT, GloVe, DenseNet-CNN     | 88.52        | 3.6788  / -                 |                   |                   |                          |                   |               |
-| DistilFromBERT, GloVe, DenseNet-DSA     | 88.14        | 8.4647  / -                 |                   |                   |                          |                   |               |
-| DistilFromRoBERTa, GloVe, CNN           | 86.55        | 1.8483  / -                 |                   |                   |                          |                   |               |
-| DistilFromRoBERTa, GloVe, DenseNet-CNN  | 88.80        | 3.9580  / -                 |                   |                   |                          |                   |               |
-| DistilFromRoBERTa, GloVe, DenseNet-DSA  | 88.25        | 8.5627  / -                 |                   |                   |                          |                   |               |
-| DistilFromELECTRA, GloVe, CNN           | 86.55        | 1.7466  / -                 |                   |                   |                          |                   |               |
-| DistilFromELECTRA, GloVe, DenseNet-CNN  | 89.79        | 3.6406  / -                 |                   |                   |                          |                   |               |
-| DistilFromELECTRA, GloVe, DenseNet-DSA  | 88.58        | 8.3708  / -                 |                   |                   |                          |                   |               |
+| DistilFromBERT, GloVe, CNN              | 86.16        | 1.7900  / -                 |                   |                   |                          |                   | from large    |
+| DistilFromBERT, GloVe, DenseNet-CNN     | 88.52        | 3.6788  / -                 |                   |                   |                          |                   | from large    |
+| DistilFromBERT, GloVe, DenseNet-DSA     | 88.14        | 8.4647  / -                 |                   |                   |                          |                   | from large    |
+| DistilFromRoBERTa, GloVe, CNN           | 86.55        | 1.8483  / -                 |                   |                   |                          |                   | from large    |
+| DistilFromRoBERTa, GloVe, DenseNet-CNN  | 88.80        | 3.9580  / -                 |                   |                   |                          |                   | from large    |
+| DistilFromRoBERTa, GloVe, DenseNet-DSA  | 88.25        | 8.5627  / -                 |                   |                   |                          |                   | from large    |
+| DistilFromELECTRA, GloVe, CNN           | 86.55        | 1.7466  / -                 |                   |                   |                          |                   | from large    |
+| DistilFromELECTRA, GloVe, DenseNet-CNN  | 89.79        | 3.6406  / -                 |                   |                   |                          |                   | from large    |
+| DistilFromELECTRA, GloVe, DenseNet-DSA  | 88.58        | 8.3708  / -                 |                   |                   |                          |                   | from large    |
 | BERT-tiny, CNN                          | 79.08        | 4.8604  / -                 |                   |                   |                          |                   |               |
 | BERT-tiny, CLS                          | 80.83        | 3.8461  / -                 |                   |                   |                          |                   |               |
 | BERT-mini, CNN                          | 83.36        | 7.0983  / -                 |                   |                   |                          |                   |               |
@@ -262,7 +262,7 @@ INFO:__main__:[Elapsed Time] : 6607ms, 9.30758226037196ms on average
 | BERT-medium, CLS                        | 89.24        | 9.5857  / -                 |                   |                   |                          |                   |               |
 | DistilBERT, CNN                         | 89.90        | 9.9362  / -                 |       - / 44.1111 |                   |              - / 35.7070 |                   | threads=14    |
 | **DistilBERT, CLS**                     | 91.10        | 8.9719  / -                 |       - / 37.2626 |                   |              - / 29.4646 |                   | threads=14    |
-| DistilFromELECTRA, DistilBERT, CLS      | 93.52        | 7.4879  / -                 |                   |                   |                          |                   |               |
+| DistilFromELECTRA, DistilBERT, CLS      | 93.52        | 7.4879  / -                 |                   |                   |                          |                   | from large    |
 | BERT-base, CNN                          | 92.04        | 14.1576 / -                 |                   |                   |                          |                   |               |
 | BERT-base, CLS                          | 92.42        | 12.7549 / 100.555 / 62.5050 | 68.5757 / 66.1818 | 65.1616 / 63.1616 | 66.4545(92.42) / 50.8080 | 60.5656 / 50.4343 | threads=14    |
 | BERT-base, CNN                          | 90.55        | 10.6824 / -                 |                   |                   |                          |                   | del 8,9,10,11 |
