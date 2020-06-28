@@ -90,37 +90,40 @@
 
 - iclassifier
 
-|                                     | Accuracy (%) | GPU / CPU         | CONDA   | Etc        |
-| ----------------------------------- | ------------ | ----------------- | ------- | ---------- |
-| GloVe, CNN                          | 87.31        | 1.9479  / 3.5353  |         | threads=14 |
-| **GloVe, DenseNet-CNN**             | 88.18        | 3.4614  / 8.3434  |         | threads=14 |
-| DistilFromBERT, GloVe, DenseNet-CNN | 89.21        | 3.5383  / -       |         | from dha BERT(2.5m), CLS     |
-| DistilFromBERT, GloVe, DenseNet-CNN | -            | -       / -       |         | from dha-bpe BERT-large, CNN |
-| GloVe, DenseNet-DSA                 | 87.66        | 6.9731  / -       |         |            |
-| bpe BERT(4.8m), CNN                 | 90.11        | 16.5453 / -       |         |            |
-| bpe BERT(4.8m), CLS                 | 89.91        | 14.9586 / -       |         |            |
-| bpe BERT(4.8m), CNN                 | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
-| bpe BERT(4.8m), CLS                 | 88.92        | 9.3280  / 70.3232 |         | del 8,9,10,11, threads=14 |
-| bpe DistilBERT(4.8m), CNN           | 88.39        | 9.6396  / -       | 38.7144 | threads=14 |
-| bpe DistilBERT(4.8m), CLS           | 88.55        | 8.2834  / -       | 31.5655 | threads=14 |
-| bpe BERT-large, CNN                 | 89.85        | 24.4099 / -       |         |            |
-| bpe BERT-large, CLS                 | 89.78        | 22.6002 / -       |         |            |
-| dha BERT(2.5m), CNN                 | **90.25**    | 15.5738 / -       |         |            |
-| dha BERT(2.5m), CLS                 | 90.18        | 13.3390 / -       |         |            |
-| dha BERT(2.5m), CNN                 | 88.88        | 10.5157 / 72.7777 |         | del 8,9,10,11, threads=14         |
-| dha BERT(2.5m), CLS                 | 88.81        | 8.9836  / 68.4545 | 50.7474 | del 8,9,10,11, threads=14         |
-| dha BERT(2.5m), CLS                 | 88.29        | 7.2027  / 53.6363 | 38.3333 | del 6,7,8,9,10,11, threads=14     |
-| dha BERT(2.5m), CLS                 | 87.54        | 5.7645  / 36.8686 | 28.2626 | del 4,5,6,7,8,9,10,11, threads=14 |
-| dha-bpe BERT(4m), CNN               | 89.07        | 14.9454 / -       |         |            |
-| dha-bpe BERT(4m), CLS               | 89.01        | 12.7981 / -       |         |            |
-| dha-bpe BERT-large, CNN             | -            | -       / -       |         |            |
-| dha-bpe BERT-large, CLS             | -            | -       / -       |         |            |
-| dha BERT(10m), CNN                  | 89.08        | 15.3276 / -       |         |            |
-| dha BERT(10m), CLS                  | 89.25        | 12.7876 / -       |         |            |
-| KoELECTRA-Base, CNN                 | 89.51        | 15.5452 / -       |         |            |
-| KoELECTRA-Base, CLS                 | 89.63        | 14.2667 / -       |         |            |
-| bpe ELECTRA-base(30k-512-1m) , CNN  | 88.07        | 16.2737 / -       |         |            |
-| bpe ELECTRA-base(30k-512-1m) , CLS  | 88.26        | 14.2356 / -       |         |            |
+|                                           | Accuracy (%) | GPU / CPU         | CONDA   | Etc        |
+| ----------------------------------------- | ------------ | ----------------- | ------- | ---------- |
+| GloVe, CNN                                | 87.31        | 1.9479  / 3.5353  |         | threads=14 |
+| **GloVe, DenseNet-CNN**                   | 88.18        | 3.4614  / 8.3434  |         | threads=14 |
+| DistilFromBERT, GloVe, DenseNet-CNN       | 89.21        | 3.5383  / -       |         | from dha BERT(2.5m), CLS     |
+| DistilFromBERT, GloVe, DenseNet-CNN       | -            | -       / -       |         | from dha-bpe BERT-large, CNN |
+| GloVe, DenseNet-DSA                       | 87.66        | 6.9731  / -       |         |            |
+| bpe BERT(4.8m), CNN                       | 90.11        | 16.5453 / -       |         |            |
+| bpe BERT(4.8m), CLS                       | 89.91        | 14.9586 / -       |         |            |
+| bpe BERT(4.8m), CNN                       | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
+| bpe BERT(4.8m), CLS                       | 88.92        | 9.3280  / 70.3232 |         | del 8,9,10,11, threads=14 |
+| bpe DistilBERT(4.8m), CNN                 | 88.39        | 9.6396  / -       | 38.7144 | threads=14 |
+| bpe DistilBERT(4.8m), CLS                 | 88.55        | 8.2834  / -       | 31.5655 | threads=14 |
+| bpe BERT-large, CNN                       | 89.85        | 24.4099 / -       |         |            |
+| bpe BERT-large, CLS                       | 89.78        | 22.6002 / -       |         |            |
+| dha BERT(2.5m), CNN                       | **90.25**    | 15.5738 / -       |         |            |
+| dha BERT(2.5m), CLS                       | 90.18        | 13.3390 / -       |         |            |
+| dha BERT(2.5m), CNN                       | 88.88        | 10.5157 / 72.7777 |         | del 8,9,10,11, threads=14         |
+| dha BERT(2.5m), CLS                       | 88.81        | 8.9836  / 68.4545 | 50.7474 | del 8,9,10,11, threads=14         |
+| dha BERT(2.5m), CLS                       | 88.29        | 7.2027  / 53.6363 | 38.3333 | del 6,7,8,9,10,11, threads=14     |
+| dha BERT(2.5m), CLS                       | 87.54        | 5.7645  / 36.8686 | 28.2626 | del 4,5,6,7,8,9,10,11, threads=14 |
+| dha DistilBERT(2.5m), CNN                 | -            | -       / -       |         |            |
+| dha DistilBERT(2.5m), CLS                 | -            | -       / -       |         |            |
+| DistilFromBERT, dha DistilBERT(2.5m), CLS | -            | -       / -       |         | from dha-bpe BERT-large, CNN      |
+| dha-bpe BERT(4m), CNN                     | 89.07        | 14.9454 / -       |         |            |
+| dha-bpe BERT(4m), CLS                     | 89.01        | 12.7981 / -       |         |            |
+| dha-bpe BERT-large, CNN                   | -            | -       / -       |         |            |
+| dha-bpe BERT-large, CLS                   | -            | -       / -       |         |            |
+| dha BERT(10m), CNN                        | 89.08        | 15.3276 / -       |         |            |
+| dha BERT(10m), CLS                        | 89.25        | 12.7876 / -       |         |            |
+| KoELECTRA-Base, CNN                       | 89.51        | 15.5452 / -       |         |            |
+| KoELECTRA-Base, CLS                       | 89.63        | 14.2667 / -       |         |            |
+| bpe ELECTRA-base(30k-512-1m) , CNN        | 88.07        | 16.2737 / -       |         |            |
+| bpe ELECTRA-base(30k-512-1m) , CLS        | 88.26        | 14.2356 / -       |         |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -582,15 +585,17 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 
 - iclassifier
 
-|                                         | Bias Accuracy (%) | Hate Accuracy (%) | GPU / CPU         | CONDA   | Etc                  |
-| --------------------------------------- | ----------------- | ----------------- | ----------------- | ------- | -------------------- |
-| GloVe, DenseNet-CNN                     | 72.61             | 61.78             | 3.7602  / -       |         |                      |
-| **DistilFromBERT, GloVe, DenseNet-CNN** | 83.65             | 64.97             | 3.8358  / -       |         | from dha BERT(2.5m), CNN                           |
-| DistilFromBERT, GloVe, DenseNet-CNN     | **85.56**         | 66.67             | 3.6249  / -       |         | from dha BERT(2.5m), CNN, unlabeled data used      |
-| DistilFromBERT, GloVe, DenseNet-CNN     | -                 | -                 | -       / -       |         | from dha-bpe BERT-large, CNN, unlabeled data used  |
-| dha BERT(2.5m), CNN                     | 84.08             | 67.09             | 15.8797 / -       |         |                      |
-| dha BERT(2.5m), CLS                     | 82.80             | 64.76             | 12.8167 / -       |         |                      |
-| dha-bpe BERT-large, CNN                 | -                 | -                 | -       / -       |         |                      |
+|                                           | Bias Accuracy (%) | Hate Accuracy (%) | GPU / CPU         | CONDA   | Etc                                                |
+| ----------------------------------------- | ----------------- | ----------------- | ----------------- | ------- | -------------------------------------------------- |
+| GloVe, DenseNet-CNN                       | 72.61             | 61.78             | 3.7602  / -       |         |                                                    |
+| **DistilFromBERT, GloVe, DenseNet-CNN**   | 83.65             | 64.97             | 3.8358  / -       |         | from dha BERT(2.5m), CNN                           |
+| DistilFromBERT, GloVe, DenseNet-CNN       | **85.56**         | 66.67             | 3.6249  / -       |         | from dha BERT(2.5m), CNN, unlabeled data used      |
+| DistilFromBERT, GloVe, DenseNet-CNN       | -                 | -                 | -       / -       |         | from dha-bpe BERT-large, CNN, unlabeled data used  |
+| dha DistilBERT(2.5m), CNN                 | -                 | -                 | -       / -       |         |                                                    |
+| DistilFromBERT, dha DistilBERT(2.5m), CNN | -                 | -                 | -       / -       |         | from dha-bpe BERT-large, CNN, unlabeled data used  |
+| dha BERT(2.5m), CNN                       | 84.08             | 67.09             | 15.8797 / -       |         |                                                    |
+| dha BERT(2.5m), CLS                       | 82.80             | 64.76             | 12.8167 / -       |         |                                                    |
+| dha-bpe BERT-large, CNN                   | -                 | -                 | -       / -       |         |                                                    |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)

@@ -236,6 +236,16 @@ $ python -m spacy download en_core_web_sm
 
     ```
 
+  - dha DistilBERT(2.5m), CNN
+    - distilled from bert base
+    ```
+
+    ```
+    - distilled from bert large
+    ```
+
+    ```
+
 
 #### korean-hate-speech data
 
@@ -319,6 +329,16 @@ $ python -m spacy download en_core_web_sm
     ** unlabeled data used
     INFO:__main__:[Accuracy] : 0.8556,   403/  471
     INFO:__main__:[Elapsed Time] : 1828.8986682891846ms, 3.6988679398881628ms on average
+
+    ```
+    - distilled from bert large
+    ```
+
+    ```
+
+  - dha DistilBERT(2.5m), CNN
+    - distilled from bert base
+    ```
 
     ```
     - distilled from bert large
