@@ -161,7 +161,7 @@
 | ETRIBERT          | 89.99        |
 
 
-### GloVe
+##### GloVe
 
 <details><summary><b>enc_class=cnn</b></summary>
 <p>
@@ -265,7 +265,7 @@ $ python evaluate.py --config=configs/config-densenet-dsa-iee.json --data_dir=./
 </details>
 
 
-### BERT(pytorch.all.bpe.4.8m_step, pytorch.large.all.whitespace_bpe.7m_step)
+##### BERT(pytorch.all.bpe.4.8m_step, pytorch.large.all.whitespace_bpe.7m_step)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -340,7 +340,7 @@ INFO:__main__:[Elapsed Time] : 1130058.8986873627ms, 22.60026191461467ms on aver
 </details>
 
 
-### BERT(pytorch.all.dha.2.5m_step)
+##### BERT(pytorch.all.dha.2.5m_step)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -409,7 +409,7 @@ INFO:__main__:[Elapsed Time] : 705669ms, 14.11208896711737ms on average
 </details>
 
 
-### BERT(pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step, pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step)
+##### BERT(pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step, pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -455,7 +455,7 @@ INFO:__main__:[Elapsed Time] : 639988ms, 12.798163853108248ms on average
 </details>
 
 
-### BERT(pytorch.all.dha_s2.9.4_d2.9.27.10m_step)
+##### BERT(pytorch.all.dha_s2.9.4_d2.9.27.10m_step)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -493,7 +493,7 @@ INFO:__main__:[Elapsed Time] : 639463ms, 12.787603008240659ms on average
 </details>
 
 
-### ELECTRA(koelectra-base-discriminator)
+##### ELECTRA(koelectra-base-discriminator)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -540,7 +540,7 @@ INFO:__main__:[Elapsed Time] : 713403ms, 14.266721337707017ms on average
 </p>
 </details>
 
-### ELECTRA(kor-electra-base-bpe-30k-512-1m)
+##### ELECTRA(kor-electra-base-bpe-30k-512-1m)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -615,7 +615,7 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 | KoELECTRA-base    | 82.28             | 67.25             | with title, bias/hate joint training |
 
 
-### GloVe
+##### GloVe
 
 <details><summary><b>enc_class=densenet-cnn</b></summary>
 <p>
@@ -643,7 +643,7 @@ INFO:__main__:[Elapsed Time] : 2106.7402362823486ms, 4.309217473293873ms on aver
 </details>
 
 
-### BERT(pytorch.all.dha.2.5m_step)
+##### BERT(pytorch.all.dha.2.5m_step, pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -673,6 +673,10 @@ INFO:__main__:[Elapsed Time] : 7566.187143325806ms, 15.879765469977196ms on aver
 INFO:__main__:[Accuracy] : 0.8408,   396/  471
 INFO:__main__:[Elapsed Time] : 7315.462350845337ms, 15.295034266532735ms on average
 
+** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step
+
+** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --data_dir=./data/korean_bias_speech
+
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/korean_hate_speech_morph --bert_output_dir=bert-checkpoint-kor-bert --model_path=pytorch-model-kor-bert.pt
@@ -682,6 +686,10 @@ INFO:__main__:[Elapsed Time] : 6128.332614898682ms, 12.81673198050641ms on avera
 ** --data_dir=./data/korean_bias_speech
 INFO:__main__:[Accuracy] : 0.8280,   390/  471
 INFO:__main__:[Elapsed Time] : 6393.482446670532ms, 13.385195427752556ms on average
+
+** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step
+
+** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --data_dir=./data/korean_bias_speech
 
 ```
 
