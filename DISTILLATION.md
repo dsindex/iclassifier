@@ -53,15 +53,15 @@ $ python -m spacy download en_core_web_sm
   * converting augmented.raw to augmented.raw.fs(id mapped file)
   * labeling augmented.raw to augmented.raw.pred
 
-  * bert
+  * from bert
   $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-large-uncased --bert_do_lower_case --augmented --augmented_filename=augmented.raw
   $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
-  * roberta
+  * from roberta
   $ python preprocess.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --augmented --augmented_filename=augmented.raw
   $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
-  * electra 
+  * from electra 
   $ python preprocess.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-large-discriminator --bert_do_lower_case --augmented --augmented_filename=augmented.raw
   $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
@@ -164,7 +164,6 @@ $ python -m spacy download en_core_web_sm
   $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
   INFO:__main__:[Accuracy] : 0.9084, 45417/49997
   INFO:__main__:[Elapsed Time] : 1225501.6918182373ms, 24.509510690474073ms on average
-
   ```
 
 - generate pseudo labeled data
@@ -181,11 +180,11 @@ $ python -m spacy download en_core_web_sm
   * converting augmented.raw to augmented.raw.fs(id mapped file)
   * labeling augmented.raw to augmented.raw.pred
 
-  * bert base
+  * from dha bert-base
   $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/clova_sentiments_morph --augmented --augmented_filename=augmented.raw
   $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
-  * bert large
+  * from dha bert-large
   $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --data_dir=./data/clova_sentiments_morph --augmented --augmented_filename=augmented.raw
   $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
@@ -195,7 +194,7 @@ $ python -m spacy download en_core_web_sm
 - train student model
 
   - Glove, DenseNet-CNN
-    - distilled from bert base
+    - distilled from dha bert-base
     ```
     * converting augmented.txt to augmented.txt.ids(id mapped file) and train!
     $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt --augmented --augmented_filename=augmented.txt
@@ -241,7 +240,7 @@ $ python -m spacy download en_core_web_sm
     INFO:__main__:[Elapsed Time] : 176990.5219078064ms, 3.5383923929856773ms on average
 
     ```
-    - distilled from bert large
+    - distilled from dha bert-large
     ```
     * 1) n_iter=15 --max_ng=3
 
@@ -255,7 +254,7 @@ $ python -m spacy download en_core_web_sm
     ```
 
     ```
-    - distilled from bert large
+    - distilled from dha bert-large
     ```
 
     ```
@@ -307,6 +306,7 @@ $ python -m spacy download en_core_web_sm
   * converting augmented.raw to augmented.raw.fs(id mapped file)
   * labeling augmented.raw to augmented.raw.pred
 
+  * from dha bert-base
   $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/korean_hate_speech_morph --augmented --augmented_filename=augmented.raw
   $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/korean_hate_speech_morph --bert_output_dir=bert-checkpoint-kor-bert --model_path=pytorch-model-kor-bert.pt --batch_size=128 --augmented
 
@@ -316,7 +316,7 @@ $ python -m spacy download en_core_web_sm
 - train student model
 
   - Glove, DenseNet-CNN
-    - distilled from bert base
+    - distilled from dha bert-base
     ```
     * converting augmented.txt to augmented.txt.ids(id mapped file) and train!
 
@@ -345,17 +345,17 @@ $ python -m spacy download en_core_web_sm
     INFO:__main__:[Elapsed Time] : 1828.8986682891846ms, 3.6988679398881628ms on average
 
     ```
-    - distilled from bert large
+    - distilled from dha bert-large
     ```
 
     ```
 
   - dha DistilBERT(2.5m), CNN
-    - distilled from bert base
+    - distilled from dha bert-base
     ```
 
     ```
-    - distilled from bert large
+    - distilled from dha bert-large
     ```
 
     ```
