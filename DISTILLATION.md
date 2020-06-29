@@ -246,8 +246,8 @@ $ python -m spacy download en_core_web_sm
     * 1) n_iter=15 --max_ng=3
 
     ** analyzer=npc --measure=accuracy
-
-
+    INFO:__main__:[Accuracy] : 0.8914, 44569/49997
+    INFO:__main__:[Elapsed Time] : 180806.3244819641ms, 3.6146256702214643ms on average
     ```
 
   - dha DistilBERT(2.5m), CNN
