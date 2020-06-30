@@ -254,10 +254,6 @@ $ python -m spacy download en_core_web_sm
     ```
 
     ```
-    - distilled from dha bert-large
-    ```
-
-    ```
 
 
 #### korean-hate-speech data
@@ -278,10 +274,6 @@ $ python -m spacy download en_core_web_sm
   * --data_dir=./data/korean_bias_speech
   INFO:__main__:[Accuracy] : 0.8408,   396/  471
   INFO:__main__:[Elapsed Time] : 7315.462350845337ms, 15.295034266532735ms on average
-  ```
-  - dha-bpe BERT-large, CNN
-  ```
-
   ```
 
 - generate pseudo labeled data
@@ -345,17 +337,9 @@ $ python -m spacy download en_core_web_sm
     INFO:__main__:[Elapsed Time] : 1828.8986682891846ms, 3.6988679398881628ms on average
 
     ```
-    - distilled from dha bert-large
-    ```
-
-    ```
 
   - dha DistilBERT(2.5m), CNN
     - distilled from dha bert-base
-    ```
-
-    ```
-    - distilled from dha bert-large
     ```
 
     ```
