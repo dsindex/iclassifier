@@ -341,6 +341,16 @@ $ python -m spacy download en_core_web_sm
   - dha DistilBERT(2.5m), CNN
     - distilled from dha bert-base
     ```
+    * converting augmented.txt to augmented.txt.ids(id mapped file) and train!
+
+    $ python preprocess.py --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --data_dir=./data/korean_hate_speech_morph
+    $ python train.py --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech_morph --save_path=pytorch-model-kor-bert.pt
+    $ python evaluate.py --config=configs/config-distilbert-cnn.json --data_dir=data/korean_hate_speech_morph --bert_output_dir=bert-checkpoint-kor-bert --model_path=pytorch-model-kor-bert.pt
+
+    1) --data_dir=./data/korean_hate_speech
+
+
+    2) --data_dir=./data/korean_bias_speech
 
     ```
 
