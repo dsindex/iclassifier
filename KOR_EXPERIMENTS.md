@@ -117,7 +117,7 @@
 | dha-bpe BERT(4m), CNN                     | 89.07        | 14.9454 / -       |         |            |
 | dha-bpe BERT(4m), CLS                     | 89.01        | 12.7981 / -       |         |            |
 | dha-bpe BERT-large, CNN                   | **90.84**    | 24.5095 / -       |         |            |
-| dha-bpe BERT-large, CLS                   | -            | -       / -       |         |            |
+| dha-bpe BERT-large, CLS                   | 90.53        | 22.4336 / -       |         |            |
 | dha BERT(10m), CNN                        | 89.08        | 15.3276 / -       |         |            |
 | dha BERT(10m), CLS                        | 89.25        | 12.7876 / -       |         |            |
 | KoELECTRA-Base, CNN                       | 89.51        | 15.5452 / -       |         |            |
@@ -447,7 +447,8 @@ INFO:__main__:[Accuracy] : 0.8901, 44503/49997
 INFO:__main__:[Elapsed Time] : 639988ms, 12.798163853108248ms on average
 
 ** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
-
+INFO:__main__:[Accuracy] : 0.9053, 45264/49997
+INFO:__main__:[Elapsed Time] : 1121728.2631397247ms, 22.43362631699745ms on average
 
 ```
 
