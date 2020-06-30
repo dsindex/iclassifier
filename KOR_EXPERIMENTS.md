@@ -592,12 +592,12 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 | GloVe, DenseNet-CNN                       | 72.61             | 61.78             | 3.7602  / -       |         |                                                    |
 | **DistilFromBERT, GloVe, DenseNet-CNN**   | 83.65             | 64.97             | 3.8358  / -       |         | from dha BERT(2.5m), CNN                           |
 | DistilFromBERT, GloVe, DenseNet-CNN       | **85.56**         | 66.67             | 3.6249  / -       |         | from dha BERT(2.5m), CNN, unlabeled data used      |
-| DistilFromBERT, GloVe, DenseNet-CNN       | -                 | -                 | -       / -       |         | from dha-bpe BERT-large, CNN, unlabeled data used  |
 | dha DistilBERT(2.5m), CNN                 | -                 | -                 | -       / -       |         |                                                    |
-| DistilFromBERT, dha DistilBERT(2.5m), CNN | -                 | -                 | -       / -       |         | from dha-bpe BERT-large, CNN, unlabeled data used  |
+| DistilFromBERT, dha DistilBERT(2.5m), CNN | -                 | -                 | -       / -       |         | from dha BERT(2.5m), CNN, unlabeled data used      |
 | dha BERT(2.5m), CNN                       | 84.08             | 67.09             | 15.8797 / -       |         |                                                    |
 | dha BERT(2.5m), CLS                       | 82.80             | 64.76             | 12.8167 / -       |         |                                                    |
-| dha-bpe BERT-large, CNN                   | -                 | -                 | -       / -       |         |                                                    |
+| dha-bpe BERT-large, CNN                   | 83.86             | 66.03             | 33.4405 / -       |         |                                                    |
+| dha-bpe BERT-large, CLS                   | 83.86             | 66.67             | 28.3876 / -       |         |                                                    |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -675,8 +675,12 @@ INFO:__main__:[Accuracy] : 0.8408,   396/  471
 INFO:__main__:[Elapsed Time] : 7315.462350845337ms, 15.295034266532735ms on average
 
 ** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step
+INFO:__main__:[Accuracy] : 0.6603,   311/  471
+INFO:__main__:[Elapsed Time] : 15862.082242965698ms, 33.44054577198435ms on average
 
 ** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --data_dir=./data/korean_bias_speech
+INFO:__main__:[Accuracy] : 0.8386,   395/  471
+INFO:__main__:[Elapsed Time] : 15744.0345287323ms, 33.119978803269404ms on average
 
 * enc_class=cls
 
@@ -689,8 +693,12 @@ INFO:__main__:[Accuracy] : 0.8280,   390/  471
 INFO:__main__:[Elapsed Time] : 6393.482446670532ms, 13.385195427752556ms on average
 
 ** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step
+INFO:__main__:[Accuracy] : 0.6667,   314/  471
+INFO:__main__:[Elapsed Time] : 13503.794431686401ms, 28.387678430435507ms on average
 
 ** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --data_dir=./data/korean_bias_speech
+INFO:__main__:[Accuracy] : 0.8386,   395/  471
+INFO:__main__:[Elapsed Time] : 14023.700475692749ms, 29.498563928807034ms on average
 
 ```
 
