@@ -355,7 +355,8 @@ $ python -m spacy download en_core_web_sm
     INFO:__main__:[Elapsed Time] : 4639.9736404418945ms, 9.623941462090675ms on average
 
     2) --data_dir=./data/korean_bias_speech
-
+    INFO:__main__:[Accuracy] : 0.8556,   403/  471
+    INFO:__main__:[Elapsed Time] : 5733.668088912964ms, 11.933280052022731ms on average
     ```
 
 

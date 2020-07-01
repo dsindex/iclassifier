@@ -595,7 +595,7 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 | DistilFromBERT, GloVe, DenseNet-CNN       | **85.56**         | 66.67             | 3.6249  / -       |         | from dha BERT(2.5m), CNN, unlabeled data used      |
 | dha DistilBERT(2.5m), CNN                 | 82.59             | 64.54             | 14.7450 / -       |         |                                                    |
 | dha DistilBERT(2.5m), CLS                 | 83.23             | 62.42             | 13.0598 / -       |         |                                                    |
-| DistilFromBERT, dha DistilBERT(2.5m), CNN | -                 | 63.91             | 9.6239  / -       |         | from dha BERT(2.5m), CNN, unlabeled data used      |
+| DistilFromBERT, dha DistilBERT(2.5m), CNN | 85.56             | 63.91             | 9.6239  / -       |         | from dha BERT(2.5m), CNN, unlabeled data used      |
 | dha BERT(2.5m), CNN                       | 84.08             | **67.09**         | 15.8797 / -       |         |                                                    |
 | dha BERT(2.5m), CLS                       | 82.80             | 64.76             | 12.8167 / -       |         |                                                    |
 | dha-bpe BERT-large, CNN                   | 83.86             | 66.03             | 33.4405 / -       |         |                                                    |
@@ -607,7 +607,7 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 * default batch size, learning rate, n_ctx(max_seq_length) : 128, 2e-4, 100
 * korean_bias_speech 데이터의 경우는 'none' class의 비율이 높아서 bias가 있는 편이다. 
   (korean_hate_speech 데이터에 비해 accuarcy가 많이 높은 원인도 여기에 있을듯)
-  따라서, F1 score를 지표로 사용하는 것이 좀 더 좋겠지만, 편의상 accuracy를 사용했음.
+  따라서, average F1을 지표로 사용하는 것이 좀 더 좋겠지만, 편의상 accuracy를 사용했음.
 ```
 
 - [korean-hate-speech-koelectra](https://github.com/monologg/korean-hate-speech-koelectra)
