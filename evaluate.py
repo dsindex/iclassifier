@@ -263,7 +263,7 @@ def evaluate(opt):
     labels = model.labels
     label_names = [v for k, v in sorted(labels.items(), key=lambda x: x[0])] 
     preds_ids = np.argmax(preds, axis=1)
-    print(classification_report(ys, preds_ids, target_names=label_names)) 
+    print(classification_report(ys, preds_ids, target_names=label_names, digits=4)) 
     print(labels)
     print(confusion_matrix(ys, preds_ids))
 
