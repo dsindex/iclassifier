@@ -608,7 +608,6 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 * korean_bias_speech 데이터의 경우는 'none' class의 비율이 높아서 bias가 있는 편이다. 
   (korean_hate_speech 데이터에 비해 accuarcy가 많이 높은 원인도 여기에 있을듯)
   따라서, F1 score를 지표로 사용하는 것이 좀 더 좋겠지만, 편의상 accuracy를 사용했음.
-  (F1 score: 'from sklearn.metrics import f1_score')
 ```
 
 - [korean-hate-speech-koelectra](https://github.com/monologg/korean-hate-speech-koelectra)
