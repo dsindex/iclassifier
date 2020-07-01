@@ -135,7 +135,7 @@
 
 |                   | Accuracy (%) | Etc        |
 | ----------------- | ------------ | ---------- |
-| KoELECTRA-Base    | 90.21        |            |
+| KoELECTRA-Base    | **90.21**    |            |
 | KoELECTRA-Base-v2 | 89.70        | vocab from https://github.com/enlipleai/kor_pretrain_LM |
 | XML-RoBERTa       | 89.49        |            |
 | HanBert-54kN      | 90.16        |            |
@@ -149,7 +149,7 @@
 
 |                   | Accuracy (%) |
 | ----------------- | ------------ |
-| KoBERT            | 90.1         |
+| KoBERT            | **90.1**     |
 
 - [aisolab/nlp_classification](https://github.com/aisolab/nlp_classification)
   - 비교를 위해서, 여기에서는 데이터를 동일하게 맞추고 재실험.
@@ -158,7 +158,7 @@
 |                   | Accuracy (%) |
 | ----------------- | ------------ |
 | KoBERT(STKBERT)   | 89.35        |
-| ETRIBERT          | 89.99        |
+| ETRIBERT          | **89.99**    |
 
 
 ##### GloVe
@@ -615,7 +615,7 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 
 | (Weighted F1)     | Bias F1 (%)       | Hate F1 (%)       | Etc                                  |
 | ----------------- | ----------------- | ----------------- | ------------------------------------ |
-| KoELECTRA-base    | 82.28             | 67.25             | with title, bias/hate joint training |
+| KoELECTRA-base    | **82.28**         | **67.25**         | with title, bias/hate joint training |
 
 
 ##### GloVe
