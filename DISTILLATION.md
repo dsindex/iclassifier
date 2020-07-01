@@ -351,7 +351,8 @@ $ python -m spacy download en_core_web_sm
     $ python evaluate.py --config=configs/config-distilbert-cnn.json --data_dir=data/korean_hate_speech_morph --bert_output_dir=bert-checkpoint-kor-bert --model_path=pytorch-model-kor-bert.pt
 
     1) --data_dir=./data/korean_hate_speech
-
+    INFO:__main__:[Accuracy] : 0.6391,   301/  471
+    INFO:__main__:[Elapsed Time] : 4639.9736404418945ms, 9.623941462090675ms on average
 
     2) --data_dir=./data/korean_bias_speech
 

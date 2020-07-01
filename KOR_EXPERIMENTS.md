@@ -117,7 +117,7 @@
 | dha-bpe BERT(4m), CNN                     | 89.07        | 14.9454 / -       |         |            |
 | dha-bpe BERT(4m), CLS                     | 89.01        | 12.7981 / -       |         |            |
 | dha-bpe BERT-large, CNN                   | **90.84**    | 24.5095 / -       |         |            |
-| dha-bpe BERT-large, CLS                   | 90.53        | 22.4336 / -       |         |            |
+| dha-bpe BERT-large, CLS                   | 90.68        | 22.9305 / -       |         |            |
 | dha BERT(10m), CNN                        | 89.08        | 15.3276 / -       |         |            |
 | dha BERT(10m), CLS                        | 89.25        | 12.7876 / -       |         |            |
 | KoELECTRA-Base, CNN                       | 89.51        | 15.5452 / -       |         |            |
@@ -448,8 +448,8 @@ INFO:__main__:[Accuracy] : 0.8901, 44503/49997
 INFO:__main__:[Elapsed Time] : 639988ms, 12.798163853108248ms on average
 
 ** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
-INFO:__main__:[Accuracy] : 0.9053, 45264/49997
-INFO:__main__:[Elapsed Time] : 1121728.2631397247ms, 22.43362631699745ms on average
+INFO:__main__:[Accuracy] : 0.9068, 45337/49997
+INFO:__main__:[Elapsed Time] : 1146557.6510429382ms, 22.930594570818535ms on average
 
 ```
 
@@ -595,8 +595,8 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 | DistilFromBERT, GloVe, DenseNet-CNN       | **85.56**         | 66.67             | 3.6249  / -       |         | from dha BERT(2.5m), CNN, unlabeled data used      |
 | dha DistilBERT(2.5m), CNN                 | 82.59             | 64.54             | 14.7450 / -       |         |                                                    |
 | dha DistilBERT(2.5m), CLS                 | 83.23             | 62.42             | 13.0598 / -       |         |                                                    |
-| DistilFromBERT, dha DistilBERT(2.5m), CNN | -                 | -                 | -       / -       |         | from dha BERT(2.5m), CNN, unlabeled data used      |
-| dha BERT(2.5m), CNN                       | 84.08             | 67.09             | 15.8797 / -       |         |                                                    |
+| DistilFromBERT, dha DistilBERT(2.5m), CNN | -                 | 63.91             | 9.6239  / -       |         | from dha BERT(2.5m), CNN, unlabeled data used      |
+| dha BERT(2.5m), CNN                       | 84.08             | **67.09**         | 15.8797 / -       |         |                                                    |
 | dha BERT(2.5m), CLS                       | 82.80             | 64.76             | 12.8167 / -       |         |                                                    |
 | dha-bpe BERT-large, CNN                   | 83.86             | 66.03             | 33.4405 / -       |         |                                                    |
 | dha-bpe BERT-large, CLS                   | 83.86             | 66.67             | 28.3876 / -       |         |                                                    |
