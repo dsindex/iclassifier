@@ -16,6 +16,7 @@ from tqdm import tqdm
 from model import TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
 from util import load_config, to_device, to_numpy
 from dataset import prepare_dataset, SnipsGloveDataset, SnipsBertDataset
+from sklearn.metrics import classification_report, confusion_matrix
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -206,6 +207,7 @@ def evaluate(opt):
 
     # evaluation
     preds = None
+    ys    = None
     correct = 0
     n_batches = len(test_loader)
     total_examples = 0
@@ -238,8 +240,10 @@ def evaluate(opt):
 
             if preds is None:
                 preds = to_numpy(logits)
+                ys = to_numpy(y)
             else:
                 preds = np.append(preds, to_numpy(logits), axis=0)
+                ys = np.append(ys, to_numpy(y), axis=0)
             predicted = logits.argmax(1)
             correct += (predicted == y).sum().item()
             cur_examples = y.size(0)
@@ -255,11 +259,18 @@ def evaluate(opt):
             '''
             logger.info("[Elapsed Time] : {}ms".format(duration_time))
             '''
+    # generate report
+    labels = model.labels
+    label_names = [v for k, v in sorted(labels.items(), key=lambda x: x[0])] 
+    preds_ids = np.argmax(preds, axis=1)
+    print(classification_report(ys, preds_ids, target_names=label_names)) 
+    print(labels)
+    print(confusion_matrix(ys, preds_ids))
+
     acc  = correct / total_examples
     whole_time = float((time.time()-whole_st_time)*1000)
     avg_time = (whole_time - first_time) / (total_examples - first_examples)
     # write predictions to file
-    labels = model.labels
     write_prediction(opt, preds, labels)
     logger.info("[Accuracy] : {:.4f}, {:5d}/{:5d}".format(acc, correct, total_examples))
     logger.info("[Elapsed Time] : {}ms, {}ms on average".format(whole_time, avg_time))

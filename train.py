@@ -33,6 +33,7 @@ from util    import load_config, to_device, to_numpy
 from model   import TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
 from dataset import prepare_dataset, SnipsGloveDataset, SnipsBertDataset
 from early_stopping import EarlyStopping
+from sklearn.metrics import classification_report, confusion_matrix
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -126,17 +127,34 @@ def evaluate(model, config, val_loader):
     total_examples = 0 
     correct = 0
     criterion = torch.nn.CrossEntropyLoss().to(opt.device)
+    preds = None
+    ys    = None
     with torch.no_grad():
         for i, (x,y) in tqdm(enumerate(val_loader), total=len(val_loader)):
             x = to_device(x, opt.device)
             y = to_device(y, opt.device)
-            output = model(x)
-            loss = criterion(output, y)
-            predicted = output.argmax(1)
+            logits = model(x)
+            loss = criterion(logits, y)
+
+            if preds is None:
+                preds = to_numpy(logits)
+                ys = to_numpy(y)
+            else:
+                preds = np.append(preds, to_numpy(logits), axis=0)
+                ys = np.append(ys, to_numpy(y), axis=0)
+            predicted = logits.argmax(1)
             correct += (predicted == y).sum().item()
             cur_examples = y.size(0)
             total_loss += (loss.item() * cur_examples) 
             total_examples += cur_examples
+    # generate report
+    labels = model.labels
+    label_names = [v for k, v in sorted(labels.items(), key=lambda x: x[0])] 
+    preds_ids = np.argmax(preds, axis=1)
+    print(classification_report(ys, preds_ids, target_names=label_names)) 
+    print(labels)
+    print(confusion_matrix(ys, preds_ids))
+
     cur_loss = total_loss / total_examples
     cur_acc  = correct / total_examples
     return cur_loss, cur_acc
