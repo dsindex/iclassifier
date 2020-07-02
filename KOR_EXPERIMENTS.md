@@ -602,8 +602,6 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 | dha BERT(2.5m), CLS                       | 82.80             | 64.76             | 12.8167 / -       |         |                                                    |
 | dha-bpe BERT-large, CNN                   | 83.86             | 66.03             | 33.4405 / -       |         |                                                    |
 | dha-bpe BERT-large, CLS                   | 83.86             | 66.67             | 28.3876 / -       |         |                                                    |
-
-|                                           | Bias Accuracy (%) | Hate Accuracy (%) | GPU / CPU         | CONDA   | Etc                                                |
 | bpe BERT(4.8m), CNN                       | 82.80             | 63.27             | 15.0740 / -       |         |                                                    |
 | bpe BERT(4.8m), CLS                       | 82.38             | 63.69             | 13.1576 / -       |         |                                                    |
 | bpe DistilBERT(4.8m), CNN                 | 82.38             | 60.93             | 8.7683  / -       |         |                                                    |
