@@ -56,7 +56,7 @@ def make_sample(entry):
     sentence = []
     for word in input_sentence:
         u = np.random.uniform()
-        if u < (p_mask + p_pos) and mask_count <= max_mask_count:
+        if u < (p_mask + p_pos) and mask_count < max_mask_count:
             # Apply single token masking or POS-guided replacement
             if u < p_mask:
                 sentence.append(mask_token)
@@ -74,7 +74,7 @@ def make_sample(entry):
                         sentence.append(w)
                     else:
                         same_pos = pos_dict[word.pos_]
-                        # Pick from list of words with same POS tag
+                        # Pick a word from list of words with same POS tag
                         sentence.append(np.random.choice(same_pos))
                         mask_count += 1
         else:
@@ -82,10 +82,10 @@ def make_sample(entry):
             if lower: w = w.lower()
             sentence.append(w)
 
-    # Apply n-gram sampling
+    # Apply n-gram masking
     if len(sentence) > 2 and np.random.uniform() < p_ng:
         n = min(np.random.choice(range(1, max_ng+1)), len(sentence) - 1)
-        if mask_count + n <= max_mask_count:
+        if mask_count + n < max_mask_count:
             start = np.random.choice(len(sentence) - n)
             for idx in range(start, start + n):
                 sentence[idx] = mask_token
@@ -119,52 +119,67 @@ if __name__ == "__main__":
     parser.add_argument('--lower', action='store_true', help="Enable lowercase.")
     parser.add_argument('--parallel', action='store_true', help="Enable parallel processing for sampling.")
     parser.add_argument('--no_augment', action='store_true', help="No augmentation used.")
+    parser.add_argument('--no_analyzer', action='store_true', help="No analyzer used.")
     args = parser.parse_args()
     
+    # Option checking
+    if args.no_analyzer:
+        args.p_pos = 0. # disable replacement using POS tags.
+
     # Load original tsv file
     input_tsv = load_tsv(args.input, skip_header=False)
 
-    # POS tagging
-    if args.analyzer == 'spacy':
-        import spacy
-        from spacy.symbols import ORTH
-        spacy_en = spacy.load('en_core_web_sm')
-        spacy_en.tokenizer.add_special_case(args.mask_token, [{ORTH: args.mask_token}])
-        sentences = [spacy_en(text) for text, _ in tqdm(input_tsv, desc='POS tagging')]
-    if args.analyzer == 'khaiii':
-        from khaiii import KhaiiiApi
-        khaiii_api = KhaiiiApi()
+    if args.no_analyzer:
         sentences = []
-        for text, _ in tqdm(input_tsv, desc='POS tagging'):
+        for text, _ in tqdm(input_tsv, desc='No POS tagging'):
             sentence = []
-            khaiii_sentence = khaiii_api.analyze(text)
-            for khaiii_word in khaiii_sentence:
-                for khaiii_morph in khaiii_word.morphs:
-                    morph = khaiii_morph.lex
-                    tag = khaiii_morph.tag
-                    # we might need to modify 'morph' for matching the vocab of GloVe.
-                    # ex) if tag in ['VV', 'VA', 'VX', 'XSV', 'XSA', 'VCP']: morph += u'다'
-                    word = Word(morph, tag)
-                    sentence.append(word)
-            sentences.append(sentence)
-    if args.analyzer == 'npc':
-        sys.path.append('data/clova_sentiments_morph/npc-install/lib')
-        import libpnpc as pnpc
-        res_path = 'data/clova_sentiments_morph/npc-install/res'
-        npc = pnpc.Index()
-        npc.init(res_path)
-        sentences = []
-        for text, _ in tqdm(input_tsv, desc='POS tagging'):
-            sentence = []
-            npc_sentence = npc.analyze(text)
-            for item in npc_sentence:
-                meta = item['meta']
-                if meta != '[NOR]': continue
-                morph = item['morph']
-                tag = item['mtag']
-                word = Word(morph, tag)
+            for token in text.split():
+                tag = 'word'
+                word = Word(token, tag)
                 sentence.append(word)
             sentences.append(sentence)
+    else:
+        # POS tagging
+        if args.analyzer == 'spacy':
+            import spacy
+            from spacy.symbols import ORTH
+            spacy_en = spacy.load('en_core_web_sm')
+            spacy_en.tokenizer.add_special_case(args.mask_token, [{ORTH: args.mask_token}])
+            sentences = [spacy_en(text) for text, _ in tqdm(input_tsv, desc='POS tagging')]
+        if args.analyzer == 'khaiii':
+            from khaiii import KhaiiiApi
+            khaiii_api = KhaiiiApi()
+            sentences = []
+            for text, _ in tqdm(input_tsv, desc='POS tagging'):
+                sentence = []
+                khaiii_sentence = khaiii_api.analyze(text)
+                for khaiii_word in khaiii_sentence:
+                    for khaiii_morph in khaiii_word.morphs:
+                        morph = khaiii_morph.lex
+                        tag = khaiii_morph.tag
+                        # we might need to modify 'morph' for matching the vocab of GloVe.
+                        # ex) if tag in ['VV', 'VA', 'VX', 'XSV', 'XSA', 'VCP']: morph += u'다'
+                        word = Word(morph, tag)
+                        sentence.append(word)
+                sentences.append(sentence)
+        if args.analyzer == 'npc':
+            sys.path.append('data/clova_sentiments_morph/npc-install/lib')
+            import libpnpc as pnpc
+            res_path = 'data/clova_sentiments_morph/npc-install/res'
+            npc = pnpc.Index()
+            npc.init(res_path)
+            sentences = []
+            for text, _ in tqdm(input_tsv, desc='POS tagging'):
+                sentence = []
+                npc_sentence = npc.analyze(text)
+                for item in npc_sentence:
+                    meta = item['meta']
+                    if meta != '[NOR]': continue
+                    morph = item['morph']
+                    tag = item['mtag']
+                    word = Word(morph, tag)
+                    sentence.append(word)
+                sentences.append(sentence)
 
     if args.no_augment:
         # Write to file
@@ -177,7 +192,7 @@ if __name__ == "__main__":
         sys.exit(0)
 
     # Build lists of words indexes by POS
-    pos_dict = build_pos_dict(sentences, lower=args.lower)
+    pos_dict = {} if args.no_analyzer else build_pos_dict(sentences, lower=args.lower)
 
     # Generate augmented samples
     if args.parallel:

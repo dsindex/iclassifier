@@ -274,7 +274,7 @@ $ python -m spacy download en_core_web_sm
   INFO:__main__:[Accuracy] : 0.6709,   316/  471
   INFO:__main__:[Elapsed Time] : 6962.089061737061ms, 14.571991372615733ms on average
 
-  * --data_dir=./data/korean_bias_speech
+  * --data_dir=./data/korean_bias_speech_morph
   INFO:__main__:[Accuracy] : 0.8408,   396/  471
   INFO:__main__:[Elapsed Time] : 7315.462350845337ms, 15.295034266532735ms on average
   ```
@@ -319,7 +319,7 @@ $ python -m spacy download en_core_web_sm
     $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-cnn.pt --augmented --measure=accuracy
     $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/korean_hate_speech_morph --model_path=pytorch-model-kor-cnn.pt
 
-    1) --data_dir=./data/korean_hate_speech
+    1) --data_dir=./data/korean_hate_speech_morph
 
     ** analyzer=npc --measure=accuracy
     INFO:__main__:[Accuracy] : 0.6497,   306/  471
@@ -350,11 +350,11 @@ $ python -m spacy download en_core_web_sm
     $ python train.py --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech_morph --save_path=pytorch-model-kor-bert.pt --augmented --measure=accuracy
     $ python evaluate.py --config=configs/config-distilbert-cnn.json --data_dir=data/korean_hate_speech_morph --bert_output_dir=bert-checkpoint-kor-bert --model_path=pytorch-model-kor-bert.pt
 
-    1) --data_dir=./data/korean_hate_speech
+    1) --data_dir=./data/korean_hate_speech_morph
     INFO:__main__:[Accuracy] : 0.6391,   301/  471
     INFO:__main__:[Elapsed Time] : 4639.9736404418945ms, 9.623941462090675ms on average
 
-    2) --data_dir=./data/korean_bias_speech
+    2) --data_dir=./data/korean_bias_speech_morph
     INFO:__main__:[Accuracy] : 0.8556,   403/  471
     INFO:__main__:[Elapsed Time] : 5733.668088912964ms, 11.933280052022731ms on average
     ```

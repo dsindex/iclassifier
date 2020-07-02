@@ -111,8 +111,8 @@
 | dha BERT(2.5m), CLS                       | 88.81        | 8.9836  / 68.4545 | 50.7474 | del 8,9,10,11, threads=14         |
 | dha BERT(2.5m), CLS                       | 88.29        | 7.2027  / 53.6363 | 38.3333 | del 6,7,8,9,10,11, threads=14     |
 | dha BERT(2.5m), CLS                       | 87.54        | 5.7645  / 36.8686 | 28.2626 | del 4,5,6,7,8,9,10,11, threads=14 |
-| dha DistilBERT(2.5m), CNN                 | -            | -       / -       |         |            |
-| dha DistilBERT(2.5m), CLS                 | -            | -       / -       |         |            |
+| dha DistilBERT(2.5m), CNN                 | 88.72        | 11.4488 / -       |         |            |
+| dha DistilBERT(2.5m), CLS                 | 88.47        | 9.7360  / -       |         |            |
 | DistilFromBERT, dha DistilBERT(2.5m), CLS | -            | -       / -       |         | from dha-bpe BERT-large, CNN      |
 | dha-bpe BERT(4m), CNN                     | 89.07        | 14.9454 / -       |         |            |
 | dha-bpe BERT(4m), CLS                     | 89.01        | 12.7981 / -       |         |            |
@@ -376,7 +376,8 @@ INFO:__main__:[Accuracy] : 0.9025, 45123/49997
 INFO:__main__:[Elapsed Time] : 778762ms, 15.573805904472358ms on average
 
 ** --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20
-
+INFO:__main__:[Accuracy] : 0.8872, 44358/49997
+INFO:__main__:[Elapsed Time] : 572516.1464214325ms, 11.448896296530382ms on average
 
 * enc_class=cls
 
@@ -401,8 +402,9 @@ INFO:__main__:[Elapsed Time] : 288307ms, 5.764541163293064ms on average
 INFO:__main__:[Accuracy] : 0.9018, 45089/49997
 INFO:__main__:[Elapsed Time] : 666997.1199035645ms, 13.339050636929372ms on average
 
-** --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
-
+** --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+INFO:__main__:[Accuracy] : 0.8847, 44234/49997
+INFO:__main__:[Elapsed Time] : 486852.8757095337ms, 9.7360708339852ms on average
 
 ```
 
@@ -601,6 +603,13 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 | dha-bpe BERT-large, CNN                   | 83.86             | 66.03             | 33.4405 / -       |         |                                                    |
 | dha-bpe BERT-large, CLS                   | 83.86             | 66.67             | 28.3876 / -       |         |                                                    |
 
+|                                           | Bias Accuracy (%) | Hate Accuracy (%) | GPU / CPU         | CONDA   | Etc                                                |
+| bpe BERT(4.8m), CNN                       | 82.80             | 63.27             | 15.0740 / -       |         |                                                    |
+| bpe BERT(4.8m), CLS                       | 82.38             | 63.69             | 13.1576 / -       |         |                                                    |
+| bpe DistilBERT(4.8m), CNN                 | 82.38             | 60.93             | 8.7683  / -       |         |                                                    |
+| bpe DistilBERT(4.8m), CLS                 | 81.53             | 61.36             | 7.6983  / -       |         |                                                    |
+| DistilFromBERT, bpe DistilBERT(4.8m), CNN | -                 | -                 | -       / -       |         | from bpe BERT(2.5m), CNN                           |
+
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
 * CONDA : conda pytorch=1.2.0 / conda pytorch=1.5.0
@@ -679,7 +688,7 @@ INFO:__main__:[Elapsed Time] : 7315.462350845337ms, 15.295034266532735ms on aver
 INFO:__main__:[Accuracy] : 0.6603,   311/  471
 INFO:__main__:[Elapsed Time] : 15862.082242965698ms, 33.44054577198435ms on average
 
-** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --data_dir=./data/korean_bias_speech
+** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --data_dir=./data/korean_bias_speech_morph
 INFO:__main__:[Accuracy] : 0.8386,   395/  471
 INFO:__main__:[Elapsed Time] : 15744.0345287323ms, 33.119978803269404ms on average
 
@@ -687,7 +696,7 @@ INFO:__main__:[Elapsed Time] : 15744.0345287323ms, 33.119978803269404ms on avera
 INFO:__main__:[Accuracy] : 0.6454,   304/  471
 INFO:__main__:[Elapsed Time] : 7038.804054260254ms, 14.745036591874792ms on average
 
-** --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --data_dir=./data/korean_bias_speech
+** --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --data_dir=./data/korean_bias_speech_morph
 INFO:__main__:[Accuracy] : 0.8259,   389/  471
 INFO:__main__:[Elapsed Time] : 6451.227426528931ms, 13.517273740565523ms on average
 
@@ -705,7 +714,7 @@ INFO:__main__:[Elapsed Time] : 6393.482446670532ms, 13.385195427752556ms on aver
 INFO:__main__:[Accuracy] : 0.6667,   314/  471
 INFO:__main__:[Elapsed Time] : 13503.794431686401ms, 28.387678430435507ms on average
 
-** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --data_dir=./data/korean_bias_speech
+** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --data_dir=./data/korean_bias_speech_morph
 INFO:__main__:[Accuracy] : 0.8386,   395/  471
 INFO:__main__:[Elapsed Time] : 14023.700475692749ms, 29.498563928807034ms on average
 
@@ -713,9 +722,70 @@ INFO:__main__:[Elapsed Time] : 14023.700475692749ms, 29.498563928807034ms on ave
 INFO:__main__:[Accuracy] : 0.6242,   294/  471
 INFO:__main__:[Elapsed Time] : 6239.235877990723ms, 13.059855014719862ms on average
 
-** --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --data_dir=./data/korean_bias_speech
+** --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --data_dir=./data/korean_bias_speech_morph
 INFO:__main__:[Accuracy] : 0.8323,   392/  471
 INFO:__main__:[Elapsed Time] : 5894.242525100708ms, 12.312091665065035ms on average
+
+```
+
+</p>
+</details>
+
+##### BERT(pytorch.all.bpe.4.8m_step)
+
+<details><summary><b>enc_class=cnn | cls</b></summary>
+<p>
+
+- train
+```
+* enc_class=cnn
+
+$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --data_dir=./data/korean_hate_speech
+$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech --save_path=pytorch-model-kor-bert.pt
+
+* enc_class=cls
+
+$ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --data_dir=./data/korean_hate_speech
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech --save_path=pytorch-model-kor-bert.pt
+```
+
+- evaluation
+```
+* enc_class=cnn
+
+$ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/korean_hate_speech --bert_output_dir=bert-checkpoint-kor-bert --model_path=pytorch-model-kor-bert.pt
+INFO:__main__:[Accuracy] : 0.6327,   298/  471
+INFO:__main__:[Elapsed Time] : 7187.519788742065ms, 15.07406234741211ms on average
+
+** --data_dir=./data/korean_bias_speech
+INFO:__main__:[Accuracy] : 0.8280,   390/  471
+INFO:__main__:[Elapsed Time] : 6787.185907363892ms, 14.202788535584794ms on average
+
+** --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-bpe-bert.v1 
+INFO:__main__:[Accuracy] : 0.6093,   287/  471
+INFO:__main__:[Elapsed Time] : 4213.6218547821045ms, 8.768345954570364ms on average
+
+** --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-bpe-bert.v1 --data_dir=./data/korean_bias_speech
+INFO:__main__:[Accuracy] : 0.8238,   388/  471
+INFO:__main__:[Elapsed Time] : 4147.727012634277ms, 8.625224803356414ms on average
+
+* enc_class=cls
+
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/korean_hate_speech --bert_output_dir=bert-checkpoint-kor-bert --model_path=pytorch-model-kor-bert.pt
+INFO:__main__:[Accuracy] : 0.6369,   300/  471
+INFO:__main__:[Elapsed Time] : 6291.672468185425ms, 13.157690839564546ms on average
+
+** --data_dir=./data/korean_bias_speech
+INFO:__main__:[Accuracy] : 0.8238,   388/  471
+INFO:__main__:[Elapsed Time] : 6240.239858627319ms, 13.053022546971098ms on average
+
+** --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-bpe-bert.v1 
+INFO:__main__:[Accuracy] : 0.6136,   289/  471
+INFO:__main__:[Elapsed Time] : 3709.501028060913ms, 7.698377649834815ms on average
+
+** --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-bpe-bert.v1 --data_dir=./data/korean_bias_speech
+INFO:__main__:[Accuracy] : 0.8153,   384/  471
+INFO:__main__:[Elapsed Time] : 3626.2717247009277ms, 7.534836708231175ms on average
 
 ```
 
