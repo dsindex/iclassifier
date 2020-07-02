@@ -263,9 +263,12 @@ def evaluate(opt):
     labels = model.labels
     label_names = [v for k, v in sorted(labels.items(), key=lambda x: x[0])] 
     preds_ids = np.argmax(preds, axis=1)
-    print(classification_report(ys, preds_ids, target_names=label_names, digits=4)) 
-    print(labels)
-    print(confusion_matrix(ys, preds_ids))
+    try:
+        print(classification_report(ys, preds_ids, target_names=label_names, digits=4)) 
+        print(labels)
+        print(confusion_matrix(ys, preds_ids))
+    except Exception as e:
+        logger.warn(str(e))
 
     acc  = correct / total_examples
     whole_time = float((time.time()-whole_st_time)*1000)

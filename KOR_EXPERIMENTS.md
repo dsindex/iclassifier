@@ -608,7 +608,8 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 | bpe BERT(4.8m), CLS                       | 82.38             | 63.69             | 13.1576 / -       |         |                                                    |
 | bpe DistilBERT(4.8m), CNN                 | 82.38             | 60.93             | 8.7683  / -       |         |                                                    |
 | bpe DistilBERT(4.8m), CLS                 | 81.53             | 61.36             | 7.6983  / -       |         |                                                    |
-| DistilFromBERT, bpe DistilBERT(4.8m), CNN | -                 | -                 | -       / -       |         | from bpe BERT(2.5m), CNN                           |
+| DistilFromBERT, bpe DistilBERT(4.8m), CNN | 84.29             | 63.69             | 8.6725  / -       |         | from bpe BERT(2.5m), CNN, no augmentation          |
+| DistilFromBERT, bpe DistilBERT(4.8m), CNN | -                 | -                 | -       / -       |         | from bpe BERT(2.5m), CNN, no augmentation, unlabeled data used  |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)

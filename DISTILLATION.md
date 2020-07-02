@@ -289,7 +289,6 @@ $ python -m spacy download en_core_web_sm
 
   * luckily we have the unlabeled data from `https://github.com/kocohub/korean-hate-speech/tree/master/unlabeled`.
     we can treat it as an augmented data which is readily avaiable.
-
   $ cat data/korean_hate_speech/train.txt data/korean_hate_speech/unlabeled/*_1.txt > data/korean_hate_speech/unlabeled.txt
   $ python augment_data.py --input data/korean_hate_speech/unlabeled.txt --output data/korean_hate_speech_morph/augmented.raw --analyzer=khaiii --no_augment
   or
@@ -357,6 +356,26 @@ $ python -m spacy download en_core_web_sm
     2) --data_dir=./data/korean_bias_speech_morph
     INFO:__main__:[Accuracy] : 0.8556,   403/  471
     INFO:__main__:[Elapsed Time] : 5733.668088912964ms, 11.933280052022731ms on average
+    ```
+
+  - bpe DistilBERT(4.8m), CNN (additional test)
+    - distilled from bpe bert-base
+    ```
+    * eoj-based augmentation is noisy. so do not use augmentation nor analyzer. 
+    $ python augment_data.py --input data/korean_hate_speech/train.txt --output data/korean_hate_speech/augmented.raw --no_augment --no_analyzer
+
+    1) --data_dir=./data/korean_hate_speech
+    INFO:__main__:[Accuracy] : 0.6369,   300/  471
+    INFO:__main__:[Elapsed Time] : 4209.439992904663ms, 8.748998033239486ms on average
+
+    ** unlabeled data used
+
+    2) --data_dir=./data/korean_bias_speech
+    INFO:__main__:[Accuracy] : 0.8429,   397/  471
+    INFO:__main__:[Elapsed Time] : 4169.602632522583ms, 8.672598575023894ms on average
+
+    ** unlabeled data used
+
     ```
 
 
