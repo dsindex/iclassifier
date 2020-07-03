@@ -601,8 +601,8 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 | DistilFromBERT, dha DistilBERT(2.5m), CNN | 85.56             | 63.91             | 9.6239  / -       |         | from 'dha BERT(2.5m), CNN', unlabeled data used    |
 | dha BERT(2.5m), CNN                       | 84.08             | **67.09**         | 15.8797 / -       |         |                                                    |
 | dha BERT(2.5m), CLS                       | 82.80             | 64.76             | 12.8167 / -       |         |                                                    |
-| dha BERT(2.5m)-NSMC, CNN                  | -                 | -                 | -       / -       |         | finetuned with 'dha BERT, CLS', NSMC               |
-| dha BERT(2.5m)-NSMC, CLS                  | -                 | -                 | -       / -       |         | finetuned with 'dha BERT, CLS', NSMC               |
+| dha BERT(2.5m)-NSMC, CNN                  | 83.44             | 65.61             | 14.8844 / -       |         | finetuned with 'dha BERT(2.5m), CLS', NSMC         |
+| dha BERT(2.5m)-NSMC, CLS                  | 82.80             | 66.03             | 13.3459 / -       |         | finetuned with 'dha BERT(2.5m), CLS', NSMC         |
 | dha-bpe BERT-large, CNN                   | 83.86             | 66.03             | 33.4405 / -       |         |                                                    |
 | dha-bpe BERT-large, CLS                   | 83.86             | 66.67             | 28.3876 / -       |         |                                                    |
 | bpe BERT(4.8m), CNN                       | 82.80             | 63.27             | 15.0740 / -       |         |                                                    |
@@ -610,7 +610,7 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 | bpe DistilBERT(4.8m), CNN                 | 82.38             | 60.93             | 8.7683  / -       |         |                                                    |
 | bpe DistilBERT(4.8m), CLS                 | 81.53             | 61.36             | 7.6983  / -       |         |                                                    |
 | DistilFromBERT, bpe DistilBERT(4.8m), CNN | 84.29             | 63.69             | 8.6725  / -       |         | from 'bpe BERT(4.8m), CNN', no augmentation        |
-| DistilFromBERT, bpe DistilBERT(4.8m), CNN | -                 | 64.12             | 8.5794  / -       |         | from 'bpe BERT(4.8m), CNN', no augmentation, unlabeled data used  |
+| DistilFromBERT, bpe DistilBERT(4.8m), CNN | 83.44             | 64.12             | 8.5794  / -       |         | from 'bpe BERT(4.8m), CNN', no augmentation, unlabeled data used  |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -686,11 +686,13 @@ INFO:__main__:[Elapsed Time] : 7566.187143325806ms, 15.879765469977196ms on aver
 INFO:__main__:[Accuracy] : 0.8408,   396/  471
 INFO:__main__:[Elapsed Time] : 7315.462350845337ms, 15.295034266532735ms on average
 
-** --bert_model_name_or_path=./bert-checkpoint-dha-nsmc
+** --bert_model_name_or_path=./bert-checkpoint-nsmc-dha-cls
+INFO:__main__:[Accuracy] : 0.6561,   309/  471
+INFO:__main__:[Elapsed Time] : 7119.729280471802ms, 14.88446834239554ms on average
 
-
-** --bert_model_name_or_path=./bert-checkpoint-dha-nsmc --data_dir=./data/korean_bias_speech
-
+** --bert_model_name_or_path=./bert-checkpoint-nsmc-dha-cls --data_dir=./data/korean_bias_speech
+INFO:__main__:[Accuracy] : 0.8344,   393/  471
+INFO:__main__:[Elapsed Time] : 6724.8547077178955ms, 14.073182166890895ms on average
 
 ** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step
 INFO:__main__:[Accuracy] : 0.6603,   311/  471
@@ -717,6 +719,14 @@ INFO:__main__:[Elapsed Time] : 6128.332614898682ms, 12.81673198050641ms on avera
 ** --data_dir=./data/korean_bias_speech
 INFO:__main__:[Accuracy] : 0.8280,   390/  471
 INFO:__main__:[Elapsed Time] : 6393.482446670532ms, 13.385195427752556ms on average
+
+** --bert_model_name_or_path=./bert-checkpoint-nsmc-dha-cls
+INFO:__main__:[Accuracy] : 0.6603,   311/  471
+INFO:__main__:[Elapsed Time] : 6387.471914291382ms, 13.345901509548755ms on average
+
+** --bert_model_name_or_path=./bert-checkpoint-nsmc-dha-cls --data_dir=./data/korean_bias_speech
+INFO:__main__:[Accuracy] : 0.8280,   390/  471
+INFO:__main__:[Elapsed Time] : 6631.218910217285ms, 13.854946988694211ms on average
 
 ** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step
 INFO:__main__:[Accuracy] : 0.6667,   314/  471

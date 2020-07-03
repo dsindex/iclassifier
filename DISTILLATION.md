@@ -255,6 +255,12 @@ $ python -m spacy download en_core_web_sm
   - dha DistilBERT(2.5m), CNN
     - distilled from dha bert-large
     ```
+    * converting augmented.txt to augmented.txt.fs(id mapped file) and train!
+
+    $ python preprocess.py --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --data_dir=./data/clova_sentiments_morph --augmented --augmented_filename=augmented.txt
+    $ python train.py --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --bert_output_dir=bert-checkpoint-kor-bert --save_path=pytorch-model-kor-bert.pt --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph/ --augmented --measure=accuracy
+    $ python evaluate.py --config=configs/config-distilbert-cnn.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint-kor-bert --model_path=pytorch-model-kor-bert.pt
+
 
     ```
 
@@ -381,8 +387,8 @@ $ python -m spacy download en_core_web_sm
     INFO:__main__:[Elapsed Time] : 4169.602632522583ms, 8.672598575023894ms on average
 
     ** unlabeled data used
-
-
+    INFO:__main__:[Accuracy] : 0.8344,   393/  471
+    INFO:__main__:[Elapsed Time] : 4109.432220458984ms, 8.531961542494754ms on average
     ```
 
 
