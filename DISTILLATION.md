@@ -337,6 +337,9 @@ $ python -m spacy download en_core_web_sm
     ** unlabeled data used
     INFO:__main__:[Accuracy] : 0.8556,   403/  471
     INFO:__main__:[Elapsed Time] : 1828.8986682891846ms, 3.6988679398881628ms on average
+    ```
+    - distilled from bpe bert-base (additional test)
+    ```
 
     ```
 
@@ -369,12 +372,15 @@ $ python -m spacy download en_core_web_sm
     INFO:__main__:[Elapsed Time] : 4209.439992904663ms, 8.748998033239486ms on average
 
     ** unlabeled data used
+    INFO:__main__:[Accuracy] : 0.6412,   302/  471
+    INFO:__main__:[Elapsed Time] : 4117.9633140563965ms, 8.579414448839552ms on average
 
     2) --data_dir=./data/korean_bias_speech
     INFO:__main__:[Accuracy] : 0.8429,   397/  471
     INFO:__main__:[Elapsed Time] : 4169.602632522583ms, 8.672598575023894ms on average
 
     ** unlabeled data used
+
 
     ```
 

@@ -595,6 +595,7 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 | GloVe, DenseNet-CNN                       | 72.61             | 61.78             | 3.7602  / -       |         |                                                    |
 | **DistilFromBERT, GloVe, DenseNet-CNN**   | 83.65             | 64.97             | 3.8358  / -       |         | from dha BERT(2.5m), CNN                           |
 | DistilFromBERT, GloVe, DenseNet-CNN       | **85.56**         | 66.67             | 3.6249  / -       |         | from dha BERT(2.5m), CNN, unlabeled data used      |
+| DistilFromBERT, GloVe, DenseNet-CNN       | -                 | -                 | -       / -       |         | from bpe BERT(4.8m), CNN                           |
 | dha DistilBERT(2.5m), CNN                 | 82.59             | 64.54             | 14.7450 / -       |         |                                                    |
 | dha DistilBERT(2.5m), CLS                 | 83.23             | 62.42             | 13.0598 / -       |         |                                                    |
 | DistilFromBERT, dha DistilBERT(2.5m), CNN | 85.56             | 63.91             | 9.6239  / -       |         | from dha BERT(2.5m), CNN, unlabeled data used      |
@@ -606,8 +607,8 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 | bpe BERT(4.8m), CLS                       | 82.38             | 63.69             | 13.1576 / -       |         |                                                    |
 | bpe DistilBERT(4.8m), CNN                 | 82.38             | 60.93             | 8.7683  / -       |         |                                                    |
 | bpe DistilBERT(4.8m), CLS                 | 81.53             | 61.36             | 7.6983  / -       |         |                                                    |
-| DistilFromBERT, bpe DistilBERT(4.8m), CNN | 84.29             | 63.69             | 8.6725  / -       |         | from bpe BERT(2.5m), CNN, no augmentation          |
-| DistilFromBERT, bpe DistilBERT(4.8m), CNN | -                 | -                 | -       / -       |         | from bpe BERT(2.5m), CNN, no augmentation, unlabeled data used  |
+| DistilFromBERT, bpe DistilBERT(4.8m), CNN | 84.29             | 63.69             | 8.6725  / -       |         | from bpe BERT(4.8m), CNN, no augmentation          |
+| DistilFromBERT, bpe DistilBERT(4.8m), CNN | -                 | 64.12             | 8.5794  / -       |         | from bpe BERT(4.8m), CNN, no augmentation, unlabeled data used  |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
