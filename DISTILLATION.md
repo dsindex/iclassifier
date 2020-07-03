@@ -53,15 +53,15 @@ $ python -m spacy download en_core_web_sm
   * converting augmented.raw to augmented.raw.fs(id mapped file)
   * labeling augmented.raw to augmented.raw.pred
 
-  * from bert
+  * from bert-large
   $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-large-uncased --bert_do_lower_case --augmented --augmented_filename=augmented.raw
   $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
-  * from roberta
+  * from roberta-large
   $ python preprocess.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --augmented --augmented_filename=augmented.raw
   $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
-  * from electra 
+  * from electra-large
   $ python preprocess.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-large-discriminator --bert_do_lower_case --augmented --augmented_filename=augmented.raw
   $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
@@ -71,7 +71,7 @@ $ python -m spacy download en_core_web_sm
 - train student model
 
   - Glove, CNN
-    - distilled from bert
+    - distilled from bert-large
     ```
     * converting augmented.txt to augmented.txt.ids(id mapped file) and train!
     $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --augmented --augmented_filename=augmented.txt
@@ -80,19 +80,19 @@ $ python -m spacy download en_core_web_sm
     INFO:__main__:[Accuracy] : 0.8616,  1569/ 1821
     INFO:__main__:[Elapsed Time] : 3341.681718826294ms, 1.7900076541271839ms on average
     ```
-    - distilled from roberta
+    - distilled from roberta-large
     ```
     INFO:__main__:[Accuracy] : 0.8655,  1576/ 1821
     INFO:__main__:[Elapsed Time] : 3437.3860359191895ms, 1.8483112146566203ms on average
     ```
-    - distilled from electra
+    - distilled from electra-large
     ```
     INFO:__main__:[Accuracy] : 0.8655,  1576/ 1821
     INFO:__main__:[Elapsed Time] : 3255.631446838379ms, 1.7466542484996084ms on average
     ```
 
   - GloVe, DenseNet-CNN
-    - distilled from bert
+    - distilled from bert-large
     ```
     $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --augmented --augmented_filename=augmented.txt
     $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --save_path=pytorch-model-densenet.pt --augmented
@@ -100,19 +100,19 @@ $ python -m spacy download en_core_web_sm
     INFO:__main__:[Accuracy] : 0.8852,  1612/ 1821
     INFO:__main__:[Elapsed Time] : 6774.356126785278ms, 3.678809417473091ms on average
     ```
-    - distilled from roberta
+    - distilled from roberta-large
     ```
     INFO:__main__:[Accuracy] : 0.8880,  1617/ 1821
     INFO:__main__:[Elapsed Time] : 7291.425943374634ms, 3.958085212078723ms on average
     ```
-    - distilled from electra
+    - distilled from electra-large
     ```
     INFO:__main__:[Accuracy] : 0.8979,  1635/ 1821
     INFO:__main__:[Elapsed Time] : 6723.0706214904785ms, 3.640611617119758ms on average
     ```
 
   - Glove, DenseNet-DSA
-    - distilled from bert
+    - distilled from bert-large
     ```
     $ python preprocess.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --augmented --augmented_filename=augmented.txt
     $ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --save_path=pytorch-model-densenet.pt --augmented
@@ -120,19 +120,19 @@ $ python -m spacy download en_core_web_sm
     INFO:__main__:[Accuracy] : 0.8814,  1605/ 1821
     INFO:__main__:[Elapsed Time] : 15502.179622650146ms, 8.464712756020683ms on average
     ```
-    - distilled from roberta
+    - distilled from roberta-large
     ```
     INFO:__main__:[Accuracy] : 0.8825,  1607/ 1821
     INFO:__main__:[Elapsed Time] : 15677.676439285278ms, 8.562728205879965ms on average
     ```
-    - distilled from electra
+    - distilled from electra-large
     ```
     INFO:__main__:[Accuracy] : 0.8858,  1613/ 1821
     INFO:__main__:[Elapsed Time] : 15340.755224227905ms, 8.370806751670418ms on average
     ```
 
   - DistilBERT, CLS
-    - distilled from electra
+    - distilled from electra-large
     ```
     * converting augmented.txt to augmented.txt.fs(id mapped file) and train!
 
@@ -253,7 +253,7 @@ $ python -m spacy download en_core_web_sm
     ```
 
   - dha DistilBERT(2.5m), CNN
-    - distilled from bert base
+    - distilled from dha bert-large
     ```
 
     ```
@@ -340,6 +340,7 @@ $ python -m spacy download en_core_web_sm
     ```
     - distilled from bpe bert-base (additional test)
     ```
+    * after generating logits labeled data using bpe bert-base, we should tokenize examples. 
 
     ```
 
