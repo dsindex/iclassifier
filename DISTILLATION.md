@@ -172,9 +172,9 @@ $ python -m spacy download en_core_web_sm
 
   - augmentation
   ```
-  $ python augment_data.py --input data/clova_sentiments/train.txt --output data/clova_sentiments_morph/augmented.raw --analyzer=khaiii --n_iter=2 --max_ng=2 --parallel
+  $ python augment_data.py --input data/clova_sentiments/train.txt --output data/clova_sentiments_morph/augmented.raw --analyzer=khaiii --n_iter=15 --max_ng=3 --parallel
   or
-  $ python augment_data.py --input data/clova_sentiments/train.txt --output data/clova_sentiments_morph/augmented.raw --analyzer=npc --n_iter=2 --max_ng=2 --parallel   # inhouse
+  $ python augment_data.py --input data/clova_sentiments/train.txt --output data/clova_sentiments_morph/augmented.raw --analyzer=npc --n_iter=15 --max_ng=3 --parallel   # inhouse
   ```
 
   - add logits by teacher model
