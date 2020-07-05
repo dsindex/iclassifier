@@ -225,6 +225,8 @@ $ python -m spacy download en_core_web_sm
     INFO:__main__:[Elapsed Time] : 189770.19143104553ms, 3.793939779983424ms on average
 
     * 3) n_iter=4
+    * since the training data has logits as label but the valid data has hot-hot labels. 
+      'accuracy' seems to be better evaluation measure for selecting model. 
 
     ** analyzer=npc --measure=accuracy
     INFO:__main__:[Accuracy] : 0.8877, 44380/49997
@@ -261,7 +263,8 @@ $ python -m spacy download en_core_web_sm
     $ python train.py --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --bert_output_dir=bert-checkpoint-kor-bert --save_path=pytorch-model-kor-bert.pt --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph/ --augmented --measure=accuracy
     $ python evaluate.py --config=configs/config-distilbert-cnn.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint-kor-bert --model_path=pytorch-model-kor-bert.pt
 
-
+    INFO:__main__:[Accuracy] : 0.9019, 45090/49997
+    INFO:__main__:[Elapsed Time] : 448072.5862979889ms, 8.959991677836118ms on average
     ```
 
 
@@ -347,6 +350,15 @@ $ python -m spacy download en_core_web_sm
     - distilled from bpe bert-base (additional test)
     ```
     * after generating logits labeled data using bpe bert-base, we should tokenize examples. 
+    $ python augment_data.py --input data/korean_hate_speech/augmented.raw.pred --output ./data/korean_hate_speech_morph/augmented.txt --analyzer=npc --no_augment --preserve_label
+
+    1) --data_dir=./data/korean_hate_speech_morph
+
+    ** analyzer=npc --measure=accuracy
+
+    2) --data_dir=./data/korean_bias_speech_morph
+
+    ** analyzer=npc --measure=accuracy
 
     ```
 

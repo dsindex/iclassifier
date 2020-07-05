@@ -11,6 +11,8 @@ import multiprocessing as mp
 from functools import reduce
 
 class Word:
+    """Word class, set same attributes to spacy's Word class for convenience.
+    """
     def __init__(self, word, pos):
         self.text = word
         self.pos_ = pos
@@ -19,16 +21,21 @@ class Word:
         return '{}/{}'.format(self.text, self.pos_)
 
 def load_tsv(path, skip_header=True):
+    """Load (sentece, label) CSV file.
+    """
     with open(path) as f:
         reader = csv.reader(f, delimiter='\t')
         if skip_header:
             next(reader)
+        # row := [sentence, label]
         data = [row if len(row) == 2 else [row[0], None] for row in reader]
     return data
 
 def build_pos_dict(sentences, lower=True):
+    """Build POS dict with key = pos, value = list of word.
+    """
     pos_dict = {}
-    for sentence in sentences:
+    for sentence, label in sentences:
         for word in sentence:   
             pos_tag = word.pos_
             if pos_tag not in pos_dict:
@@ -40,6 +47,8 @@ def build_pos_dict(sentences, lower=True):
     return pos_dict
 
 def make_sample(entry):
+    """Convert list of words to list of sampling words.
+    """
     input_sentence = entry['sentence']
     pos_dict = entry['pos_dict']
     lower = entry['args'].lower
@@ -94,34 +103,24 @@ def make_sample(entry):
 
 def make_samples(entry):
     sentence = entry['sentence']
+    label = entry['label']
     lower = entry['args'].lower
     # hyperparams for sampling : p_mask, p_pos, p_ng, max_ng, n_iter
     n_iter = entry['args'].n_iter
-    samples = [[word.text.lower() if lower else word.text for word in sentence]]
+
+    dic = {}
+    samples = [([word.text.lower() if lower else word.text for word in sentence], label)]
     for _ in range(n_iter):
-        new_sample = make_sample(entry)
-        if new_sample not in samples:
-            samples.append(new_sample)
+        new_sample = make_sample(entry) # w sequence
+        key = ''.join(new_sample)
+        if key not in dic:
+            samples.append((new_sample, label))
+        dic[key] = new_sample
+
     return samples
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--input', type=str, required=True, help="Input dataset.")
-    parser.add_argument('--output', type=str, required=True, help="Output dataset.")
-    parser.add_argument('--mask_token', type=str, default='[MASK]')
-    parser.add_argument('--p_mask', type=float, default=0.1, help="Prob for masking single token.")
-    parser.add_argument('--p_pos', type=float, default=0.1, help="Prob for replacing single token using POS.")
-    parser.add_argument('--p_ng', type=float, default=0.25, help="Prob for masking ngram.")
-    parser.add_argument('--max_ng', type=int, default=5, help="Max ngram size for masking.")
-    parser.add_argument('--n_iter', type=int, default=20, help="Number of iteration for sampling.")
-    parser.add_argument('--dummy_label', type=str, default='dummy')
-    parser.add_argument('--analyzer', type=str, default='spacy', help="Analyzer, 'spacy | khaiii | npc', default 'spacy'.")
-    parser.add_argument('--lower', action='store_true', help="Enable lowercase.")
-    parser.add_argument('--parallel', action='store_true', help="Enable parallel processing for sampling.")
-    parser.add_argument('--no_augment', action='store_true', help="No augmentation used.")
-    parser.add_argument('--no_analyzer', action='store_true', help="No analyzer used.")
-    args = parser.parse_args()
-    
+def augment_data(args):
+
     # Option checking
     if args.no_analyzer:
         args.p_pos = 0. # disable replacement using POS tags.
@@ -131,13 +130,13 @@ if __name__ == "__main__":
 
     if args.no_analyzer:
         sentences = []
-        for text, _ in tqdm(input_tsv, desc='No POS tagging'):
+        for text, label in tqdm(input_tsv, desc='No POS tagging'):
             sentence = []
             for token in text.split():
                 tag = 'word'
                 word = Word(token, tag)
                 sentence.append(word)
-            sentences.append(sentence)
+            sentences.append((sentence, label))
     else:
         # POS tagging
         if args.analyzer == 'spacy':
@@ -145,12 +144,12 @@ if __name__ == "__main__":
             from spacy.symbols import ORTH
             spacy_en = spacy.load('en_core_web_sm')
             spacy_en.tokenizer.add_special_case(args.mask_token, [{ORTH: args.mask_token}])
-            sentences = [spacy_en(text) for text, _ in tqdm(input_tsv, desc='POS tagging')]
+            sentences = [(spacy_en(text), label) for text, label in tqdm(input_tsv, desc='POS tagging')]
         if args.analyzer == 'khaiii':
             from khaiii import KhaiiiApi
             khaiii_api = KhaiiiApi()
             sentences = []
-            for text, _ in tqdm(input_tsv, desc='POS tagging'):
+            for text, label in tqdm(input_tsv, desc='POS tagging'):
                 sentence = []
                 khaiii_sentence = khaiii_api.analyze(text)
                 for khaiii_word in khaiii_sentence:
@@ -161,7 +160,7 @@ if __name__ == "__main__":
                         # ex) if tag in ['VV', 'VA', 'VX', 'XSV', 'XSA', 'VCP']: morph += u'다'
                         word = Word(morph, tag)
                         sentence.append(word)
-                sentences.append(sentence)
+                sentences.append((sentence, label))
         if args.analyzer == 'npc':
             sys.path.append('data/clova_sentiments_morph/npc-install/lib')
             import libpnpc as pnpc
@@ -169,7 +168,7 @@ if __name__ == "__main__":
             npc = pnpc.Index()
             npc.init(res_path)
             sentences = []
-            for text, _ in tqdm(input_tsv, desc='POS tagging'):
+            for text, label in tqdm(input_tsv, desc='POS tagging'):
                 sentence = []
                 npc_sentence = npc.analyze(text)
                 for item in npc_sentence:
@@ -179,16 +178,18 @@ if __name__ == "__main__":
                     tag = item['mtag']
                     word = Word(morph, tag)
                     sentence.append(word)
-                sentences.append(sentence)
+                sentences.append((sentence, label))
 
     if args.no_augment:
         # Write to file
         with open(args.output, 'w') as f:
-            for sentence in tqdm(sentences, desc='Writing'):
+            for sentence, label in tqdm(sentences, desc='Writing'):
                 s = [] 
                 for word in sentence:
                     s.append(word.text)
-                f.write("{}\t{}\n".format(' '.join(s), args.dummy_label))
+                if args.preserve_label: out_label = label
+                else: out_label = args.dummy_label
+                f.write("{}\t{}\n".format(' '.join(s), out_label))
         sys.exit(0)
 
     # Build lists of words indexes by POS
@@ -199,8 +200,9 @@ if __name__ == "__main__":
         pool = mp.Pool(mp.cpu_count())
         # processs in parallel
         entries = []
-        for sentence in tqdm(sentences, desc='Preparation data for multiprocessing'):
+        for sentence, label in tqdm(sentences, desc='Preparation data for multiprocessing'):
             entry = {'sentence': sentence,
+                     'label': label,
                      'pos_dict': pos_dict,
                      'args': args}
             entries.append(entry)
@@ -213,8 +215,9 @@ if __name__ == "__main__":
     else:
         # process sequentially
         augmented = []
-        for sentence in tqdm(sentences, desc='Sampling'):
+        for sentence, label in tqdm(sentences, desc='Sampling'):
             entry = {'sentence': sentence,
+                     'label': label,
                      'pos_dict': pos_dict,
                      'args': args}
             samples = make_samples(entry) 
@@ -223,5 +226,31 @@ if __name__ == "__main__":
 
     # Write to file
     with open(args.output, 'w') as f:
-        for sentence in tqdm(sentences, desc='Writing'):
-            f.write("{}\t{}\n".format(' '.join(sentence), args.dummy_label))
+        for sentence, label in tqdm(sentences, desc='Writing'):
+            if args.preserve_label: out_label = label
+            else: out_label = args.dummy_label
+            f.write("{}\t{}\n".format(' '.join(sentence), out_label))
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--input', type=str, required=True, help="Input dataset.")
+    parser.add_argument('--output', type=str, required=True, help="Output dataset.")
+    parser.add_argument('--mask_token', type=str, default='[MASK]')
+    parser.add_argument('--p_mask', type=float, default=0.1, help="Prob for masking single token.")
+    parser.add_argument('--p_pos', type=float, default=0.1, help="Prob for replacing single token using POS.")
+    parser.add_argument('--p_ng', type=float, default=0.25, help="Prob for masking ngram.")
+    parser.add_argument('--max_ng', type=int, default=5, help="Max ngram size for masking.")
+    parser.add_argument('--n_iter', type=int, default=20, help="Number of iteration for sampling.")
+    parser.add_argument('--preserve_label', action='store_true', help="Preserve given label information.")
+    parser.add_argument('--dummy_label', type=str, default='dummy')
+    parser.add_argument('--analyzer', type=str, default='spacy', help="Analyzer, 'spacy | khaiii | npc', default 'spacy'.")
+    parser.add_argument('--lower', action='store_true', help="Enable lowercase.")
+    parser.add_argument('--parallel', action='store_true', help="Enable parallel processing for sampling.")
+    parser.add_argument('--no_augment', action='store_true', help="No augmentation used.")
+    parser.add_argument('--no_analyzer', action='store_true', help="No analyzer used.")
+    args = parser.parse_args()
+   
+    augment_data(args)
+
+if __name__ == "__main__":
+    main()
