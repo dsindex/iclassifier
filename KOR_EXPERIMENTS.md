@@ -595,7 +595,7 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 | GloVe, DenseNet-CNN                       | 72.61             | 61.78             | 3.7602  / -       |         |                                                    |
 | **DistilFromBERT, GloVe, DenseNet-CNN**   | 83.65             | 64.97             | 3.8358  / -       |         | from 'dha BERT(2.5m), CNN'                         |
 | DistilFromBERT, GloVe, DenseNet-CNN       | **85.56**         | 66.67             | 3.6249  / -       |         | from 'dha BERT(2.5m), CNN', unlabeled data used    |
-| DistilFromBERT, GloVe, DenseNet-CNN       | -                 | -                 | -       / -       |         | from 'bpe BERT(4.8m), CNN', no augmentation        |
+| DistilFromBERT, GloVe, DenseNet-CNN       | 84.08             | 62.63             | 3.8700  / -       |         | from 'bpe BERT(4.8m), CNN', no augmentation        |
 | DistilFromBERT, dha DistilBERT(2.5m), CNN | 85.56             | 63.91             | 9.6239  / -       |         | from 'dha BERT(2.5m), CNN', unlabeled data used    |
 | DistilFromBERT, bpe DistilBERT(4.8m), CNN | 84.29             | 63.69             | 8.6725  / -       |         | from 'bpe BERT(4.8m), CNN', no augmentation        |
 | DistilFromBERT, bpe DistilBERT(4.8m), CNN | 83.44             | 64.12             | 8.5794  / -       |         | from 'bpe BERT(4.8m), CNN', no augmentation, unlabeled data used  |

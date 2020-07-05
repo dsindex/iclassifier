@@ -355,11 +355,14 @@ $ python -m spacy download en_core_web_sm
     1) --data_dir=./data/korean_hate_speech_morph
 
     ** analyzer=npc --measure=accuracy
+    INFO:__main__:[Accuracy] : 0.6263,   295/  471
+    INFO:__main__:[Elapsed Time] : 1902.0881652832031ms, 3.8700666833431163ms on average
 
     2) --data_dir=./data/korean_bias_speech_morph
 
     ** analyzer=npc --measure=accuracy
-
+    INFO:__main__:[Accuracy] : 0.8408,   396/  471
+    INFO:__main__:[Elapsed Time] : 1928.8640022277832ms, 3.921045141017183ms on average
     ```
 
   - dha DistilBERT(2.5m), CNN
