@@ -64,9 +64,12 @@ def create_long_model(model_type, model, tokenizer, config, save_model_to, atten
 
         layer.attention.self = longformer_self_attn
 
-    logger.info(f'saving model to {save_model_to}')
-    model.save_pretrained(save_model_to)
-    tokenizer.save_pretrained(save_model_to)
+    # save Long version for RoBERTa only.
+    # for other model_type, you can use its long version on-the-fly(maybe?).
+    if model_type in ['roberta']:
+        logger.info(f'saving model to {save_model_to}')
+        model.save_pretrained(save_model_to)
+        tokenizer.save_pretrained(save_model_to)
     return model, tokenizer
 
 def main():
@@ -88,7 +91,7 @@ def main():
     Tokenizer = MODEL_CLASSES[opt.model_type][1]
     Model     = MODEL_CLASSES[opt.model_type][2]
 
-    # load
+    # load pretrained model
     logger.info("[Loading...]")
     tokenizer = Tokenizer.from_pretrained(opt.model_path,
                                           do_lower_case=opt.do_lower_case)
@@ -97,10 +100,10 @@ def main():
     config = model.config
     logger.info("[Done]")
 
-    # convert to long model and save
+    # convert to long version
     if not os.path.exists(opt.output_dir):
         os.makedirs(opt.output_dir)
-    create_long_model(opt.model_type, model, tokenizer, config, opt.output_dir, attention_window=512, max_pos=4096)
+    model, tokenizer = create_long_model(opt.model_type, model, tokenizer, config, opt.output_dir, attention_window=512, max_pos=4096)
  
 if __name__ == '__main__':
     main()
