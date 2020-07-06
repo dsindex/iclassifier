@@ -14,6 +14,7 @@ from transformers import AlbertConfig, AlbertTokenizer, AlbertModel
 from transformers import RobertaConfig, RobertaTokenizer, RobertaModel
 from transformers import BartConfig, BartTokenizer, BartModel
 from transformers import ElectraConfig, ElectraTokenizer, ElectraModel
+from transformers import LongformerConfig, LongformerTokenizer, LongformerModel
 MODEL_CLASSES = {
     "bert": (BertConfig, BertTokenizer, BertModel),
     "distilbert": (DistilBertConfig, DistilBertTokenizer, DistilBertModel),
@@ -21,6 +22,7 @@ MODEL_CLASSES = {
     "roberta": (RobertaConfig, RobertaTokenizer, RobertaModel),
     "bart": (BartConfig, BartTokenizer, BartModel),
     "electra": (ElectraConfig, ElectraTokenizer, ElectraModel),
+    "longformer": (LongformerConfig, LongformerTokenizer, LongformerModel),
 }
 
 logging.basicConfig(level=logging.INFO)
