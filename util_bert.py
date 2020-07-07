@@ -200,4 +200,4 @@ def create_long_model(model_type, model, tokenizer, config, attention_window=512
 
         layer.attention.self = longformer_self_attn
 
-    return model, tokenizer
+    return model, tokenizer, config
