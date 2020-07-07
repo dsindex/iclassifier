@@ -23,6 +23,10 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def create_long_model(model_type, model, tokenizer, config, save_model_to, attention_window=512, max_pos=4096):
+    """Convert RoBERTa to Longformer.
+    for other model_type like BERT, replacing model.encoder.layer.attention.self to LongformerSelfAttension()
+    is not available at this time.
+    """
     # extend position embeddings
     tokenizer.model_max_length = max_pos
     tokenizer.init_kwargs['model_max_length'] = max_pos

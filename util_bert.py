@@ -158,6 +158,10 @@ def convert_examples_to_features(examples,
 # ---------------------------------------------------------------------------- #
 
 def create_long_model(model_type, model, tokenizer, config, attention_window=512, max_pos=4096):
+    """Convert RoBERTa to Longformer.
+    for other model_type like BERT, replacing model.encoder.layer.attention.self to LongformerSelfAttension()
+    is not available at this time.
+    """
     from transformers.modeling_longformer import LongformerSelfAttention
     # extend position embeddings
     tokenizer.model_max_length = max_pos
