@@ -151,18 +151,18 @@ $ python -m spacy download en_core_web_sm
 
 - train teacher model
 
-  - dha BERT(2.5m), CLS
+  - dha BERT(v1), CLS
   ```
-  $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/clova_sentiments_morph
-  $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+  $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --data_dir=./data/clova_sentiments_morph
+  $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
   $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
   INFO:__main__:[Accuracy] : 0.9018, 45089/49997
   INFO:__main__:[Elapsed Time] : 666997.1199035645ms, 13.339050636929372ms on average
   ```
   - dha-bpe BERT-large, CNN
   ```
-  $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --data_dir=./data/clova_sentiments_morph
-  $ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+  $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe --data_dir=./data/clova_sentiments_morph
+  $ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
   $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
   INFO:__main__:[Accuracy] : 0.9084, 45417/49997
   INFO:__main__:[Elapsed Time] : 1225501.6918182373ms, 24.509510690474073ms on average
@@ -183,11 +183,11 @@ $ python -m spacy download en_core_web_sm
   * labeling augmented.raw to augmented.raw.pred
 
   * from dha bert-base
-  $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/clova_sentiments_morph --augmented --augmented_filename=augmented.raw
+  $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --data_dir=./data/clova_sentiments_morph --augmented --augmented_filename=augmented.raw
   $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
   * from dha bert-large
-  $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --data_dir=./data/clova_sentiments_morph --augmented --augmented_filename=augmented.raw
+  $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe --data_dir=./data/clova_sentiments_morph --augmented --augmented_filename=augmented.raw
   $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
   $ cp -rf ./data/clova_sentiments_morph/augmented.raw.pred ./data/clova_sentiments_morph/augmented.txt
@@ -254,7 +254,7 @@ $ python -m spacy download en_core_web_sm
     INFO:__main__:[Elapsed Time] : 180806.3244819641ms, 3.6146256702214643ms on average
     ```
 
-  - dha DistilBERT(2.5m), CNN
+  - dha DistilBERT(v1), CNN
     - distilled from dha bert-large
     ```
     * converting augmented.txt to augmented.txt.fs(id mapped file) and train!
@@ -275,10 +275,10 @@ $ python -m spacy download en_core_web_sm
 
 - train teacher model
 
-  - dha BERT(2.5m), CNN
+  - dha BERT(v1), CNN
   ```
-  $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/korean_hate_speech_morph
-  $ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech_morph --save_path=pytorch-model-kor-bert.pt
+  $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --data_dir=./data/korean_hate_speech_morph
+  $ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech_morph --save_path=pytorch-model-kor-bert.pt
   $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/korean_hate_speech_morph --bert_output_dir=bert-checkpoint-kor-bert --model_path=pytorch-model-kor-bert.pt
   INFO:__main__:[Accuracy] : 0.6709,   316/  471
   INFO:__main__:[Elapsed Time] : 6962.089061737061ms, 14.571991372615733ms on average
@@ -310,7 +310,7 @@ $ python -m spacy download en_core_web_sm
   * labeling augmented.raw to augmented.raw.pred
 
   * from dha bert-base
-  $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/korean_hate_speech_morph --augmented --augmented_filename=augmented.raw
+  $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --data_dir=./data/korean_hate_speech_morph --augmented --augmented_filename=augmented.raw
   $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/korean_hate_speech_morph --bert_output_dir=bert-checkpoint-kor-bert --model_path=pytorch-model-kor-bert.pt --batch_size=128 --augmented
 
   $ cp -rf ./data/korean_hate_speech_morph/augmented.raw.pred ./data/korean_hate_speech_morph/augmented.txt
@@ -365,7 +365,7 @@ $ python -m spacy download en_core_web_sm
     INFO:__main__:[Elapsed Time] : 1928.8640022277832ms, 3.921045141017183ms on average
     ```
 
-  - dha DistilBERT(2.5m), CNN
+  - dha DistilBERT(v1), CNN
     - distilled from dha bert-base
     ```
     * converting augmented.txt to augmented.txt.fs(id mapped file) and train!
@@ -383,7 +383,7 @@ $ python -m spacy download en_core_web_sm
     INFO:__main__:[Elapsed Time] : 5733.668088912964ms, 11.933280052022731ms on average
     ```
 
-  - bpe DistilBERT(4.8m), CNN (additional test)
+  - bpe DistilBERT(v1), CNN (additional test)
     - distilled from bpe bert-base
     ```
     * eoj-based augmentation is noisy. so do not use augmentation nor analyzer. 

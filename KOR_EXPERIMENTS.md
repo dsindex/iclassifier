@@ -63,11 +63,11 @@
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - `character-level bpe`
     - vocab.txt는 [sentencepiece](https://github.com/google/sentencepiece)를 이용해서 생성.
-    - ex) pytorch.all.bpe.4.8m_step, pytorch.large.all.whitespace_bpe.7m_step (inhouse)
+    - ex) kor-bert-base-bpe.v1, kor-bert-large-bpe (inhouse)
   - `character-level bpe + 형태소분석기`
-    - ex) pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step, pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step (inhouse)
+    - ex) kor-bert-base-dha_bpe, kor-bert-large-dha_bpe (inhouse)
   - `형태소분석기`
-    - ex) pytorch.all.dha.2.5m_step (inhouse), pytorch.all.dha_s2.9.4_d2.9.27.10m_step (inhouse)
+    - ex) kor-bert-base-dha.v1 (inhouse), kor-bert-base-dha.v2 (inhouse)
 
 ##### DistilBERT
 
@@ -94,32 +94,32 @@
 | ----------------------------------------- | ------------ | ----------------- | ------- | ---------- |
 | GloVe, CNN                                | 87.31        | 1.9479  / 3.5353  |         | threads=14 |
 | **GloVe, DenseNet-CNN**                   | 88.18        | 3.4614  / 8.3434  |         | threads=14 |
-| DistilFromBERT, GloVe, DenseNet-CNN       | 89.21        | 3.5383  / -       |         | from 'dha BERT(2.5m), CLS'     |
+| DistilFromBERT, GloVe, DenseNet-CNN       | 89.21        | 3.5383  / -       |         | from 'dha BERT(v1), CLS'       |
 | DistilFromBERT, GloVe, DenseNet-CNN       | 89.14        | 3.6146  / -       |         | from 'dha-bpe BERT-large, CNN' |
-| DistilFromBERT, dha DistilBERT(2.5m), CLS | 90.19        | 8.9599  / -       |         | from 'dha-bpe BERT-large, CNN' |
+| DistilFromBERT, dha DistilBERT(v1), CLS   | 90.19        | 8.9599  / -       |         | from 'dha-bpe BERT-large, CNN' |
 | GloVe, DenseNet-DSA                       | 87.66        | 6.9731  / -       |         |            |
-| bpe BERT(4.8m), CNN                       | 90.11        | 16.5453 / -       |         |            |
-| bpe BERT(4.8m), CLS                       | 89.91        | 14.9586 / -       |         |            |
-| bpe BERT(4.8m), CNN                       | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
-| bpe BERT(4.8m), CLS                       | 88.92        | 9.3280  / 70.3232 |         | del 8,9,10,11, threads=14 |
-| bpe DistilBERT(4.8m), CNN                 | 88.39        | 9.6396  / -       | 38.7144 | threads=14 |
-| bpe DistilBERT(4.8m), CLS                 | 88.55        | 8.2834  / -       | 31.5655 | threads=14 |
+| bpe BERT(v1), CNN                         | 90.11        | 16.5453 / -       |         |            |
+| bpe BERT(v1), CLS                         | 89.91        | 14.9586 / -       |         |            |
+| bpe BERT(v1), CNN                         | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
+| bpe BERT(v1), CLS                         | 88.92        | 9.3280  / 70.3232 |         | del 8,9,10,11, threads=14 |
+| bpe DistilBERT(v1), CNN                   | 88.39        | 9.6396  / -       | 38.7144 | threads=14 |
+| bpe DistilBERT(v1), CLS                   | 88.55        | 8.2834  / -       | 31.5655 | threads=14 |
 | bpe BERT-large, CNN                       | 89.85        | 24.4099 / -       |         |            |
 | bpe BERT-large, CLS                       | 89.78        | 22.6002 / -       |         |            |
-| dha BERT(2.5m), CNN                       | 90.25        | 15.5738 / -       |         |            |
-| dha BERT(2.5m), CLS                       | 90.18        | 13.3390 / -       |         |            |
-| dha BERT(2.5m), CNN                       | 88.88        | 10.5157 / 72.7777 |         | del 8,9,10,11, threads=14         |
-| dha BERT(2.5m), CLS                       | 88.81        | 8.9836  / 68.4545 | 50.7474 | del 8,9,10,11, threads=14         |
-| dha BERT(2.5m), CLS                       | 88.29        | 7.2027  / 53.6363 | 38.3333 | del 6,7,8,9,10,11, threads=14     |
-| dha BERT(2.5m), CLS                       | 87.54        | 5.7645  / 36.8686 | 28.2626 | del 4,5,6,7,8,9,10,11, threads=14 |
-| dha DistilBERT(2.5m), CNN                 | 88.72        | 11.4488 / -       |         |            |
-| dha DistilBERT(2.5m), CLS                 | 88.47        | 9.7360  / -       |         |            |
-| dha-bpe BERT(4m), CNN                     | 89.07        | 14.9454 / -       |         |            |
-| dha-bpe BERT(4m), CLS                     | 89.01        | 12.7981 / -       |         |            |
+| dha BERT(v1), CNN                         | 90.25        | 15.5738 / -       |         |            |
+| dha BERT(v1), CLS                         | 90.18        | 13.3390 / -       |         |            |
+| dha BERT(v1), CNN                         | 88.88        | 10.5157 / 72.7777 |         | del 8,9,10,11, threads=14         |
+| dha BERT(v1), CLS                         | 88.81        | 8.9836  / 68.4545 | 50.7474 | del 8,9,10,11, threads=14         |
+| dha BERT(v1), CLS                         | 88.29        | 7.2027  / 53.6363 | 38.3333 | del 6,7,8,9,10,11, threads=14     |
+| dha BERT(v1), CLS                         | 87.54        | 5.7645  / 36.8686 | 28.2626 | del 4,5,6,7,8,9,10,11, threads=14 |
+| dha DistilBERT(v1), CNN                   | 88.72        | 11.4488 / -       |         |            |
+| dha DistilBERT(v1), CLS                   | 88.47        | 9.7360  / -       |         |            |
+| dha-bpe BERT, CNN                         | 89.07        | 14.9454 / -       |         |            |
+| dha-bpe BERT, CLS                         | 89.01        | 12.7981 / -       |         |            |
 | dha-bpe BERT-large, CNN                   | **90.84**    | 24.5095 / -       |         |            |
 | dha-bpe BERT-large, CLS                   | 90.68        | 22.9305 / -       |         |            |
-| dha BERT(10m), CNN                        | 89.08        | 15.3276 / -       |         |            |
-| dha BERT(10m), CLS                        | 89.25        | 12.7876 / -       |         |            |
+| dha BERT(v2), CNN                         | 89.08        | 15.3276 / -       |         |            |
+| dha BERT(v2), CLS                         | 89.25        | 12.7876 / -       |         |            |
 | KoELECTRA-Base, CNN                       | 89.51        | 15.5452 / -       |         |            |
 | KoELECTRA-Base, CLS                       | 89.63        | 14.2667 / -       |         |            |
 | bpe ELECTRA-base(30k-512-1m) , CNN        | 88.07        | 16.2737 / -       |         |            |
@@ -265,7 +265,7 @@ $ python evaluate.py --config=configs/config-densenet-dsa-iee.json --data_dir=./
 </details>
 
 
-##### BERT(pytorch.all.bpe.4.8m_step, pytorch.large.all.whitespace_bpe.7m_step)
+##### BERT(kor-bert-base-bpe.v1, kor-bert-large-bpe)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -274,13 +274,13 @@ $ python evaluate.py --config=configs/config-densenet-dsa-iee.json --data_dir=./
 ```
 * enc_class=cnn
 
-$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments/
+$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-bpe.v1 --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-bpe.v1/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments/
 
 * enc_class=cls
 
-$ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments/
+$ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-bpe.v1 --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-bpe.v1/ --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments/
 ```
 
 - evaluation
@@ -304,7 +304,7 @@ INFO:__main__:[Elapsed Time] : 827306ms, 16.545303624289943ms on average
 INFO:__main__:[Accuracy] : 0.8839, 44190/49997
 INFO:__main__:[Elapsed Time] : 482054.96978759766ms, 9.639614557722052ms on average
 
-** --bert_model_name_or_path=./embeddings/pytorch.large.all.whitespace_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
+** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 INFO:__main__:[Accuracy] : 0.8985, 44923/49997
 INFO:__main__:[Elapsed Time] : 1220545.0494289398ms, 24.40995301749384ms on average
 
@@ -330,7 +330,7 @@ INFO:__main__:[Elapsed Time] : 747975ms, 14.958656692535403ms on average
 INFO:__main__:[Accuracy] : 0.8855, 44271/49997
 INFO:__main__:[Elapsed Time] : 414233.4134578705ms, 8.283499222067283ms on average
 
-** --bert_model_name_or_path=./embeddings/pytorch.large.all.whitespace_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
+** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 INFO:__main__:[Accuracy] : 0.8978, 44885/49997
 INFO:__main__:[Elapsed Time] : 1130058.8986873627ms, 22.60026191461467ms on average
 
@@ -340,7 +340,7 @@ INFO:__main__:[Elapsed Time] : 1130058.8986873627ms, 22.60026191461467ms on aver
 </details>
 
 
-##### BERT(pytorch.all.dha.2.5m_step)
+##### BERT(kor-bert-base-dha.v1)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -349,13 +349,13 @@ INFO:__main__:[Elapsed Time] : 1130058.8986873627ms, 22.60026191461467ms on aver
 ```
 * enc_class=cnn
 
-$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/clova_sentiments_morph
-$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
+$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --data_dir=./data/clova_sentiments_morph
+$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
 
 * enc_class=cls
 
-$ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/clova_sentiments_morph
-$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=3 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
+$ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --data_dir=./data/clova_sentiments_morph
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=3 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
 ```
 
 - evaluation
@@ -412,7 +412,7 @@ INFO:__main__:[Elapsed Time] : 486852.8757095337ms, 9.7360708339852ms on average
 </details>
 
 
-##### BERT(pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step, pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step)
+##### BERT(kor-bert-base-dha_bpe, kor-bert-large-dha_bpe)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -421,12 +421,12 @@ INFO:__main__:[Elapsed Time] : 486852.8757095337ms, 9.7360708339852ms on average
 ```
 * enc_class=cnn
 
-$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --data_dir=./data/clova_sentiments_morph
-$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph
+$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha_bpe --data_dir=./data/clova_sentiments_morph
+$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha_bpe --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph
 
 * enc_class=cls
 
-$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27_bpe.4m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha_bpe --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph
 ```
 
 - evaluation
@@ -438,7 +438,7 @@ $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova
 INFO:__main__:[Accuracy] : 0.8907, 44533/49997
 INFO:__main__:[Elapsed Time] : 747351ms, 14.945475638051045ms on average
 
-** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
+** --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 INFO:__main__:[Accuracy] : 0.9084, 45417/49997
 INFO:__main__:[Elapsed Time] : 1225501.6918182373ms, 24.509510690474073ms on average
 
@@ -449,7 +449,7 @@ $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova
 INFO:__main__:[Accuracy] : 0.8901, 44503/49997
 INFO:__main__:[Elapsed Time] : 639988ms, 12.798163853108248ms on average
 
-** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
+** --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 INFO:__main__:[Accuracy] : 0.9068, 45337/49997
 INFO:__main__:[Elapsed Time] : 1146557.6510429382ms, 22.930594570818535ms on average
 
@@ -459,7 +459,7 @@ INFO:__main__:[Elapsed Time] : 1146557.6510429382ms, 22.930594570818535ms on ave
 </details>
 
 
-##### BERT(pytorch.all.dha_s2.9.4_d2.9.27.10m_step)
+##### BERT(kor-bert-base-dha.v2)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -468,12 +468,12 @@ INFO:__main__:[Elapsed Time] : 1146557.6510429382ms, 22.930594570818535ms on ave
 ```
 * enc_class=cnn
 
-$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27.10m_step --data_dir=./data/clova_sentiments_morph
-$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27.10m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
+$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v2 --data_dir=./data/clova_sentiments_morph
+$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v2 --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
 
 * enc_class=cls
 
-$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha_s2.9.4_d2.9.27.10m_step --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=3 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v2 --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=3 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
 ```
 
 - evaluation
@@ -593,24 +593,24 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 |                                           | Bias Accuracy (%) | Hate Accuracy (%) | GPU / CPU         | CONDA   | Etc                                                |
 | ----------------------------------------- | ----------------- | ----------------- | ----------------- | ------- | -------------------------------------------------- |
 | GloVe, DenseNet-CNN                       | 72.61             | 61.78             | 3.7602  / -       |         |                                                    |
-| **DistilFromBERT, GloVe, DenseNet-CNN**   | 83.65             | 64.97             | 3.8358  / -       |         | from 'dha BERT(2.5m), CNN'                         |
-| DistilFromBERT, GloVe, DenseNet-CNN       | **85.56**         | 66.67             | 3.6249  / -       |         | from 'dha BERT(2.5m), CNN', unlabeled data used    |
-| DistilFromBERT, GloVe, DenseNet-CNN       | 84.08             | 62.63             | 3.8700  / -       |         | from 'bpe BERT(4.8m), CNN', no augmentation        |
-| DistilFromBERT, dha DistilBERT(2.5m), CNN | 85.56             | 63.91             | 9.6239  / -       |         | from 'dha BERT(2.5m), CNN', unlabeled data used    |
-| DistilFromBERT, bpe DistilBERT(4.8m), CNN | 84.29             | 63.69             | 8.6725  / -       |         | from 'bpe BERT(4.8m), CNN', no augmentation        |
-| DistilFromBERT, bpe DistilBERT(4.8m), CNN | 83.44             | 64.12             | 8.5794  / -       |         | from 'bpe BERT(4.8m), CNN', no augmentation, unlabeled data used  |
-| dha DistilBERT(2.5m), CNN                 | 82.59             | 64.54             | 14.7450 / -       |         |                                                    |
-| dha DistilBERT(2.5m), CLS                 | 83.23             | 62.42             | 13.0598 / -       |         |                                                    |
-| dha BERT(2.5m), CNN                       | 84.08             | **67.09**         | 15.8797 / -       |         |                                                    |
-| dha BERT(2.5m), CLS                       | 82.80             | 64.76             | 12.8167 / -       |         |                                                    |
-| dha BERT(2.5m)-NSMC, CNN                  | 83.44             | 65.61             | 14.8844 / -       |         | finetuned with 'dha BERT(2.5m), CLS', NSMC         |
-| dha BERT(2.5m)-NSMC, CLS                  | 82.80             | 66.03             | 13.3459 / -       |         | finetuned with 'dha BERT(2.5m), CLS', NSMC         |
+| **DistilFromBERT, GloVe, DenseNet-CNN**   | 83.65             | 64.97             | 3.8358  / -       |         | from 'dha BERT(v1), CNN'                           |
+| DistilFromBERT, GloVe, DenseNet-CNN       | **85.56**         | 66.67             | 3.6249  / -       |         | from 'dha BERT(v1), CNN', unlabeled data used      |
+| DistilFromBERT, GloVe, DenseNet-CNN       | 84.08             | 62.63             | 3.8700  / -       |         | from 'bpe BERT(v1), CNN', no augmentation          |
+| DistilFromBERT, dha DistilBERT(v1), CNN   | 85.56             | 63.91             | 9.6239  / -       |         | from 'dha BERT(v1), CNN', unlabeled data used      |
+| DistilFromBERT, bpe DistilBERT(v1), CNN   | 84.29             | 63.69             | 8.6725  / -       |         | from 'bpe BERT(v1), CNN', no augmentation          |
+| DistilFromBERT, bpe DistilBERT(v1), CNN   | 83.44             | 64.12             | 8.5794  / -       |         | from 'bpe BERT(v1), CNN', no augmentation, unlabeled data used  |
+| dha DistilBERT(v1), CNN                   | 82.59             | 64.54             | 14.7450 / -       |         |                                                    |
+| dha DistilBERT(v1), CLS                   | 83.23             | 62.42             | 13.0598 / -       |         |                                                    |
+| dha BERT(v1), CNN                         | 84.08             | **67.09**         | 15.8797 / -       |         |                                                    |
+| dha BERT(v1), CLS                         | 82.80             | 64.76             | 12.8167 / -       |         |                                                    |
+| dha BERT(v1)-NSMC, CNN                    | 83.44             | 65.61             | 14.8844 / -       |         | finetuned with 'dha BERT(v1), CLS', NSMC           |
+| dha BERT(v1)-NSMC, CLS                    | 82.80             | 66.03             | 13.3459 / -       |         | finetuned with 'dha BERT(v1), CLS', NSMC           |
 | dha-bpe BERT-large, CNN                   | 83.86             | 66.03             | 33.4405 / -       |         |                                                    |
 | dha-bpe BERT-large, CLS                   | 83.86             | 66.67             | 28.3876 / -       |         |                                                    |
-| bpe BERT(4.8m), CNN                       | 82.80             | 63.27             | 15.0740 / -       |         |                                                    |
-| bpe BERT(4.8m), CLS                       | 82.38             | 63.69             | 13.1576 / -       |         |                                                    |
-| bpe DistilBERT(4.8m), CNN                 | 82.38             | 60.93             | 8.7683  / -       |         |                                                    |
-| bpe DistilBERT(4.8m), CLS                 | 81.53             | 61.36             | 7.6983  / -       |         |                                                    |
+| bpe BERT(v1), CNN                         | 82.80             | 63.27             | 15.0740 / -       |         |                                                    |
+| bpe BERT(v1), CLS                         | 82.38             | 63.69             | 13.1576 / -       |         |                                                    |
+| bpe DistilBERT(v1), CNN                   | 82.38             | 60.93             | 8.7683  / -       |         |                                                    |
+| bpe DistilBERT(v1), CLS                   | 81.53             | 61.36             | 7.6983  / -       |         |                                                    |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -656,7 +656,7 @@ INFO:__main__:[Elapsed Time] : 2106.7402362823486ms, 4.309217473293873ms on aver
 </details>
 
 
-##### BERT(pytorch.all.dha.2.5m_step, pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step)
+##### BERT(kor-bert-base-dha.v1, kor-bert-large-dha_bpe)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -665,13 +665,13 @@ INFO:__main__:[Elapsed Time] : 2106.7402362823486ms, 4.309217473293873ms on aver
 ```
 * enc_class=cnn
 
-$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/korean_hate_speech_morph
-$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech_morph --save_path=pytorch-model-kor-bert.pt
+$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --data_dir=./data/korean_hate_speech_morph
+$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech_morph --save_path=pytorch-model-kor-bert.pt
 
 * enc_class=cls
 
-$ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --data_dir=./data/korean_hate_speech_morph
-$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.dha.2.5m_step --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech_morph --save_path=pytorch-model-kor-bert.pt
+$ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --data_dir=./data/korean_hate_speech_morph
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech_morph --save_path=pytorch-model-kor-bert.pt
 ```
 
 - evaluation
@@ -694,11 +694,11 @@ INFO:__main__:[Elapsed Time] : 7119.729280471802ms, 14.88446834239554ms on avera
 INFO:__main__:[Accuracy] : 0.8344,   393/  471
 INFO:__main__:[Elapsed Time] : 6724.8547077178955ms, 14.073182166890895ms on average
 
-** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step
+** --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe
 INFO:__main__:[Accuracy] : 0.6603,   311/  471
 INFO:__main__:[Elapsed Time] : 15862.082242965698ms, 33.44054577198435ms on average
 
-** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --data_dir=./data/korean_bias_speech_morph
+** --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe --data_dir=./data/korean_bias_speech_morph
 INFO:__main__:[Accuracy] : 0.8386,   395/  471
 INFO:__main__:[Elapsed Time] : 15744.0345287323ms, 33.119978803269404ms on average
 
@@ -728,11 +728,11 @@ INFO:__main__:[Elapsed Time] : 6387.471914291382ms, 13.345901509548755ms on aver
 INFO:__main__:[Accuracy] : 0.8280,   390/  471
 INFO:__main__:[Elapsed Time] : 6631.218910217285ms, 13.854946988694211ms on average
 
-** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step
+** --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe
 INFO:__main__:[Accuracy] : 0.6667,   314/  471
 INFO:__main__:[Elapsed Time] : 13503.794431686401ms, 28.387678430435507ms on average
 
-** --bert_model_name_or_path=./embeddings/pytorch.large.all.dha_s2.9.4_d2.9.27_bpe.7m_step --data_dir=./data/korean_bias_speech_morph
+** --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe --data_dir=./data/korean_bias_speech_morph
 INFO:__main__:[Accuracy] : 0.8386,   395/  471
 INFO:__main__:[Elapsed Time] : 14023.700475692749ms, 29.498563928807034ms on average
 
@@ -749,7 +749,7 @@ INFO:__main__:[Elapsed Time] : 5894.242525100708ms, 12.312091665065035ms on aver
 </p>
 </details>
 
-##### BERT(pytorch.all.bpe.4.8m_step)
+##### BERT(kor-bert-base-bpe.v1)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -758,13 +758,13 @@ INFO:__main__:[Elapsed Time] : 5894.242525100708ms, 12.312091665065035ms on aver
 ```
 * enc_class=cnn
 
-$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --data_dir=./data/korean_hate_speech
-$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech --save_path=pytorch-model-kor-bert.pt
+$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-bpe.v1 --data_dir=./data/korean_hate_speech
+$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-bpe.v1 --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech --save_path=pytorch-model-kor-bert.pt
 
 * enc_class=cls
 
-$ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --data_dir=./data/korean_hate_speech
-$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.all.bpe.4.8m_step --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech --save_path=pytorch-model-kor-bert.pt
+$ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-bpe.v1 --data_dir=./data/korean_hate_speech
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-bpe.v1 --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech --save_path=pytorch-model-kor-bert.pt
 ```
 
 - evaluation
