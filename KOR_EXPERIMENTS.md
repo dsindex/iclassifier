@@ -94,10 +94,10 @@
 | ----------------------------------------- | ------------ | ----------------- | ------- | ---------- |
 | GloVe, CNN                                | 87.31        | 1.9479  / 3.5353  |         | threads=14 |
 | **GloVe, DenseNet-CNN**                   | 88.18        | 3.4614  / 8.3434  |         | threads=14 |
+| GloVe, DenseNet-DSA                       | 87.66        | 6.9731  / -       |         |            |
 | DistilFromBERT, GloVe, DenseNet-CNN       | 89.21        | 3.5383  / -       |         | from 'dha BERT(v1), CLS'       |
 | DistilFromBERT, GloVe, DenseNet-CNN       | 89.14        | 3.6146  / -       |         | from 'dha-bpe BERT-large, CNN' |
 | DistilFromBERT, dha DistilBERT(v1), CLS   | 90.19        | 8.9599  / -       |         | from 'dha-bpe BERT-large, CNN' |
-| GloVe, DenseNet-DSA                       | 87.66        | 6.9731  / -       |         |            |
 | bpe BERT(v1), CNN                         | 90.11        | 16.5453 / -       |         |            |
 | bpe BERT(v1), CLS                         | 89.91        | 14.9586 / -       |         |            |
 | bpe BERT(v1), CNN                         | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
@@ -113,7 +113,7 @@
 | dha BERT(v1), CLS                         | 88.29        | 7.2027  / 53.6363 | 38.3333 | del 6,7,8,9,10,11, threads=14     |
 | dha BERT(v1), CLS                         | 87.54        | 5.7645  / 36.8686 | 28.2626 | del 4,5,6,7,8,9,10,11, threads=14 |
 | dha DistilBERT(v1), CNN                   | 88.72        | 11.4488 / -       |         |            |
-| dha DistilBERT(v1), CLS                   | 88.47        | 9.7360  / -       |         |            |
+| dha DistilBERT(v1), CLS                   | 88.51        | 7.5299  / -       |         |            |
 | dha-bpe BERT, CNN                         | 89.07        | 14.9454 / -       |         |            |
 | dha-bpe BERT, CLS                         | 89.01        | 12.7981 / -       |         |            |
 | dha-bpe BERT-large, CNN                   | **90.84**    | 24.5095 / -       |         |            |
@@ -376,8 +376,13 @@ INFO:__main__:[Accuracy] : 0.9025, 45123/49997
 INFO:__main__:[Elapsed Time] : 778762ms, 15.573805904472358ms on average
 
 ** --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20
+(1) epoch_0
 INFO:__main__:[Accuracy] : 0.8872, 44358/49997
 INFO:__main__:[Elapsed Time] : 572516.1464214325ms, 11.448896296530382ms on average
+
+(2) epoch_2
+INFO:__main__:[Accuracy] : 0.8864, 44315/49997
+INFO:__main__:[Elapsed Time] : 430667.7966117859ms, 8.612132680941624ms on average
 
 * enc_class=cls
 
@@ -403,8 +408,13 @@ INFO:__main__:[Accuracy] : 0.9018, 45089/49997
 INFO:__main__:[Elapsed Time] : 666997.1199035645ms, 13.339050636929372ms on average
 
 ** --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+(1) epoch_0
 INFO:__main__:[Accuracy] : 0.8847, 44234/49997
 INFO:__main__:[Elapsed Time] : 486852.8757095337ms, 9.7360708339852ms on average
+
+(2) epoch_2
+INFO:__main__:[Accuracy] : 0.8851, 44252/49997
+INFO:__main__:[Elapsed Time] : 376557.34610557556ms, 7.529911446336728ms on average
 
 ```
 
