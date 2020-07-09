@@ -1,0 +1,13 @@
+{
+    "emb_class": "glove",
+    "enc_class": "gnb",
+    "n_ctx": 100,
+    "lowercase": true,
+    "token_emb_dim": 300,
+    "pad_token": "<pad>",
+    "pad_token_id": 0,
+    "unk_token": "<unk>",
+    "unk_token_id": 1,
+    "fc_hidden_size": 256,
+    "dropout": 0.2
+}

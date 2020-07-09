@@ -30,8 +30,8 @@ import json
 from tqdm import tqdm
 
 from util    import load_config, to_device, to_numpy
-from model   import TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
-from dataset import prepare_dataset, SnipsGloveDataset, SnipsBertDataset
+from model   import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
+from dataset import prepare_dataset, GloveDataset, BertDataset
 from early_stopping import EarlyStopping
 from sklearn.metrics import classification_report, confusion_matrix
 
@@ -196,9 +196,9 @@ def set_path(config):
 def prepare_datasets(config):
     opt = config['opt']
     if config['emb_class'] == 'glove':
-        DatasetClass = SnipsGloveDataset
+        DatasetClass = GloveDataset
     if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
-        DatasetClass = SnipsBertDataset
+        DatasetClass = BertDataset
     train_loader = prepare_dataset(config,
         opt.train_path,
         DatasetClass,
@@ -239,14 +239,13 @@ def prepare_model(config):
     emb_non_trainable = not opt.embedding_trainable
     # prepare model
     if config['emb_class'] == 'glove':
+        if config['enc_class'] == 'gnb':
+            model = TextGloveGNB(config, opt.embedding_path, opt.label_path)
         if config['enc_class'] == 'cnn':
-            # set embedding as trainable
             model = TextGloveCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable)
         if config['enc_class'] == 'densenet-cnn':
-            # set embedding as trainable
             model = TextGloveDensenetCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable)
         if config['enc_class'] == 'densenet-dsa':
-            # set embedding as trainable
             model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable)
     if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
         from transformers import BertTokenizer, BertConfig, BertModel

@@ -28,7 +28,7 @@ def prepare_dataset(config, filepath, DatasetClass, sampling=False, num_workers=
     logger.info("[{} data loaded]".format(filepath))
     return loader
 
-class SnipsGloveDataset(Dataset):
+class GloveDataset(Dataset):
     def __init__(self, path):
         x,y = [],[]
         logits_as_label = False
@@ -56,7 +56,7 @@ class SnipsGloveDataset(Dataset):
     def __getitem__(self, idx):
         return self.x[idx], self.y[idx]
 
-class SnipsBertDataset(Dataset):
+class BertDataset(Dataset):
     def __init__(self, path):
         # load features from file
         features = torch.load(path)

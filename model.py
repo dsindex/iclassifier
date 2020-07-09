@@ -6,7 +6,9 @@ import pdb
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.autograd import Variable
 import numpy as np
+from numpy import pi
 import random
 
 class BaseModel(nn.Module):
@@ -43,6 +45,52 @@ class BaseModel(nn.Module):
                 label_id = int(toks[1])
                 labels[label_id] = label
         return labels
+
+# ------------------------------------------------------------------------------ #
+# source code from https://github.com/tbung/naive-bayes-layer
+# ------------------------------------------------------------------------------ #
+class GaussianNaiveBayes(nn.Module):
+    def __init__(self, features, classes, fix_variance=False):
+        super(self.__class__, self).__init__()
+
+        self.features = features
+        self.classes = classes
+
+        # We need mean and variance per feature and class
+        self.register_buffer(
+            "means",
+            Variable(torch.Tensor(self.classes, self.features))
+        )
+        if not fix_variance:
+            self.register_parameter(
+                "variances",
+                nn.Parameter(torch.Tensor(self.classes, self.features))
+            )
+        else:
+            self.register_buffer(
+                "variances",
+                Variable(torch.Tensor(self.classes, self.features))
+            )
+
+        # We need the class priors
+        self.register_parameter(
+            "class_priors",
+            nn.Parameter(torch.Tensor(self.classes))
+        )
+
+        self.reset_parameters()
+
+    def reset_parameters(self):
+        self.means.data = torch.eye(self.classes, self.features)
+        self.variances.data.fill_(1)
+        # self.variances.data = torch.eye(self.classes, self.features)
+        self.class_priors.data.uniform_()
+
+    def forward(self, x):
+        x = x[:,np.newaxis,:]
+        return (torch.sum(- 0.5 * torch.log(2 * pi * torch.abs(self.variances))
+                - (x - self.means)**2 / torch.abs(self.variances) / 2, dim=-1)
+                + torch.log(self.class_priors))
 
 class TextCNN(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_sizes):
@@ -195,6 +243,50 @@ class DSA(nn.Module):
         z = torch.cat(z_list, dim=-1)
         # z : [batch_size, dsa_num_attentions * dsa_dim]
         return z
+
+class TextGloveGNB(BaseModel):
+    def __init__(self, config, embedding_path, label_path):
+        super().__init__(config=config)
+
+        self.config = config
+        self.device = config['opt'].device
+        seq_size = config['n_ctx']
+        token_emb_dim = config['token_emb_dim']
+
+        # glove embedding layer
+        weights_matrix = super().load_embedding(embedding_path)
+        vocab_dim, emb_dim = weights_matrix.size()
+        padding_idx = config['pad_token_id']
+        self.embed = super().create_embedding_layer(vocab_dim, emb_dim, weights_matrix=weights_matrix, non_trainable=True, padding_idx=padding_idx)
+        emb_dim = token_emb_dim 
+
+        self.labels = super().load_label(label_path)
+        label_size = len(self.labels)
+
+        # gaussian naive bayes layer
+        features = emb_dim
+        classes = label_size
+        self.gnb = GaussianNaiveBayes(features, classes, fix_variance=False)
+
+        self.dropout = nn.Dropout(config['dropout'])
+
+    def forward(self, x):
+        # 1. glove embedding
+        # x : [batch_size, seq_size]
+        embedded = self.dropout(self.embed(x))
+        # embedded : [batch_size, seq_size, emb_dim]
+
+        # 2. gaussian naive bayes
+        embedded_x, _ = embedded.max(1) # extract max feature value along with dim=1
+        # embedded_x : [batch_size, emb_dim]
+        gnb_out = self.gnb(embedded_x)
+        # gnb_out : [batch_size, label_size]
+
+        # for MSELoss
+        if self.config['opt'].augmented: return gnb_out
+        output = torch.softmax(gnb_out, dim=-1)
+        return output
+
 
 class TextGloveCNN(BaseModel):
     def __init__(self, config, embedding_path, label_path, emb_non_trainable=True):

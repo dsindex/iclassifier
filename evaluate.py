@@ -13,9 +13,9 @@ import torch.quantization
 import numpy as np
 
 from tqdm import tqdm
-from model import TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
+from model import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
 from util import load_config, to_device, to_numpy
-from dataset import prepare_dataset, SnipsGloveDataset, SnipsBertDataset
+from dataset import prepare_dataset, GloveDataset, BertDataset
 from sklearn.metrics import classification_report, confusion_matrix
 
 logging.basicConfig(level=logging.INFO)
@@ -50,6 +50,8 @@ def load_checkpoint(config):
 def load_model(config, checkpoint):
     opt = config['opt']
     if config['emb_class'] == 'glove':
+        if config['enc_class'] == 'gnb':
+            model = TextGloveGNB(config, opt.embedding_path, opt.label_path)
         if config['enc_class'] == 'cnn':
             model = TextGloveCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
         if config['enc_class'] == 'densenet-cnn':
@@ -156,9 +158,9 @@ def write_prediction(opt, preds, labels):
 def prepare_datasets(config):
     opt = config['opt']
     if config['emb_class'] == 'glove':
-        DatasetClass = SnipsGloveDataset
+        DatasetClass = GloveDataset
     if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
-        DatasetClass = SnipsBertDataset
+        DatasetClass = BertDataset
     test_loader = prepare_dataset(config, opt.data_path, DatasetClass, sampling=False, num_workers=1)
     return test_loader
 

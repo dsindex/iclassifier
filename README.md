@@ -5,7 +5,10 @@
 - embedding
   - GloVe, BERT, DistilBERT, SpanBERT, ALBERT, RoBERTa, BART, ELECTRA
 - encoding
+  - GNB
+    - Gaussian Naive Bayes(simple biased model)
   - CNN
+    - Convolutional Neural Net)
   - DenseNet
     - [Dynamic Self-Attention: Computing Attention over Words Dynamically for Sentence Embedding](https://arxiv.org/pdf/1808.07383.pdf)
     - implementation from [ntagger](https://github.com/dsindex/ntagger)
@@ -62,6 +65,7 @@
 
 |                     | Accuracy (%) | GPU / CPU           | ONNX                         | CONDA             | CONDA+je          | INTEL   | INTEL+je  | Dynamic           | Dynamic+je        | Inference | Inference+Dynamic | Inference+ONNX    | Etc            |
 | ------------------- | ------------ | ------------------- | ---------------------------- | ----------------- | ----------------- | ------- | --------- | ----------------- | ----------------- | --------- | ----------------- | ----------------- | -------------- |    
+| GloVe, GNB          | 80.43        | 1.2929  / -         | -        / -       / -       | -       / -       |                   |         |           |                   |                   | -         |                   | -                 |                |
 | GloVe, CNN          | 97.86        | 1.7939  / -         | 7.5656   / 1.8689  / 1.7735  | 4.6868  / 2.7592  |                   |         |           |                   |                   | 1.9398    |                   | 0.3848            | threads=14     |
 | GloVe, Densenet-CNN | 97.57        | 3.6094  / -         | 19.1212  / 3.0717  / 3.0917  | 7.6969  / 6.5887  |                   |         |           |                   |                   | 4.9481    |                   | 0.8658            | threads=14     |
 | GloVe, Densenet-DSA | 97.43        | 7.5007  / -         | -        / 4.4936  / 4.9337  |         / 9.7873  |                   |         |           |                   |                   | 7.2086    |                   | 1.5420            | threads=14     |
@@ -105,14 +109,36 @@
 | 13        | DistilBERT, CLS     | 9.45             |                  |
 | 14        | DistilBERT, CLS     | 9.31             |                  |
 
+<details><summary><b>emb_class=glove, enc_class=gnb</b></summary>
+<p>
+  
+- train
+```
+* token_emb_dim in configs/config-glove-gnb.json == 300 (ex, glove.6B.300d.txt )
+$ python preprocess.py --config=configs/config-glove-gnb.json
+$ python train.py --config=configs/config-glove-gnb.json --lr_decay_rate=0.9
+```
+
+- evaluation
+```
+$ python evaluate.py --config=configs/config-glove-gnb.json
+INFO:__main__:[Accuracy] : 0.8043,   563/  700
+INFO:__main__:[Elapsed Time] : 980.9308052062988ms, 1.292972264542259ms on average
+
+```
+
+</p>
+</details>
+
+
 <details><summary><b>emb_class=glove, enc_class=cnn</b></summary>
 <p>
   
 - train
 ```
 * token_emb_dim in configs/config-glove-cnn.json == 300 (ex, glove.6B.300d.txt )
-$ python preprocess.py
-$ python train.py --lr_decay_rate=0.9 --embedding_trainable
+$ python preprocess.py --config=configs/config-glove-cnn.json
+$ python train.py --config=configs/config-glove-cnn.json --lr_decay_rate=0.9 --embedding_trainable
 
 * tensorboardX
 $ rm -rf runs
@@ -121,7 +147,7 @@ $ tensorboard --logdir runs/ --port port-number --bind_all
 
 - evaluation
 ```
-$ python evaluate.py
+$ python evaluate.py --config=configs/config-glove-cnn.json
 INFO:__main__:[Accuracy] : 0.9786,   685/  700
 INFO:__main__:[Elapsed Time] : 1351ms, 1.793991416309013ms on average
 ```
@@ -240,6 +266,7 @@ INFO:__main__:[Elapsed Time] : 6607ms, 9.30758226037196ms on average
 
 |                                         | Accuracy (%) | GPU/CPU                     | CONDA             | CONDA+je          | Dynamic                  | Dynamic+je        | Etc           |
 | --------------------------------------- | ------------ | --------------------------- | ----------------- | ----------------- | ------------------------ | ----------------- | ------------- |
+| GloVe, GNB                              | -            | -       / -       / -       |       - / -       |       - / -       |              - / -       |       - / -       | -             |
 | GloVe, CNN                              | 82.81        | 1.7670  / 3.9191  / 4.5757  |       - / 4.3131  |       - / 4.4040  |              - / 4.8686  |       - / 4.4848  | threads=14    |
 | GloVe, DenseNet-CNN                     | 86.38        | 3.6203  / 7.1414            |                   |                   |                          |                   | threads=14    |
 | GloVe, DenseNet-DSA                     | 85.34        | 6.2450  / -                 |                   |                   |                          |                   |               |
@@ -303,6 +330,28 @@ INFO:__main__:[Elapsed Time] : 6607ms, 9.30758226037196ms on average
 | RoBERTa           | 96.7        |
 | MT-DNN            | 95.6        |
 | DistilBERT        | 92.7        |
+
+
+<details><summary><b>emb_class=glove, enc_class=gnb</b></summary>
+<p>
+
+- train
+```
+* token_emb_dim in configs/config-glove-gnb.json == 300 (ex, glove.6B.300d.txt )
+$ python preprocess.py --config=configs/config-glove-gnb.json --data_dir=data/sst2
+$ python train.py --config=configs/config-glove-gnb.json --data_dir=data/sst2 --lr=1e-3 --lr_decay_rate=0.9
+```
+
+- evaluation
+```
+$ python evaluate.py --config=configs/config-glove-gnb.json --data_dir=data/sst2
+
+
+```
+
+</p>
+</details>
+
 
 <details><summary><b>emb_class=glove, enc_class=cnn</b></summary>
 <p>
