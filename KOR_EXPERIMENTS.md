@@ -92,6 +92,7 @@
 
 |                                           | Accuracy (%) | GPU / CPU         | CONDA   | Etc        |
 | ----------------------------------------- | ------------ | ----------------- | ------- | ---------- |
+| GloVe, GNB                                | 74.68        | 1.3568  / -       |         |            |
 | GloVe, CNN                                | 87.31        | 1.9479  / 3.5353  |         | threads=14 |
 | **GloVe, DenseNet-CNN**                   | 88.18        | 3.4614  / 8.3434  |         | threads=14 |
 | GloVe, DenseNet-DSA                       | 87.66        | 6.9731  / -       |         |            |
@@ -163,18 +164,38 @@
 
 ##### GloVe
 
+<details><summary><b>enc_class=gnb</b></summary>
+<p>
+
+- train
+```
+$ python preprocess.py --config=configs/config-glove-gnb.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
+$ python train.py --config=configs/config-glove-gnb.json --data_dir=data/clova_sentiments_morph --lr_decay_rate=0.9 --embedding_trainable
+```
+
+- evaluation
+```
+$ python evaluate.py --config=configs/config-glove-gnb.json --data_dir=./data/clova_sentiments_morph 
+INFO:__main__:[Accuracy] : 0.7468, 37339/49997
+INFO:__main__:[Elapsed Time] : 67916.67175292969ms, 1.3568544208512268ms on average
+```
+
+</p>
+</details>
+
+
 <details><summary><b>enc_class=cnn</b></summary>
 <p>
 
 - train
 ```
-$ python preprocess.py --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
-$ python train.py --data_dir=data/clova_sentiments_morph --lr_decay_rate=0.9 --embedding_trainable
+$ python preprocess.py --config=configs/config-glove-cnn.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
+$ python train.py --config=configs/config-glove-cnn.json --data_dir=data/clova_sentiments_morph --lr_decay_rate=0.9 --embedding_trainable
 ```
 
 - evaluation
 ```
-$ python evaluate.py --data_dir=./data/clova_sentiments_morph 
+$ python evaluate.py --config=configs/config-glove-cnn.json --data_dir=./data/clova_sentiments_morph 
 
 INFO:__main__:[Accuracy] : 0.8731, 43653/49997
 INFO:__main__:[Elapsed Time] : 97481ms, 1.9479358348667895ms on average
@@ -602,7 +623,9 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 
 |                                           | Bias Accuracy (%) | Hate Accuracy (%) | GPU / CPU         | CONDA   | Etc                                                |
 | ----------------------------------------- | ----------------- | ----------------- | ----------------- | ------- | -------------------------------------------------- |
-| GloVe, DenseNet-CNN                       | 72.61             | 61.78             | 3.7602  / -       |         |                                                    |
+| GloVe, GloVe-GNB                          | 72.61             | 33.97             | 1.4223  / -       |         | failed to train for bias                           |
+| GloVe, GloVe-CNN                          | 72.61             | 60.72             | 2.1012  / -       |         | failed to train for bias                           |
+| GloVe, DenseNet-CNN                       | 72.61             | 61.78             | 3.7602  / -       |         | failed to train for bias                           |
 | **DistilFromBERT, GloVe, DenseNet-CNN**   | 83.65             | 64.97             | 3.8358  / -       |         | from 'dha BERT(v1), CNN'                           |
 | DistilFromBERT, GloVe, DenseNet-CNN       | **85.56**         | 66.67             | 3.6249  / -       |         | from 'dha BERT(v1), CNN', unlabeled data used      |
 | DistilFromBERT, GloVe, DenseNet-CNN       | 84.08             | 62.63             | 3.8700  / -       |         | from 'bpe BERT(v1), CNN', no augmentation          |
@@ -640,6 +663,61 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 
 ##### GloVe
 
+<details><summary><b>enc_class=glove-gnb</b></summary>
+<p>
+
+- train
+```
+$ python preprocess.py --config=configs/config-glove-gnb.json --data_dir=data/korean_hate_speech_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
+$ python train.py --config=configs/config-glove-gnb.json --data_dir=data/korean_hate_speech_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-gnb.pt
+
+```
+
+- evaluation
+```
+$ python evaluate.py --config=configs/config-glove-gnb.json --data_dir=./data/korean_hate_speech_morph --model_path=pytorch-model-kor-gnb.pt
+INFO:__main__:[Accuracy] : 0.3397,   160/  471
+INFO:__main__:[Elapsed Time] : 759.1080665588379ms, 1.4223291518840384ms on average
+
+** --data_dir=./data/korean_bias_speech_morph
+INFO:__main__:[Accuracy] : 0.7261,   342/  471
+INFO:__main__:[Elapsed Time] : 673.8839149475098ms, 1.2677735470710916ms on average
+
+=> 학습 결과가 전부 'none' class를 찍는 문제. 학습이 안됨
+
+```
+
+</p>
+</details>
+
+<details><summary><b>enc_class=glove-cnn</b></summary>
+<p>
+
+- train
+```
+$ python preprocess.py --config=configs/config-glove-cnn.json --data_dir=data/korean_hate_speech_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
+$ python train.py --config=configs/config-glove-cnn.json --data_dir=data/korean_hate_speech_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-cnn.pt
+
+```
+
+- evaluation
+```
+$ python evaluate.py --config=configs/config-glove-cnn.json --data_dir=./data/korean_hate_speech_morph --model_path=pytorch-model-kor-cnn.pt
+INFO:__main__:[Accuracy] : 0.6072,   286/  471
+INFO:__main__:[Elapsed Time] : 1125.8411407470703ms, 2.2128495764225087ms on average
+
+** --data_dir=./data/korean_bias_speech_morph
+INFO:__main__:[Accuracy] : 0.7261,   342/  471
+INFO:__main__:[Elapsed Time] : 1100.193738937378ms, 2.101261057752244ms on average
+
+=> 학습 결과가 전부 'none' class를 찍는 문제. 학습이 안됨
+
+```
+
+</p>
+</details>
+
+
 <details><summary><b>enc_class=densenet-cnn</b></summary>
 <p>
 
@@ -656,9 +734,12 @@ $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data
 INFO:__main__:[Accuracy] : 0.6178,   291/  471
 INFO:__main__:[Elapsed Time] : 1848.5705852508545ms, 3.760207967555269ms on average
 
-** --data_dir=./data/korean_bias_speech
+** --data_dir=./data/korean_bias_speech_morph
 INFO:__main__:[Accuracy] : 0.7261,   342/  471
 INFO:__main__:[Elapsed Time] : 2106.7402362823486ms, 4.309217473293873ms on average
+
+=> 학습 결과가 전부 'none' class를 찍는 문제. 학습이 안됨
+
 
 ```
 

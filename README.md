@@ -266,7 +266,7 @@ INFO:__main__:[Elapsed Time] : 6607ms, 9.30758226037196ms on average
 
 |                                         | Accuracy (%) | GPU/CPU                     | CONDA             | CONDA+je          | Dynamic                  | Dynamic+je        | Etc           |
 | --------------------------------------- | ------------ | --------------------------- | ----------------- | ----------------- | ------------------------ | ----------------- | ------------- |
-| GloVe, GNB                              | -            | -       / -       / -       |       - / -       |       - / -       |              - / -       |       - / -       | -             |
+| GloVe, GNB                              | 72.27        | 1.2253  / -       / -       |       - / -       |       - / -       |              - / -       |       - / -       | -             |
 | GloVe, CNN                              | 82.81        | 1.7670  / 3.9191  / 4.5757  |       - / 4.3131  |       - / 4.4040  |              - / 4.8686  |       - / 4.4848  | threads=14    |
 | GloVe, DenseNet-CNN                     | 86.38        | 3.6203  / 7.1414            |                   |                   |                          |                   | threads=14    |
 | GloVe, DenseNet-DSA                     | 85.34        | 6.2450  / -                 |                   |                   |                          |                   |               |
@@ -345,7 +345,8 @@ $ python train.py --config=configs/config-glove-gnb.json --data_dir=data/sst2 --
 - evaluation
 ```
 $ python evaluate.py --config=configs/config-glove-gnb.json --data_dir=data/sst2
-
+INFO:__main__:[Accuracy] : 0.7227,  1316/ 1821
+INFO:__main__:[Elapsed Time] : 2310.748338699341ms, 1.2253080095563615ms on average
 
 ```
 
