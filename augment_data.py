@@ -1,6 +1,6 @@
-"""
-base code from https://github.com/tacchinotacchi/distil-bilstm/blob/master/generate_dataset.py
-"""
+# ------------------------------------------------------------------------------ #
+# base code from https://github.com/tacchinotacchi/distil-bilstm/blob/master/generate_dataset.py
+# ------------------------------------------------------------------------------ #
 import sys
 import os
 import argparse

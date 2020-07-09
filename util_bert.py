@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 # ------------------------------------------------------------------------------ #
-# reference
+# base code from
 #   https://github.com/huggingface/transformers/blob/master/examples/utils_ner.py
 #   https://colab.research.google.com/github/allenai/longformer/blob/master/scripts/convert_model_to_long.ipynb
 # ------------------------------------------------------------------------------ #
