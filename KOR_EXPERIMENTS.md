@@ -626,6 +626,7 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 | GloVe, GloVe-GNB                          | 72.61             | 33.97             | 1.4223  / -       |         | failed to train for bias                           |
 | GloVe, GloVe-CNN                          | 72.61             | 60.72             | 2.1012  / -       |         | failed to train for bias                           |
 | GloVe, DenseNet-CNN                       | 72.61             | 61.78             | 3.7602  / -       |         | failed to train for bias                           |
+| GloVe, DenseNet-DSA                       | 72.61             | 59.87             | 8.3071  / -       |         | failed to train for bias                           |
 | **DistilFromBERT, GloVe, DenseNet-CNN**   | 83.65             | 64.97             | 3.8358  / -       |         | from 'dha BERT(v1), CNN'                           |
 | DistilFromBERT, GloVe, DenseNet-CNN       | **85.56**         | 66.67             | 3.6249  / -       |         | from 'dha BERT(v1), CNN', unlabeled data used      |
 | DistilFromBERT, GloVe, DenseNet-CNN       | 84.08             | 62.63             | 3.8700  / -       |         | from 'bpe BERT(v1), CNN', no augmentation          |
@@ -745,6 +746,36 @@ INFO:__main__:[Elapsed Time] : 2106.7402362823486ms, 4.309217473293873ms on aver
 
 </p>
 </details>
+
+
+<details><summary><b>enc_class=densenet-dsa</b></summary>
+<p>
+
+- train
+```
+$ python preprocess.py --config=configs/config-densenet-dsa.json --data_dir=data/korean_hate_speech_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
+$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/korean_hate_speech_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-dsa.pt
+
+```
+
+- evaluation
+```
+$ python evaluate.py --config=configs/config-densenet-dsa.json --data_dir=./data/korean_hate_speech_morph --model_path=pytorch-model-kor-dsa.pt
+INFO:__main__:[Accuracy] : 0.5987,   282/  471
+INFO:__main__:[Elapsed Time] : 6090.857982635498ms, 8.307155142439173ms on average
+
+** --data_dir=./data/korean_bias_speech_morph
+INFO:__main__:[Accuracy] : 0.7261,   342/  471
+INFO:__main__:[Elapsed Time] : 6214.275121688843ms, 8.474696950709566ms on average
+
+=> 학습 결과가 전부 'none' class를 찍는 문제. 학습이 안됨
+
+
+```
+
+</p>
+</details>
+
 
 
 ##### BERT(kor-bert-base-dha.v1, kor-bert-large-dha_bpe)
