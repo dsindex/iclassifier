@@ -629,10 +629,14 @@ INFO:__main__:[Elapsed Time] : 547190.5903816223ms, 10.942878885472886ms on aver
 
 |                                           | Bias Accuracy (%) | Hate Accuracy (%) | GPU / CPU         | CONDA   | Etc                                                |
 | ----------------------------------------- | ----------------- | ----------------- | ----------------- | ------- | -------------------------------------------------- |
-| GloVe, GloVe-GNB                          | 72.61             | 33.97             | 1.4223  / -       |         | failed to train for bias                           |
-| GloVe, GloVe-CNN                          | 72.61             | 60.72             | 2.1012  / -       |         | failed to train for bias                           |
+| GloVe, GNB                                | 72.61             | 33.97             | 1.4223  / -       |         | failed to train for bias                           |
+| GloVe, CNN                                | 72.61             | 60.72             | 2.1012  / -       |         | failed to train for bias                           |
 | GloVe, DenseNet-CNN                       | 72.61             | 61.78             | 3.7602  / -       |         | failed to train for bias                           |
 | GloVe, DenseNet-DSA                       | 72.61             | 59.87             | 8.3071  / -       |         | failed to train for bias                           |
+| Augmentation, GloVe, GNB                  | 73.25             | 38.85             | 1.3125  / -       |         |                                                    |
+| Augmentation, GloVe, CNN                  | 80.68             | 59.45             | 1.7384  / -       |         |                                                    |
+| Augmentation, GloVe, DenseNet-CNN         | 81.95             | 59.87             | 3.6013  / -       |         |                                                    |
+| Augmentation, GloVe, DenseNet-DSA         | 84.72             | 59.02             | 7.4648  / -       |         |                                                    |
 | **DistilFromBERT, GloVe, DenseNet-CNN**   | 83.65             | 64.97             | 3.8358  / -       |         | from 'dha BERT(v1), CNN'                           |
 | DistilFromBERT, GloVe, DenseNet-CNN       | **85.56**         | 66.67             | 3.6249  / -       |         | from 'dha BERT(v1), CNN', unlabeled data used      |
 | DistilFromBERT, GloVe, DenseNet-CNN       | 84.08             | 62.63             | 3.8700  / -       |         | from 'bpe BERT(v1), CNN', no augmentation          |
@@ -692,6 +696,18 @@ INFO:__main__:[Elapsed Time] : 673.8839149475098ms, 1.2677735470710916ms on aver
 
 => 학습 결과가 전부 'none' class를 찍는 문제. 학습이 안됨
 
+** augmentation
+$ python augment_data.py --input data/korean_hate_speech/train.txt --output data/korean_hate_speech_morph/augmented.txt --analyzer=npc --n_iter=5 --max_ng=3 --preserve_label --parallel
+$ python preprocess.py --config=configs/config-glove-gnb.json --data_dir=data/korean_hate_speech_morph --embedding_path=embeddings/kor.glove.300k.300d.txt --augmented --augmented_filename augmented.txt
+$ python train.py --config=configs/config-glove-gnb.json --data_dir=data/korean_hate_speech_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-gnb.pt --augmented --criterion CrossEntropyLoss
+$ python evaluate.py --config=configs/config-glove-gnb.json --data_dir=./data/korean_hate_speech_morph --model_path=pytorch-model-kor-gnb.pt
+INFO:__main__:[Accuracy] : 0.3885,   183/  471
+INFO:__main__:[Elapsed Time] : 703.909158706665ms, 1.3125252216420276ms on average
+
+*** --data_dir=./data/korean_bias_speech_morph
+INFO:__main__:[Accuracy] : 0.7325,   345/  471
+INFO:__main__:[Elapsed Time] : 652.2922515869141ms, 1.2430145385417533ms on average
+
 ```
 
 </p>
@@ -718,6 +734,14 @@ INFO:__main__:[Accuracy] : 0.7261,   342/  471
 INFO:__main__:[Elapsed Time] : 1100.193738937378ms, 2.101261057752244ms on average
 
 => 학습 결과가 전부 'none' class를 찍는 문제. 학습이 안됨
+
+** augmentation
+INFO:__main__:[Accuracy] : 0.5945,   280/  471
+INFO:__main__:[Elapsed Time] : 904.7646522521973ms, 1.7384361713490588ms on average
+
+*** --data_dir=./data/korean_bias_speech_morph
+INFO:__main__:[Accuracy] : 0.8068,   380/  471
+INFO:__main__:[Elapsed Time] : 1002.643346786499ms, 1.9655851607627057ms on average
 
 ```
 
@@ -747,6 +771,13 @@ INFO:__main__:[Elapsed Time] : 2106.7402362823486ms, 4.309217473293873ms on aver
 
 => 학습 결과가 전부 'none' class를 찍는 문제. 학습이 안됨
 
+** augmentation
+INFO:__main__:[Accuracy] : 0.5987,   282/  471
+INFO:__main__:[Elapsed Time] : 1770.780086517334ms, 3.6013182173383997ms on average
+
+*** --data_dir=./data/korean_bias_speech_morph
+INFO:__main__:[Accuracy] : 0.8195,   386/  471
+INFO:__main__:[Elapsed Time] : 1687.3586177825928ms, 3.401884119561378ms on average
 
 ```
 
@@ -776,6 +807,13 @@ INFO:__main__:[Elapsed Time] : 6214.275121688843ms, 8.474696950709566ms on avera
 
 => 학습 결과가 전부 'none' class를 찍는 문제. 학습이 안됨
 
+** augmentation
+INFO:__main__:[Accuracy] : 0.5902,   278/  471
+INFO:__main__:[Elapsed Time] : 3587.0931148529053ms, 7.464842086142682ms on average
+
+*** --data_dir=./data/korean_bias_speech_morph
+INFO:__main__:[Accuracy] : 0.8471,   399/  471
+INFO:__main__:[Elapsed Time] : 3581.5823078155518ms, 7.451774718913626ms on average
 
 ```
 

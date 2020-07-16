@@ -75,7 +75,7 @@ $ python -m spacy download en_core_web_sm
     ```
     * converting augmented.txt to augmented.txt.ids(id mapped file) and train!
     $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --augmented --augmented_filename=augmented.txt
-    $ python train.py --config=configs/config-glove-cnn.json --data_dir=data/sst2 --lr=1e-3 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --save_path=pytorch-model-cnn.pt --augmented
+    $ python train.py --config=configs/config-glove-cnn.json --data_dir=data/sst2 --lr=1e-3 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --save_path=pytorch-model-cnn.pt --augmented --criterion MSELoss
     $ python evaluate.py --config=configs/config-glove-cnn.json --data_dir=data/sst2 --model_path=pytorch-model-cnn.pt
     INFO:__main__:[Accuracy] : 0.8616,  1569/ 1821
     INFO:__main__:[Elapsed Time] : 3341.681718826294ms, 1.7900076541271839ms on average
@@ -95,7 +95,7 @@ $ python -m spacy download en_core_web_sm
     - distilled from bert-large
     ```
     $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --augmented --augmented_filename=augmented.txt
-    $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --save_path=pytorch-model-densenet.pt --augmented
+    $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --save_path=pytorch-model-densenet.pt --augmented --criterion MSELoss
     $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --model_path=pytorch-model-densenet.pt
     INFO:__main__:[Accuracy] : 0.8852,  1612/ 1821
     INFO:__main__:[Elapsed Time] : 6774.356126785278ms, 3.678809417473091ms on average
@@ -115,7 +115,7 @@ $ python -m spacy download en_core_web_sm
     - distilled from bert-large
     ```
     $ python preprocess.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --augmented --augmented_filename=augmented.txt
-    $ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --save_path=pytorch-model-densenet.pt --augmented
+    $ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --save_path=pytorch-model-densenet.pt --augmented --criterion MSELoss
     $ python evaluate.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --model_path=pytorch-model-densenet.pt
     INFO:__main__:[Accuracy] : 0.8814,  1605/ 1821
     INFO:__main__:[Elapsed Time] : 15502.179622650146ms, 8.464712756020683ms on average
@@ -137,7 +137,7 @@ $ python -m spacy download en_core_web_sm
     * converting augmented.txt to augmented.txt.fs(id mapped file) and train!
 
     $ python preprocess.py --config=configs/config-distilbert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_do_lower_case --augmented --augmented_filename=augmented.txt
-    $ python train.py --config=configs/config-distilbert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64 --augmented
+    $ python train.py --config=configs/config-distilbert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64 --augmented --criterion MSELoss
     $ python evaluate.py --config=configs/config-distilbert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
     INFO:__main__:[Accuracy] : 0.9352,  1703/ 1821
     INFO:__main__:[Elapsed Time] : 13713.293313980103ms, 7.48790830046266ms on average
@@ -201,7 +201,7 @@ $ python -m spacy download en_core_web_sm
     * converting augmented.txt to augmented.txt.ids(id mapped file) and train!
 
     $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt --augmented --augmented_filename=augmented.txt
-    $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --lr_decay_rate=0.9 --save_path=pytorch-model-densenet.pt --augmented --measure=accuracy
+    $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --lr_decay_rate=0.9 --save_path=pytorch-model-densenet.pt --augmented --criterion MSELoss --measure=accuracy
     $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/clova_sentiments_morph --model_path=pytorch-model-densenet.pt
 
     * 1) n_iter=2
@@ -260,7 +260,7 @@ $ python -m spacy download en_core_web_sm
     * converting augmented.txt to augmented.txt.fs(id mapped file) and train!
 
     $ python preprocess.py --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --data_dir=./data/clova_sentiments_morph --augmented --augmented_filename=augmented.txt
-    $ python train.py --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --bert_output_dir=bert-checkpoint-kor-bert --save_path=pytorch-model-kor-bert.pt --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph/ --augmented --measure=accuracy
+    $ python train.py --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --bert_output_dir=bert-checkpoint-kor-bert --save_path=pytorch-model-kor-bert.pt --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph/ --augmented --criterion MSELoss --measure=accuracy
     $ python evaluate.py --config=configs/config-distilbert-cnn.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint-kor-bert --model_path=pytorch-model-kor-bert.pt
 
     INFO:__main__:[Accuracy] : 0.9019, 45090/49997
@@ -324,7 +324,7 @@ $ python -m spacy download en_core_web_sm
     * converting augmented.txt to augmented.txt.ids(id mapped file) and train!
 
     $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech_morph --embedding_path=embeddings/kor.glove.300k.300d.txt --augmented --augmented_filename=augmented.txt
-    $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-cnn.pt --augmented --measure=accuracy
+    $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-cnn.pt --augmented --criterion MSELoss --measure=accuracy
     $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/korean_hate_speech_morph --model_path=pytorch-model-kor-cnn.pt
 
     1) --data_dir=./data/korean_hate_speech_morph
@@ -371,7 +371,7 @@ $ python -m spacy download en_core_web_sm
     * converting augmented.txt to augmented.txt.fs(id mapped file) and train!
 
     $ python preprocess.py --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --data_dir=./data/korean_hate_speech_morph --augmented --augmented_filename=augmented.txt
-    $ python train.py --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech_morph --save_path=pytorch-model-kor-bert.pt --augmented --measure=accuracy
+    $ python train.py --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech_morph --save_path=pytorch-model-kor-bert.pt --augmented --criterion MSELoss --measure=accuracy
     $ python evaluate.py --config=configs/config-distilbert-cnn.json --data_dir=data/korean_hate_speech_morph --bert_output_dir=bert-checkpoint-kor-bert --model_path=pytorch-model-kor-bert.pt
 
     1) --data_dir=./data/korean_hate_speech_morph

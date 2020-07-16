@@ -63,7 +63,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
 
     local_rank = opt.local_rank
     use_amp = opt.use_amp
-    if opt.augmented:
+    if opt.criterion == 'MSELoss':
         criterion = torch.nn.MSELoss(reduction='sum').to(opt.device)
     else:
         criterion = torch.nn.CrossEntropyLoss().to(opt.device)
@@ -417,6 +417,7 @@ def main():
     parser.add_argument('--measure', type=str, default='loss', help="Evaluation measure, 'loss' | 'accuracy', default 'loss'.")
     parser.add_argument('--augmented', action='store_true',
                         help="Set this flag to use augmented.txt for training.")
+    parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'MSELoss', default 'CrossEntropyLoss'")
     # for BERT
     parser.add_argument('--bert_model_name_or_path', type=str, default='embeddings/bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
