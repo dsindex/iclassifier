@@ -166,3 +166,32 @@ $ python mo_onnx.py --input_model pytorch-model.onnx --input='input_ids{i32},inp
   ```
   $ vi etc/numactl.sh
   ```
+  - TVM
+    - [install tvm from source](https://tvm.apache.org/docs/install/from_source.html)
+    - [install llvm](https://releases.llvm.org/download.html)
+    ```
+    $ git clone --recursive https://github.com/apache/incubator-tvm tvm
+    $ cd tvm
+    $ git submodule init
+    $ git submodule update
+    $ apt-get update
+    $ apt-get install -y python3 python3-dev python3-setuptools gcc libtinfo-dev zlib1g-dev build-essential cmake libedit-dev libxml2-dev
+    $ python -m pip install antlr4-python3-runtime
+
+    $ mkdir build
+    $ cp cmake/config.cmake build
+    $ vi build/config.cmake
+    # add
+    # LLVM path
+    set(USE_LLVM /path/to/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/llvm-config)
+
+    $ cmake ..
+    $ make -j4
+
+    $ cd python; python setup.py install
+    $ cd ..
+    $ cd topi/python; python setup.py install
+    $ cd ..
+    ```
+    - [Deploy a Hugging Face Pruned Model on CPU](https://tvm.apache.org/docs/tutorials/frontend/deploy_sparse.html#sphx-glr-download-tutorials-frontend-deploy-sparse-py)
+    - [Compile PyTorch Models](https://tvm.apache.org/docs/tutorials/frontend/from_pytorch.html)

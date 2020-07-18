@@ -617,6 +617,9 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 INFO:__main__:[Accuracy] : 0.8636, 43177/49997
 INFO:__main__:[Elapsed Time] : 547190.5903816223ms, 10.942878885472886ms on average
 
+** 572k
+
+
 ```
 
 </p>
