@@ -1,5 +1,10 @@
 from __future__ import absolute_import, division, print_function
 
+# ------------------------------------------------------------------------------ #
+# base code from
+#   https://colab.research.google.com/github/allenai/longformer/blob/master/scripts/convert_model_to_long.ipynb
+# ------------------------------------------------------------------------------ #
+
 import sys
 import os
 import argparse

@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 # ------------------------------------------------------------------------------ #
-# reference
+# base code from
 #   https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html
 # ------------------------------------------------------------------------------ #
 
