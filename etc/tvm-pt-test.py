@@ -9,11 +9,12 @@
 # ---------------------
 # Other than TVM, scipy, the latest transformers
 import os
-import tvm
 import time
 import itertools
 import numpy as np
+import torch
 
+import tvm
 from tvm import relay
 from tvm.contrib import graph_runtime
 from tvm.relay import data_dep_optimization as ddo
@@ -63,8 +64,8 @@ def load_pytorch_model(name, batch_size, seq_len):
     model = module.from_pretrained(name)
 
     input_shape = [batch_size, seq_len]
-    input_data = torch.randn(input_shape)
-    scripted_model = torch.jit.trace(model, input_data).eval()
+    input_ids = torch.randint(0, 10000, input_shape)
+    scripted_model = torch.jit.trace(model, (input_ids,)).eval()
 
     return scripted_model
 
@@ -85,7 +86,8 @@ def import_graphdef(
     relay_params="model.params",
 ):
     abs_path = os.path.dirname(os.path.abspath(__file__))
-    shape_dict = {"input_1": (batch_size, seq_len)}
+    shape_dict = {"input_ids": (batch_size, seq_len)}
+    shape_list = [("input_ids", (batch_size, seq_len))]
     relay_file = ("%s_%d_%d_%s" % (name, batch_size, seq_len, relay_file)).replace(
         "/", "_"
     )
@@ -101,8 +103,7 @@ def import_graphdef(
             params = relay.load_param_dict(fi.read())
     else:
         scripted_model = load_pytorch_model(name, batch_size, seq_len)
-       
-        mod, params = relay.frontend.from_pytorch(scripted_model, shape=shape_dict)
+        mod, params = relay.frontend.from_pytorch(scripted_model, shape_list)
 
         if save_relay:
             with open(os.path.join(abs_path, relay_file), "w") as fo:
@@ -123,7 +124,7 @@ def import_graphdef(
 def run_relay_graph(mod, params, shape_dict, target, ctx):
     with relay.build_config(opt_level=3, required_pass=["FastMath"]):
         lib = relay.build(mod, target=target, params=params)
-    input_shape = shape_dict["input_1"]
+    input_shape = shape_dict["input_ids"]
     dummy_data = np.random.uniform(size=input_shape, low=0, high=input_shape[1]).astype(
         "int32"
     )
