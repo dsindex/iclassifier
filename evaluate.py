@@ -425,9 +425,9 @@ def main():
                         help="The output directory where the model predictions and checkpoints will be written.")
     # for ONNX
     parser.add_argument('--convert_onnx', action='store_true',
-                        help="Set this flag to convert to onnx format.")
+                        help="Set this flag to convert to ONNX format.")
     parser.add_argument('--enable_ort', action='store_true',
-                        help="Set this flag to evaluate using onnxruntime.")
+                        help="Set this flag to evaluate using ONNXRuntime.")
     parser.add_argument('--onnx_path', type=str, default='pytorch-model.onnx')
     # for Quantization
     parser.add_argument('--enable_dqm', action='store_true',
