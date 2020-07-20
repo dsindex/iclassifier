@@ -602,9 +602,6 @@ $ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/
 INFO:__main__:[Accuracy] : 0.8807, 44034/49997
 INFO:__main__:[Elapsed Time] : 813746.9305992126ms, 16.273748160305097ms on average
 
-** 252k
-INFO:__main__:[Accuracy] : 0.8632, 43159/49997
-INFO:__main__:[Elapsed Time] : 626307.5745105743ms, 12.52473404487807ms on average
 
 * enc_class=cls
 
@@ -613,12 +610,13 @@ $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/
 INFO:__main__:[Accuracy] : 0.8826, 44126/49997
 INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on average
 
-** 252k
-INFO:__main__:[Accuracy] : 0.8636, 43177/49997
-INFO:__main__:[Elapsed Time] : 547190.5903816223ms, 10.942878885472886ms on average
+** 651k
+INFO:__main__:[Accuracy] : 0.8705, 43520/49997
+INFO:__main__:[Elapsed Time] : 573579.1018009186ms, 11.470799193743543ms on average
 
-** 572k
-
+** 673.2k
+INFO:__main__:[Accuracy] : 0.8704, 43519/49997
+INFO:__main__:[Elapsed Time] : 684914.3662452698ms, 13.697403236831395ms on average
 
 ```
 

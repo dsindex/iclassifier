@@ -185,7 +185,7 @@ $ python mo_onnx.py --input_model pytorch-model.onnx --input='input_ids{i32},inp
     # LLVM path
     set(USE_LLVM /path/to/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/llvm-config)
 
-    $ cmake ..
+    $ cmake .. # for using intel MKL library, '-DUSE_BLAS=mkl -DUSE_OPENMP=intel'
     $ make -j4
 
     $ cd python; python setup.py install
@@ -195,3 +195,4 @@ $ python mo_onnx.py --input_model pytorch-model.onnx --input='input_ids{i32},inp
     ```
     - [Deploy a Hugging Face Pruned Model on CPU](https://tvm.apache.org/docs/tutorials/frontend/deploy_sparse.html#sphx-glr-download-tutorials-frontend-deploy-sparse-py)
     - [Compile PyTorch Models](https://tvm.apache.org/docs/tutorials/frontend/from_pytorch.html)
+    - [Speed up your BERT inference by 3x on CPUs using Apache TVM](https://medium.com/apache-mxnet/speed-up-your-bert-inference-by-3x-on-cpus-using-apache-tvm-9cf7776cd7f8)

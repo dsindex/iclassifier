@@ -1,74 +1,7 @@
-# Licensed to the Apache Software Foundation (ASF) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The ASF licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing,
-# software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-# KIND, either express or implied.  See the License for the
-# specific language governing permissions and limitations
-# under the License.
-"""
-Deploy a Hugging Face Pruned Model on CPU
-=========================================
-**Author**: `Josh Fromm <https://github.com/jwfromm>`_
-
-This tutorial demonstrates how to take any pruned model, in this case `PruneBert
-from Hugging Face
-<https://huggingface.co/huggingface/prunebert-base-uncased-6-finepruned-w-distil-squad>`_,
-and use TVM to leverage the model's sparsity support to produce real speedups. Although
-the primary purpose of this tutorial is to realize speedups on already pruned
-models, it may also be useful to estimate how fast a model would be *if* it were
-pruned. To this end, we also provide a function that takes an unpruned model and
-replaces its weights
-with random and pruned weights at a specified sparsity. This may be a useful
-feature when trying to decide if a model is worth pruning or not.
-
-Before we get into the code, it's useful to discuss sparsity and pruning
-and dig into the two
-different types of sparsity: **structured** and **unstructured**.
-
-Pruning is a technique primarily used to reduce the parameter size of a model
-by replacing weight values with 0s. Although many methods exist for choosing which
-weights should be set to 0, the most straight forward is by picking the 
-weights with the smallest value. Typically, weights are pruned to a desired
-sparsity percentage. For example, a 95% sparse model would have only 5% of
-its weights non-zero. Pruning to very high sparsities often requires
-finetuning or full retraining as it tends to be a lossy approximation.
-Although parameter size benefits are quite easy to obtain from a pruned model
-through simple compression, leveraging sparsity to yield runtime speedups
-is more complicated.
-
-In structured sparsity weights are pruned with the goal of clustering
-pruned weights together. In other words, they are pruned using both their
-value and location. The benefit of bunching up pruned weights is that it allows
-an algorithm such as matrix multiplication to skip entire blocks. It turns out
-that some degree of *block sparsity* is very important to realizing significant
-speedups on most hardware available today. 
-This is because when loading memory in most CPUs or GPUs, 
-it doesn't save any work to skip reading a single value at a time, instead an entire
-chunk or tile is read in and executed using something like vectorized instructions.
-
-Unstructured sparse weights are those that are pruned only on the value of
-the original weights. They may appear to be scattered randomly throughout
-a tensor rather than in chunks like we'd see in block sparse weights.
-At low sparsities, unstructured pruning techniques are difficult to
-accelerate. However, at high sparsities many blocks of all 0 values
-will naturally appear, making it possible to accelerate.
-
-This tutorial interacts with both structured and unstructured sparsity.
-Hugging Face's PruneBert model is unstructured but 95% sparse, allowing us
-to apply TVM's block sparse optimizations to it, even if not optimally.
-When generating random sparse weights for an unpruned model, we do so with structured
-sparsity. A fun exercise is comparing the real speed of PruneBert with the block
-sparse speed using fake weights to see the benefit of structured sparsity.
-"""
+# ------------------------------------------------------------------------------ #
+# code from
+#   https://tvm.apache.org/docs/tutorials/frontend/deploy_sparse.html
+# ------------------------------------------------------------------------------ #
 
 ###############################################################################
 # Load Required Modules
@@ -106,7 +39,7 @@ seq_len = 128
 # tuning that is outside the scope of this tutorial. Note that best
 # cpu performance can be achieved by setting -mcpu appropriately for
 # your specific machine.
-target = "llvm"
+target = "llvm -mcpu=skylake-avx512"
 # Which device to run on. Should be one of tvm.cpu() or tvm.gpu().
 ctx = tvm.cpu()
 # If true, then a sparse variant of the network will be run and
@@ -215,7 +148,7 @@ def import_graphdef(
 # regular dense matrix multiplications on these dense (but mostly zero)
 # tensors instead of sparse aware kernels.
 def run_relay_graph(mod, params, shape_dict, target, ctx):
-    with relay.build_config(opt_level=3):
+    with relay.build_config(opt_level=3, required_pass=["FastMath"]):
         lib = relay.build(mod, target=target, params=params)
     input_shape = shape_dict["input_1"]
     dummy_data = np.random.uniform(size=input_shape, low=0, high=input_shape[1]).astype(
