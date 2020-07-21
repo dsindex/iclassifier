@@ -106,16 +106,16 @@ def convert_onnx(config, torch_model, x):
                         'output': {0: 'batch'}}
         
     with torch.no_grad():
-        torch.onnx.export(torch_model,               # model being run
-                          x,                         # model input (or a tuple for multiple inputs)
-                          opt.onnx_path,             # where to save the model (can be a file or file-like object)
-                          export_params=True,        # store the trained parameter weights inside the model file
-                          opset_version=11,          # the ONNX version to export the model to
-                          do_constant_folding=True,  # whether to execute constant folding for optimization
+        torch.onnx.export(torch_model,                  # model being run
+                          x,                            # model input (or a tuple for multiple inputs)
+                          opt.onnx_path,                # where to save the model (can be a file or file-like object)
+                          export_params=True,           # store the trained parameter weights inside the model file
+                          opset_version=opt.onnx_opset, # the ONNX version to export the model to
+                          do_constant_folding=True,     # whether to execute constant folding for optimization
                           verbose=True,
-                          input_names=input_names,   # the model's input names
-                          output_names=output_names, # the model's output names
-                          dynamic_axes=dynamic_axes) # variable length axes
+                          input_names=input_names,      # the model's input names
+                          output_names=output_names,    # the model's output names
+                          dynamic_axes=dynamic_axes)    # variable length axes
 
 def check_onnx(config):
     opt = config['opt']
@@ -123,6 +123,28 @@ def check_onnx(config):
     onnx_model = onnx.load(opt.onnx_path)
     onnx.checker.check_model(onnx_model)
     print(onnx.helper.printable_graph(onnx_model.graph))
+
+def convert_tvm(config, torch_model, x):
+    opt = config['opt']
+    import onnx
+    import tvm
+    from tvm import relay
+
+    onnx_model = onnx.load(opt.onnx_path)
+    logger.info("[ONNX model loaded]")
+    batch_size = x[0].shape[0]
+    seq_len = x[0].shape[1]
+    shape_dict = {'input_ids': (batch_size, seq_len),
+                  'input_mask': (batch_size, seq_len),
+                  'segment_ids': (batch_size, seq_len), }
+    model, params = relay.frontend.from_onnx(onnx_model, shape_dict, opset=opt.onnx_opset)  
+    logger.info("[Converting to TVM done]")
+
+    with open(os.path.join(opt.tvm_dir, 'model.json'), 'w') as fo:
+        fo.write(tvm.ir.save_json(model))
+    with open(os.path.join(opt.tvm_dir, 'model.params'), 'wb') as fo:
+        fo.write(relay.save_param_dict(params))
+
 
 # ---------------------------------------------------------------------------- #
 # Evaluation
@@ -201,6 +223,15 @@ def evaluate(opt):
         sess_options.inter_op_num_threads = opt.num_threads
         sess_options.intra_op_num_threads = opt.num_threads
         ort_session = ort.InferenceSession(opt.onnx_path, sess_options=sess_options)
+
+    # convert to tvm format
+    if opt.convert_tvm:
+        (x, y) = next(iter(test_loader))
+        x = to_device(x, opt.device)
+        y = to_device(y, opt.device)
+        convert_tvm(config, model, x)
+        logger.info("[TVM model saved at {}".format(opt.tvm_path))
+        return
 
     # enable to use dynamic quantized model (pytorch>=1.3.0)
     if opt.enable_dqm and opt.device == 'cpu':
@@ -425,10 +456,17 @@ def main():
                         help="The output directory where the model predictions and checkpoints will be written.")
     # for ONNX
     parser.add_argument('--convert_onnx', action='store_true',
-                        help="Set this flag to convert to ONNX format.")
+                        help="Set this flag to convert to ONNX.")
     parser.add_argument('--enable_ort', action='store_true',
                         help="Set this flag to evaluate using ONNXRuntime.")
     parser.add_argument('--onnx_path', type=str, default='pytorch-model.onnx')
+    parser.add_argument('--onnx_opset', default=11, type=int, help="ONNX opset version.")
+    # for TVM
+    parser.add_argument('--convert_tvm', action='store_true',
+                        help="Set this flag to convert ONNX to TVM.")
+    parser.add_argument('--enable_tvm', action='store_true',
+                        help="Set this flag to evaluate using TVM.")
+    parser.add_argument('--tvm_dir', type=str, default='tvm-model')
     # for Quantization
     parser.add_argument('--enable_dqm', action='store_true',
                         help="Set this flag to use dynamic quantized model.")
