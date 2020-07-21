@@ -61,11 +61,11 @@ def load_pytorch_model(name, batch_size, seq_len):
     import transformers
 
     module = getattr(transformers, "BertForSequenceClassification")
-    model = module.from_pretrained(name)
+    model = module.from_pretrained(name, torchscript=True)
 
     input_shape = [batch_size, seq_len]
     input_ids = torch.randint(0, 10000, input_shape)
-    scripted_model = torch.jit.trace(model, (input_ids,)).eval()
+    scripted_model = torch.jit.trace(model, [input_ids,]).eval()
 
     return scripted_model
 
