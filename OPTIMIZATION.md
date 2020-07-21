@@ -170,6 +170,7 @@ $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=ber
     - [Deploy a Hugging Face Pruned Model on CPU](https://tvm.apache.org/docs/tutorials/frontend/deploy_sparse.html#sphx-glr-download-tutorials-frontend-deploy-sparse-py)
     - [Compile PyTorch Models](https://tvm.apache.org/docs/tutorials/frontend/from_pytorch.html)
     - [Speed up your BERT inference by 3x on CPUs using Apache TVM](https://medium.com/apache-mxnet/speed-up-your-bert-inference-by-3x-on-cpus-using-apache-tvm-9cf7776cd7f8)
+    - [TorchScript](https://huggingface.co/transformers/torchscript.html#using-torchscript-in-python)
 
 - conversion onnx model to openvino
   - install [OpenVINO Toolkit](https://software.intel.com/en-us/openvino-toolkit)
