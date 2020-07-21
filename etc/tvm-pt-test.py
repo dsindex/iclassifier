@@ -65,7 +65,9 @@ def load_pytorch_model(name, batch_size, seq_len):
 
     input_shape = [batch_size, seq_len]
     input_ids = torch.randint(0, 10000, input_shape)
-    scripted_model = torch.jit.trace(model, [input_ids,]).eval()
+    attention_mask = torch.ones(input_shape).long() 
+    token_type_ids = torch.zeros(input_shape).long()
+    scripted_model = torch.jit.trace(model, [input_ids, attention_mask, token_type_ids]).eval()
 
     return scripted_model
 
@@ -86,8 +88,12 @@ def import_graphdef(
     relay_params="model.params",
 ):
     abs_path = os.path.dirname(os.path.abspath(__file__))
-    shape_dict = {"input_ids": (batch_size, seq_len)}
-    shape_list = [("input_ids", (batch_size, seq_len))]
+    shape_dict = {"input_ids": (batch_size, seq_len),
+                  "attention_mask": (batch_size, seq_len),
+                  "token_type_ids": (batch_size, seq_len), }
+    shape_list = [("input_ids", (batch_size, seq_len)),
+                  ("attention_mask", (batch_size, seq_len)),
+                  ("token_type_ids", (batch_size, seq_len)), ]
     relay_file = ("%s_%d_%d_%s" % (name, batch_size, seq_len, relay_file)).replace(
         "/", "_"
     )
@@ -125,12 +131,16 @@ def run_relay_graph(mod, params, shape_dict, target, ctx):
     with relay.build_config(opt_level=3, required_pass=["FastMath"]):
         lib = relay.build(mod, target=target, params=params)
     input_shape = shape_dict["input_ids"]
-    dummy_data = np.random.uniform(size=input_shape, low=0, high=input_shape[1]).astype(
+    input_ids = np.random.uniform(size=input_shape, low=0, high=input_shape[1]).astype(
         "int32"
     )
+    attention_mask = np.ones(input_shape).astype("int32")
+    token_type_ids = np.zeros(input_shape).astype("int32")
 
     m = graph_runtime.GraphModule(lib['default'](ctx))
-    m.set_input(0, dummy_data)
+    m.set_input(0, input_ids)
+    m.set_input(1, attention_mask)
+    m.set_input(2, token_type_ids)
     m.run()
     tvm_output = m.get_output(0)
 
