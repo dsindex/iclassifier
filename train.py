@@ -248,26 +248,10 @@ def prepare_model(config):
         if config['enc_class'] == 'densenet-dsa':
             model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable)
     if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
-        from transformers import BertTokenizer, BertConfig, BertModel
-        from transformers import DistilBertTokenizer, DistilBertConfig, DistilBertModel
-        from transformers import AlbertTokenizer, AlbertConfig, AlbertModel
-        from transformers import RobertaConfig, RobertaTokenizer, RobertaModel
-        from transformers import BartConfig, BartTokenizer, BartModel
-        from transformers import ElectraConfig, ElectraTokenizer, ElectraModel
-        MODEL_CLASSES = {
-            "bert": (BertConfig, BertTokenizer, BertModel),
-            "distilbert": (DistilBertConfig, DistilBertTokenizer, DistilBertModel),
-            "albert": (AlbertConfig, AlbertTokenizer, AlbertModel),
-            "roberta": (RobertaConfig, RobertaTokenizer, RobertaModel),
-            "bart": (BartConfig, BartTokenizer, BartModel),
-            "electra": (ElectraConfig, ElectraTokenizer, ElectraModel),
-        }
-        Config    = MODEL_CLASSES[config['emb_class']][0]
-        Tokenizer = MODEL_CLASSES[config['emb_class']][1]
-        Model     = MODEL_CLASSES[config['emb_class']][2]
-        bert_tokenizer = Tokenizer.from_pretrained(opt.bert_model_name_or_path,
+        from transformers import AutoTokenizer, AutoConfig, AutoModel
+        bert_tokenizer = AutoTokenizer.from_pretrained(opt.bert_model_name_or_path,
                                                    do_lower_case=opt.bert_do_lower_case)
-        bert_model = Model.from_pretrained(opt.bert_model_name_or_path,
+        bert_model = AutoModel.from_pretrained(opt.bert_model_name_or_path,
                                            from_tf=bool(".ckpt" in opt.bert_model_name_or_path))
         bert_config = bert_model.config
         # bert model reduction

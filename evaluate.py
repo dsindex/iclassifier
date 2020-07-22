@@ -59,26 +59,9 @@ def load_model(config, checkpoint):
         if config['enc_class'] == 'densenet-dsa':
             model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
     if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
-        from transformers import BertTokenizer, BertConfig, BertModel
-        from transformers import DistilBertTokenizer, DistilBertConfig, DistilBertModel
-        from transformers import AlbertTokenizer, AlbertConfig, AlbertModel
-        from transformers import RobertaConfig, RobertaTokenizer, RobertaModel
-        from transformers import BartConfig, BartTokenizer, BartModel
-        from transformers import ElectraConfig, ElectraTokenizer, ElectraModel
-        MODEL_CLASSES = {
-            "bert": (BertConfig, BertTokenizer, BertModel),
-            "distilbert": (DistilBertConfig, DistilBertTokenizer, DistilBertModel),
-            "albert": (AlbertConfig, AlbertTokenizer, AlbertModel),
-            "roberta": (RobertaConfig, RobertaTokenizer, RobertaModel),
-            "bart": (BartConfig, BartTokenizer, BartModel),
-            "electra": (ElectraConfig, ElectraTokenizer, ElectraModel),
-        }
-        Config    = MODEL_CLASSES[config['emb_class']][0]
-        Tokenizer = MODEL_CLASSES[config['emb_class']][1]
-        Model     = MODEL_CLASSES[config['emb_class']][2]
-        bert_config = Config.from_pretrained(opt.bert_output_dir)
-        bert_tokenizer = Tokenizer.from_pretrained(opt.bert_output_dir)
-        # no need to use 'from_pretrained'
+        from transformers import AutoTokenizer, AutoConfig, AutoModel
+        bert_config = AutoConfig.from_pretrained(opt.bert_output_dir)
+        bert_tokenizer = AutoTokenizer.from_pretrained(opt.bert_output_dir)
         bert_model = Model(bert_config)
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
