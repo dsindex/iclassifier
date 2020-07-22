@@ -610,13 +610,9 @@ $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/
 INFO:__main__:[Accuracy] : 0.8826, 44126/49997
 INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on average
 
-** 651k
-INFO:__main__:[Accuracy] : 0.8705, 43520/49997
-INFO:__main__:[Elapsed Time] : 573579.1018009186ms, 11.470799193743543ms on average
-
-** 673.2k
-INFO:__main__:[Accuracy] : 0.8704, 43519/49997
-INFO:__main__:[Elapsed Time] : 684914.3662452698ms, 13.697403236831395ms on average
+** 864.6k
+INFO:__main__:[Accuracy] : 0.8770, 43849/49997
+INFO:__main__:[Elapsed Time] : 651590.5060768127ms, 13.03045066206615ms on average
 
 ```
 
