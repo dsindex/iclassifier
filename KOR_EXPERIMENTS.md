@@ -614,6 +614,18 @@ INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on avera
 INFO:__main__:[Accuracy] : 0.8770, 43849/49997
 INFO:__main__:[Elapsed Time] : 651590.5060768127ms, 13.03045066206615ms on average
 
+** 929k
+INFO:__main__:[Accuracy] : 0.8739, 43693/49997
+INFO:__main__:[Elapsed Time] : 634651.9558429718ms, 12.691834104739243ms on average
+
+** 1230k
+INFO:__main__:[Accuracy] : 0.8735, 43670/49997
+INFO:__main__:[Elapsed Time] : 655157.7899456024ms, 13.102401556115273ms on average
+
+** 1230.1k
+INFO:__main__:[Accuracy] : 0.8775, 43873/49997
+INFO:__main__:[Elapsed Time] : 664261.5323066711ms, 13.284362109244007ms on average
+
 ```
 
 </p>
