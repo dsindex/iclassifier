@@ -11,6 +11,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+from torch.cuda.amp import autocast, GradScaler
 
 try:
     from torch.utils.tensorboard import SummaryWriter
@@ -40,6 +41,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
     optimizer = config['optimizer']
     scheduler = config['scheduler']
     writer = config['writer']
+    scaler = config['scaler']
     opt = config['opt']
 
     if opt.criterion == 'MSELoss':
@@ -49,26 +51,37 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
 
     # train one epoch
     model.train()
-    optimizer.zero_grad()
     total_loss = 0.
     final_val_loss = 0.
     total_examples = 0
     st_time = time.time()
     for local_step, (x,y) in tqdm(enumerate(train_loader), total=len(train_loader)):
+        optimizer.zero_grad()
         global_step = (len(train_loader) * epoch_i) + local_step
         x = to_device(x, opt.device)
         y = to_device(y, opt.device)
-        output = model(x)
-        loss = criterion(output, y)
+        if opt.use_amp:
+            with autocast():
+                output = model(x)
+                loss = criterion(output, y)
+        else:
+            output = model(x)
+            loss = criterion(output, y)
         # back-propagation - begin
         if opt.gradient_accumulation_steps > 1:
             loss = loss / opt.gradient_accumulation_steps
-        loss.backward()
+        if opt.use_amp:
+            scaler.scale(loss).backward()
+        else:
+            loss.backward()
         if (local_step + 1) % opt.gradient_accumulation_steps == 0:
             torch.nn.utils.clip_grad_norm_(model.parameters(), opt.max_grad_norm)
-            optimizer.step()
+            if opt.use_amp:
+                scaler.step(optimizer)
+                scaler.update()
+            else:
+                optimizer.step()
             if opt.use_transformers_optimizer: scheduler.step()
-            optimizer.zero_grad()
         # back-propagation - end
         cur_examples = y.size(0)
         total_examples += cur_examples
@@ -277,11 +290,12 @@ def train(opt):
     # prepare model
     model = prepare_model(config)
 
-    # create optimizer, scheduler, summary writer
+    # create optimizer, scheduler, summary writer, scaler
     optimizer, scheduler, writer = prepare_osw(config, model, train_loader)
     config['optimizer'] = optimizer
     config['scheduler'] = scheduler
     config['writer'] = writer
+    config['scaler'] = GradScaler()
 
     # training
     early_stopping = EarlyStopping(logger, patience=opt.patience, measure=opt.measure, verbose=1)
@@ -352,6 +366,7 @@ def main():
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--embedding_trainable', action='store_true', help="Set word embedding(Glove) trainable")
     parser.add_argument('--use_transformers_optimizer', action='store_true', help="Use transformers AdamW, get_linear_schedule_with_warmup.")
+    parser.add_argument('--use_amp', action='store_true', help="Use automatic mixed precision.")
     # for Augmentation
     parser.add_argument('--measure', type=str, default='loss', help="Evaluation measure, 'loss' | 'accuracy', default 'loss'.")
     parser.add_argument('--augmented', action='store_true',
