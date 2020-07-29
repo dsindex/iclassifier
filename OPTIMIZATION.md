@@ -6,6 +6,7 @@
   - 1.5.0 : recommended
   ```
   $ conda install pytorch=1.5.0 --channel pytorch
+  * do not install cudatoolkit for inference on CPU.
   ```
   - 1.3.0, 1.4.0 : bad for multi-processing on CPU.
 
