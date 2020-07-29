@@ -12,6 +12,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.cuda.amp import autocast, GradScaler
+import torch.autograd.profiler as profiler
 
 try:
     from torch.utils.tensorboard import SummaryWriter
@@ -65,7 +66,12 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
                 output = model(x)
                 loss = criterion(output, y)
         else:
-            output = model(x)
+            if opt.use_profiler:
+                with profiler.profile(profile_memory=True, record_shapes=True) as prof:
+                    output = model(x)
+                print(prof.key_averages().table(sort_by="self_cpu_memory_usage", row_limit=10))
+            else:
+                output = model(x)
             loss = criterion(output, y)
         # back-propagation - begin
         if opt.gradient_accumulation_steps > 1:
@@ -367,6 +373,7 @@ def main():
     parser.add_argument('--embedding_trainable', action='store_true', help="Set word embedding(Glove) trainable")
     parser.add_argument('--use_transformers_optimizer', action='store_true', help="Use transformers AdamW, get_linear_schedule_with_warmup.")
     parser.add_argument('--use_amp', action='store_true', help="Use automatic mixed precision.")
+    parser.add_argument('--use_profiler', action='store_true', help="Use profiler.")
     # for Augmentation
     parser.add_argument('--measure', type=str, default='loss', help="Evaluation measure, 'loss' | 'accuracy', default 'loss'.")
     parser.add_argument('--augmented', action='store_true',
