@@ -4,8 +4,16 @@
 
 - install pytorch>=1.2.0
   - 1.5.0 : recommended
+  - 1.6.0 : recommended
   ```
   $ conda install pytorch=1.5.0 --channel pytorch
+  * Do not install the proper version of cudatoolkit.
+       ex) cudatoolkit10.1, cuda10.1 on the system
+    if we match these versions, the inference speed on CPU might be going worse.
+    (i'm trying to figure out.)
+    in my case, the system cuda version is cuda10.1 and:
+       pytorch                   1.6.0           py3.7_cuda10.2.89_cudnn7.6.5_0    pytorch
+       cudatoolkit               10.2.89              hfd86e86_1
   ```
   - 1.3.0, 1.4.0 : bad for multi-processing on CPU.
 
