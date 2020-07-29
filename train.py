@@ -248,8 +248,6 @@ def prepare_osw(config, model, train_loader):
         scheduler = get_linear_schedule_with_warmup(optimizer,
             num_warmup_steps=num_warmup_steps,
             num_training_steps=num_training_steps)
-    if opt.distributed:
-        model = DDP(model, delay_allreduce=True)
     try:
         writer = SummaryWriter(log_dir=opt.log_dir)
     except:
