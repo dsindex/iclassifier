@@ -626,6 +626,10 @@ INFO:__main__:[Elapsed Time] : 655157.7899456024ms, 13.102401556115273ms on aver
 INFO:__main__:[Accuracy] : 0.8775, 43873/49997
 INFO:__main__:[Elapsed Time] : 664261.5323066711ms, 13.284362109244007ms on average
 
+** 1508k
+INFO:__main__:[Accuracy] : 0.8785, 43923/49997
+INFO:__main__:[Elapsed Time] : 653267.7457332611ms, 13.064381627809889ms on average
+
 ```
 
 </p>
