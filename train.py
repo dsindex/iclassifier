@@ -56,16 +56,12 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
     final_val_loss = 0.
     total_examples = 0
     st_time = time.time()
+    optimizer.zero_grad()
     for local_step, (x,y) in tqdm(enumerate(train_loader), total=len(train_loader)):
-        optimizer.zero_grad()
         global_step = (len(train_loader) * epoch_i) + local_step
         x = to_device(x, opt.device)
         y = to_device(y, opt.device)
-        if opt.use_amp:
-            with autocast():
-                output = model(x)
-                loss = criterion(output, y)
-        else:
+        with autocast(enabled=opt.use_amp):
             if opt.use_profiler:
                 with profiler.profile(profile_memory=True, record_shapes=True) as prof:
                     output = model(x)
@@ -73,20 +69,16 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
             else:
                 output = model(x)
             loss = criterion(output, y)
+            if opt.gradient_accumulation_steps > 1:
+                loss = loss / opt.gradient_accumulation_steps
         # back-propagation - begin
-        if opt.gradient_accumulation_steps > 1:
-            loss = loss / opt.gradient_accumulation_steps
-        if opt.use_amp:
-            scaler.scale(loss).backward()
-        else:
-            loss.backward()
+        scaler.scale(loss).backward()
         if (local_step + 1) % opt.gradient_accumulation_steps == 0:
+            scaler.unscale_(optimizer)
             torch.nn.utils.clip_grad_norm_(model.parameters(), opt.max_grad_norm)
-            if opt.use_amp:
-                scaler.step(optimizer)
-                scaler.update()
-            else:
-                optimizer.step()
+            scaler.step(optimizer)
+            scaler.update()
+            optimizer.zero_grad()
             if opt.use_transformers_optimizer: scheduler.step()
         # back-propagation - end
         cur_examples = y.size(0)
