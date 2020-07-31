@@ -110,15 +110,13 @@ fi
 numactl --hardware
 numactl --show
 
-export OMP_SCHEDULE=STATIC
-export OMP_PROC_BIND=CLOSE
 export OMP_NUM_THREADS=14
+
 #export GOMP_CPU_AFFINITY="0-13"
 #export KMP_AFFINITY=granularity=fine,proclist=[0-13],explicit
-export KMP_AFFINITY=granularity=fine,explicit
+#export KMP_AFFINITY=granularity=fine,explicit
 
-#numactl --cpunodebind=0 --membind=0
-numactl --physcpubind=0-13 --membind=0 python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --bert_do_lower_case --device=cpu --num_examples=100 --num_threads=14
+numactl --cpunodebind=0 --membind=0 python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --device=cpu --num_examples=100 --num_threads=14
 
 close_fd
 
