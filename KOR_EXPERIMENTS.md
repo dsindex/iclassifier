@@ -123,8 +123,8 @@
 | dha BERT(v2), CLS                         | 89.25        | 12.7876 / -       |         |            |
 | KoELECTRA-Base, CNN                       | 89.51        | 15.5452 / -       |         |            |
 | KoELECTRA-Base, CLS                       | 89.63        | 14.2667 / -       |         |            |
-| bpe ELECTRA-base(1m) , CNN                | 88.07        | 16.2737 / -       |         |            |
-| bpe ELECTRA-base(1m) , CLS                | 88.26        | 14.2356 / -       |         |            |
+| bpe ELECTRA-base(1m) , CNN                | 88.30        | 14.1171 / -       |         |            |
+| bpe ELECTRA-base(1m) , CLS                | 88.30        | 12.1361 / -       |         |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -599,49 +599,33 @@ $ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_
 
 $ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
-** 1838k.max
-INFO:__main__:[Accuracy] : 0.8807, 44034/49997
-INFO:__main__:[Elapsed Time] : 813746.9305992126ms, 16.273748160305097ms on average
+** 2048k
+INFO:__main__:[Accuracy] : 0.8830, 44145/49997
+INFO:__main__:[Elapsed Time] : 705915.1248931885ms, 14.117193790481267ms on average
 
-** 1891k
-INFO:__main__:[Accuracy] : 0.8814, 44069/49997
-INFO:__main__:[Elapsed Time] : 740695.6796646118ms, 14.812804568394707ms on average
+** 2209k
+INFO:__main__:[Accuracy] : 0.8808, 44036/49997
+INFO:__main__:[Elapsed Time] : 705169.7421073914ms, 14.10225379733107ms on average
+
+** 2305k
+INFO:__main__:[Accuracy] : 0.8818, 44086/49997
+INFO:__main__:[Elapsed Time] : 672490.4627799988ms, 13.448466600556499ms on average
 
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
-** 1838k.max
-INFO:__main__:[Accuracy] : 0.8826, 44126/49997
-INFO:__main__:[Elapsed Time] : 711834.1734409332ms, 14.23564201088388ms on average
+** 2048k
+INFO:__main__:[Accuracy] : 0.8808, 44038/49997
+INFO:__main__:[Elapsed Time] : 645827.3315429688ms, 12.915708673640303ms on average
 
-** 864.6k
-INFO:__main__:[Accuracy] : 0.8770, 43849/49997
-INFO:__main__:[Elapsed Time] : 651590.5060768127ms, 13.03045066206615ms on average
+** 2209k
+INFO:__main__:[Accuracy] : 0.8824, 44117/49997
+INFO:__main__:[Elapsed Time] : 650396.7831134796ms, 13.006638794844127ms on average
 
-** 929k
-INFO:__main__:[Accuracy] : 0.8739, 43693/49997
-INFO:__main__:[Elapsed Time] : 634651.9558429718ms, 12.691834104739243ms on average
-
-** 1230k
-INFO:__main__:[Accuracy] : 0.8735, 43670/49997
-INFO:__main__:[Elapsed Time] : 655157.7899456024ms, 13.102401556115273ms on average
-
-** 1230.1k
-INFO:__main__:[Accuracy] : 0.8775, 43873/49997
-INFO:__main__:[Elapsed Time] : 664261.5323066711ms, 13.284362109244007ms on average
-
-** 1508k
-INFO:__main__:[Accuracy] : 0.8785, 43923/49997
-INFO:__main__:[Elapsed Time] : 653267.7457332611ms, 13.064381627809889ms on average
-
-** 1708k
-INFO:__main__:[Accuracy] : 0.8741, 43700/49997
-INFO:__main__:[Elapsed Time] : 651648.0762958527ms, 13.031902098829283ms on average
-
-** 1891k
-INFO:__main__:[Accuracy] : 0.8774, 43866/49997
-INFO:__main__:[Elapsed Time] : 657640.0637626648ms, 13.151278013381512ms on average
+** 2305k
+INFO:__main__:[Accuracy] : 0.8830, 44149/49997
+INFO:__main__:[Elapsed Time] : 606864.2435073853ms, 12.136102280661396ms on average
 
 ```
 
