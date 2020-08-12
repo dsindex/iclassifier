@@ -339,13 +339,17 @@ INFO:__main__:[Elapsed Time] : 672027ms, 13.439275142011361ms on average
 INFO:__main__:[Accuracy] : 0.8959, 44790/49997
 INFO:__main__:[Elapsed Time] : 703563ms, 14.07036562925034ms on average
 
-** --bert_remove_layers=8,9,10,11
-INFO:__main__:[Accuracy] : 0.8892, 44457/49997
-INFO:__main__:[Elapsed Time] : 466825ms, 9.32800624049924ms on average
-
 ** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.8991, 44952/49997
 INFO:__main__:[Elapsed Time] : 747975ms, 14.958656692535403ms on average
+
+** n_ctx=64,  --use_transformers_optimizer --warmup_epoch=1 --weight_decay=0.0 --seed=0 --epoch=30
+INFO:__main__:[Accuracy] : 0.8970, 44848/49997
+INFO:__main__:[Elapsed Time] : 595030.0581455231ms, 11.899778242826137ms on average
+
+** --bert_remove_layers=8,9,10,11
+INFO:__main__:[Accuracy] : 0.8892, 44457/49997
+INFO:__main__:[Elapsed Time] : 466825ms, 9.32800624049924ms on average
 
 ** --configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-bpe-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.8855, 44271/49997

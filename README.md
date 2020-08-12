@@ -504,6 +504,14 @@ $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 
 INFO:__main__:[Accuracy] : 0.9242,  1683/ 1821
 INFO:__main__:[Elapsed Time] : 23314ms, 12.754945054945056ms on average
 
+** n_ctx=64
+INFO:__main__:[Accuracy] : 0.9259,  1686/ 1821
+INFO:__main__:[Elapsed Time] : 23765.23184776306ms, 13.007715246179602ms on average
+
+** n_ctx=64, --lr=2e-5 --epoch=3 --batch_size=64 --use_transformers_optimizer --warmup_epoch=1 --weight_decay=0.0 --seed=0
+INFO:__main__:[Accuracy] : 0.9281,  1690/ 1821
+INFO:__main__:[Elapsed Time] : 21707.942724227905ms, 11.878120244204343ms on average
+
 ** --bert_model_name_or_path=bert-large-uncased --lr=2e-5
 INFO:__main__:[Accuracy] : 0.9412,  1714/ 1821
 INFO:__main__:[Elapsed Time] : 40847.62740135193ms, 22.37672412788475ms on average
