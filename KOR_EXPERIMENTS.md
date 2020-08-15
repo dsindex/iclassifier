@@ -123,8 +123,8 @@
 | dha BERT(v2), CLS                         | 89.25        | 12.7876 / -       |         |            |
 | KoELECTRA-Base, CNN                       | 89.51        | 15.5452 / -       |         |            |
 | KoELECTRA-Base, CLS                       | 89.63        | 14.2667 / -       |         |            |
-| bpe ELECTRA-base(1m) , CNN                | 88.30        | 14.1171 / -       |         |            |
-| bpe ELECTRA-base(1m) , CLS                | 88.30        | 12.1361 / -       |         |            |
+| bpe ELECTRA-base(1m) , CNN                | 88.55        | 14.2144 / -       |         |            |
+| bpe ELECTRA-base(1m) , CLS                | 88.42        | 13.5920 / -       |         |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -603,33 +603,17 @@ $ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_
 
 $ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
-** 2048k
-INFO:__main__:[Accuracy] : 0.8830, 44145/49997
-INFO:__main__:[Elapsed Time] : 705915.1248931885ms, 14.117193790481267ms on average
-
-** 2209k
-INFO:__main__:[Accuracy] : 0.8808, 44036/49997
-INFO:__main__:[Elapsed Time] : 705169.7421073914ms, 14.10225379733107ms on average
-
-** 2305k
-INFO:__main__:[Accuracy] : 0.8818, 44086/49997
-INFO:__main__:[Elapsed Time] : 672490.4627799988ms, 13.448466600556499ms on average
+** 2981k
+INFO:__main__:[Accuracy] : 0.8855, 44272/49997
+INFO:__main__:[Elapsed Time] : 710791.2123203278ms, 14.214471317556479ms on average
 
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
-** 2048k
-INFO:__main__:[Accuracy] : 0.8808, 44038/49997
-INFO:__main__:[Elapsed Time] : 645827.3315429688ms, 12.915708673640303ms on average
-
-** 2209k
-INFO:__main__:[Accuracy] : 0.8824, 44117/49997
-INFO:__main__:[Elapsed Time] : 650396.7831134796ms, 13.006638794844127ms on average
-
-** 2305k
-INFO:__main__:[Accuracy] : 0.8830, 44149/49997
-INFO:__main__:[Elapsed Time] : 606864.2435073853ms, 12.136102280661396ms on average
+** 2981k
+INFO:__main__:[Accuracy] : 0.8842, 44207/49997
+INFO:__main__:[Elapsed Time] : 679682.5699806213ms, 13.592031333186892ms on average
 
 ```
 
