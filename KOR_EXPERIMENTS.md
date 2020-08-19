@@ -607,6 +607,10 @@ $ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/
 INFO:__main__:[Accuracy] : 0.8855, 44272/49997
 INFO:__main__:[Elapsed Time] : 710791.2123203278ms, 14.214471317556479ms on average
 
+** 3342k
+INFO:__main__:[Accuracy] : 0.8848, 44237/49997
+INFO:__main__:[Elapsed Time] : 745171.3743209839ms, 14.902009345195857ms on average
+
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
@@ -614,6 +618,10 @@ $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/
 ** 2981k
 INFO:__main__:[Accuracy] : 0.8842, 44207/49997
 INFO:__main__:[Elapsed Time] : 679682.5699806213ms, 13.592031333186892ms on average
+
+** 3342k
+INFO:__main__:[Accuracy] : 0.8843, 44211/49997
+INFO:__main__:[Elapsed Time] : 623643.3551311493ms, 12.471171410257925ms on average
 
 ```
 
