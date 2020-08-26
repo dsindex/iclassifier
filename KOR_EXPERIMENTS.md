@@ -69,6 +69,9 @@
   - `형태소분석기`
     - ex) kor-bert-base-dha.v1 (inhouse), kor-bert-base-dha.v2 (inhouse)
 
+- KcBERT
+  - [kcbert-base, kcbert-large](https://github.com/Beomi/KcBERT)
+
 ##### DistilBERT
 
 - [training-distilbert](https://github.com/dsindex/transformers_examples#training-distilbert)
@@ -76,7 +79,7 @@
 
 ##### ELECTRA
 
-- monologg koelectra-base
+- KoELECTRA
   - [koelectra-base-discriminator](https://huggingface.co/monologg/koelectra-base-discriminator)
 
 - [electra](https://github.com/dsindex/electra#pretraining-electra)를 이용해서 학습.
@@ -107,6 +110,10 @@
 | bpe DistilBERT(v1), CLS                   | 88.55        | 8.2834  / -       | 31.5655 | threads=14 |
 | bpe BERT-large, CNN                       | 89.85        | 24.4099 / -       |         |            |
 | bpe BERT-large, CLS                       | 89.78        | 22.6002 / -       |         |            |
+| KcBERT-base , CNN                         | 90.10        | 14.2056 / -       |         |            |
+| KcBERT-base , CLS                         | 90.23        | 13.5712 / -       |         |            |
+| KcBERT-large , CNN                        |              | -       / -       |         |            |
+| KcBERT-large , CLS                        |              | -       / -       |         |            |
 | dha BERT(v1), CNN                         | 90.25        | 15.5738 / -       |         |            |
 | dha BERT(v1), CLS                         | 90.18        | 13.3390 / -       |         |            |
 | dha BERT(v1), CNN                         | 88.88        | 10.5157 / 72.7777 |         | del 8,9,10,11, threads=14         |
@@ -286,7 +293,7 @@ $ python evaluate.py --config=configs/config-densenet-dsa-iee.json --data_dir=./
 </details>
 
 
-##### BERT(kor-bert-base-bpe.v1, kor-bert-large-bpe)
+##### BERT(kor-bert-base-bpe.v1, kor-bert-large-bpe, kcbert-base, kcbert-large)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -329,6 +336,12 @@ INFO:__main__:[Elapsed Time] : 482054.96978759766ms, 9.639614557722052ms on aver
 INFO:__main__:[Accuracy] : 0.8985, 44923/49997
 INFO:__main__:[Elapsed Time] : 1220545.0494289398ms, 24.40995301749384ms on average
 
+** --bert_model_name_or_path=./embeddings/kcbert-base --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+INFO:__main__:[Accuracy] : 0.9010, 45047/49997
+INFO:__main__:[Elapsed Time] : 710366.4381504059ms, 14.20562694488368ms on average
+
+** --bert_model_name_or_path=./embeddings/kcbert-large --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
@@ -358,6 +371,13 @@ INFO:__main__:[Elapsed Time] : 414233.4134578705ms, 8.283499222067283ms on avera
 ** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 INFO:__main__:[Accuracy] : 0.8978, 44885/49997
 INFO:__main__:[Elapsed Time] : 1130058.8986873627ms, 22.60026191461467ms on average
+
+** --bert_model_name_or_path=./embeddings/kcbert-base --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+INFO:__main__:[Accuracy] : 0.9023, 45110/49997
+INFO:__main__:[Elapsed Time] : 678645.0374126434ms, 13.571247471572018ms on average
+
+** --bert_model_name_or_path=./embeddings/kcbert-large --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+
 
 ```
 
