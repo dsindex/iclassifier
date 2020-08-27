@@ -112,7 +112,7 @@
 | bpe BERT-large, CLS                       | 89.78        | 22.6002 / -       |         |            |
 | KcBERT-base , CNN                         | 90.10        | 14.2056 / -       |         |            |
 | KcBERT-base , CLS                         | 90.23        | 13.5712 / -       |         |            |
-| KcBERT-large , CNN                        |              | -       / -       |         |            |
+| KcBERT-large , CNN                        | **91.02**    | 24.6123 / -       |         |            |
 | KcBERT-large , CLS                        |              | -       / -       |         |            |
 | dha BERT(v1), CNN                         | 90.25        | 15.5738 / -       |         |            |
 | dha BERT(v1), CLS                         | 90.18        | 13.3390 / -       |         |            |
@@ -124,7 +124,7 @@
 | dha DistilBERT(v1), CLS                   | 88.51        | 7.5299  / -       |         |            |
 | dha-bpe BERT, CNN                         | 89.07        | 14.9454 / -       |         |            |
 | dha-bpe BERT, CLS                         | 89.01        | 12.7981 / -       |         |            |
-| dha-bpe BERT-large, CNN                   | **90.84**    | 24.5095 / -       |         |            |
+| dha-bpe BERT-large, CNN                   | 90.84        | 24.5095 / -       |         |            |
 | dha-bpe BERT-large, CLS                   | 90.68        | 22.9305 / -       |         |            |
 | dha BERT(v2), CNN                         | 89.08        | 15.3276 / -       |         |            |
 | dha BERT(v2), CLS                         | 89.25        | 12.7876 / -       |         |            |
@@ -341,6 +341,8 @@ INFO:__main__:[Accuracy] : 0.9010, 45047/49997
 INFO:__main__:[Elapsed Time] : 710366.4381504059ms, 14.20562694488368ms on average
 
 ** --bert_model_name_or_path=./embeddings/kcbert-large --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+INFO:__main__:[Accuracy] : 0.9102, 45509/49997
+INFO:__main__:[Elapsed Time] : 1230672.8971004486ms, 24.612369814131945ms on average
 
 * enc_class=cls
 
