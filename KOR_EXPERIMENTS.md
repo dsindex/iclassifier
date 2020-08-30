@@ -112,8 +112,8 @@
 | bpe BERT-large, CLS                       | 89.78        | 22.6002 / -       |         |            |
 | KcBERT-base , CNN                         | 90.10        | 14.2056 / -       |         |            |
 | KcBERT-base , CLS                         | 90.23        | 13.5712 / -       |         |            |
-| KcBERT-large , CNN                        | **91.02**    | 24.6123 / -       |         |            |
-| KcBERT-large , CLS                        |              | -       / -       |         |            |
+| KcBERT-large , CNN                        | 91.02        | 24.6123 / -       |         |            |
+| KcBERT-large , CLS                        | **91.36**    | 22.4859 / -       |         |            |
 | dha BERT(v1), CNN                         | 90.25        | 15.5738 / -       |         |            |
 | dha BERT(v1), CLS                         | 90.18        | 13.3390 / -       |         |            |
 | dha BERT(v1), CNN                         | 88.88        | 10.5157 / 72.7777 |         | del 8,9,10,11, threads=14         |
@@ -344,6 +344,9 @@ INFO:__main__:[Elapsed Time] : 710366.4381504059ms, 14.20562694488368ms on avera
 INFO:__main__:[Accuracy] : 0.9102, 45509/49997
 INFO:__main__:[Elapsed Time] : 1230672.8971004486ms, 24.612369814131945ms on average
 
+** --bert_model_name_or_path=./embeddings/kcbert-large --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5
+
+
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments --bert_output_dir=bert-checkpoint
@@ -378,8 +381,9 @@ INFO:__main__:[Elapsed Time] : 1130058.8986873627ms, 22.60026191461467ms on aver
 INFO:__main__:[Accuracy] : 0.9023, 45110/49997
 INFO:__main__:[Elapsed Time] : 678645.0374126434ms, 13.571247471572018ms on average
 
-** --bert_model_name_or_path=./embeddings/kcbert-large --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
-
+** --bert_model_name_or_path=./embeddings/kcbert-large --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5
+INFO:__main__:[Accuracy] : 0.9136, 45677/49997
+INFO:__main__:[Elapsed Time] : 1124363.7096881866ms, 22.48598377803238ms on average
 
 ```
 
