@@ -6,7 +6,7 @@ import os
 import torch
 import torch.quantization
 import numpy as np
-from model import TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
+from model import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
 from util import load_config, to_device, to_numpy
 
 from ts.torch_handler.base_handler import BaseHandler
@@ -47,6 +47,8 @@ class ClassifierHandler(BaseHandler, ABC):
         config = self.config
         opt = config['opt']
         if config['emb_class'] == 'glove':
+            if config['enc_class'] == 'gnb':
+                model = TextGloveGNB(config, opt.embedding_path, opt.label_path)
             if config['enc_class'] == 'cnn':
                 model = TextGloveCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
             if config['enc_class'] == 'densenet-cnn':
@@ -54,27 +56,10 @@ class ClassifierHandler(BaseHandler, ABC):
             if config['enc_class'] == 'densenet-dsa':
                 model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
         if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
-            from transformers import BertTokenizer, BertConfig, BertModel
-            from transformers import DistilBertTokenizer, DistilBertConfig, DistilBertModel
-            from transformers import AlbertTokenizer, AlbertConfig, AlbertModel
-            from transformers import RobertaConfig, RobertaTokenizer, RobertaModel
-            from transformers import BartConfig, BartTokenizer, BartModel
-            from transformers import ElectraConfig, ElectraTokenizer, ElectraModel
-            MODEL_CLASSES = {
-                "bert": (BertConfig, BertTokenizer, BertModel),
-                "distilbert": (DistilBertConfig, DistilBertTokenizer, DistilBertModel),
-                "albert": (AlbertConfig, AlbertTokenizer, AlbertModel),
-                "roberta": (RobertaConfig, RobertaTokenizer, RobertaModel),
-                "bart": (BartConfig, BartTokenizer, BartModel),
-                "electra": (ElectraConfig, ElectraTokenizer, ElectraModel),
-            }
-            Config    = MODEL_CLASSES[config['emb_class']][0]
-            Tokenizer = MODEL_CLASSES[config['emb_class']][1]
-            Model     = MODEL_CLASSES[config['emb_class']][2]
-            bert_config = Config.from_pretrained(opt.bert_output_dir)
-            bert_tokenizer = Tokenizer.from_pretrained(opt.bert_output_dir)
-            # no need to use 'from_pretrained'
-            bert_model = Model(bert_config)
+            from transformers import AutoTokenizer, AutoConfig, AutoModel
+            bert_config = AutoConfig.from_pretrained(opt.bert_output_dir)
+            bert_tokenizer = AutoTokenizer.from_pretrained(opt.bert_output_dir)
+            bert_model = AutoModel.from_config(bert_config)
             ModelClass = TextBertCNN
             if config['enc_class'] == 'cls': ModelClass = TextBertCLS
             model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path)
