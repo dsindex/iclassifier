@@ -112,7 +112,7 @@
 | bpe BERT-large, CLS                       | 89.78        | 22.6002 / -       |         |            |
 | KcBERT-base , CNN                         | 90.10        | 14.2056 / -       |         |            |
 | KcBERT-base , CLS                         | 90.23        | 13.5712 / -       |         |            |
-| KcBERT-large , CNN                        | 91.02        | 24.6123 / -       |         |            |
+| KcBERT-large , CNN                        | 91.26        | 24.2121 / -       |         |            |
 | KcBERT-large , CLS                        | **91.36**    | 22.4859 / -       |         |            |
 | dha BERT(v1), CNN                         | 90.25        | 15.5738 / -       |         |            |
 | dha BERT(v1), CLS                         | 90.18        | 13.3390 / -       |         |            |
@@ -345,7 +345,8 @@ INFO:__main__:[Accuracy] : 0.9102, 45509/49997
 INFO:__main__:[Elapsed Time] : 1230672.8971004486ms, 24.612369814131945ms on average
 
 ** --bert_model_name_or_path=./embeddings/kcbert-large --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5
-
+INFO:__main__:[Accuracy] : 0.9126, 45627/49997
+INFO:__main__:[Elapsed Time] : 1210648.3128070831ms, 24.212181653983308ms on average
 
 * enc_class=cls
 
