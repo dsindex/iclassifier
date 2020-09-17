@@ -3,10 +3,9 @@
 - install [anaconda](https://www.anaconda.com/distribution/#download-section)
 
 - install pytorch>=1.2.0
-  - 1.5.0 : recommended
-  - 1.6.0 : recommended
+  - 1.5.0, 1.6.0 : recommended
   ```
-  $ conda install pytorch=1.5.0 --channel pytorch
+  $ conda install pytorch=1.6.0 --channel pytorch
   * Do not install the proper version of cudatoolkit.
        ex) cudatoolkit10.1, cuda10.1 on the system
     if we match these versions, the inference speed on CPU might be going worse.
@@ -25,7 +24,7 @@
 
 - [(EXPERIMENTAL) DYNAMIC QUANTIZATION ON BERT](https://pytorch.org/tutorials/intermediate/dynamic_quantization_bert_tutorial.html)
   - install pytorch>=1.3.0
-    - 1.5.0 recommended
+    - 1.5.0, 1.6.0 recommended
 
 
 
@@ -36,7 +35,7 @@
 $ pip install onnx onnxruntime onnxruntime-tools
 * numpy >= 1.18.0
 * onnx >= 1.7.0
-* onnxruntime >= 1.3.0
+* onnxruntime >= 1.4.0
 ```
 
 - check
@@ -84,6 +83,9 @@ $ python onnx-test.py
 
   ** bert
   $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-bert-cls.txt
+
+  # how to quantize onnx?
+  $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --convert_onnx --onnx_path=pytorch-model.onnx --quantize_onnx --quantized_onnx_path=pytorch-model.onnx-quantized  --device=cpu > onnx-graph-bert-cls.txt
   ```
 
 - optimize onnx
@@ -111,7 +113,7 @@ get_fused_operator_statistics: Optimized operators:{'EmbedLayerNormalization': 0
 - inference using onnxruntime
 ```
 * on environment pytorch installed from pip
-* since released pytorch versions(ex, pytorch==1.2.0, 1.5.0) are highly optimized, inference should be done with pytorch version via pip instead from source.
+* since released pytorch versions(ex, pytorch==1.2.0, 1.5.0, 1.6.0) are highly optimized, inference should be done with pytorch version via pip instead from source.
 
 ** glove
 $ python evaluate.py --enable_ort --onnx_path pytorch-model.onnx --device=cpu --num_threads=14
@@ -122,6 +124,10 @@ $ python evaluate.py --config=configs/config-densenet-dsa.json --enable_ort --on
 
 ** bert
 $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --onnx_path=pytorch-model.onnx --enable_ort --device=cpu --num_threads=14
+
+# how to use quantized onnx?
+$ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --onnx_path=pytorch-model.onnx-quantized --enable_ort --device=cpu --num_threads=14
+
 ```
 
 
