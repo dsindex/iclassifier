@@ -66,9 +66,9 @@
 |                          | Accuracy (%) | GPU / CPU           | ONNX                         | CONDA             | CONDA+je          | INTEL   | INTEL+je  | Dynamic           | Dynamic+je        | Inference | Inference+Dynamic | Inference+ONNX                 | Etc            |
 | ------------------------ | ------------ | ------------------- | ---------------------------- | ----------------- | ----------------- | ------- | --------- | ----------------- | ----------------- | --------- | ----------------- | ------------------------------ | -------------- |    
 | GloVe, GNB               | 80.43        | 1.2929  / -         | -        / -       / -       | -       / -       |                   |         |           |                   |                   | -         |                   | -                              |                |
-| GloVe, CNN               | 97.86        | 1.7939  / -         | 7.5656   / 1.8689  / 1.7735  | 4.6868  / 2.7592  |                   |         |           |                   |                   | 1.9398    |                   | 0.3848                         | threads=14     |
-| GloVe, Densenet-CNN      | 97.57        | 3.6094  / -         | 19.1212  / 3.0717  / 3.0917  | 7.6969  / 6.5887  |                   |         |           |                   |                   | 4.9481    |                   | 0.8658                         | threads=14     |
-| GloVe, Densenet-DSA      | 97.43        | 7.5007  / -         | -        / 4.4936  / 4.9337  |         / 9.7873  |                   |         |           |                   |                   | 7.2086    |                   | 1.5420                         | threads=14     |
+| GloVe, CNN               | 97.86        | 1.7939  / -         | 7.5656   / 1.8689  / 1.7735  | 4.6868  / 2.7592  |                   |         |           |                   |                   | 1.9398    |                   | 0.3848  / -       / FAILED     | threads=14     |
+| GloVe, Densenet-CNN      | 97.57        | 3.6094  / -         | 19.1212  / 3.0717  / 3.0917  | 7.6969  / 6.5887  |                   |         |           |                   |                   | 4.9481    |                   | 0.8658  / -       / FAILED     | threads=14     |
+| GloVe, Densenet-DSA      | 97.43        | 7.5007  / -         | -        / 4.4936  / 4.9337  |         / 9.7873  |                   |         |           |                   |                   | 7.2086    |                   | 1.5420  / -       / FAILED     | threads=14     |
 | DistilBERT, CLS          | 97.71        | 9.3075  / -         | -        / 32.4263 / 31.1101 | -       / 37.7777 |                   |         |           | -       / 29.3939 |                   | 14.9494   | 10.4040           | 8.9942  / 10.1848 / **4.8818** | threads=14     |
 | BERT-base(uncased), CNN  | 97.57        | 12.1273 / -         |                              | -       / 81.8787 |                   |         |           | -       / 52.4949 |                   | 34.7878   | 30.5454           |                                | threads=14     |
 | BERT-base(uncased), CLS  | 97.43        | 12.7714 / 100.929   | 174.2222 / 46.4263 / 43.5078 | 69.4343 / 62.5959 | 66.1212 / 63.0707 | 68.9191 | 66        | 66.9494 / 49.4747 | 60.7777 / 50.4040 | 30.7979   | 24.5353           | 16.9756                        | threads=14     |
@@ -97,6 +97,7 @@
                    / conda pytorch=1.6.0, --enable_ort(onnxruntime 1.4.0), --enable_inference 
                    / conda pytorch=1.6.0, --enable_ort(onnxruntime 1.4.0), --enable_inference, --quantize_onnx
 * default batch size, learning rate, n_ctx(max_seq_length) : 128, 2e-4, 100
+* number of tokens / sentence : MEAN : 9.08, MAX:24, MIN:3, MEDIAN:9
 ```
 
 | # threads | Model               | Inference+ONNX / Inference+QuantizedONNX  | Etc              |
