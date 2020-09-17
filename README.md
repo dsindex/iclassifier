@@ -99,23 +99,23 @@
 * default batch size, learning rate, n_ctx(max_seq_length) : 128, 2e-4, 100
 ```
 
-| # threads | Model               | Inference+ONNX   | Etc              |
-| --------- | ------------------- | ---------------- | ---------------- |
-| 1         | GloVe, Densenet-DSA | 3.33             |                  |
-| 1         | DistilBERT, CLS     | 51.77            |                  |
-| 2         | DistilBERT, CLS     | 28.38            |                  |
-| 3         | DistilBERT, CLS     | 21.47            |                  |
-| 4         | DistilBERT, CLS     | 18.75            |                  |
-| 5         | DistilBERT, CLS     | 15.23            |                  |
-| 6         | DistilBERT, CLS     | 14.22            |                  |
-| 7         | DistilBERT, CLS     | 12.52            |                  |
-| 8         | DistilBERT, CLS     | 10.46            | **good enough**  |
-| 9         | DistilBERT, CLS     | 10.93            |                  |
-| 10        | DistilBERT, CLS     | 9.75             |                  |
-| 11        | DistilBERT, CLS     | 9.22             |                  |
-| 12        | DistilBERT, CLS     | 10.11            |                  |
-| 13        | DistilBERT, CLS     | 9.45             |                  |
-| 14        | DistilBERT, CLS     | 9.31             |                  |
+| # threads | Model               | Inference+ONNX / Inference+QuantizedONNX  | Etc              |
+| --------- | ------------------- | ----------------------------------------- | ---------------- |
+| 1         | GloVe, Densenet-DSA | 3.33    /  -                              |                  |
+| 1         | DistilBERT, CLS     | 51.77   /  15.66                          |                  |
+| 2         | DistilBERT, CLS     | 28.38   /  9.71                           |                  |
+| 3         | DistilBERT, CLS     | 21.47   /  7.79                           |                  |
+| 4         | DistilBERT, CLS     | 18.75   /  6.69                           |                  |
+| 5         | DistilBERT, CLS     | 15.23   /  6.09                           |                  |
+| 6         | DistilBERT, CLS     | 14.22   /  5.69                           |                  |
+| 7         | DistilBERT, CLS     | 12.52   /  5.44                           |                  |
+| 8         | DistilBERT, CLS     | 10.46   /  5.21                           | **good enough**  |
+| 9         | DistilBERT, CLS     | 10.93   /  5.17                           |                  |
+| 10        | DistilBERT, CLS     | 9.75    /  4.99                           |                  |
+| 11        | DistilBERT, CLS     | 9.22    /  4.98                           |                  |
+| 12        | DistilBERT, CLS     | 10.11   /  4.91                           |                  |
+| 13        | DistilBERT, CLS     | 9.45    /  4.81                           |                  |
+| 14        | DistilBERT, CLS     | 9.31    /  4.74                           |                  |
 
 <details><summary><b>emb_class=glove, enc_class=gnb</b></summary>
 <p>
