@@ -134,6 +134,9 @@ $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=ber
 
 - optuna
 ```
+* glove-gnb
+$ python preprocess.py --config=configs/config-glove-gnb.json
+
 $ python train.py --config=configs/config-glove-gnb.json --lr_decay_rate=0.9 --hp_search --hp_trials=24 --epoch=32
 ...
     number     value  params_batch_size  params_epochs  params_lr  params_seed     state
@@ -174,8 +177,10 @@ $ python evaluate.py --config=configs/config-glove-gnb.json
 INFO:__main__:[Accuracy] : 0.8114,   568/  700
 INFO:__main__:[Elapsed Time] : 1101.0687351226807ms, 1.4641366803083298ms on average
 
-* previous best : 80.43
+** previous best : 80.43
 
+
+* glove-cnn
 $ python preprocess.py --config=configs/config-glove-cnn.json
 
 $ python train.py --config=configs/config-glove-cnn.json --lr_decay_rate=0.9 --hp_search --hp_trials=24 --epoch=12
@@ -220,7 +225,15 @@ $ python evaluate.py --config=configs/config-glove-cnn.json
 INFO:__main__:[Accuracy] : 0.9757,   683/  700
 INFO:__main__:[Elapsed Time] : 1646.5208530426025ms, 2.1808976267540405ms on average
 
-* previous best : 97.86
+** previous best : 97.86
+
+
+* densenet-cnn
+$ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2
+
+$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=18 --hp_search --hp_trials=24 --patience=4
+
+
 
 ```
 

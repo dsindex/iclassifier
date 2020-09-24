@@ -357,10 +357,10 @@ def hp_search(trial: optuna.Trial):
     set_path(config)
 
     # set search spaces
-    lr = trial.suggest_float("lr", 1e-5, 2e-4, log=True)
-    bsz = trial.suggest_categorical("batch_size", [32, 64, 128])
-    seed = trial.suggest_int("seed", 17, 42)
-    epochs = trial.suggest_int("epochs", 1, opt.epoch)
+    lr = trial.suggest_loguniform('lr', 1e-6, 1e-3) # .suggest_float('lr', 1e-6, 1e-3, log=True)
+    bsz = trial.suggest_categorical('batch_size', [32, 64, 128])
+    seed = trial.suggest_int('seed', 17, 42)
+    epochs = trial.suggest_int('epochs', 1, opt.epoch)
 
     # prepare train, valid dataset
     train_loader, valid_loader = prepare_datasets(config, hp_search_bsz=bsz)
@@ -375,8 +375,22 @@ def hp_search(trial: optuna.Trial):
         config['writer'] = writer
         config['scaler'] = scaler
 
+        early_stopping = EarlyStopping(logger, patience=opt.patience, measure=opt.measure, verbose=1)
+        best_eval_measure = float('inf') if opt.measure == 'loss' else -float('inf')
         for epoch in range(epochs):
             eval_loss, eval_acc = train_epoch(model, config, train_loader, valid_loader, epoch)
+
+            if opt.measure == 'loss': eval_measure = eval_loss 
+            else: eval_measure = eval_acc
+            # early stopping
+            if early_stopping.validate(eval_measure, measure=opt.measure): break
+            if opt.measure == 'loss': is_best = eval_measure < best_eval_measure
+            else: is_best = eval_measure > best_eval_measure
+            if is_best:
+                best_eval_measure = eval_measure
+                early_stopping.reset(best_eval_measure)
+            early_stopping.status()
+
             trial.report(eval_acc, epoch)
             if trial.should_prune():
                 raise optuna.TrialPruned()
@@ -438,7 +452,7 @@ def main():
         global gopt
         gopt = opt
         study = optuna.create_study(direction='maximize')
-        study.optimize(hp_search, n_trials=opt.hp_trials, timeout=1800)
+        study.optimize(hp_search, n_trials=opt.hp_trials)
         df = study.trials_dataframe(attrs=('number', 'value', 'params', 'state'))
         print(df)
         logger.info("study.best_params : %s", study.best_params)
