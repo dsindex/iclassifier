@@ -3,3 +3,5 @@ tqdm
 tensorboardX
 transformers
 sklearn
+optuna
+datasets

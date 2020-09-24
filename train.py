@@ -28,15 +28,11 @@ from model   import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveD
 from dataset import prepare_dataset, GloveDataset, BertDataset
 from early_stopping import EarlyStopping
 from sklearn.metrics import classification_report, confusion_matrix
+import optuna
+from datasets.metric import temp_seed 
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-def set_seed(opt):
-    random.seed(opt.seed)
-    np.random.seed(opt.seed)
-    torch.manual_seed(opt.seed)
-    torch.cuda.manual_seed(opt.seed)
 
 def train_epoch(model, config, train_loader, val_loader, epoch_i):
     optimizer = config['optimizer']
@@ -167,7 +163,7 @@ def set_path(config):
     opt.label_path     = os.path.join(opt.data_dir, opt.label_filename)
     opt.embedding_path = os.path.join(opt.data_dir, opt.embedding_filename)
 
-def prepare_datasets(config):
+def prepare_datasets(config, hp_search_bsz=None):
     opt = config['opt']
     if config['emb_class'] == 'glove':
         DatasetClass = GloveDataset
@@ -177,7 +173,8 @@ def prepare_datasets(config):
         opt.train_path,
         DatasetClass,
         sampling=True,
-        num_workers=2)
+        num_workers=2,
+        hp_search_bsz=hp_search_bsz)
     valid_loader = prepare_dataset(config,
         opt.valid_path,
         DatasetClass,
@@ -238,9 +235,12 @@ def prepare_model(config):
     logger.info("[model prepared]")
     return model
 
-def prepare_osws(config, model, train_loader):
+def prepare_osws(config, model, train_loader, hp_search_lr=None):
     opt = config['opt']
-    optimizer = torch.optim.AdamW(model.parameters(), lr=opt.lr, eps=opt.adam_epsilon, weight_decay=opt.weight_decay)
+    lr = opt.lr
+    # for optuna
+    if hp_search_lr: lr = hp_search_lr
+    optimizer = torch.optim.AdamW(model.parameters(), lr=lr, eps=opt.adam_epsilon, weight_decay=opt.weight_decay)
     scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer=optimizer, gamma=opt.lr_decay_rate)
     if opt.use_transformers_optimizer:
         from transformers import AdamW, get_linear_schedule_with_warmup
@@ -255,7 +255,7 @@ def prepare_osws(config, model, train_loader):
              'weight_decay': opt.weight_decay},
             {'params': [p for n, p in model.named_parameters() if any(nd in n for nd in no_decay)], 'weight_decay': 0.0}
         ]
-        optimizer = AdamW(optimizer_grouped_parameters, lr=opt.lr, eps=opt.adam_epsilon)
+        optimizer = AdamW(optimizer_grouped_parameters, lr=lr, eps=opt.adam_epsilon)
         scheduler = get_linear_schedule_with_warmup(optimizer,
             num_warmup_steps=num_warmup_steps,
             num_training_steps=num_training_steps)
@@ -271,8 +271,7 @@ def train(opt):
     if torch.cuda.is_available():
         logger.info("%s", torch.cuda.get_device_name(0))
 
-    # set seed, etc
-    set_seed(opt)
+    # set etc
     torch.autograd.set_detect_anomaly(True)
 
     # set config
@@ -286,58 +285,102 @@ def train(opt):
     # prepare train, valid dataset
     train_loader, valid_loader = prepare_datasets(config)
 
-    # prepare model
-    model = prepare_model(config)
+    with temp_seed(opt.seed):
+        # prepare model
+        model = prepare_model(config)
 
-    # create optimizer, scheduler, summary writer, scaler
-    optimizer, scheduler, writer, scaler = prepare_osws(config, model, train_loader)
-    config['optimizer'] = optimizer
-    config['scheduler'] = scheduler
-    config['writer'] = writer
-    config['scaler'] = scaler
+        # create optimizer, scheduler, summary writer, scaler
+        optimizer, scheduler, writer, scaler = prepare_osws(config, model, train_loader)
+        config['optimizer'] = optimizer
+        config['scheduler'] = scheduler
+        config['writer'] = writer
+        config['scaler'] = scaler
 
-    # training
-    early_stopping = EarlyStopping(logger, patience=opt.patience, measure=opt.measure, verbose=1)
-    local_worse_steps = 0
-    prev_eval_measure = float('inf') if opt.measure == 'loss' else -float('inf')
-    best_eval_measure = float('inf') if opt.measure == 'loss' else -float('inf')
-    for epoch_i in range(opt.epoch):
-        epoch_st_time = time.time()
-        eval_loss, eval_acc = train_epoch(model, config, train_loader, valid_loader, epoch_i)
-        if opt.measure == 'loss': eval_measure = eval_loss 
-        else: eval_measure = eval_acc
-        # early stopping
-        if early_stopping.validate(eval_measure, measure=opt.measure): break
-        if opt.measure == 'loss': is_best = eval_measure < best_eval_measure
-        else: is_best = eval_measure > best_eval_measure
-        if is_best:
-            best_eval_measure = eval_measure
-            if opt.save_path:
-                logger.info("[Best model saved] : {:10.6f}".format(best_eval_measure))
-                save_model(config, model)
-                # save finetuned bert model/config/tokenizer
-                if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
-                    if not os.path.exists(opt.bert_output_dir):
-                        os.makedirs(opt.bert_output_dir)
-                    model.bert_tokenizer.save_pretrained(opt.bert_output_dir)
-                    model.bert_model.save_pretrained(opt.bert_output_dir)
-            early_stopping.reset(best_eval_measure)
-        early_stopping.status()
-        # begin: scheduling, apply rate decay at the measure(ex, loss) getting worse for the number of deacy epoch steps.
-        if opt.measure == 'loss': getting_worse = prev_eval_measure <= eval_measure
-        else: getting_worse = prev_eval_measure >= eval_measure
-        if getting_worse:
-            local_worse_steps += 1
-        else:
-            local_worse_steps = 0
-        logger.info('Scheduler: local_worse_steps / opt.lr_decay_steps = %d / %d' % (local_worse_steps, opt.lr_decay_steps))
-        if not opt.use_transformers_optimizer and \
-           epoch_i > opt.warmup_epoch and \
-           (local_worse_steps >= opt.lr_decay_steps or early_stopping.step() > opt.lr_decay_steps):
-            scheduler.step()
-            local_worse_steps = 0
-        prev_eval_measure = eval_measure
-        # end: scheduling
+        # training
+        early_stopping = EarlyStopping(logger, patience=opt.patience, measure=opt.measure, verbose=1)
+        local_worse_steps = 0
+        prev_eval_measure = float('inf') if opt.measure == 'loss' else -float('inf')
+        best_eval_measure = float('inf') if opt.measure == 'loss' else -float('inf')
+        for epoch_i in range(opt.epoch):
+            epoch_st_time = time.time()
+            eval_loss, eval_acc = train_epoch(model, config, train_loader, valid_loader, epoch_i)
+            if opt.measure == 'loss': eval_measure = eval_loss 
+            else: eval_measure = eval_acc
+            # early stopping
+            if early_stopping.validate(eval_measure, measure=opt.measure): break
+            if opt.measure == 'loss': is_best = eval_measure < best_eval_measure
+            else: is_best = eval_measure > best_eval_measure
+            if is_best:
+                best_eval_measure = eval_measure
+                if opt.save_path:
+                    logger.info("[Best model saved] : {:10.6f}".format(best_eval_measure))
+                    save_model(config, model)
+                    # save finetuned bert model/config/tokenizer
+                    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
+                        if not os.path.exists(opt.bert_output_dir):
+                            os.makedirs(opt.bert_output_dir)
+                        model.bert_tokenizer.save_pretrained(opt.bert_output_dir)
+                        model.bert_model.save_pretrained(opt.bert_output_dir)
+                early_stopping.reset(best_eval_measure)
+            early_stopping.status()
+            # begin: scheduling, apply rate decay at the measure(ex, loss) getting worse for the number of deacy epoch steps.
+            if opt.measure == 'loss': getting_worse = prev_eval_measure <= eval_measure
+            else: getting_worse = prev_eval_measure >= eval_measure
+            if getting_worse:
+                local_worse_steps += 1
+            else:
+                local_worse_steps = 0
+            logger.info('Scheduler: local_worse_steps / opt.lr_decay_steps = %d / %d' % (local_worse_steps, opt.lr_decay_steps))
+            if not opt.use_transformers_optimizer and \
+               epoch_i > opt.warmup_epoch and \
+               (local_worse_steps >= opt.lr_decay_steps or early_stopping.step() > opt.lr_decay_steps):
+                scheduler.step()
+                local_worse_steps = 0
+            prev_eval_measure = eval_measure
+            # end: scheduling
+
+# for optuna, global for passing opt 
+gopt = None
+
+def hp_search(trial: optuna.Trial):
+    if torch.cuda.is_available():
+        logger.info("%s", torch.cuda.get_device_name(0))
+
+    global gopt
+    opt = gopt
+    # set config
+    config = load_config(opt)
+    config['opt'] = opt
+    logger.info("%s", config)
+
+    # set path
+    set_path(config)
+
+    # set search spaces
+    lr = trial.suggest_float("lr", 1e-5, 2e-4, log=True)
+    bsz = trial.suggest_categorical("batch_size", [32, 64, 128])
+    seed = trial.suggest_int("seed", 17, 42)
+    epochs = trial.suggest_int("epochs", 1, opt.epoch)
+
+    # prepare train, valid dataset
+    train_loader, valid_loader = prepare_datasets(config, hp_search_bsz=bsz)
+
+    with temp_seed(seed):
+        # prepare model
+        model = prepare_model(config)
+        # create optimizer, scheduler, summary writer, scaler
+        optimizer, scheduler, writer, scaler = prepare_osws(config, model, train_loader, hp_search_lr=lr)
+        config['optimizer'] = optimizer
+        config['scheduler'] = scheduler
+        config['writer'] = writer
+        config['scaler'] = scaler
+
+        for epoch in range(epochs):
+            eval_loss, eval_acc = train_epoch(model, config, train_loader, valid_loader, epoch)
+            trial.report(eval_acc, epoch)
+            if trial.should_prune():
+                raise optuna.TrialPruned()
+        return eval_acc
 
 def main():
     parser = argparse.ArgumentParser()
@@ -383,10 +426,26 @@ def main():
                         help="Use BERT as feature-based, default fine-tuning")
     parser.add_argument('--bert_remove_layers', type=str, default='',
                         help="Specify layer numbers to remove during finetuning e.g. 8,9,10,11 to remove last 4 layers from BERT base(12 layers)")
+    # for Optuna
+    parser.add_argument('--hp_search', action='store_true',
+                        help="Set this flag to use hyper-parameter search.")
+    parser.add_argument('--hp_trials', default=24, type=int,
+                        help="Number of trials for hyper-parameter search.")
 
     opt = parser.parse_args()
 
-    train(opt)
+    if opt.hp_search:
+        global gopt
+        gopt = opt
+        study = optuna.create_study(direction='maximize')
+        study.optimize(hp_search, n_trials=opt.hp_trials, timeout=1800)
+        df = study.trials_dataframe(attrs=('number', 'value', 'params', 'state'))
+        print(df)
+        logger.info("study.best_params : %s", study.best_params)
+        logger.info("study.best_value : %s", study.best_value)
+        logger.info("study.best_trial : %s", study.best_trial) # for all, study.trials
+    else:
+        train(opt)
    
 if __name__ == '__main__':
     main()
