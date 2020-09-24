@@ -134,9 +134,52 @@ $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=ber
 
 - optuna
 ```
+$ python train.py --config=configs/config-glove-gnb.json --lr_decay_rate=0.9 --hp_search --hp_trials=24 --epoch=32
+...
+    number     value  params_batch_size  params_epochs  params_lr  params_seed     state
+0        0  0.104286                128              2   0.000014           22  COMPLETE
+1        1  0.204286                 64              1   0.000149           18  COMPLETE
+2        2  0.424286                128             21   0.000027           23  COMPLETE
+3        3  0.722857                128             22   0.000080           23  COMPLETE
+4        4  0.472857                 64             20   0.000024           34  COMPLETE
+5        5  0.482857                 64             21   0.000024           26    PRUNED
+6        6  0.482857                 32             11   0.000028           33  COMPLETE
+7        7  0.751429                 64             27   0.000059           30  COMPLETE
+8        8  0.167143                128             18   0.000112           20    PRUNED
+9        9  0.192857                 64              2   0.000052           25  COMPLETE
+10      10  0.784286                 32             32   0.000067           40  COMPLETE
+11      11  0.187143                 32             31   0.000066           42    PRUNED
+12      12  0.824286                 32             32   0.000189           42  COMPLETE
+13      13  0.821429                 32             32   0.000179           42  COMPLETE
+14      14  0.817143                 32             27   0.000174           38  COMPLETE
+15      15  0.821429                 32             28   0.000186           38  COMPLETE
+16      16  0.750000                 32             10   0.000109           41  COMPLETE
+17      17  0.792857                 32             26   0.000111           37    PRUNED
+18      18  0.801429                 32             29   0.000136           36    PRUNED
+19      19  0.815714                 32             24   0.000196           31  COMPLETE
+20      20  0.180000                 32             14   0.000039           39    PRUNED
+21      21  0.810000                 32             32   0.000179           42    PRUNED
+22      22  0.827143                 32             30   0.000199           42  COMPLETE
+23      23  0.211429                 32             29   0.000096           36    PRUNED
+INFO:__main__:study.best_params : {'lr': 0.00019915783115047369, 'batch_size': 32, 'seed': 42, 'epochs': 30}
+INFO:__main__:study.best_value : 0.8271428571428572
+INFO:__main__:study.best_trial : FrozenTrial(number=22, value=0.8271428571428572, datetime_start=datetime.datetime(2020, 9, 24, 15, 44, 29, 343110), datetime_complete=datetime.datetime(2020, 9, 24, 15, 45, 23, 890261), params={'lr': 0.00019915783115047369, 'batch_size': 32, 'seed': 42, 'epochs': 30}, distributions={'lr': LogUniformDistribution(high=0.0002, low=1e-05), 'batch_size': CategoricalDistribution(choices=(32, 64, 128)), 'seed': IntUniformDistribution(high=42, low=17, step=1), 'epochs': IntUniformDistribution(high=32, low=1, step=1)}, user_attrs={}, system_attrs={}, intermediate_values={0: 0.41714285714285715, 1: 0.5214285714285715, 2: 0.6557142857142857, 3: 0.7271428571428571, 4: 0.7557142857142857, 5: 0.76, 6: 0.77, 7: 0.7757142857142857, 8: 0.7814285714285715, 9: 0.7785714285714286, 10: 0.7871428571428571, 11: 0.7914285714285715, 12: 0.7971428571428572, 13: 0.7971428571428572, 14: 0.8014285714285714, 15: 0.7957142857142857, 16: 0.8028571428571428, 17: 0.81, 18: 0.8071428571428572, 19: 0.8085714285714286, 20: 0.81, 21: 0.8157142857142857, 22: 0.8157142857142857, 23: 0.8157142857142857, 24: 0.8171428571428572, 25: 0.8242857142857143, 26: 0.82, 27: 0.8257142857142857, 28: 0.8314285714285714, 29: 0.8271428571428572}, trial_id=22, state=TrialState.COMPLETE)
+
+$ python train.py --config=configs/config-glove-gnb.json --lr_decay_rate=0.9 --epoch=64 --seed=42 --batch_size=32 --lr=0.00019915783115047369
+...
+INFO:__main__: 63 epoch |   409/  409 | train loss :  1.334, valid loss  1.341, valid acc 0.8386| lr :0.000106 |  0.05 min elapsed
+INFO:__main__:[Best model saved] :   1.341118
+
+$ python evaluate.py --config=configs/config-glove-gnb.json
+INFO:__main__:[Accuracy] : 0.8114,   568/  700
+INFO:__main__:[Elapsed Time] : 1101.0687351226807ms, 1.4641366803083298ms on average
+
+* previous best : 80.43
+
 $ python preprocess.py --config=configs/config-glove-cnn.json
 
 $ python train.py --config=configs/config-glove-cnn.json --lr_decay_rate=0.9 --hp_search --hp_trials=24 --epoch=12
+...
 [I 2020-09-24 13:51:14,081] Trial 23 finished with value: 0.9828571428571429 and parameters: {'lr': 9.769218925183409e-05, 'batch_size': 32, 'seed': 31, 'epochs': 1}. Best is trial 10 with value: 0.9914285714285714.
     number     value  params_batch_size  params_epochs  params_lr  params_seed     state
 0        0  0.984286                 64              2   0.000147           37  COMPLETE
@@ -176,6 +219,9 @@ INFO:__main__:[Best model saved] :   1.174044
 $ python evaluate.py --config=configs/config-glove-cnn.json
 INFO:__main__:[Accuracy] : 0.9757,   683/  700
 INFO:__main__:[Elapsed Time] : 1646.5208530426025ms, 2.1808976267540405ms on average
+
+* previous best : 97.86
+
 ```
 
 
