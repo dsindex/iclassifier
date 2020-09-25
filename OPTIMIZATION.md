@@ -191,9 +191,6 @@ study.best_value : 0.8800728043682621
 INFO:__main__:study.best_value : 0.8800728043682621
 
 $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=0.00014915118702339241 --batch_size=128 --seed=34 --epoch=32
-...
-INFO:__main__: 25 epoch |  1172/ 1172 | train loss :  0.375, valid loss  0.427, valid acc 0.8822| lr :0.000028 |  1.53 min elapsed
-[Best model saved] :   0.427210
 
 $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/clova_sentiments_morph
 INFO:__main__:[Accuracy] : 0.8822, 44108/49997
@@ -205,11 +202,27 @@ INFO:__main__:[Elapsed Time] : 189978.82962226868ms, 3.7981278658466384ms on ave
 $ python preprocess.py --config=configs/config-densenet-dsa.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
 
 $ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --hp_search --hp_trials=24 --epoch=18 --patience=4
+INFO:__main__:    number     value  params_batch_size  params_epochs  params_lr  params_seed     state
+0        0  0.863932                 32              8   0.000437           32  COMPLETE
+...
+15      15  0.715123                128              4   0.000001           32    PRUNED
+16      16  0.875333                128             15   0.000244           37  COMPLETE
+17      17  0.821069                128             16   0.000089           36    PRUNED
+18      18  0.870692                128             17   0.000265           27    PRUNED
+19      19  0.797228                128             13   0.000020           32    PRUNED
+...
+study.best_params : {'lr': 0.00024401408580204797, 'batch_size': 128, 'seed': 37, 'epochs': 15}
+INFO:__main__:study.best_params : {'lr': 0.00024401408580204797, 'batch_size': 128, 'seed': 37, 'epochs': 15}
+study.best_value : 0.8753325199511971
+INFO:__main__:study.best_value : 0.8753325199511971
 
-$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch= --lr= --seed=
+$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=32 --lr=0.00024401408580204797 --batch_size=128 --seed=37
 
 $ python evaluate.py --config=configs/config-densenet-dsa.json --data_dir=./data/clova_sentiments_morph
+INFO:__main__:[Accuracy] : 0.8759, 43794/49997
+INFO:__main__:[Elapsed Time] : 410282.794713974ms, 8.204527655280355ms on average
 
+** previous best : 87.66
 ```
 
 
