@@ -134,52 +134,6 @@ $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=ber
 
 - optuna
 ```
-* glove-gnb
-$ python preprocess.py --config=configs/config-glove-gnb.json
-
-$ python train.py --config=configs/config-glove-gnb.json --lr_decay_rate=0.9 --hp_search --hp_trials=24 --epoch=32
-...
-    number     value  params_batch_size  params_epochs  params_lr  params_seed     state
-0        0  0.104286                128              2   0.000014           22  COMPLETE
-1        1  0.204286                 64              1   0.000149           18  COMPLETE
-2        2  0.424286                128             21   0.000027           23  COMPLETE
-3        3  0.722857                128             22   0.000080           23  COMPLETE
-4        4  0.472857                 64             20   0.000024           34  COMPLETE
-5        5  0.482857                 64             21   0.000024           26    PRUNED
-6        6  0.482857                 32             11   0.000028           33  COMPLETE
-7        7  0.751429                 64             27   0.000059           30  COMPLETE
-8        8  0.167143                128             18   0.000112           20    PRUNED
-9        9  0.192857                 64              2   0.000052           25  COMPLETE
-10      10  0.784286                 32             32   0.000067           40  COMPLETE
-11      11  0.187143                 32             31   0.000066           42    PRUNED
-12      12  0.824286                 32             32   0.000189           42  COMPLETE
-13      13  0.821429                 32             32   0.000179           42  COMPLETE
-14      14  0.817143                 32             27   0.000174           38  COMPLETE
-15      15  0.821429                 32             28   0.000186           38  COMPLETE
-16      16  0.750000                 32             10   0.000109           41  COMPLETE
-17      17  0.792857                 32             26   0.000111           37    PRUNED
-18      18  0.801429                 32             29   0.000136           36    PRUNED
-19      19  0.815714                 32             24   0.000196           31  COMPLETE
-20      20  0.180000                 32             14   0.000039           39    PRUNED
-21      21  0.810000                 32             32   0.000179           42    PRUNED
-22      22  0.827143                 32             30   0.000199           42  COMPLETE
-23      23  0.211429                 32             29   0.000096           36    PRUNED
-INFO:__main__:study.best_params : {'lr': 0.00019915783115047369, 'batch_size': 32, 'seed': 42, 'epochs': 30}
-INFO:__main__:study.best_value : 0.8271428571428572
-INFO:__main__:study.best_trial : FrozenTrial(number=22, value=0.8271428571428572, datetime_start=datetime.datetime(2020, 9, 24, 15, 44, 29, 343110), datetime_complete=datetime.datetime(2020, 9, 24, 15, 45, 23, 890261), params={'lr': 0.00019915783115047369, 'batch_size': 32, 'seed': 42, 'epochs': 30}, distributions={'lr': LogUniformDistribution(high=0.0002, low=1e-05), 'batch_size': CategoricalDistribution(choices=(32, 64, 128)), 'seed': IntUniformDistribution(high=42, low=17, step=1), 'epochs': IntUniformDistribution(high=32, low=1, step=1)}, user_attrs={}, system_attrs={}, intermediate_values={0: 0.41714285714285715, 1: 0.5214285714285715, 2: 0.6557142857142857, 3: 0.7271428571428571, 4: 0.7557142857142857, 5: 0.76, 6: 0.77, 7: 0.7757142857142857, 8: 0.7814285714285715, 9: 0.7785714285714286, 10: 0.7871428571428571, 11: 0.7914285714285715, 12: 0.7971428571428572, 13: 0.7971428571428572, 14: 0.8014285714285714, 15: 0.7957142857142857, 16: 0.8028571428571428, 17: 0.81, 18: 0.8071428571428572, 19: 0.8085714285714286, 20: 0.81, 21: 0.8157142857142857, 22: 0.8157142857142857, 23: 0.8157142857142857, 24: 0.8171428571428572, 25: 0.8242857142857143, 26: 0.82, 27: 0.8257142857142857, 28: 0.8314285714285714, 29: 0.8271428571428572}, trial_id=22, state=TrialState.COMPLETE)
-
-$ python train.py --config=configs/config-glove-gnb.json --lr_decay_rate=0.9 --epoch=64 --seed=42 --batch_size=32 --lr=0.00019915783115047369
-...
-INFO:__main__: 63 epoch |   409/  409 | train loss :  1.334, valid loss  1.341, valid acc 0.8386| lr :0.000106 |  0.05 min elapsed
-INFO:__main__:[Best model saved] :   1.341118
-
-$ python evaluate.py --config=configs/config-glove-gnb.json
-INFO:__main__:[Accuracy] : 0.8114,   568/  700
-INFO:__main__:[Elapsed Time] : 1101.0687351226807ms, 1.4641366803083298ms on average
-
-** previous best : 80.43
-
-
 * glove-cnn
 $ python preprocess.py --config=configs/config-glove-cnn.json
 
@@ -199,18 +153,7 @@ $ python train.py --config=configs/config-glove-cnn.json --lr_decay_rate=0.9 --h
 9        9  0.958571                 64              6   0.000020           36    PRUNED
 10      10  0.991429                 32             11   0.000085           17  COMPLETE
 11      11  0.982857                 32             12   0.000092           19  COMPLETE
-12      12  0.990000                 32             11   0.000066           17  COMPLETE
-13      13  0.984286                 32             12   0.000053           17    PRUNED
-14      14  0.975714                 32             10   0.000029           21    PRUNED
-15      15  0.987143                 32             11   0.000075           42    PRUNED
-16      16  0.984286                 32             10   0.000196           22    PRUNED
-17      17  0.975714                128             12   0.000066           17    PRUNED
-18      18  0.978571                 32             10   0.000146           22  COMPLETE
-19      19  0.972857                 32              7   0.000027           17    PRUNED
-20      20  0.984286                 32             11   0.000054           20    PRUNED
-21      21  0.985714                 32              4   0.000190           25  COMPLETE
-22      22  0.985714                 32              5   0.000123           24  COMPLETE
-23      23  0.982857                 32              1   0.000098           31  COMPLETE
+...
 INFO:__main__:study.best_params : {'lr': 8.498517957591607e-05, 'batch_size': 32, 'seed': 17, 'epochs': 11}
 INFO:__main__:study.best_value : 0.9914285714285714
 INFO:__main__:study.best_trial : FrozenTrial(number=10, value=0.9914285714285714, datetime_start=datetime.datetime(2020, 9, 24, 13, 45, 46, 479083), datetime_complete=datetime.datetime(2020, 9, 24, 13, 46, 38, 86933), params={'lr': 8.498517957591607e-05, 'batch_size': 32, 'seed': 17, 'epochs': 11}, distributions={'lr': LogUniformDistribution(high=0.0002, low=1e-05), 'batch_size': CategoricalDistribution(choices=(32, 64, 128)), 'seed': IntUniformDistribution(high=42, low=17, step=1), 'epochs': IntUniformDistribution(high=12, low=1, step=1)}, user_attrs={}, system_attrs={}, intermediate_values={0: 0.9828571428571429, 1: 0.9857142857142858, 2: 0.9885714285714285, 3: 0.9842857142857143, 4: 0.9828571428571429, 5: 0.9814285714285714, 6: 0.9885714285714285, 7: 0.9857142857142858, 8: 0.9828571428571429, 9: 0.9828571428571429, 10: 0.9914285714285714}, trial_id=10, state=TrialState.COMPLETE)
@@ -232,8 +175,40 @@ INFO:__main__:[Elapsed Time] : 1646.5208530426025ms, 2.1808976267540405ms on ave
 $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2
 
 $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=18 --hp_search --hp_trials=24 --patience=4
+INFO:__main__:    number     value  params_batch_size  params_epochs  params_lr  params_seed     state
+0        0  0.880073                128             13   0.000149           34  COMPLETE
+1        1  0.871052                 64              4   0.000544           17  COMPLETE
+...
+18      18  0.790287                128              9   0.000014           39    PRUNED
+19      19  0.826790                 64             14   0.000051           31    PRUNED
+20      20  0.867072                128             18   0.000232           37    PRUNED
+21      21  0.833410                128              7   0.000127           34    PRUNED
+22      22  0.875393                128              8   0.000218           36  COMPLETE
+23      23  0.843671                128             10   0.000255           42    PRUNED
+study.best_params : {'lr': 0.00014915118702339241, 'batch_size': 128, 'seed': 34, 'epochs': 13}
+INFO:__main__:study.best_params : {'lr': 0.00014915118702339241, 'batch_size': 128, 'seed': 34, 'epochs': 13}
+study.best_value : 0.8800728043682621
+INFO:__main__:study.best_value : 0.8800728043682621
 
+$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=0.00014915118702339241 --batch_size=128 --seed=34 --epoch=32
+...
+INFO:__main__: 25 epoch |  1172/ 1172 | train loss :  0.375, valid loss  0.427, valid acc 0.8822| lr :0.000028 |  1.53 min elapsed
+[Best model saved] :   0.427210
 
+$ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/clova_sentiments_morph
+INFO:__main__:[Accuracy] : 0.8822, 44108/49997
+INFO:__main__:[Elapsed Time] : 189978.82962226868ms, 3.7981278658466384ms on average
+
+** previous best : 88.18
+
+* densenet-dsa
+$ python preprocess.py --config=configs/config-densenet-dsa.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
+
+$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --hp_search --hp_trials=24 --epoch=18 --patience=4
+
+$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch= --lr= --seed=
+
+$ python evaluate.py --config=configs/config-densenet-dsa.json --data_dir=./data/clova_sentiments_morph
 
 ```
 

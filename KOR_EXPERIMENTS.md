@@ -242,6 +242,11 @@ INFO:__main__:[Elapsed Time] : 160672.52135276794ms, 3.211939556139528ms on aver
 INFO:__main__:[Accuracy] : 0.8803, 44012/49997
 INFO:__main__:[Elapsed Time] : 161198.18258285522ms, 3.2225625831057085ms on average
 
+* hyper-parameter search by optuna
+* --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=0.00014915118702339241 --batch_size=128 --seed=34 --epoch=32
+INFO:__main__:[Accuracy] : 0.8822, 44108/49997
+INFO:__main__:[Elapsed Time] : 189978.82962226868ms, 3.7981278658466384ms on average
+
 * iee_corpus_morph
 $ python evaluate.py --config=configs/config-densenet-cnn-iee.json --data_dir=./data/iee_corpus_morph 
 

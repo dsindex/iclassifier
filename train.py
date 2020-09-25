@@ -33,6 +33,10 @@ from datasets.metric import temp_seed
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+streamHandler = logging.StreamHandler()
+fileHandler = logging.FileHandler('./train.log')
+logger.addHandler(streamHandler)
+logger.addHandler(fileHandler)
 
 def train_epoch(model, config, train_loader, val_loader, epoch_i):
     optimizer = config['optimizer']
@@ -454,7 +458,7 @@ def main():
         study = optuna.create_study(direction='maximize')
         study.optimize(hp_search, n_trials=opt.hp_trials)
         df = study.trials_dataframe(attrs=('number', 'value', 'params', 'state'))
-        print(df)
+        logger.info("%s", str(df))
         logger.info("study.best_params : %s", study.best_params)
         logger.info("study.best_value : %s", study.best_value)
         logger.info("study.best_trial : %s", study.best_trial) # for all, study.trials
