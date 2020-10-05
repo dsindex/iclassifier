@@ -10,9 +10,9 @@ class EarlyStopping():
         """Set early stopping condition
 
         Args:
-          patience: how many times to be patient before early stopping.
-          measure: checking measure, loss | f1 | accuracy.
-          verbose: if 1, enable verbose mode.
+          Patience: how many times to be patient before "Early Stopping".
+          Measure: checking measure, loss | f1 | Accuracy.
+          Verbose: if 1, enable Verbose mode.
         """
         self._step = 0
         if measure == 'loss': # loss
@@ -43,9 +43,8 @@ class EarlyStopping():
             self._step += 1
             if self._step > self.patience:
                 if self.verbose:
-                    self.logger.info('Training process is stopped early!')
+                    self.logger.info('Training process is halted early!!!')
                 return True
         else:
             self.reset(value)
         return False
-
