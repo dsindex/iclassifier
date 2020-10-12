@@ -54,7 +54,7 @@
   - 한국어 문서 데이터 준비.
     - 다양한 문서 데이터(위키, 백과, 뉴스, 블로그 등등)를 크롤링.
   - 형태소분석기 tokenizer를 적용해서 형태소 단위로 변경한 데이터를 이용해서 학습 진행.
-  - ex) kor.glove.300k.300d.txt (inhouse)
+  - ex) `kor.glove.300k.300d.txt` (inhouse)
 
 ##### BERT
 
@@ -63,11 +63,11 @@
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - `character-level bpe`
     - vocab.txt는 [sentencepiece](https://github.com/google/sentencepiece)를 이용해서 생성.
-    - ex) kor-bert-base-bpe.v1, kor-bert-large-bpe (inhouse)
+    - ex) `kor-bert-base-bpe.v1`, `kor-bert-large-bpe` (inhouse)
   - `character-level bpe + 형태소분석기`
-    - ex) kor-bert-base-dha_bpe, kor-bert-large-dha_bpe (inhouse)
+    - ex) `kor-bert-base-dha_bpe`, `kor-bert-large-dha_bpe` (inhouse)
   - `형태소분석기`
-    - ex) kor-bert-base-dha.v1 (inhouse), kor-bert-base-dha.v2 (inhouse)
+    - ex) `kor-bert-base-dha.v1`, `kor-bert-base-dha.v2` (inhouse)
 
 - KcBERT
   - [kcbert-base, kcbert-large](https://github.com/Beomi/KcBERT)
@@ -75,6 +75,8 @@
 ##### DistilBERT
 
 - [training-distilbert](https://github.com/dsindex/transformers_examples#training-distilbert)
+  - 한국어 문서 데이터 준비.
+    - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - ex) `kor-distil-bpe-bert.v1`, `kor-distil-dha-bert.v1` (inhouse)
 
 ##### ELECTRA
@@ -87,7 +89,14 @@
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - [README.md](https://github.com/dsindex/electra/blob/master/README.md)
   - [train.sh](https://github.com/dsindex/electra/blob/master/train.sh)
-    - ex) `kor-electra-base-bpe-30k-512-1m` (inhouse)
+  - ex) `kor-electra-base-bpe-30k-512-1m` (inhouse)
+
+##### RoBERTa
+
+- [huggingface](https://huggingface.co/blog/how-to-train)를 이용한 학습
+  - 한국어 문서 데이터 준비.
+    - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
+  - ex) `kor-roberta-base-bbpe` (inhouse)
 
 ### NMSC data
 
@@ -132,6 +141,8 @@
 | KoELECTRA-Base, CLS                       | 89.63        | 14.2667 / -       |         |            |
 | bpe ELECTRA-base(1m) , CNN                | 88.55        | 14.2144 / -       |         |            |
 | bpe ELECTRA-base(1m) , CLS                | 88.42        | 13.5920 / -       |         |            |
+| RoBERTa-base , CNN                        | 89.97        | 13.3261 / -       |         |            |
+| RoBERTa-base , CLS                        | -            | -       / -       |         |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -654,6 +665,41 @@ INFO:__main__:[Elapsed Time] : 679682.5699806213ms, 13.592031333186892ms on aver
 ** 3342k
 INFO:__main__:[Accuracy] : 0.8843, 44211/49997
 INFO:__main__:[Elapsed Time] : 623643.3551311493ms, 12.471171410257925ms on average
+
+```
+
+</p>
+</details>
+
+##### RoBERTa(kor-roberta-base-bbpe)
+ 
+<details><summary><b>enc_class=cnn | cls</b></summary>
+<p>
+
+- train
+```
+* enc_class=cnn
+
+$ python preprocess.py --config=configs/config-roberta-cnn.json --bert_model_name_or_path=./embeddings/kor-roberta-base-bbpe --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-roberta-cnn.json --bert_model_name_or_path=./embeddings/kor-roberta-base-bbpe --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 
+
+* enc_class=cls
+
+$ python preprocess.py --config=configs/config-roberta-cls.json --bert_model_name_or_path=./embeddings/kor-roberta-base-bbpe --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-roberta-cls.json --bert_model_name_or_path=./embeddings/kor-roberta-base-bbpe --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+```
+
+- evaluation
+```
+* enc_class=cnn
+
+$ python evaluate.py --config=configs/config-roberta-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
+INFO:__main__:[Accuracy] : 0.8997, 44983/49997
+INFO:__main__:[Elapsed Time] : 666343.2488441467ms, 13.326123615524008ms on average
+
+* enc_class=cls
+
+$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
 ```
 
