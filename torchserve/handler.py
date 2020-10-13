@@ -55,11 +55,18 @@ class ClassifierHandler(BaseHandler, ABC):
                 model = TextGloveDensenetCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
             if config['enc_class'] == 'densenet-dsa':
                 model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
-        if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
-            from transformers import AutoTokenizer, AutoConfig, AutoModel
-            bert_config = AutoConfig.from_pretrained(opt.bert_output_dir)
-            bert_tokenizer = AutoTokenizer.from_pretrained(opt.bert_output_dir)
-            bert_model = AutoModel.from_config(bert_config)
+        if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra', 'funnel']:
+            if config['emb_class'] == 'funnel':
+                from transformers import FunnelTokenizer, FunnelConfig, FunnelBaseModel
+                bert_config = FunnelConfig.from_pretrained(opt.bert_output_dir)
+                bert_tokenizer = FunnelTokenizer.from_pretrained(opt.bert_output_dir)
+                # FunnelBaseModel has no 'from_config'
+                bert_model = FunnelBaseModel.from_pretrained(opt.bert_output_dir)
+            else:
+                from transformers import AutoTokenizer, AutoConfig, AutoModel
+                bert_config = AutoConfig.from_pretrained(opt.bert_output_dir)
+                bert_tokenizer = AutoTokenizer.from_pretrained(opt.bert_output_dir)
+                bert_model = AutoModel.from_config(bert_config)
             ModelClass = TextBertCNN
             if config['enc_class'] == 'cls': ModelClass = TextBertCLS
             model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path)
@@ -86,7 +93,7 @@ class ClassifierHandler(BaseHandler, ABC):
         if config['emb_class'] == 'glove':
             vocab = self.load_vocab(opt.vocab_path)
             tokenizer = Tokenizer(vocab, config)
-        if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
+        if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra', 'funnel']:
             tokenizer = model.bert_tokenizer
         return tokenizer
 
@@ -139,8 +146,7 @@ class ClassifierHandler(BaseHandler, ABC):
             x = torch.tensor([ids])
             # x : [batch_size, variable size]
             # batch size: 1
-        if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
-            from torch.utils.data import TensorDataset
+        if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra', 'funnel']:
             inputs = tokenizer.encode_plus(text, add_special_tokens=True, return_tensors='pt')
             if config['emb_class'] in ['bart', 'distilbert']:
                 x = [inputs['input_ids'], inputs['attention_mask']]

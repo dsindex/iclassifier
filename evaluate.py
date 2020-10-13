@@ -25,7 +25,7 @@ def set_path(config):
     opt = config['opt']
     if config['emb_class'] == 'glove':
         opt.data_path = os.path.join(opt.data_dir, 'test.txt.ids')
-    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
+    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra', 'funnel']:
         if opt.augmented:
             opt.data_path = os.path.join(opt.data_dir, 'augmented.raw.fs')
         else:
@@ -58,11 +58,18 @@ def load_model(config, checkpoint):
             model = TextGloveDensenetCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
         if config['enc_class'] == 'densenet-dsa':
             model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
-    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
-        from transformers import AutoTokenizer, AutoConfig, AutoModel
-        bert_config = AutoConfig.from_pretrained(opt.bert_output_dir)
-        bert_tokenizer = AutoTokenizer.from_pretrained(opt.bert_output_dir)
-        bert_model = AutoModel.from_config(bert_config)
+    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra', 'funnel']:
+        if config['emb_class'] == 'funnel':
+            from transformers import FunnelTokenizer, FunnelConfig, FunnelBaseModel
+            bert_config = FunnelConfig.from_pretrained(opt.bert_output_dir)
+            bert_tokenizer = FunnelTokenizer.from_pretrained(opt.bert_output_dir)
+            # FunnelBaseModel has no 'from_config'
+            bert_model = FunnelBaseModel.from_pretrained(opt.bert_output_dir)
+        else:
+            from transformers import AutoTokenizer, AutoConfig, AutoModel
+            bert_config = AutoConfig.from_pretrained(opt.bert_output_dir)
+            bert_tokenizer = AutoTokenizer.from_pretrained(opt.bert_output_dir)
+            bert_model = AutoModel.from_config(bert_config)
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path)
@@ -80,7 +87,7 @@ def convert_onnx(config, torch_model, x):
         output_names = ['output']
         dynamic_axes = {'input': {0: 'batch', 1: 'sequence'},
                         'output': {0: 'batch', 1: 'sequence'}}
-    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
+    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra', 'funnel']:
         input_names  = ['input_ids', 'input_mask', 'segment_ids']
         output_names = ['output']
         dynamic_axes = {'input_ids': {0: 'batch', 1: 'sequence'},
@@ -191,7 +198,7 @@ def prepare_datasets(config):
     opt = config['opt']
     if config['emb_class'] == 'glove':
         DatasetClass = GloveDataset
-    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
+    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra', 'funnel']:
         DatasetClass = BertDataset
     test_loader = prepare_dataset(config, opt.data_path, DatasetClass, sampling=False, num_workers=1)
     return test_loader
@@ -272,7 +279,7 @@ def evaluate(opt):
                 x = to_numpy(x)
                 if config['emb_class'] == 'glove':
                     ort_inputs = {ort_session.get_inputs()[0].name: x}
-                if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
+                if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra', 'funnel']:
                     if config['emb_class'] in ['distilbert', 'bart']:
                         ort_inputs = {ort_session.get_inputs()[0].name: x[0],
                                       ort_session.get_inputs()[1].name: x[1]}
@@ -346,7 +353,7 @@ def prepare_tokenizer(config, model):
     if config['emb_class'] == 'glove':
         vocab = load_vocab(opt.vocab_path)
         tokenizer = Tokenizer(vocab, config)
-    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
+    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra', 'funnel']:
         tokenizer = model.bert_tokenizer
     return tokenizer
 
@@ -360,8 +367,7 @@ def encode_text(config, tokenizer, text):
         x = torch.tensor([ids])
         # x : [batch_size, variable size]
         # batch size: 1
-    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
-        from torch.utils.data import TensorDataset
+    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra', 'funnel']:
         inputs = tokenizer.encode_plus(text, add_special_tokens=True, return_tensors='pt')
         if config['emb_class'] in ['bart', 'distilbert']:
             x = [inputs['input_ids'], inputs['attention_mask']]
@@ -425,7 +431,7 @@ def inference(opt):
                 x = to_numpy(x)
                 if config['emb_class'] == 'glove':
                     ort_inputs = {ort_session.get_inputs()[0].name: x}
-                if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
+                if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra', 'funnel']:
                     if config['emb_class'] in ['distilbert', 'bart']:
                         ort_inputs = {ort_session.get_inputs()[0].name: x[0],
                                       ort_session.get_inputs()[1].name: x[1]}

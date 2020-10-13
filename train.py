@@ -158,7 +158,7 @@ def set_path(config):
         else:
             opt.train_path = os.path.join(opt.data_dir, 'train.txt.ids')
         opt.valid_path = os.path.join(opt.data_dir, 'valid.txt.ids')
-    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
+    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra', 'funnel']:
         if opt.augmented:
             opt.train_path = os.path.join(opt.data_dir, 'augmented.txt.fs')
         else:
@@ -171,7 +171,7 @@ def prepare_datasets(config, hp_search_bsz=None):
     opt = config['opt']
     if config['emb_class'] == 'glove':
         DatasetClass = GloveDataset
-    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
+    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra', 'funnel']:
         DatasetClass = BertDataset
     train_loader = prepare_dataset(config,
         opt.train_path,
@@ -222,12 +222,19 @@ def prepare_model(config):
             model = TextGloveDensenetCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable)
         if config['enc_class'] == 'densenet-dsa':
             model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable)
-    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
-        from transformers import AutoTokenizer, AutoConfig, AutoModel
-        bert_tokenizer = AutoTokenizer.from_pretrained(opt.bert_model_name_or_path,
-                                                   do_lower_case=opt.bert_do_lower_case)
-        bert_model = AutoModel.from_pretrained(opt.bert_model_name_or_path,
-                                           from_tf=bool(".ckpt" in opt.bert_model_name_or_path))
+    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra', 'funnel']:
+        if config['emb_class'] == 'funnel':
+            from transformers import FunnelTokenizer, FunnelConfig, FunnelBaseModel
+            bert_tokenizer = FunnelTokenizer.from_pretrained(opt.bert_model_name_or_path,
+                                                             do_lower_case=opt.bert_do_lower_case)
+            bert_model = FunnelBaseModel.from_pretrained(opt.bert_model_name_or_path,
+                                                         from_tf=bool(".ckpt" in opt.bert_model_name_or_path))
+        else:
+            from transformers import AutoTokenizer, AutoConfig, AutoModel
+            bert_tokenizer = AutoTokenizer.from_pretrained(opt.bert_model_name_or_path,
+                                                           do_lower_case=opt.bert_do_lower_case)
+            bert_model = AutoModel.from_pretrained(opt.bert_model_name_or_path,
+                                                   from_tf=bool(".ckpt" in opt.bert_model_name_or_path))
         bert_config = bert_model.config
         # bert model reduction
         reduce_bert_model(config, bert_model, bert_config)
@@ -320,7 +327,7 @@ def train(opt):
                     logger.info("[Best model saved] : {:10.6f}".format(best_eval_measure))
                     save_model(config, model)
                     # save finetuned bert model/config/tokenizer
-                    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra']:
+                    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra', 'funnel']:
                         if not os.path.exists(opt.bert_output_dir):
                             os.makedirs(opt.bert_output_dir)
                         model.bert_tokenizer.save_pretrained(opt.bert_output_dir)

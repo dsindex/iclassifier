@@ -614,11 +614,11 @@ class TextBertCLS(BaseModel):
                     bert_outputs = self.bert_model(input_ids=x[0],
                                                    attention_mask=x[1])
                     pooled = bert_outputs[0][:, -1, :]
-                elif self.config['emb_class'] in ['electra']:
+                elif self.config['emb_class'] in ['electra', 'funnel']:
                     bert_outputs = self.bert_model(input_ids=x[0],
                                                    attention_mask=x[1],
                                                    token_type_ids=x[2])
-                    # no pooling layer in electra, use the first hidden state([CLS]) of the final layer.
+                    # no pooling layer in electra/funnel, use the first hidden state([CLS]) of the final layer.
                     pooled = bert_outputs[0][:, 0, :]
                     # pooled : [batch_size, bert_hidden_size]
                 else:
@@ -638,11 +638,11 @@ class TextBertCLS(BaseModel):
                 # final hidden state of the final decoder token acts like '[CLS]'
                 pooled = bert_outputs[0][:, -1, :]
                 # pooled : [batch_size, bert_hidden_size]
-            elif self.config['emb_class'] in ['electra']:
+            elif self.config['emb_class'] in ['electra', 'funnel']:
                 bert_outputs = self.bert_model(input_ids=x[0],
                                                attention_mask=x[1],
                                                token_type_ids=x[2])
-                # no pooling layer in electra, use the first hidden state([CLS]) of the final layer.
+                # no pooling layer in electra/funnel, use the first hidden state([CLS]) of the final layer.
                 pooled = bert_outputs[0][:, 0, :]
                 # pooled : [batch_size, bert_hidden_size]
             else:
