@@ -305,7 +305,7 @@ def main():
 
     if config['emb_class'] == 'glove':
         preprocess_glove(config)
-    if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra', 'funnel']:
+    else:
         preprocess_bert(config)
 
 
