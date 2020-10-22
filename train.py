@@ -47,6 +47,8 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
 
     if opt.criterion == 'MSELoss':
         criterion = torch.nn.MSELoss(reduction='sum').to(opt.device)
+    elif opt.criterion == 'KLDivLoss':
+        criterion = torch.nn.KLDivLoss(reduction='batchmean').to(opt.device)
     else:
         criterion = torch.nn.CrossEntropyLoss().to(opt.device)
 
@@ -68,7 +70,10 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
                 print(prof.key_averages().table(sort_by="self_cpu_memory_usage", row_limit=10))
             else:
                 output = model(x)
-            loss = criterion(output, y)
+            if opt.criterion == 'KLDivLoss':
+                loss = criterion(F.log_softmax(output, dim=1), y)
+            else:
+                loss = criterion(output, y)
             if opt.gradient_accumulation_steps > 1:
                 loss = loss / opt.gradient_accumulation_steps
         # back-propagation - begin
@@ -439,7 +444,7 @@ def main():
     parser.add_argument('--measure', type=str, default='loss', help="Evaluation measure, 'loss' | 'accuracy', default 'loss'.")
     parser.add_argument('--augmented', action='store_true',
                         help="Set this flag to use augmented.txt for training.")
-    parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'MSELoss', default 'CrossEntropyLoss'")
+    parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'MSELoss' | 'KLDivLoss', default 'CrossEntropyLoss'")
     # for BERT
     parser.add_argument('--bert_model_name_or_path', type=str, default='embeddings/bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
