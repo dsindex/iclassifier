@@ -48,7 +48,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
     if opt.criterion == 'MSELoss':
         criterion = torch.nn.MSELoss(reduction='sum').to(opt.device)
     elif opt.criterion == 'KLDivLoss':
-        criterion = torch.nn.KLDivLoss(reduction='batchmean').to(opt.device)
+        criterion = torch.nn.KLDivLoss(reduction='sum').to(opt.device)
     else:
         criterion = torch.nn.CrossEntropyLoss().to(opt.device)
 
