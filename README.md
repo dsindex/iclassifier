@@ -63,18 +63,19 @@
 
 ### experiments summary
 
-|                          | Accuracy (%) | GPU / CPU           | ONNX                         | CONDA             | CONDA+je          | INTEL   | INTEL+je  | Dynamic           | Dynamic+je        | Inference | Inference+Dynamic | Inference+ONNX                 | Etc            |
-| ------------------------ | ------------ | ------------------- | ---------------------------- | ----------------- | ----------------- | ------- | --------- | ----------------- | ----------------- | --------- | ----------------- | ------------------------------ | -------------- |    
-| GloVe, GNB               | 80.43        | 1.2929  / -         | -        / -       / -       | -       / -       |                   |         |           |                   |                   | -         |                   | -                              |                |
-| GloVe, CNN               | 97.86        | 1.7939  / -         | 7.5656   / 1.8689  / 1.7735  | 4.6868  / 2.7592  |                   |         |           |                   |                   | 1.9398    |                   | 0.3848  / -       / FAILED     | threads=14     |
-| GloVe, Densenet-CNN      | 97.57        | 3.6094  / -         | 19.1212  / 3.0717  / 3.0917  | 7.6969  / 6.5887  |                   |         |           |                   |                   | 4.9481    |                   | 0.8658  / -       / FAILED     | threads=14     |
-| GloVe, Densenet-DSA      | 97.43        | 7.5007  / -         | -        / 4.4936  / 4.9337  |         / 9.7873  |                   |         |           |                   |                   | 7.2086    |                   | 1.5420  / -       / FAILED     | threads=14     |
-| DistilBERT, CLS          | 97.71        | 9.3075  / -         | -        / 32.4263 / 31.1101 | -       / 37.7777 |                   |         |           | -       / 29.3939 |                   | 14.9494   | 10.4040           | 8.9942  / 10.1848 / **4.8818** | threads=14     |
-| BERT-base(uncased), CNN  | 97.57        | 12.1273 / -         |                              | -       / 81.8787 |                   |         |           | -       / 52.4949 |                   | 34.7878   | 30.5454           |                                | threads=14     |
-| BERT-base(uncased), CLS  | 97.43        | 12.7714 / 100.929   | 174.2222 / 46.4263 / 43.5078 | 69.4343 / 62.5959 | 66.1212 / 63.0707 | 68.9191 | 66        | 66.9494 / 49.4747 | 60.7777 / 50.4040 | 30.7979   | 24.5353           | 16.9756                        | threads=14     |
-| BERT-base(uncased), CLS  | 97.00        | 9.2660  / 73.1010   | 113.2424 / 31.5400 / 26.9472 | 47.2323 / 42.8950 | 45.0000 / 43.2020 | 48.5050 | 45.2727   | 44.8080 / 33.4623 | 40.8888 / 34.0606 | 16.7419   | 13.5703           | 11.7487                        | del 8,9,19,11, threads=14 |
-| BERT-large, CNN          | **98.00**    | 24.277  / -         |                              |                   |                   |         |           |                   |                   |           |                   |                                |                |
-| BERT-large, CLS          | 97.86        | 23.542  / -         |                              |                   |                   |         |           |                   |                   |           |                   |                                |                |
+|                          | Accuracy (%) | GPU / CPU           | ONNX                         | CONDA                       | Dynamic                     | Inference         | Inference+Dynamic | Inference+ONNX                 | Etc            |
+| ------------------------ | ------------ | ------------------- | ---------------------------- | --------------------------- | --------------------------- | ----------------- | ----------------- | ------------------------------ | -------------- |    
+| GloVe, GNB               | 80.43        | 1.2929  / -         | -        / -       / -       | -       / -                 |                             | -                 |                   | -                              |                |
+| GloVe, CNN               | 97.86        | 1.7939  / -         | 7.5656   / 1.8689  / 1.7735  | 4.6868  / 2.7592            |                             | 1.9398            |                   | 0.3848  / -       / FAILED     | threads=14     |
+| GloVe, Densenet-CNN      | 97.57        | 3.6094  / -         | 19.1212  / 3.0717  / 3.0917  | 7.6969  / 6.5887            |                             | 4.9481            |                   | 0.8658  / -       / FAILED     | threads=14     |
+| GloVe, Densenet-DSA      | 97.43        | 7.5007  / -         | -        / 4.4936  / 4.9337  |         / 9.7873            |                             | 7.2086            |                   | 1.5420  / -       / FAILED     | threads=14     |
+| DistilBERT, CLS          | 97.71        | 9.3075  / -         | -        / 32.4263 / 31.1101 | -       / 37.7777           | -       / 29.3939           | 14.9494           | 10.4040           | 8.9942  / 10.1848 / **4.8818** | threads=14     |
+| SqueezeBERT, CLS         | -            | 18.0796 / -         | -        / -       / -       | -       / -       / 24.0667 | -       / -       / 23.8565 | -       / 20.3999 | -       / 20.0118 | -       / 11.9890 / FAILED     | threads=14     |
+| BERT-base(uncased), CNN  | 97.57        | 12.1273 / -         |                              | -       / 81.8787           | -       / -                 | 34.7878           | 30.5454           |                                | threads=14     |
+| BERT-base(uncased), CLS  | 97.43        | 12.7714 / 100.929   | 174.2222 / 46.4263 / 43.5078 | 69.4343 / 62.5959           | 66.9494 / 49.4747           | 30.7979           | 24.5353           | 16.9756                        | threads=14     |
+| BERT-base(uncased), CLS  | 97.00        | 9.2660  / 73.1010   | 113.2424 / 31.5400 / 26.9472 | 47.2323 / 42.8950           | 44.8080 / 33.4623           | 16.7419           | 13.5703           | 11.7487                        | del 8,9,19,11, threads=14 |
+| BERT-large, CNN          | **98.00**    | 24.277  / -         |                              |                             |                             |                   |                   |                                |                |
+| BERT-large, CLS          | 97.86        | 23.542  / -         |                              |                             |                             |                   |                   |                                |                |
 
 ```
 * GPU / CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)  [Tesla V100 1 GPU, Intel(R) Xeon(R) Gold 5120 CPU @ 2.20GHz, 2 CPU, 14CORES/1CPU, HyperThreading]
@@ -82,17 +83,15 @@
          / onnxruntime 1.3.0, conda pytorch=1.5.0 
          / onnxruntime 1.3.0, conda pytorch=1.5.0, onnxruntime_tools.optimizer_cli
 * CONDA : conda pytorch=1.2.0
-          / pytorch=1.5.0
-* CONDA+je : pytorch=1.2.0, etc/jemalloc_omp_kmp.sh
-             / pytorch=1.5.0, etc/jemalloc_omp_kmp.sh
-* INTEL : conda pytorch=1.2.0, [intel optimzaed transformers](https://github.com/mingfeima/transformers/tree/kakao/gpt2)
-* INTEL+je : conda pytorch=1.2.0, [intel optimzaed transformers](https://github.com/mingfeima/transformers/tree/kakao/gpt2), etc/jemalloc_omp_kmp.sh
+          / conda pytorch=1.5.0
+          / conda pytorch=1.6.0
 * Dynamic : conda pytorch=1.4.0, --enable_dqm
-            / pytorch=1.5.0, --enable_dqm
-* Dynamic+je : conda pytorch=1.4.0, --enable_dqm, etc/jemalloc_omp_kmp.sh
-               / pytorch=1.5.0, --enable_dqm, etc/jemalloc_omp_kmp.sh
+            / conda pytorch=1.5.0, --enable_dqm
+            / conda pytorch=1.6.0, --enable_dqm
 * Inference : conda pytorch=1.5.0, --enable_inference
+              / conda pytorch=1.6.0, --enable_inference
 * Inference+Dynamic : conda pytorch=1.5.0, --enable_dqm, --enable_inference
+                      / conda pytorch=1.6.0, --enable_dqm, --enable_inference 
 * Inference+ONNX : conda pytorch=1.5.0, --enable_ort(onnxruntime 1.3.0), --enable_inference
                    / conda pytorch=1.6.0, --enable_ort(onnxruntime 1.4.0), --enable_inference 
                    / conda pytorch=1.6.0, --enable_ort(onnxruntime 1.4.0), --enable_inference, --quantize_onnx
@@ -264,6 +263,10 @@ INFO:__main__:[Elapsed Time] : 6607ms, 9.30758226037196ms on average
 INFO:__main__:[Accuracy] : 0.9629,   674/  700
 INFO:__main__:[Elapsed Time] : 14707.713603973389ms, 20.878405018425806ms on average
 
+** --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/squeezebert-uncased
+INFO:__main__:[Accuracy] : 0.9729,   681/  700
+INFO:__main__:[Elapsed Time] : 12742.885112762451ms, 18.07960045013646ms on average
+
 ```
 
 </p>
@@ -303,6 +306,8 @@ INFO:__main__:[Elapsed Time] : 14707.713603973389ms, 20.878405018425806ms on ave
 | BERT-medium, CLS                        | 89.24        | 9.5857  / -                 |                   |                   |                          |                   |               |
 | DistilBERT, CNN                         | 89.90        | 9.9362  / -                 |       - / 44.1111 |                   |              - / 35.7070 |                   | threads=14    |
 | **DistilBERT, CLS**                     | 91.10        | 8.9719  / -                 |       - / 37.2626 |                   |              - / 29.4646 |                   | threads=14    |
+| SqueezeBERT, CNN                        | -            | -       / -                 |                   |                   |                          |                   |               |
+| SqueezeBERT, CLS                        | -            | -       / -                 |                   |                   |                          |                   |               |
 | BERT-base(uncased), CNN                 | 92.04        | 14.1576 / -                 |                   |                   |                          |                   |               |
 | BERT-base(uncased), CLS                 | 92.42        | 12.7549 / 100.555 / 62.5050 | 68.5757 / 66.1818 | 65.1616 / 63.1616 | 66.4545(92.42) / 50.8080 | 60.5656 / 50.4343 | threads=14    |
 | BERT-base(uncased), CNN                 | 90.55        | 10.6824 / -                 |                   |                   |                          |                   | del 8,9,10,11 |
@@ -493,6 +498,9 @@ INFO:__main__:[Elapsed Time] : 8951ms, 4.86043956043956ms on average
 INFO:__main__:[Accuracy] : 0.8990,  1637/ 1821
 INFO:__main__:[Elapsed Time] : 18193ms, 9.936263736263736ms on average
 
+** --bert_model_name_or_path=./embeddings/squeezebert-uncased
+
+
 ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
 ** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case
 INFO:__main__:[Accuracy] : 0.9390,  1710/ 1821
@@ -548,6 +556,9 @@ INFO:__main__:[Elapsed Time] : 7124ms, 3.8461538461538463ms on average
 ** --configs/config-distilbert-cls.json --bert_model_name_or_path=embeddings/distilbert-base-uncased
 INFO:__main__:[Accuracy] : 0.9110,  1659/ 1821
 INFO:__main__:[Elapsed Time] : 16431ms, 8.971978021978021ms on average
+
+** --bert_model_name_or_path=./embeddings/squeezebert-uncased
+
 
 ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
 ** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case
