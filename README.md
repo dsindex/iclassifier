@@ -280,64 +280,64 @@ INFO:__main__:[Elapsed Time] : 12742.885112762451ms, 18.07960045013646ms on aver
 
 - iclassifier
 
-|                                         | Accuracy (%) | GPU/CPU                     | CONDA             | CONDA+je          | Dynamic                  | Dynamic+je        | Etc           |
-| --------------------------------------- | ------------ | --------------------------- | ----------------- | ----------------- | ------------------------ | ----------------- | ------------- |
-| GloVe, GNB                              | 72.27        | 1.2253  / -       / -       |       - / -       |       - / -       |              - / -       |       - / -       | -             |
-| GloVe, CNN                              | 82.81        | 1.7670  / 3.9191  / 4.5757  |       - / 4.3131  |       - / 4.4040  |              - / 4.8686  |       - / 4.4848  | threads=14    |
-| GloVe, DenseNet-CNN                     | 86.38        | 3.6203  / 7.1414            |                   |                   |                          |                   | threads=14    |
-| GloVe, DenseNet-DSA                     | 85.34        | 6.2450  / -                 |                   |                   |                          |                   |               |
-| DistilFromBERT, GloVe, CNN              | 86.16        | 1.7900  / -                 |                   |                   |                          |                   | from large    |
-| DistilFromBERT, GloVe, DenseNet-CNN     | 88.52        | 3.6788  / -                 |                   |                   |                          |                   | from large    |
-| DistilFromBERT, GloVe, DenseNet-DSA     | 88.14        | 8.4647  / -                 |                   |                   |                          |                   | from large    |
-| DistilFromRoBERTa, GloVe, CNN           | 86.55        | 1.8483  / -                 |                   |                   |                          |                   | from large    |
-| DistilFromRoBERTa, GloVe, DenseNet-CNN  | 88.80        | 3.9580  / -                 |                   |                   |                          |                   | from large    |
-| DistilFromRoBERTa, GloVe, DenseNet-DSA  | 88.25        | 8.5627  / -                 |                   |                   |                          |                   | from large    |
-| DistilFromELECTRA, GloVe, CNN           | 86.55        | 1.7466  / -                 |                   |                   |                          |                   | from large    |
-| DistilFromELECTRA, GloVe, DenseNet-CNN  | 89.79        | 3.6406  / -                 |                   |                   |                          |                   | from large    |
-| DistilFromELECTRA, GloVe, DenseNet-DSA  | 88.58        | 8.3708  / -                 |                   |                   |                          |                   | from large    |
-| DistilFromELECTRA, DistilBERT, CLS      | 93.52        | 7.4879  / -                 |                   |                   |                          |                   | from large    |
-| BERT-tiny, CNN                          | 79.08        | 4.8604  / -                 |                   |                   |                          |                   |               |
-| BERT-tiny, CLS                          | 80.83        | 3.8461  / -                 |                   |                   |                          |                   |               |
-| BERT-mini, CNN                          | 83.36        | 7.0983  / -                 |                   |                   |                          |                   |               |
-| BERT-mini, CLS                          | 83.69        | 5.5521  / -                 |                   |                   |                          |                   |               |
-| BERT-small, CNN                         | 87.53        | 7.2010  / -                 |                   |                   |                          |                   |               |
-| BERT-small, CLS                         | 87.86        | 6.0450  / -                 |                   |                   |                          |                   |               |
-| BERT-medium, CNN                        | 88.58        | 11.9082 / -                 |                   |                   |                          |                   |               |
-| BERT-medium, CLS                        | 89.24        | 9.5857  / -                 |                   |                   |                          |                   |               |
-| DistilBERT, CNN                         | 89.90        | 9.9362  / -                 |       - / 44.1111 |                   |              - / 35.7070 |                   | threads=14    |
-| **DistilBERT, CLS**                     | 91.10        | 8.9719  / -                 |       - / 37.2626 |                   |              - / 29.4646 |                   | threads=14    |
-| SqueezeBERT, CNN                        | -            | -       / -                 |                   |                   |                          |                   |               |
-| SqueezeBERT, CLS                        | -            | -       / -                 |                   |                   |                          |                   |               |
-| BERT-base(uncased), CNN                 | 92.04        | 14.1576 / -                 |                   |                   |                          |                   |               |
-| BERT-base(uncased), CLS                 | 92.42        | 12.7549 / 100.555 / 62.5050 | 68.5757 / 66.1818 | 65.1616 / 63.1616 | 66.4545(92.42) / 50.8080 | 60.5656 / 50.4343 | threads=14    |
-| BERT-base(uncased), CNN                 | 90.55        | 10.6824 / -                 |                   |                   |                          |                   | del 8,9,10,11 |
-| BERT-base(uncased), CLS                 | 91.49        | 8.7747  / 66.6363 / 42.8989 | 46.6262 / 45.6060 | 45.1313 / 45.5050 | 44.7676(90.61) / 34.3131 | 41.3535 / 34.8686 | del 8,9,10,11, threads=14         |
-| BERT-base(uncased), CLS                 | 90.23        | 7.0241  / 51.7676           | 43.5959           |                   |                          |                   | del 6,7,8,9,10,11, threads=14     |
-| BERT-base(uncased), CLS                 | 86.66        | 5.8868  / 36.2121           | 26.5555           |                   |                          |                   | del 4,5,6,7,8,9,10,11, threads=14 |
-| BERT-large, CNN                         | 93.08        | 28.6490 / -                 |                   |                   |                          |                   |               |
-| BERT-large, CLS                         | 94.12        | 22.3767 / -                 |                   |                   |                          |                   |               |
-| BERT-large, CNN                         | 88.47        | 14.7813 / -                 |                   |                   |                          |                   | del 12~23     |
-| BERT-large, CLS                         | 86.71        | 12.1560 / -                 |                   |                   |                          |                   | del 12~23     |
-| SpanBERT-base, CNN                      | 91.82        | 15.2098 / -                 |                   |                   |                          |                   |               |
-| SpanBERT-base, CLS                      | 91.49        | 13.1516 / -                 |                   |                   |                          |                   |               |
-| SpanBERT-large, CNN                     | 93.90        | 26.8609 / -                 |                   |                   |                          |                   |               |
-| SpanBERT-large, CLS                     | 93.96        | 26.0445 / -                 |                   |                   |                          |                   |               |
-| ALBERT-base, CNN                        | 92.04        | 16.0554 / -                 |                   |                   |                          |                   |               |
-| ALBERT-base, CLS                        | 90.01        | 14.6725 / -                 |                   |                   |                          |                   |               |
-| ALBERT-xxlarge, CNN                     | 95.77        | 57.4631 / -                 |                   |                   |                          |                   |               |
-| ALBERT-xxlarge, CLS                     | 94.45        | 51.8027 / -                 |                   |                   |                          |                   |               |
-| RoBERTa-base, CNN                       | 92.92        | 15.1016 / -                 |                   |                   |                          |                   |               |
-| RoBERTa-base, CLS                       | 93.03        | 14.6736 / -                 |                   |                   |                          |                   |               |
-| RoBERTa-base, CNN                       | 92.26        | 11.5241 / -                 |                   |                   |                          |                   | del 8,9,10,11 |
-| RoBERTa-base, CLS                       | 91.76        | 10.0296 / -                 |                   |                   |                          |                   | del 8,9,10,11 |
-| RoBERTa-large, CNN                      | 95.55        | 26.9807 / -                 |                   |                   |                          |                   |               |
-| RoBERTa-large, CLS                      | 95.66        | 23.7395 / -                 |                   |                   |                          |                   |               |
-| BART-large, CNN                         | 94.45        | 35.1708 / -                 |                   |                   |                          |                   |               |
-| BART-large, CLS                         | 94.89        | 33.3862 / -                 |                   |                   |                          |                   |               |
-| ELECTRA-base, CNN                       | 95.39        | 14.9802 / -                 |                   |                   |                          |                   |               |
-| ELECTRA-base, CLS                       | 95.22        | 14.0087 / -                 |                   |                   |                          |                   |               |
-| ELECTRA-large, CNN                      | 96.05        | 27.2868 / -                 |                   |                   |                          |                   |               |
-| ELECTRA-large, CLS                      | **96.43**    | 25.6857 / -                 |                   |                   |                          |                   |               |
+|                                         | Accuracy (%) | GPU/CPU                     | CONDA                          | Dynamic                  | Etc           |
+| --------------------------------------- | ------------ | --------------------------- | ------------------------------ | ------------------------ | ------------- |
+| GloVe, GNB                              | 72.27        | 1.2253  / -       / -       |       - / -                    |              - / -       | -             |
+| GloVe, CNN                              | 82.81        | 1.7670  / 3.9191  / 4.5757  |       - / 4.3131               |              - / 4.8686  | threads=14    |
+| GloVe, DenseNet-CNN                     | 86.38        | 3.6203  / 7.1414            |                                |                          | threads=14    |
+| GloVe, DenseNet-DSA                     | 85.34        | 6.2450  / -                 |                                |                          |               |
+| DistilFromBERT, GloVe, CNN              | 86.16        | 1.7900  / -                 |                                |                          | from large    |
+| DistilFromBERT, GloVe, DenseNet-CNN     | 88.52        | 3.6788  / -                 |                                |                          | from large    |
+| DistilFromBERT, GloVe, DenseNet-DSA     | 88.14        | 8.4647  / -                 |                                |                          | from large    |
+| DistilFromRoBERTa, GloVe, CNN           | 86.55        | 1.8483  / -                 |                                |                          | from large    |
+| DistilFromRoBERTa, GloVe, DenseNet-CNN  | 88.80        | 3.9580  / -                 |                                |                          | from large    |
+| DistilFromRoBERTa, GloVe, DenseNet-DSA  | 88.25        | 8.5627  / -                 |                                |                          | from large    |
+| DistilFromELECTRA, GloVe, CNN           | 86.55        | 1.7466  / -                 |                                |                          | from large    |
+| DistilFromELECTRA, GloVe, DenseNet-CNN  | 89.79        | 3.6406  / -                 |                                |                          | from large    |
+| DistilFromELECTRA, GloVe, DenseNet-DSA  | 88.58        | 8.3708  / -                 |                                |                          | from large    |
+| DistilFromELECTRA, DistilBERT, CLS      | 93.52        | 7.4879  / -                 |                                |                          | from large    |
+| BERT-tiny, CNN                          | 79.08        | 4.8604  / -                 |                                |                          |               |
+| BERT-tiny, CLS                          | 80.83        | 3.8461  / -                 |                                |                          |               |
+| BERT-mini, CNN                          | 83.36        | 7.0983  / -                 |                                |                          |               |
+| BERT-mini, CLS                          | 83.69        | 5.5521  / -                 |                                |                          |               |
+| BERT-small, CNN                         | 87.53        | 7.2010  / -                 |                                |                          |               |
+| BERT-small, CLS                         | 87.86        | 6.0450  / -                 |                                |                          |               |
+| BERT-medium, CNN                        | 88.58        | 11.9082 / -                 |                                |                          |               |
+| BERT-medium, CLS                        | 89.24        | 9.5857  / -                 |                                |                          |               |
+| DistilBERT, CNN                         | 89.90        | 9.9362  / -                 |       - / 44.1111              |              - / 35.7070 | threads=14    |
+| **DistilBERT, CLS**                     | 91.10        | 8.9719  / -                 |       - / 37.2626              |              - / 29.4646 | threads=14    |
+| BERT-base(uncased), CNN                 | 92.04        | 14.1576 / -                 |                                |                          |               |
+| BERT-base(uncased), CLS                 | 92.42        | 12.7549 / 100.555 / 62.5050 | 68.5757 / 66.1818              | 66.4545(92.42) / 50.8080 | threads=14    |
+| BERT-base(uncased), CNN                 | 90.55        | 10.6824 / -                 |                                |                          | del 8,9,10,11 |
+| BERT-base(uncased), CLS                 | 91.49        | 8.7747  / 66.6363 / 42.8989 | 46.6262 / 45.6060              | 44.7676(90.61) / 34.3131 | del 8,9,10,11, threads=14         |
+| BERT-base(uncased), CLS                 | 90.23        | 7.0241  / 51.7676           | 43.5959                        |                          | del 6,7,8,9,10,11, threads=14     |
+| BERT-base(uncased), CLS                 | 86.66        | 5.8868  / 36.2121           | 26.5555                        |                          | del 4,5,6,7,8,9,10,11, threads=14 |
+| BERT-large, CNN                         | 93.08        | 28.6490 / -                 |                                |                          |               |
+| BERT-large, CLS                         | 94.12        | 22.3767 / -                 |                                |                          |               |
+| BERT-large, CNN                         | 88.47        | 14.7813 / -                 |                                |                          | del 12~23     |
+| BERT-large, CLS                         | 86.71        | 12.1560 / -                 |                                |                          | del 12~23     |
+| SqueezeBERT, CNN                        | 90.61        | 19.2879 / -                 |       - / -       / 69.5269    |                          | threads=14    |
+| SqueezeBERT, CLS                        | 90.12        | 17.4998 / -                 |       - / -       / 63.8998    |                          | threads=14    |
+| SpanBERT-base, CNN                      | 91.82        | 15.2098 / -                 |                                |                          |               |
+| SpanBERT-base, CLS                      | 91.49        | 13.1516 / -                 |                                |                          |               |
+| SpanBERT-large, CNN                     | 93.90        | 26.8609 / -                 |                                |                          |               |
+| SpanBERT-large, CLS                     | 93.96        | 26.0445 / -                 |                                |                          |               |
+| ALBERT-base, CNN                        | 92.04        | 16.0554 / -                 |                                |                          |               |
+| ALBERT-base, CLS                        | 90.01        | 14.6725 / -                 |                                |                          |               |
+| ALBERT-xxlarge, CNN                     | 95.77        | 57.4631 / -                 |                                |                          |               |
+| ALBERT-xxlarge, CLS                     | 94.45        | 51.8027 / -                 |                                |                          |               |
+| RoBERTa-base, CNN                       | 92.92        | 15.1016 / -                 |                                |                          |               |
+| RoBERTa-base, CLS                       | 93.03        | 14.6736 / -                 |                                |                          |               |
+| RoBERTa-base, CNN                       | 92.26        | 11.5241 / -                 |                                |                          | del 8,9,10,11 |
+| RoBERTa-base, CLS                       | 91.76        | 10.0296 / -                 |                                |                          | del 8,9,10,11 |
+| RoBERTa-large, CNN                      | 95.55        | 26.9807 / -                 |                                |                          |               |
+| RoBERTa-large, CLS                      | 95.66        | 23.7395 / -                 |                                |                          |               |
+| BART-large, CNN                         | 94.45        | 35.1708 / -                 |                                |                          |               |
+| BART-large, CLS                         | 94.89        | 33.3862 / -                 |                                |                          |               |
+| ELECTRA-base, CNN                       | 95.39        | 14.9802 / -                 |                                |                          |               |
+| ELECTRA-base, CLS                       | 95.22        | 14.0087 / -                 |                                |                          |               |
+| ELECTRA-large, CNN                      | 96.05        | 27.2868 / -                 |                                |                          |               |
+| ELECTRA-large, CLS                      | **96.43**    | 25.6857 / -                 |                                |                          |               |
 
 - [sst2 leaderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -498,8 +498,9 @@ INFO:__main__:[Elapsed Time] : 8951ms, 4.86043956043956ms on average
 INFO:__main__:[Accuracy] : 0.8990,  1637/ 1821
 INFO:__main__:[Elapsed Time] : 18193ms, 9.936263736263736ms on average
 
-** --bert_model_name_or_path=./embeddings/squeezebert-uncased
-
+** --bert_model_name_or_path=./embeddings/squeezebert-uncased --epoch=20 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+INFO:__main__:[Accuracy] : 0.9061,  1650/ 1821
+INFO:__main__:[Elapsed Time] : 35230.47494888306ms, 19.287928644117418ms on average
 
 ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
 ** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case
@@ -557,8 +558,9 @@ INFO:__main__:[Elapsed Time] : 7124ms, 3.8461538461538463ms on average
 INFO:__main__:[Accuracy] : 0.9110,  1659/ 1821
 INFO:__main__:[Elapsed Time] : 16431ms, 8.971978021978021ms on average
 
-** --bert_model_name_or_path=./embeddings/squeezebert-uncased
-
+** --bert_model_name_or_path=./embeddings/squeezebert-uncased --epoch=20 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+INFO:__main__:[Accuracy] : 0.9012,  1641/ 1821
+INFO:__main__:[Elapsed Time] : 31975.939989089966ms, 17.499822050660523ms on average
 
 ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
 ** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case
