@@ -141,8 +141,8 @@
 | KoELECTRA-Base, CLS                       | 89.63        | 14.2667 / -       |         |            |
 | bpe ELECTRA-base(1m) , CNN                | 88.55        | 14.2144 / -       |         |            |
 | bpe ELECTRA-base(1m) , CLS                | 88.42        | 13.5920 / -       |         |            |
-| RoBERTa-base , CNN                        | 89.97        | 13.3261 / -       |         |            |
-| RoBERTa-base , CLS                        | 90.15        | 11.9748 / -       |         |            |
+| RoBERTa-base , CNN                        | 90.42        | 14.9544 / -       |         |            |
+| RoBERTa-base , CLS                        | 90.34        | 13.8556 / -       |         |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -694,14 +694,14 @@ $ python train.py --config=configs/config-roberta-cls.json --bert_model_name_or_
 * enc_class=cnn
 
 $ python evaluate.py --config=configs/config-roberta-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
-INFO:__main__:[Accuracy] : 0.8997, 44983/49997
-INFO:__main__:[Elapsed Time] : 666343.2488441467ms, 13.326123615524008ms on average
+INFO:__main__:[Accuracy] : 0.9042, 45207/49997
+INFO:__main__:[Elapsed Time] : 747780.4193496704ms, 14.954407292944458ms on average
 
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
-INFO:__main__:[Accuracy] : 0.9015, 45072/49997
-INFO:__main__:[Elapsed Time] : 598774.0564346313ms, 11.974884158220755ms on average
+INFO:__main__:[Accuracy] : 0.9034, 45168/49997
+INFO:__main__:[Elapsed Time] : 692853.7294864655ms, 13.855628213249918ms on average
 
 ```
 
