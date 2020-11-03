@@ -238,6 +238,8 @@ $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data
 
 $ nnictl create --config nni_config.yml --port 9599 --foreground
 
+** webUI : http://localhost:9599/oview
+
 $ nnictl trial ls
 
 $ nnictl tensorboard start
