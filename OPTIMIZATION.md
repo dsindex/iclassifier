@@ -172,7 +172,7 @@ INFO:__main__:[Elapsed Time] : 1646.5208530426025ms, 2.1808976267540405ms on ave
 
 
 * densenet-cnn
-$ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2
+$ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
 
 $ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=18 --hp_search_optuna --hp_trials=24 --patience=4
 INFO:__main__:    number     value  params_batch_size  params_epochs  params_lr  params_seed     state
@@ -225,11 +225,40 @@ INFO:__main__:[Elapsed Time] : 410282.794713974ms, 8.204527655280355ms on averag
 ** previous best : 87.66
 ```
 
+- nni
+```
+* densenet-cnn
+
+$ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
+
+** modify nni_config.yml
+  command: python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=18 --hp_search_nni --patience=4
+
+** modify nni_search_space.json
+
+$ nnictl create --config nni_config.yml --port 9599 --foreground
+
+$ nnictl trial ls
+
+$ nnictl tensorboard start
+
+
+** train with best params
+
+$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=  --batch_size= --seed=
+
+$ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/clova_sentiments_morph
+
+```
+
+
 
 ### references
 
 - train
   - [apex](https://github.com/NVIDIA/apex)
+  - [optuna](https://optuna.readthedocs.io/en/stable/tutorial/001_first.html)
+  - [nni](https://github.com/dsindex/nni_examples)
 
 - inference
   - [(EXPERIMENTAL) DYNAMIC QUANTIZATION ON BERT](https://pytorch.org/tutorials/intermediate/dynamic_quantization_bert_tutorial.html)

@@ -28,8 +28,10 @@ from model   import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveD
 from dataset import prepare_dataset, GloveDataset, BertDataset
 from early_stopping import EarlyStopping
 from sklearn.metrics import classification_report, confusion_matrix
-import optuna
 from datasets.metric import temp_seed 
+
+import optuna
+import nni
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -172,7 +174,7 @@ def set_path(config):
     opt.label_path     = os.path.join(opt.data_dir, opt.label_filename)
     opt.embedding_path = os.path.join(opt.data_dir, opt.embedding_filename)
 
-def prepare_datasets(config, hp_search_optuna_bsz=None):
+def prepare_datasets(config, hp_search_bsz=None):
     opt = config['opt']
     if config['emb_class'] == 'glove':
         DatasetClass = GloveDataset
@@ -183,7 +185,7 @@ def prepare_datasets(config, hp_search_optuna_bsz=None):
         DatasetClass,
         sampling=True,
         num_workers=2,
-        hp_search_optuna_bsz=hp_search_optuna_bsz)
+        hp_search_bsz=hp_search_bsz)
     valid_loader = prepare_dataset(config,
         opt.valid_path,
         DatasetClass,
@@ -320,6 +322,11 @@ def train(opt):
         for epoch_i in range(opt.epoch):
             epoch_st_time = time.time()
             eval_loss, eval_acc = train_epoch(model, config, train_loader, valid_loader, epoch_i)
+            # for nni
+            if opt.hp_search_nni:
+                nni.report_intermediate_result(eval_acc)
+                logger.info('eval_acc : %g', eval_acc)
+                logger.info('Pipe send intermediate result done.')
             if opt.measure == 'loss': eval_measure = eval_loss 
             else: eval_measure = eval_acc
             # early stopping
@@ -354,6 +361,11 @@ def train(opt):
                 local_worse_steps = 0
             prev_eval_measure = eval_measure
             # end: scheduling
+        # for nni
+        if opt.hp_search_nni:
+            nni.report_final_result(eval_acc)
+            logger.info('Final result : %g', eval_acc)
+            logger.info('Send final result done.')
 
 # for optuna, global for passing opt 
 gopt = None
@@ -379,7 +391,7 @@ def hp_search_optuna(trial: optuna.Trial):
     epochs = trial.suggest_int('epochs', 1, opt.epoch)
 
     # prepare train, valid dataset
-    train_loader, valid_loader = prepare_datasets(config, hp_search_optuna_bsz=bsz)
+    train_loader, valid_loader = prepare_datasets(config, hp_search_bsz=bsz)
 
     with temp_seed(seed):
         # prepare model
@@ -412,7 +424,7 @@ def hp_search_optuna(trial: optuna.Trial):
                 raise optuna.TrialPruned()
         return eval_acc
 
-def main():
+def get_params():
     parser = argparse.ArgumentParser()
     
     parser.add_argument('--config', type=str, default='configs/config-glove-cnn.json')
@@ -466,7 +478,10 @@ def main():
                         help="Set this flag to use hyper-parameter search by NNI.")
 
     opt = parser.parse_args()
+    return opt
 
+def main():
+    opt = get_params()
     if opt.hp_search_optuna:
         global gopt
         gopt = opt
@@ -477,6 +492,26 @@ def main():
         logger.info("study.best_params : %s", study.best_params)
         logger.info("study.best_value : %s", study.best_value)
         logger.info("study.best_trial : %s", study.best_trial) # for all, study.trials
+    elif opt.hp_search_nni:
+        try:
+            # get parameters from tuner
+            tuner_params = nni.get_next_parameter()
+            logger.info('tuner_params:')
+            logger.info(tuner_params)
+            logger.info('opt:')
+            logger.info(opt)
+            # merge to opt
+            if tuner_params:
+                for k, v in tuner_params.items():
+                    assert hasattr(namespace, k), "Args doesn't have received key: %s" % k
+                    assert type(getattr(namespace, k)) == type(v), "Received key has different type"
+                    setattr(namespace, k, v) 
+            logger.info('opt:')
+            logger.info(opt)
+            train(opt)
+        except Exception as exception:
+            logger.exception(exception)
+            raise
     else:
         train(opt)
    
