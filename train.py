@@ -172,7 +172,7 @@ def set_path(config):
     opt.label_path     = os.path.join(opt.data_dir, opt.label_filename)
     opt.embedding_path = os.path.join(opt.data_dir, opt.embedding_filename)
 
-def prepare_datasets(config, hp_search_bsz=None):
+def prepare_datasets(config, hp_search_optuna_bsz=None):
     opt = config['opt']
     if config['emb_class'] == 'glove':
         DatasetClass = GloveDataset
@@ -183,7 +183,7 @@ def prepare_datasets(config, hp_search_bsz=None):
         DatasetClass,
         sampling=True,
         num_workers=2,
-        hp_search_bsz=hp_search_bsz)
+        hp_search_optuna_bsz=hp_search_optuna_bsz)
     valid_loader = prepare_dataset(config,
         opt.valid_path,
         DatasetClass,
@@ -251,11 +251,11 @@ def prepare_model(config):
     logger.info("[model prepared]")
     return model
 
-def prepare_osws(config, model, train_loader, hp_search_lr=None):
+def prepare_osws(config, model, train_loader, hp_search_optuna_lr=None):
     opt = config['opt']
     lr = opt.lr
     # for optuna
-    if hp_search_lr: lr = hp_search_lr
+    if hp_search_optuna_lr: lr = hp_search_optuna_lr
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr, eps=opt.adam_epsilon, weight_decay=opt.weight_decay)
     scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer=optimizer, gamma=opt.lr_decay_rate)
     if opt.use_transformers_optimizer:
@@ -358,7 +358,7 @@ def train(opt):
 # for optuna, global for passing opt 
 gopt = None
 
-def hp_search(trial: optuna.Trial):
+def hp_search_optuna(trial: optuna.Trial):
     if torch.cuda.is_available():
         logger.info("%s", torch.cuda.get_device_name(0))
 
@@ -379,13 +379,13 @@ def hp_search(trial: optuna.Trial):
     epochs = trial.suggest_int('epochs', 1, opt.epoch)
 
     # prepare train, valid dataset
-    train_loader, valid_loader = prepare_datasets(config, hp_search_bsz=bsz)
+    train_loader, valid_loader = prepare_datasets(config, hp_search_optuna_bsz=bsz)
 
     with temp_seed(seed):
         # prepare model
         model = prepare_model(config)
         # create optimizer, scheduler, summary writer, scaler
-        optimizer, scheduler, writer, scaler = prepare_osws(config, model, train_loader, hp_search_lr=lr)
+        optimizer, scheduler, writer, scaler = prepare_osws(config, model, train_loader, hp_search_optuna_lr=lr)
         config['optimizer'] = optimizer
         config['scheduler'] = scheduler
         config['writer'] = writer
@@ -457,18 +457,21 @@ def main():
     parser.add_argument('--bert_remove_layers', type=str, default='',
                         help="Specify layer numbers to remove during finetuning e.g. 8,9,10,11 to remove last 4 layers from BERT base(12 layers)")
     # for Optuna
-    parser.add_argument('--hp_search', action='store_true',
-                        help="Set this flag to use hyper-parameter search.")
+    parser.add_argument('--hp_search_optuna', action='store_true',
+                        help="Set this flag to use hyper-parameter search by Optuna.")
     parser.add_argument('--hp_trials', default=24, type=int,
                         help="Number of trials for hyper-parameter search.")
+    # for NNI
+    parser.add_argument('--hp_search_nni', action='store_true',
+                        help="Set this flag to use hyper-parameter search by NNI.")
 
     opt = parser.parse_args()
 
-    if opt.hp_search:
+    if opt.hp_search_optuna:
         global gopt
         gopt = opt
         study = optuna.create_study(direction='maximize')
-        study.optimize(hp_search, n_trials=opt.hp_trials)
+        study.optimize(hp_search_optuna, n_trials=opt.hp_trials)
         df = study.trials_dataframe(attrs=('number', 'value', 'params', 'state'))
         logger.info("%s", str(df))
         logger.info("study.best_params : %s", study.best_params)

@@ -137,7 +137,7 @@ $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=ber
 * glove-cnn
 $ python preprocess.py --config=configs/config-glove-cnn.json
 
-$ python train.py --config=configs/config-glove-cnn.json --lr_decay_rate=0.9 --hp_search --hp_trials=24 --epoch=12
+$ python train.py --config=configs/config-glove-cnn.json --lr_decay_rate=0.9 --hp_search_optuna --hp_trials=24 --epoch=12
 ...
 [I 2020-09-24 13:51:14,081] Trial 23 finished with value: 0.9828571428571429 and parameters: {'lr': 9.769218925183409e-05, 'batch_size': 32, 'seed': 31, 'epochs': 1}. Best is trial 10 with value: 0.9914285714285714.
     number     value  params_batch_size  params_epochs  params_lr  params_seed     state
@@ -174,7 +174,7 @@ INFO:__main__:[Elapsed Time] : 1646.5208530426025ms, 2.1808976267540405ms on ave
 * densenet-cnn
 $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2
 
-$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=18 --hp_search --hp_trials=24 --patience=4
+$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=18 --hp_search_optuna --hp_trials=24 --patience=4
 INFO:__main__:    number     value  params_batch_size  params_epochs  params_lr  params_seed     state
 0        0  0.880073                128             13   0.000149           34  COMPLETE
 1        1  0.871052                 64              4   0.000544           17  COMPLETE
@@ -201,7 +201,7 @@ INFO:__main__:[Elapsed Time] : 189978.82962226868ms, 3.7981278658466384ms on ave
 * densenet-dsa
 $ python preprocess.py --config=configs/config-densenet-dsa.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
 
-$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --hp_search --hp_trials=24 --epoch=18 --patience=4
+$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --hp_search_optuna --hp_trials=24 --epoch=18 --patience=4
 INFO:__main__:    number     value  params_batch_size  params_epochs  params_lr  params_seed     state
 0        0  0.863932                 32              8   0.000437           32  COMPLETE
 ...
