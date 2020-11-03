@@ -1,0 +1,4 @@
+{
+    "batch_size": {"_type":"choice", "_value": [32, 64, 128]},
+    "lr":{"_type":"uniform","_value":[0.000001, 0.001]}
+}

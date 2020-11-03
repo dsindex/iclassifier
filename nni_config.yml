@@ -1,0 +1,22 @@
+authorName: default
+experimentName: iclassifier
+trialConcurrency: 1
+maxExecDuration: 10h
+maxTrialNum: 16
+#choice: local, remote, pai
+trainingServicePlatform: local
+searchSpacePath: ./nni_search_space.json
+#choice: true, false
+useAnnotation: false
+tuner:
+  #choice: TPE, Random, Anneal, Evolution, BatchTuner, MetisTuner, GPTuner
+  #SMAC (SMAC should be installed through nnictl)
+  builtinTunerName: TPE
+  classArgs:
+    #choice: maximize, minimize
+    optimize_mode: maximize
+trial:
+  command: python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=18 --hp_search_nni --patience=4
+  codeDir: .
+  gpuNum: 1
+logDir: .
