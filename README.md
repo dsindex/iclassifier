@@ -799,7 +799,15 @@ INFO:__main__:[Elapsed Time] : 47163ms, 25.685714285714287ms on average
 # Distillation
 
 - [DISTILLATION.md](/DISTILLATION.md)
-  - BERT-large, RoBERTa-large, ELECTRA-large -> distillation -> GloVe, DenseNet-CNN, DenseNet-DSA
+  - Augmentation
+  - Knowledge Distillation
+    - ex) BERT-large, RoBERTa-large, ELECTRA-large -> augmentation/distillation -> GloVe, DenseNet-CNN, DenseNet-DSA
+
+# Fastformers
+
+- [FASTFORMERS.md](/FASTFORMERS.md)
+  - Knowledge Distillation
+  - Structured Prunning
 
 <br>
 
