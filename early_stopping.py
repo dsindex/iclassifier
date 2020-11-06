@@ -11,13 +11,13 @@ class EarlyStopping():
 
         Args:
           Patience: how many times to be patient before "Early Stopping".
-          Measure: checking measure, loss | f1 | Accuracy.
+          Measure: checking measure, Loss | F1 | Accuracy.
           Verbose: if 1, enable Verbose mode.
         """
         self._step = 0
-        if measure == 'loss': # loss
+        if measure == 'loss': # Loss
             self._value = float('inf')
-        else:                 # f1, accuracy
+        else:                 # F1, Accuracy
             self._value = 0
         self.logger = logger
         self.patience  = patience
