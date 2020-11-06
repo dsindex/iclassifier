@@ -452,11 +452,11 @@ def get_params():
     parser.add_argument('--use_transformers_optimizer', action='store_true', help="Use transformers AdamW, get_linear_schedule_with_warmup.")
     parser.add_argument('--use_amp', action='store_true', help="Use automatic mixed precision.")
     parser.add_argument('--use_profiler', action='store_true', help="Use profiler.")
-    # for Augmentation
     parser.add_argument('--measure', type=str, default='loss', help="Evaluation measure, 'loss' | 'accuracy', default 'loss'.")
+    parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'MSELoss' | 'KLDivLoss', default 'CrossEntropyLoss'")
+    # for Augmentation
     parser.add_argument('--augmented', action='store_true',
                         help="Set this flag to use augmented.txt for training.")
-    parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'MSELoss' | 'KLDivLoss', default 'CrossEntropyLoss'")
     # for BERT
     parser.add_argument('--bert_model_name_or_path', type=str, default='embeddings/bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
