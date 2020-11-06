@@ -345,13 +345,12 @@ $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data
     - [microsoft/fastformers](https://github.com/microsoft/fastformers)
     - [FastFormers: 233x Faster Transformers inference on CPU](https://parthplc.medium.com/fastformers-233x-faster-transformers-inference-on-cpu-4c0b7a720e1)
   - methods
-  ```
-  - Knowledge Distillation
-    - ex) distilbert, distilroberta
-
-  - Structured pruning : heads, hidden states
-    - `prune_rewire()`, https://github.com/microsoft/fastformers/blob/37bedfd7f10fedaaff5c2b419bb61fbd10485fc0/examples/fastformers/run_superglue.py#L743
-      - target_num_heads, target_ffn_dim
+    - Knowledge Distillation
+      - large teacher model -> distillation -> TinyBERT, distilroberta, distilbert
+      - [distill()](https://github.com/microsoft/fastformers/blob/main/examples/fastformers/run_superglue.py?fbclid=IwAR3mdQKsUtso0L5zKwLkrr4v9i81xnULjZFOihtf0MTncwIrV0L1eXgDT9U#L344)
+    - Structured pruning : heads, hidden states
+      - [prune_rewire()](https://github.com/microsoft/fastformers/blob/37bedfd7f10fedaaff5c2b419bb61fbd10485fc0/examples/fastformers/run_superglue.py#L743)
+      ```
         elif args.do_prune:
             result, preds, ex_ids = prune_rewire(args, args.task_name, model, tokenizer, prefix="")
             result = dict((f"{k}", v) for k, v in result.items())
@@ -367,7 +366,6 @@ $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data
             result, preds, ex_ids = evaluate(args, args.task_name, model, tokenizer, prefix="")
             result = dict((f"{k}", v) for k, v in result.items())
             print("after pruning" + str(result))
-
-  - Model Quantization
-    - onnxruntime 8bit quantization
-```
+      ```
+    - Model Quantization
+      - onnxruntime 8 bits quantization

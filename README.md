@@ -799,7 +799,7 @@ INFO:__main__:[Elapsed Time] : 47163ms, 25.685714285714287ms on average
 # Distillation
 
 - [DISTILLATION.md](/DISTILLATION.md)
-  - BERT-large, RoBERTa-large, ELECTRA-large, CLS -> GloVe, DenseNet-CNN, DenseNet-DSA
+  - BERT-large, RoBERTa-large, ELECTRA-large -> distillation -> GloVe, DenseNet-CNN, DenseNet-DSA
 
 <br>
 
