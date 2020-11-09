@@ -31,6 +31,7 @@ logger.addHandler(fileHandler)
 # ------------------------------------------------------------------------------ #
 # base code from https://github.com/microsoft/fastformers#distilling-models
 # ------------------------------------------------------------------------------ #
+
 from transformers import AdamW, get_linear_schedule_with_warmup
 from torch.nn import MSELoss, CosineSimilarity
 
@@ -38,52 +39,23 @@ def set_seed(args):
     random.seed(args.seed)
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
+    
+def soft_cross_entropy(predicts, targets):
+    likelihood = F.log_softmax(predicts, dim=-1)
+    targets_prob = F.softmax(targets, dim=-1)
+    return (- targets_prob * likelihood).sum(dim=-1).mean()
 
-def evaluate_during_distill(args, model, eval_loader, labels, use_tqdm=True):
-    logger.info(f"***** Running evaluation *****")
-    logger.info("  Num batches = %d", len(eval_loader))
-    logger.info("  Batch size = %d", args.eval_batch_size)
-    eval_loss = 0.0
-    nb_eval_steps = 0
-    preds = None
-    out_label_ids = None
-    eval_loader = tqdm(eval_loader, desc="Evaluating") if use_tqdm else eval_loader
-    for x, y in eval_loader:
-        x = to_device(x, args.device)
-        y = to_device(y, args.device)
+def distill(
+        teacher_config,
+        teacher_model,
+        student_config,
+        student_model,
+        train_loader,
+        eval_loader,
+        student_tokenizer):
 
-        model.eval()
-        inputs = {"input_ids": x[0], "attention_mask": x[1], "labels": y}
-        if model.config.model_type != "distilbert":
-            # XLM, DistilBERT, RoBERTa, and XLM-RoBERTa don't use segment_ids
-            inputs["token_type_ids"] = x[2] if model.config.model_type in ["bert", "xlnet", "albert"] else None
+    args = teacher_config['opt']
 
-        with torch.no_grad():
-            outputs = model(**inputs)
-            tmp_eval_loss, logits = outputs[:2]
-            eval_loss += tmp_eval_loss.mean().item()
-        nb_eval_steps += 1
-        if preds is None:
-            preds = logits.detach().cpu().numpy()
-            out_label_ids = inputs["labels"].detach().cpu().numpy()
-        else:
-            preds = np.append(preds, logits.detach().cpu().numpy(), axis=0)
-            out_label_ids = np.append(out_label_ids, inputs["labels"].detach().cpu().numpy(), axis=0)
-
-    eval_loss = eval_loss / nb_eval_steps
-    preds = np.argmax(preds, axis=1)
-    try:
-        label_names = [v for k, v in sorted(labels.items(), key=lambda x: x[0])] 
-        print(classification_report(out_label_ids, preds, target_names=label_names, digits=4)) 
-        print(labels)
-        print(confusion_matrix(out_label_ids, preds))
-    except Exception as e:
-        logger.warn(str(e))
-    return eval_loss
-
-def distill(args, teacher_model, student_model, train_loader, eval_loader, labels, student_tokenizer):
-
-    # number of training steps = number of epochs * number of batches
     num_training_steps_for_epoch = len(train_loader) // args.gradient_accumulation_steps
     num_training_steps = num_training_steps_for_epoch * args.epoch
     num_warmup_steps = int(args.warmup_ratio * num_training_steps)
@@ -105,18 +77,13 @@ def distill(args, teacher_model, student_model, train_loader, eval_loader, label
     )
 
     # layer numbers of teacher and student
-    teacher_layer_num = teacher_model.config.num_hidden_layers
-    student_layer_num = student_model.config.num_hidden_layers
+    teacher_layer_num = teacher_model.bert_model.config.num_hidden_layers
+    student_layer_num = student_model.bert_model.config.num_hidden_layers
 
     # Prepare loss functions
     loss_mse = MSELoss()
     loss_cs = CosineSimilarity(dim=2)
     loss_cs_att = CosineSimilarity(dim=3)
-
-    def soft_cross_entropy(predicts, targets):
-        student_likelihood = F.log_softmax(predicts, dim=-1)
-        targets_prob = F.softmax(targets, dim=-1)
-        return (- targets_prob * student_likelihood).sum(dim=-1).mean()
 
     logger.info("***** Running distillation training *****")
     logger.info("  Num Batchs = %d", len(train_loader))
@@ -152,34 +119,25 @@ def distill(args, teacher_model, student_model, train_loader, eval_loader, label
             rep_loss = 0.
             cls_loss = 0.
 
-            inputs_teacher = {"input_ids": x[0], "attention_mask": x[1], "labels": y}
-            inputs_student = {"input_ids": x[0], "attention_mask": x[1], "labels": y}
-            if teacher_model.config.model_type != "distilbert":
-                # XLM, DistilBERT, RoBERTa, and XLM-RoBERTa don't use segment_ids
-                inputs_teacher["token_type_ids"] = x[2] if teacher_model.config.model_type in ["bert", "xlnet", "albert"] else None
-            if student_model.config.model_type != "distilbert":
-                # XLM, DistilBERT, RoBERTa, and XLM-RoBERTa don't use segment_ids
-                inputs_student["token_type_ids"] = x[2] if student_model.config.model_type in ["bert", "xlnet", "albert"] else None
-
             # student model output
             student_model.train()
-            outputs_student = student_model(output_attentions=True, output_hidden_states=True, **inputs_student)
+            output_student, student_bert_outputs = student_model(x, return_bert_outputs=True)
 
             # teacher model output
             teacher_model.eval() # set teacher as eval mode
             with torch.no_grad():
-                outputs_teacher = teacher_model(output_attentions=True, output_hidden_states=True, **inputs_teacher)
+                output_teacher, teacher_bert_outputs = teacher_model(x, return_bert_outputs=True)
            
             # Knowledge Distillation loss
             # 1) logits distillation
-            kd_loss = soft_cross_entropy(outputs_student[1], outputs_teacher[1])
+            kd_loss = soft_cross_entropy(output_student, output_teacher)
             loss = kd_loss
             tr_cls_loss += loss.item()
 
             # 2) embedding and last hidden state distillation
             if args.state_loss_ratio > 0.0:
-                teacher_reps = outputs_teacher[2]
-                student_reps = outputs_student[2]
+                teacher_reps = teacher_bert_outputs.hidden_states
+                student_reps = student_bert_outputs.hidden_states
 
                 new_teacher_reps = [teacher_reps[0], teacher_reps[teacher_layer_num]]
                 new_student_reps = [student_reps[0], student_reps[student_layer_num]]
@@ -196,8 +154,8 @@ def distill(args, teacher_model, student_model, train_loader, eval_loader, label
 
             # 3) Attentions distillation
             if args.att_loss_ratio > 0.0:
-                teacher_atts = outputs_teacher[3]
-                student_atts = outputs_student[3]
+                teacher_atts = teacher_bert_outputs.attentions
+                student_atts = student_bert_outputs.attentions
 
                 assert teacher_layer_num == len(teacher_atts)
                 assert student_layer_num == len(student_atts)
@@ -241,8 +199,9 @@ def distill(args, teacher_model, student_model, train_loader, eval_loader, label
                 if args.logging_steps > 0 and global_step % args.logging_steps == 0: flag_eval = True
                 if flag_eval:
                     if args.log_evaluate_during_training:
-                        eval_loss = evaluate_during_distill(args, student_model, eval_loader, labels, use_tqdm=False)
+                        eval_loss, eval_acc = evaluate(student_model, student_config, eval_loader)
                         logs['eval_loss'] = eval_loss
+                        logs['eval_acc'] = eval_acc
                     
                     cls_loss = tr_cls_loss / (step + 1)
                     att_loss = tr_att_loss / (step + 1)
@@ -262,14 +221,16 @@ def distill(args, teacher_model, student_model, train_loader, eval_loader, label
                 if step == 0 and epoch_n != 0: flag_eval = True # every epoch
                 if args.eval_and_save_steps > 0 and global_step % args.eval_and_save_steps == 0: flag_eval = True
                 if flag_eval:
-                    eval_loss = evaluate_during_distill(args, student_model, eval_loader, labels, use_tqdm=False)
+                    eval_loss, eval_acc = evaluate(student_model, student_config, eval_loader)
                     logs['eval_loss'] = eval_loss
+                    logs['eval_acc'] = eval_acc
                     logger.info(json.dumps({**logs, **{"step": global_step}}))
                     curr_val_metric = eval_loss
                     if best_val_metric is None or curr_val_metric < best_val_metric:
                         # save
-                        student_model.save_pretrained(args.bert_output_dir)
+                        save_model(student_config, student_model)
                         student_tokenizer.save_pretrained(args.bert_output_dir)
+                        student_model.bert_model.save_pretrained(args.bert_output_dir)
                         best_val_metric = curr_val_metric
                         logger.info("Saved best student model to %s", args.bert_output_dir)
                 
@@ -278,28 +239,12 @@ def distill(args, teacher_model, student_model, train_loader, eval_loader, label
 
     return global_step, tr_loss / global_step
 
-def load_label(input_path):
-    labels = {}
-    with open(input_path, 'r', encoding='utf-8') as f:
-        for idx, line in enumerate(f):
-            toks = line.strip().split()
-            label = toks[0]
-            label_id = int(toks[1])
-            labels[label_id] = label
-    return labels
-
-def prepare_bert_model(opt, model_name_or_path, num_labels, do_lower_case=False):
-    from transformers import AutoTokenizer, AutoConfig, AutoModelForSequenceClassification
-
-    bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path,
-                                                   do_lower_case=do_lower_case)
-    bert_model = AutoModelForSequenceClassification.from_pretrained(model_name_or_path,
-                                                                    num_labels=num_labels,
-                                                                    from_tf=bool(".ckpt" in model_name_or_path))
-    bert_model.to(opt.device)
-    print(bert_model)
-    logger.info("[bert model prepared]")
-    return bert_model, bert_tokenizer
+def load_checkpoint(model_path, device='cpu'):
+    if device == 'cpu':
+        checkpoint = torch.load(model_path, map_location=lambda storage, loc: storage)
+    else:
+        checkpoint = torch.load(model_path)
+    return checkpoint
 
 def train(opt):
     if torch.cuda.is_available():
@@ -309,32 +254,35 @@ def train(opt):
     torch.autograd.set_detect_anomaly(True)
 
     # set config
-    config = load_config(opt, config_path=opt.config)
-    config['opt'] = opt
-    logger.info("%s", config)
+    teacher_config = load_config(opt, config_path=opt.teacher_config)
+    teacher_config['opt'] = opt
+    logger.info("[teacher config]\n%s", teacher_config)
+    student_config = load_config(opt, config_path=opt.config)
+    student_config['opt'] = opt
+    logger.info("[student config]\n%s", student_config)
     
     # set path
-    set_path(config)
+    set_path(student_config)
   
     # prepare train, valid dataset
-    train_loader, valid_loader = prepare_datasets(config)
+    train_loader, valid_loader = prepare_datasets(student_config)
 
     # ------------------------------------------------------------------------------------------------------- #
     # distillation
-    labels = load_label(opt.label_path)
-    num_labels = len(labels)
 
-    teacher_model, teacher_tokenizer = prepare_bert_model(opt,
-            opt.teacher_bert_model_name_or_path,
-            num_labels,
-            do_lower_case=opt.bert_do_lower_case)
+    # prepare and load teacher model
+    teacher_model = prepare_model(teacher_config, bert_model_name_or_path=opt.teacher_bert_model_name_or_path)
+    teacher_checkpoint = load_checkpoint(opt.teacher_model_path, device=opt.device)
+    teacher_model.load_state_dict(teacher_checkpoint)
+    teacher_model = teacher_model.to(opt.device)
+    logger.info("prepare teacher model and loading done")
+ 
+    # prepare student model
+    student_model = prepare_model(student_config, bert_model_name_or_path=opt.bert_model_name_or_path)
+    student_tokenizer = student_model.bert_tokenizer
+    logger.info("prepare student model done")
 
-    student_model, student_tokenizer = prepare_bert_model(opt,
-            opt.bert_model_name_or_path,
-            num_labels,
-            do_lower_case=opt.bert_do_lower_case)
-
-    global_step, tr_loss = distill(opt, teacher_model, student_model, train_loader, valid_loader, labels, student_tokenizer)
+    global_step, tr_loss = distill(teacher_config, teacher_model, student_config, student_model, train_loader, valid_loader, student_tokenizer)
     logger.info(f"distillation done: {global_step}, {tr_loss}")
     # ------------------------------------------------------------------------------------------------------- #
 
@@ -400,6 +348,8 @@ def get_params():
     parser = argparse.ArgumentParser()
 
     # For distill
+    parser.add_argument('--teacher_config', type=str, default='configs/config-bert-cls.json')
+    parser.add_argument('--teacher_model_path', type=str, default='pytorch-model-teacher.pt')
     parser.add_argument('--teacher_bert_model_name_or_path', type=str, default=None,
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
     parser.add_argument('--state_distill_cs', action="store_true", help="If this is using Cosine similarity for the hidden and embedding state distillation. vs. MSE")
@@ -442,8 +392,6 @@ def get_params():
                         help="Set this flag to use augmented.txt for training.")
     parser.add_argument('--bert_model_name_or_path', type=str, default='embeddings/distilbert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, distilbert-base-uncased)")
-    parser.add_argument('--bert_do_lower_case', action='store_true',
-                        help="Set this flag if you are using an uncased model.")
     parser.add_argument('--bert_output_dir', type=str, default='bert-checkpoint',
                         help="The output directory where the model predictions and checkpoints will be written.")
     parser.add_argument('--bert_use_feature_based', action='store_true',
