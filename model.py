@@ -523,41 +523,32 @@ class TextBertCNN(BaseModel):
         self.fc = nn.Linear(fc_hidden_size, label_size)
 
     def _compute_bert_embedding(self, x):
+        # x[0], x[1], x[2] : [batch_size, seq_size]
+        params = {
+            'input_ids': x[0],
+            'attention_mask': x[1],
+            'output_hidden_states': True,
+            'output_attentions': True,
+            'return_dict': True
+        }
+        if self.bert_model.config.model_type not in ['bart', 'distilbert']:
+            params['token_type_ids'] = None if self.bert_model.config.model_type in ['roberta'] else x[2] # RoBERTa don't use segment_ids
         if self.bert_feature_based:
             # feature-based
             with torch.no_grad():
-                if self.config['emb_class'] in ['bart', 'distilbert']:
-                    bert_outputs = self.bert_model(input_ids=x[0],
-                                                   attention_mask=x[1])
-                    embedded = bert_outputs[0]
-                else:
-                    bert_outputs = self.bert_model(input_ids=x[0],
-                                                   attention_mask=x[1],
-                                                   token_type_ids=None if self.config['emb_class'] in ['roberta'] else x[2]) # RoBERTa don't use segment_ids
-                    embedded = bert_outputs[0]
+                bert_outputs = self.bert_model(**params)
         else:
             # fine-tuning
-            # x[0], x[1], x[2] : [batch_size, seq_size]
-            if self.config['emb_class'] in ['bart', 'distilbert']:
-                bert_outputs = self.bert_model(input_ids=x[0],
-                                               attention_mask=x[1])
-                # bart model's output
-                # [0] last decoder layer's output : [batch_size, seq_size, bert_hidden_size]
-                # [1] last encoder layer's output : [seq_size, batch_size, bert_hidden_size]
-                embedded = bert_outputs[0]
-            else:
-                bert_outputs = self.bert_model(input_ids=x[0],
-                                               attention_mask=x[1],
-                                               token_type_ids=None if self.config['emb_class'] in ['roberta'] else x[2]) # RoBERTa don't use segment_ids
-                embedded = bert_outputs[0]
-                # embedded : [batch_size, seq_size, bert_hidden_size]
-        return embedded
+            bert_outputs = self.bert_model(**params)
+        embedded = bert_outputs.last_hidden_state
+        # embedded : [batch_size, seq_size, bert_hidden_size]
+        return embedded, bert_outputs
 
     def forward(self, x):
         # x[0], x[1], x[2] : [batch_size, seq_size]
 
         # 1. bert embedding
-        embedded = self._compute_bert_embedding(x)
+        embedded, bert_outputs = self._compute_bert_embedding(x)
         # embedded : [batch_size, seq_size, bert_hidden_size]
         embedded = self.dropout(embedded)
 
@@ -601,57 +592,32 @@ class TextBertCLS(BaseModel):
         self.fc = nn.Linear(self.bert_hidden_size, label_size)
 
     def _compute_bert_embedding(self, x):
+        params = {
+            'input_ids': x[0],
+            'attention_mask': x[1],
+            'output_hidden_states': True,
+            'output_attentions': True,
+            'return_dict': True
+        }
+        if self.bert_model.config.model_type not in ['bart', 'distilbert']:
+            params['token_type_ids'] = None if self.bert_model.config.model_type in ['roberta'] else x[2] # RoBERTa don't use segment_ids
         if self.bert_feature_based:
             # feature-based
             with torch.no_grad():
-                if self.config['emb_class'] in ['bart', 'distilbert']:
-                    bert_outputs = self.bert_model(input_ids=x[0],
-                                                   attention_mask=x[1])
-                    pooled = bert_outputs[0][:, -1, :]
-                elif self.config['emb_class'] in ['electra', 'funnel']:
-                    bert_outputs = self.bert_model(input_ids=x[0],
-                                                   attention_mask=x[1],
-                                                   token_type_ids=x[2])
-                    # no pooling layer in electra/funnel, use the first hidden state([CLS]) of the final layer.
-                    pooled = bert_outputs[0][:, 0, :]
-                    # pooled : [batch_size, bert_hidden_size]
-                else:
-                    bert_outputs = self.bert_model(input_ids=x[0],
-                                                   attention_mask=x[1],
-                                                   token_type_ids=None if self.config['emb_class'] in ['roberta'] else x[2]) # RoBERTa don't use segment_ids
-                    pooled = bert_outputs[1]
+                bert_outputs = self.bert_model(**params)
         else:
             # fine-tuning
-            # x[0], x[1], x[2] : [batch_size, seq_size]
-            if self.config['emb_class'] in ['bart', 'distilbert']:
-                bert_outputs = self.bert_model(input_ids=x[0],
-                                               attention_mask=x[1])
-                # bart model's output
-                # [0] last decoder layer's output : [batch_size, seq_size, bert_hidden_size]
-                # [1] last encoder layer's output : [seq_size, batch_size, bert_hidden_size]
-                # final hidden state of the final decoder token acts like '[CLS]'
-                pooled = bert_outputs[0][:, -1, :]
-                # pooled : [batch_size, bert_hidden_size]
-            elif self.config['emb_class'] in ['electra', 'funnel']:
-                bert_outputs = self.bert_model(input_ids=x[0],
-                                               attention_mask=x[1],
-                                               token_type_ids=x[2])
-                # no pooling layer in electra/funnel, use the first hidden state([CLS]) of the final layer.
-                pooled = bert_outputs[0][:, 0, :]
-                # pooled : [batch_size, bert_hidden_size]
-            else:
-                bert_outputs = self.bert_model(input_ids=x[0],
-                                               attention_mask=x[1],
-                                               token_type_ids=None if self.config['emb_class'] in ['roberta'] else x[2]) # RoBERTa don't use segment_ids
-                pooled = bert_outputs[1] # first token embedding([CLS]), see BertPooler
-                # pooled : [batch_size, bert_hidden_size]
+            bert_outputs = self.bert_model(**params)
+        # first token of last layer == [CLS]
+        pooled = bert_outputs.last_hidden_state[:, 0, :]
+        # pooled : [batch_size, bert_hidden_size]
         embedded = pooled
-        return embedded
+        return embedded, bert_outputs
 
     def forward(self, x):
         # x[0], x[1], x[2] : [batch_size, seq_size]
         # 1. bert embedding
-        embedded = self._compute_bert_embedding(x)
+        embedded, bert_outputs = self._compute_bert_embedding(x)
         # embedded : [batch_size, bert_hidden_size]
         embedded = self.dropout(embedded)
 

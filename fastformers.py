@@ -25,9 +25,7 @@ from train import train_epoch, evaluate, save_model, set_path, prepare_datasets,
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-streamHandler = logging.StreamHandler()
 fileHandler = logging.FileHandler('./train.log')
-#logger.addHandler(streamHandler)
 logger.addHandler(fileHandler)
 
 # ------------------------------------------------------------------------------ #
