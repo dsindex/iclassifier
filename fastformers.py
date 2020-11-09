@@ -40,11 +40,6 @@ def set_seed(args):
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
     
-def soft_cross_entropy(predicts, targets):
-    likelihood = F.log_softmax(predicts, dim=-1)
-    targets_prob = F.softmax(targets, dim=-1)
-    return (- targets_prob * likelihood).sum(dim=-1).mean()
-
 def distill(
         teacher_config,
         teacher_model,
@@ -62,7 +57,7 @@ def distill(
     logger.info("(num_training_steps_for_epoch, num_training_steps, num_warmup_steps): ({}, {}, {})".\
         format(num_training_steps_for_epoch, num_training_steps, num_warmup_steps))        
 
-    # Prepare optimizer and schedule (linear warmup and decay)
+    # prepare optimizer and schedule (linear warmup and decay)
     no_decay = ["bias", "LayerNorm.weight"]
     optimizer_grouped_parameters = [
         {
@@ -76,14 +71,18 @@ def distill(
         optimizer, num_warmup_steps=num_warmup_steps, num_training_steps=num_training_steps
     )
 
-    # layer numbers of teacher and student
     teacher_layer_num = teacher_model.bert_model.config.num_hidden_layers
     student_layer_num = student_model.bert_model.config.num_hidden_layers
 
-    # Prepare loss functions
-    loss_mse = MSELoss()
-    loss_cs = CosineSimilarity(dim=2)
-    loss_cs_att = CosineSimilarity(dim=3)
+    # prepare loss functions
+    def soft_cross_entropy(predicts, targets):
+        likelihood = F.log_softmax(predicts, dim=-1)
+        targets_prob = F.softmax(targets, dim=-1)
+        return (- targets_prob * likelihood).sum(dim=-1).mean()
+    loss_mse_sum = MSELoss(reduction='sum').to(args.device)
+    loss_mse = MSELoss().to(args.device)
+    loss_cs = CosineSimilarity(dim=2).to(args.device)
+    loss_cs_att = CosineSimilarity(dim=3).to(args.device)
 
     logger.info("***** Running distillation training *****")
     logger.info("  Num Batchs = %d", len(train_loader))
@@ -102,7 +101,7 @@ def distill(
     student_model.zero_grad()
     train_iterator = range(epochs_trained, int(args.epoch))
 
-    # Added here for reproductibility
+    # for reproductibility
     set_seed(args)
 
     best_val_metric = None
@@ -130,7 +129,11 @@ def distill(
            
             # Knowledge Distillation loss
             # 1) logits distillation
+            #'''
             kd_loss = soft_cross_entropy(output_student, output_teacher)
+            #'''
+            #kd_loss = loss_mse_sum(output_student, output_teacher)
+
             loss = kd_loss
             tr_cls_loss += loss.item()
 
@@ -225,8 +228,8 @@ def distill(
                     logs['eval_loss'] = eval_loss
                     logs['eval_acc'] = eval_acc
                     logger.info(json.dumps({**logs, **{"step": global_step}}))
-                    curr_val_metric = eval_loss
-                    if best_val_metric is None or curr_val_metric < best_val_metric:
+                    curr_val_metric = eval_acc
+                    if best_val_metric is None or curr_val_metric > best_val_metric:
                         # save
                         save_model(student_config, student_model)
                         student_tokenizer.save_pretrained(args.bert_output_dir)
@@ -287,12 +290,12 @@ def train(opt):
     # ------------------------------------------------------------------------------------------------------- #
 
 
-    sys.exit(0)
+    # XXX train again
 
+    model = student_model
+    config = student_config
 
     with temp_seed(opt.seed):
-        # prepare model
-        model = prepare_model(config)
 
         # create optimizer, scheduler, summary writer, scaler
         optimizer, scheduler, writer, scaler = prepare_osws(config, model, train_loader)
@@ -353,7 +356,7 @@ def get_params():
     parser.add_argument('--teacher_bert_model_name_or_path', type=str, default=None,
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
     parser.add_argument('--state_distill_cs', action="store_true", help="If this is using Cosine similarity for the hidden and embedding state distillation. vs. MSE")
-    parser.add_argument('--state_loss_ratio', type=float, default=0.1)
+    parser.add_argument('--state_loss_ratio', type=float, default=0.0)
     parser.add_argument('--att_loss_ratio', type=float, default=0.0)
     parser.add_argument('--warmup_ratio', default=0, type=float, help="Linear warmup over warmup_steps as a float.")
     parser.add_argument('--logging_steps', type=int, default=500, help="Log every X updates steps.")
