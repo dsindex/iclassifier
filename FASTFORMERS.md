@@ -4,13 +4,13 @@
 ```
 $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased
 
-$ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_output_dir=bert-checkpoint-teacher --save_path=pytorch-model-teacher.pt --lr=5e-5 --epoch=3 --batch_size=64
+$ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_output_dir=bert-checkpoint-teacher --save_path=pytorch-model-teacher.pt --lr=1e-5 --epoch=3 --batch_size=64
 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint-teacher --model_path=pytorch-model-teacher.pt
 
 * bert-base-uncased
-INFO:__main__:[Accuracy] : 0.9116,  1660/ 1821
-INFO:__main__:[Elapsed Time] : 26002.151250839233ms, 14.226331291617928ms on average
+INFO:__main__:[Accuracy] : 0.9292,  1692/ 1821
+INFO:__main__:[Elapsed Time] : 26472.151517868042ms, 14.481851556798913ms on average
 
 * bert-large-uncased
 
@@ -20,11 +20,12 @@ INFO:__main__:[Elapsed Time] : 26002.151250839233ms, 14.226331291617928ms on ave
 ```
 $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8
 
-$ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8 --bert_output_dir=bert-checkpoint --save_path=pytorch-model.pt --lr=5e-5 --epoch=3 --batch_size=64
+$ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8 --bert_output_dir=bert-checkpoint --save_path=pytorch-model.pt --lr=1e-5 --epoch=3 --batch_size=64
 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --model_path=pytorch-model.pt
-INFO:__main__:[Accuracy] : 0.8693,  1583/ 1821
-INFO:__main__:[Elapsed Time] : 10966.290950775146ms, 5.975326993963221ms on average
+INFO:__main__:[Accuracy] : 0.8825,  1607/ 1821
+INFO:__main__:[Elapsed Time] : 10948.646068572998ms, 5.960442338671003ms on average
+
 ```
 
 - distillation
@@ -41,17 +42,9 @@ $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 
 
 * bert-base-uncased
 
-** loss: soft_cross_entropy, best model: eval_loss
-INFO:__main__:[Accuracy] : 0.8863,  1614/ 1821
-INFO:__main__:[Elapsed Time] : 10643.460035324097ms, 5.798105486146697ms on average
-
 ** loss: mse, best model: eval_acc 
 INFO:__main__:[Accuracy] : 0.8929,  1626/ 1821
-INFO:__main__:[Elapsed Time] : 11389.132738113403ms, 6.185553493080558ms on average
-
-** loss: soft_cross_entropy, best model: eval_acc
-INFO:__main__:[Accuracy] : 0.8869,  1615/ 1821
-INFO:__main__:[Elapsed Time] : 11153.580665588379ms, 6.077859558901944ms on average
+INFO:__main__:[Elapsed Time] : 10915.554285049438ms, 5.940870531312712ms on average
 
 * bert-large-uncased
 

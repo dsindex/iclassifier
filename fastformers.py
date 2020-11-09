@@ -234,7 +234,7 @@ def distill(
                         student_tokenizer.save_pretrained(args.bert_output_dir)
                         student_model.bert_model.save_pretrained(args.bert_output_dir)
                         best_val_metric = curr_val_metric
-                        logger.info("[Best student model saved] : {:10.6f}, {%s}".format(best_val_metric,args.bert_output_dir))
+                        logger.info("[Best student model saved] : {:10.6f}, {}".format(best_val_metric,args.bert_output_dir))
                 
                 # change student model back to train mode
                 student_model.train()

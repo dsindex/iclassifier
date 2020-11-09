@@ -289,7 +289,7 @@ INFO:__main__:[Elapsed Time] : 12742.885112762451ms, 18.07960045013646ms on aver
 | DistilFromBERT, GloVe, CNN              | 86.16        | 1.7900  / -                 |                                |                          | augmented, from large    |
 | DistilFromBERT, GloVe, DenseNet-CNN     | 88.52        | 3.6788  / -                 |                                |                          | augmented, from large    |
 | DistilFromBERT, GloVe, DenseNet-DSA     | 88.14        | 8.4647  / -                 |                                |                          | augmented, from large    |
-| DistilFromBERT, BERT-small, CLS         | 89.29        | 6.1855  / -                 |                                |                          | fastformers, from base   |
+| DistilFromBERT, BERT-small, CLS         | 89.29        | 5.9408  / -                 |                                |                          | fastformers, from base   |
 | DistilFromBERT, BERT-small, CLS         | -            | -       / -                 |                                |                          | fastformers, from large  |
 | DistilFromRoBERTa, GloVe, CNN           | 86.55        | 1.8483  / -                 |                                |                          | augmented, from large    |
 | DistilFromRoBERTa, GloVe, DenseNet-CNN  | 88.80        | 3.9580  / -                 |                                |                          | augmented, from large    |
@@ -304,7 +304,7 @@ INFO:__main__:[Elapsed Time] : 12742.885112762451ms, 18.07960045013646ms on aver
 | BERT-mini, CNN                          | 83.36        | 7.0983  / -                 |                                |                          |               |
 | BERT-mini, CLS                          | 83.69        | 5.5521  / -                 |                                |                          |               |
 | BERT-small, CNN                         | 87.53        | 7.2010  / -                 |                                |                          |               |
-| BERT-small, CLS                         | 87.86        | 6.0450  / -                 |                                |                          |               |
+| BERT-small, CLS                         | 88.25        | 5.9604  / -                 |                                |                          |               |
 | BERT-medium, CNN                        | 88.58        | 11.9082 / -                 |                                |                          |               |
 | BERT-medium, CLS                        | 89.24        | 9.5857  / -                 |                                |                          |               |
 | DistilBERT, CNN                         | 89.90        | 9.9362  / -                 |       - / 44.1111              |              - / 35.7070 | threads=14    |
@@ -546,8 +546,8 @@ INFO:__main__:[Accuracy] : 0.8924,  1625/ 1821
 INFO:__main__:[Elapsed Time] : 17558ms, 9.585714285714285ms on average
 
 ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-4_H-512_A-8
-INFO:__main__:[Accuracy] : 0.8786,  1600/ 1821
-INFO:__main__:[Elapsed Time] : 11104ms, 6.045054945054945ms on average
+INFO:__main__:[Accuracy] : 0.8825,  1607/ 1821
+INFO:__main__:[Elapsed Time] : 10948.646068572998ms, 5.960442338671003ms on average
 
 ** --bert_model_name_or_path=embeddings/pytorch.uncased_L-4_H-256_A-4
 INFO:__main__:[Accuracy] : 0.8369,  1524/ 1821
