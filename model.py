@@ -544,7 +544,7 @@ class TextBertCNN(BaseModel):
         # embedded : [batch_size, seq_size, bert_hidden_size]
         return embedded, bert_outputs
 
-    def forward(self, x):
+    def forward(self, x, return_bert_outputs=False):
         # x[0], x[1], x[2] : [batch_size, seq_size]
 
         # 1. bert embedding
@@ -567,6 +567,7 @@ class TextBertCNN(BaseModel):
         if self.config['opt'].augmented: return fc_out
         output = torch.softmax(fc_out, dim=-1)
         # output : [batch_size, label_size]
+        if return_bert_outputs: return output, bert_outputs
         return output
 
 class TextBertCLS(BaseModel):
@@ -614,7 +615,7 @@ class TextBertCLS(BaseModel):
         embedded = pooled
         return embedded, bert_outputs
 
-    def forward(self, x):
+    def forward(self, x, return_bert_outputs=False):
         # x[0], x[1], x[2] : [batch_size, seq_size]
         # 1. bert embedding
         embedded, bert_outputs = self._compute_bert_embedding(x)
@@ -626,5 +627,6 @@ class TextBertCLS(BaseModel):
         if self.config['opt'].augmented: return fc_out
         output = torch.softmax(fc_out, dim=-1)
         # output : [batch_size, label_size]
+        if return_bert_outputs: return output, bert_outputs
         return output
 
