@@ -53,8 +53,6 @@ INFO:__main__:[Elapsed Time] : 11389.132738113403ms, 6.185553493080558ms on aver
 INFO:__main__:[Accuracy] : 0.8869,  1615/ 1821
 INFO:__main__:[Elapsed Time] : 11153.580665588379ms, 6.077859558901944ms on average
 
-** loss: mse, best model: eval_acc, normal training using labeled data after distillation
-
 * bert-large-uncased
 
 

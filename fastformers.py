@@ -288,62 +288,6 @@ def train(opt):
     logger.info(f"[distillation done] : {global_step}, {tr_loss}")
     # ------------------------------------------------------------------------------------------------------- #
 
-    # train again as normal
-
-    model = student_model
-    config = student_config
-
-    with temp_seed(opt.seed):
-
-        # create optimizer, scheduler, summary writer, scaler
-        optimizer, scheduler, writer, scaler = prepare_osws(config, model, train_loader)
-        config['optimizer'] = optimizer
-        config['scheduler'] = scheduler
-        config['writer'] = writer
-        config['scaler'] = scaler
-
-        # training
-        early_stopping = EarlyStopping(logger, patience=opt.patience, measure=opt.measure, verbose=1)
-        local_worse_steps = 0
-        prev_eval_measure = float('inf') if opt.measure == 'loss' else -float('inf')
-        best_eval_measure = float('inf') if opt.measure == 'loss' else -float('inf')
-        for epoch_i in range(opt.epoch):
-            epoch_st_time = time.time()
-            eval_loss, eval_acc = train_epoch(model, config, train_loader, valid_loader, epoch_i)
-            if opt.measure == 'loss': eval_measure = eval_loss 
-            else: eval_measure = eval_acc
-            # early stopping
-            if early_stopping.validate(eval_measure, measure=opt.measure): break
-            if opt.measure == 'loss': is_best = eval_measure < best_eval_measure
-            else: is_best = eval_measure > best_eval_measure
-            if is_best:
-                best_eval_measure = eval_measure
-                if opt.save_path:
-                    logger.info("[Best model saved] : {:10.6f}".format(best_eval_measure))
-                    save_model(config, model)
-                    # save finetuned bert model/config/tokenizer
-                    if config['emb_class'] not in ['glove']:
-                        if not os.path.exists(opt.bert_output_dir):
-                            os.makedirs(opt.bert_output_dir)
-                        model.bert_tokenizer.save_pretrained(opt.bert_output_dir)
-                        model.bert_model.save_pretrained(opt.bert_output_dir)
-                early_stopping.reset(best_eval_measure)
-            early_stopping.status()
-            # begin: scheduling, apply rate decay at the measure(ex, loss) getting worse for the number of deacy epoch steps.
-            if opt.measure == 'loss': getting_worse = prev_eval_measure <= eval_measure
-            else: getting_worse = prev_eval_measure >= eval_measure
-            if getting_worse:
-                local_worse_steps += 1
-            else:
-                local_worse_steps = 0
-            logger.info('Scheduler: local_worse_steps / opt.lr_decay_steps = %d / %d' % (local_worse_steps, opt.lr_decay_steps))
-            if not opt.use_transformers_optimizer and \
-               epoch_i > opt.warmup_epoch and \
-               (local_worse_steps >= opt.lr_decay_steps or early_stopping.step() > opt.lr_decay_steps):
-                scheduler.step()
-                local_worse_steps = 0
-            prev_eval_measure = eval_measure
-            # end: scheduling
 
 def get_params():
     parser = argparse.ArgumentParser()
