@@ -17,8 +17,6 @@ def main():
     
     parser.add_argument("--model_path", type=str, required=True,
                         help="Path to pre-trained model")
-    parser.add_argument("--do_lower_case", action="store_true",
-                        help="Set this flag if you are using an uncased model.")
     parser.add_argument("--output_dir", type=str, required=True,
                         help="The output directory where the model predictions and checkpoints will be written.")
 
@@ -26,8 +24,7 @@ def main():
 
     # load
     logger.info("[Loading...]")
-    tokenizer = AutoTokenizer.from_pretrained(opt.model_path,
-                                          do_lower_case=opt.do_lower_case)
+    tokenizer = AutoTokenizer.from_pretrained(opt.model_path)
     model = AutoModel.from_pretrained(opt.model_path,
                                   from_tf=bool(".ckpt" in opt.model_path))
     config = model.config

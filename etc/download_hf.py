@@ -17,15 +17,12 @@ def main():
     
     parser.add_argument("--model_name_or_path", type=str, default='bert-base-cased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-cased)")
-    parser.add_argument("--do_lower_case", action="store_true",
-                        help="Set this flag if you are using an uncased model.")
 
     opt = parser.parse_args()
 
     # download
     logger.info("[Downloading transformers...]")
-    tokenizer = AutoTokenizer.from_pretrained(opt.model_name_or_path,
-                                          do_lower_case=opt.do_lower_case)
+    tokenizer = AutoTokenizer.from_pretrained(opt.model_name_or_path)
     model = AutoModel.from_pretrained(opt.model_name_or_path,
                                   from_tf=bool(".ckpt" in opt.model_name_or_path))
     config = model.config
