@@ -229,8 +229,7 @@ def prepare_model(config, bert_model_name_or_path=None):
             model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable)
     else:
         model_name_or_path = opt.bert_model_name_or_path
-        if bert_model_name_or_path:
-            model_name_or_paht = bert_model_name_or_path
+        if bert_model_name_or_path: model_name_or_path = bert_model_name_or_path
         if config['emb_class'] == 'funnel':
             from transformers import FunnelTokenizer, FunnelConfig, FunnelBaseModel
             bert_tokenizer = FunnelTokenizer.from_pretrained(model_name_or_path)
