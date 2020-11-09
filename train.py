@@ -59,7 +59,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
     total_examples = 0
     st_time = time.time()
     optimizer.zero_grad()
-    epoch_iterator = tqdm(train_loader, total=len(train_loader), desc=f"{Epoch {epoch_i}")
+    epoch_iterator = tqdm(train_loader, total=len(train_loader), desc=f"Epoch {epoch_i}")
     for local_step, (x,y) in enumerate(epoch_iterator):
         global_step = (len(train_loader) * epoch_i) + local_step
         x = to_device(x, opt.device)
