@@ -12,8 +12,8 @@ $ python -m spacy download en_core_web_sm
 
   - BERT-large, CLS (bert-large-uncased)
   ```
-  $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-large-uncased --bert_do_lower_case
-  $ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-large-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64
+  $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-large-uncased
+  $ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-large-uncased --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64
   $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
   INFO:__main__:[Accuracy] : 0.9412,  1714/ 1821
   INFO:__main__:[Elapsed Time] : 40847.62740135193ms, 22.37672412788475ms on average
@@ -30,8 +30,8 @@ $ python -m spacy download en_core_web_sm
 
   - ELECTRA-large, CLS (electra-large-discriminator)
   ```
-  $ python preprocess.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-large-discriminator --bert_do_lower_case
-  $ python train.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-large-discriminator --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=15 --lr_decay_rate=0.9 --batch_size=64 --bert_do_lower_case
+  $ python preprocess.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-large-discriminator 
+  $ python train.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-large-discriminator --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=15 --lr_decay_rate=0.9 --batch_size=64
   $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
   INFO:__main__:[Accuracy] : 0.9643,  1756/ 1821
   INFO:__main__:[Elapsed Time] : 41302.36577987671ms, 22.629007140358727ms on average
@@ -54,7 +54,7 @@ $ python -m spacy download en_core_web_sm
   * labeling augmented.raw to augmented.raw.pred
 
   * from bert-large
-  $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-large-uncased --bert_do_lower_case --augmented --augmented_filename=augmented.raw
+  $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-large-uncased --augmented --augmented_filename=augmented.raw
   $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
   * from roberta-large
@@ -62,7 +62,7 @@ $ python -m spacy download en_core_web_sm
   $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
   * from electra-large
-  $ python preprocess.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-large-discriminator --bert_do_lower_case --augmented --augmented_filename=augmented.raw
+  $ python preprocess.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-large-discriminator --augmented --augmented_filename=augmented.raw
   $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
   $ cp -rf data/sst2/augmented.raw.pred data/sst2/augmented.txt
@@ -136,8 +136,8 @@ $ python -m spacy download en_core_web_sm
     ```
     * converting augmented.txt to augmented.txt.fs(id mapped file) and train!
 
-    $ python preprocess.py --config=configs/config-distilbert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_do_lower_case --augmented --augmented_filename=augmented.txt
-    $ python train.py --config=configs/config-distilbert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64 --augmented --criterion MSELoss
+    $ python preprocess.py --config=configs/config-distilbert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/distilbert-base-uncased --augmented --augmented_filename=augmented.txt
+    $ python train.py --config=configs/config-distilbert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64 --augmented --criterion MSELoss
     $ python evaluate.py --config=configs/config-distilbert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
     INFO:__main__:[Accuracy] : 0.9352,  1703/ 1821
     INFO:__main__:[Elapsed Time] : 13713.293313980103ms, 7.48790830046266ms on average

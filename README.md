@@ -217,13 +217,13 @@ INFO:__main__:[Elapsed Time] : 5367ms, 7.500715307582261ms on average
 
 * enc_class=cnn
 
-$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
-$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
+$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/bert-base-uncased
+$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
 
 * enc_class=cls
 
-$ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
-$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
+$ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
 
 * --bert_use_feature_based for feature-based
 ```
@@ -237,7 +237,7 @@ $ python evaluate.py --config=configs/config-bert-cnn.json --bert_output_dir=ber
 INFO:__main__:[Accuracy] : 0.9757,   683/  700
 INFO:__main__:[Elapsed Time] : 10624ms, 12.127324749642346ms on average
   
-** --bert_model_name_or_path=bert-large-uncased --lr=2e-5 , without --bert_do_lower_case
+** --bert_model_name_or_path=bert-large-uncased --lr=2e-5
 INFO:__main__:[Accuracy] : 0.9800,   686/  700
 INFO:__main__:[Elapsed Time] : 16994ms, 24.277142857142856ms on average
 
@@ -247,7 +247,7 @@ $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=ber
 INFO:__main__:[Accuracy] : 0.9743,   682/  700
 INFO:__main__:[Elapsed Time] : 8940ms, 12.771428571428572ms on average
   
-** --bert_model_name_or_path=bert-large-uncased --lr=2e-5 , without --bert_do_lower_case
+** --bert_model_name_or_path=bert-large-uncased --lr=2e-5
 INFO:__main__:[Accuracy] : 0.9786,   685/  700
 INFO:__main__:[Elapsed Time] : 16480ms, 23.542857142857144ms on average
 
@@ -456,13 +456,13 @@ INFO:__main__:[Elapsed Time] : 19214ms, 10.477472527472527ms on average
 
 * enc_class=cnn
 
-$ python preprocess.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
-$ python train.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64
+$ python preprocess.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased
+$ python train.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64
 
 * enc_class=cls
 
-$ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
-$ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64
+$ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased
+$ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64
 ```
 
 - evaluation
@@ -503,11 +503,11 @@ INFO:__main__:[Accuracy] : 0.9061,  1650/ 1821
 INFO:__main__:[Elapsed Time] : 35230.47494888306ms, 19.287928644117418ms on average
 
 ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
-** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case
+** --bert_model_name_or_path=embeddings/spanbert_hf_large
 INFO:__main__:[Accuracy] : 0.9390,  1710/ 1821
 INFO:__main__:[Elapsed Time] : 49042ms, 26.860989010989012ms on average
 
-** --bert_model_name_or_path=embeddings/spanbert_hf_base , without --bert_do_lower_case
+** --bert_model_name_or_path=embeddings/spanbert_hf_base
 INFO:__main__:[Accuracy] : 0.9182,  1672/ 1821
 INFO:__main__:[Elapsed Time] : 27796ms, 15.20989010989011ms on average
 
@@ -563,11 +563,11 @@ INFO:__main__:[Accuracy] : 0.9012,  1641/ 1821
 INFO:__main__:[Elapsed Time] : 31975.939989089966ms, 17.499822050660523ms on average
 
 ** for using SpanBERT embedding, just replace pretrained BERT model to SpanBERT.
-** --bert_model_name_or_path=embeddings/spanbert_hf_large , without --bert_do_lower_case
+** --bert_model_name_or_path=embeddings/spanbert_hf_large
 INFO:__main__:[Accuracy] : 0.9396,  1711/ 1821
 INFO:__main__:[Elapsed Time] : 47570ms, 26.044505494505493ms on average
 
-** --bert_model_name_or_path=embeddings/spanbert_hf_base , without --bert_do_lower_case
+** --bert_model_name_or_path=embeddings/spanbert_hf_base
 INFO:__main__:[Accuracy] : 0.9149,  1666/ 1821
 INFO:__main__:[Elapsed Time] : 24049ms, 13.151648351648351ms on average
 
@@ -602,8 +602,8 @@ INFO:__main__:[Elapsed Time] : 22229ms, 12.156043956043955ms on average
 
 * enc_class=cnn
 
-$ python preprocess.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2 --bert_do_lower_case
-$ python train.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64 --bert_do_lower_case
+$ python preprocess.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2
+$ python train.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64
 ```
 
 - evaluation
@@ -741,13 +741,13 @@ INFO:__main__:[Elapsed Time] : 61015ms, 33.386263736263736ms on average
 
 * enc_class=cnn
 
-$ python preprocess.py --config=configs/config-electra-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator --bert_do_lower_case
-$ python train.py --config=configs/config-electra-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --lr_decay_rate=0.9 --batch_size=64 --bert_do_lower_case
+$ python preprocess.py --config=configs/config-electra-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator
+$ python train.py --config=configs/config-electra-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --lr_decay_rate=0.9 --batch_size=64
 
 * enc_class=cls
 
-$ python preprocess.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator --bert_do_lower_case
-$ python train.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --lr_decay_rate=0.9 --batch_size=64 --bert_do_lower_case
+$ python preprocess.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator
+$ python train.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --lr_decay_rate=0.9 --batch_size=64
 ```
 
 - evaluation

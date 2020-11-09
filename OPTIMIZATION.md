@@ -56,7 +56,7 @@ $ python onnx-test.py
   $ python preprocess.py --config=configs/config-densenet-dsa.json
 
   ** bert
-  $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case
+  $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased
   ```
 
   - train a pytorch model
@@ -69,7 +69,7 @@ $ python onnx-test.py
   $ python train.py --config=configs/config-densenet-dsa.json --lr_decay_rate=0.9
 
   ** bert
-  $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_do_lower_case --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
+  $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
   ```
 
   - convert

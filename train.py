@@ -214,7 +214,7 @@ def reduce_bert_model(config, bert_model, bert_config):
         if len(layer_indexes) > 0:
             bert_config.num_hidden_layers = len(layer_list)
 
-def prepare_model(config):
+def prepare_model(config, bert_model_name_or_path=None):
     opt = config['opt']
     emb_non_trainable = not opt.embedding_trainable
     # prepare model
@@ -228,18 +228,19 @@ def prepare_model(config):
         if config['enc_class'] == 'densenet-dsa':
             model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable)
     else:
+        model_name_or_path = opt.bert_model_name_or_path
+        if bert_model_name_or_path:
+            model_name_or_paht = bert_model_name_or_path
         if config['emb_class'] == 'funnel':
             from transformers import FunnelTokenizer, FunnelConfig, FunnelBaseModel
-            bert_tokenizer = FunnelTokenizer.from_pretrained(opt.bert_model_name_or_path,
-                                                             do_lower_case=opt.bert_do_lower_case)
-            bert_model = FunnelBaseModel.from_pretrained(opt.bert_model_name_or_path,
-                                                         from_tf=bool(".ckpt" in opt.bert_model_name_or_path))
+            bert_tokenizer = FunnelTokenizer.from_pretrained(model_name_or_path)
+            bert_model = FunnelBaseModel.from_pretrained(model_name_or_path,
+                                                         from_tf=bool(".ckpt" in model_name_or_path))
         else:
             from transformers import AutoTokenizer, AutoConfig, AutoModel
-            bert_tokenizer = AutoTokenizer.from_pretrained(opt.bert_model_name_or_path,
-                                                           do_lower_case=opt.bert_do_lower_case)
-            bert_model = AutoModel.from_pretrained(opt.bert_model_name_or_path,
-                                                   from_tf=bool(".ckpt" in opt.bert_model_name_or_path))
+            bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
+            bert_model = AutoModel.from_pretrained(model_name_or_path,
+                                                   from_tf=bool(".ckpt" in model_name_or_path))
         bert_config = bert_model.config
         # bert model reduction
         reduce_bert_model(config, bert_model, bert_config)
@@ -458,8 +459,6 @@ def get_params():
     # for BERT
     parser.add_argument('--bert_model_name_or_path', type=str, default='embeddings/bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
-    parser.add_argument('--bert_do_lower_case', action='store_true',
-                        help="Set this flag if you are using an uncased model.")
     parser.add_argument('--bert_output_dir', type=str, default='bert-checkpoint',
                         help="The output directory where the model predictions and checkpoints will be written.")
     parser.add_argument('--bert_use_feature_based', action='store_true',
