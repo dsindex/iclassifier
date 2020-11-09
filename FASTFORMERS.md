@@ -7,8 +7,13 @@ $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst
 $ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_output_dir=bert-checkpoint-teacher --save_path=pytorch-model-teacher.pt --lr=5e-5 --epoch=3 --batch_size=64
 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint-teacher --model_path=pytorch-model-teacher.pt
+
+* bert-base-uncased
 INFO:__main__:[Accuracy] : 0.9116,  1660/ 1821
 INFO:__main__:[Elapsed Time] : 26002.151250839233ms, 14.226331291617928ms on average
+
+* bert-large-uncased
+
 ```
 
 - check student model's performance (stand-alone)
@@ -22,7 +27,7 @@ INFO:__main__:[Accuracy] : 0.8693,  1583/ 1821
 INFO:__main__:[Elapsed Time] : 10966.290950775146ms, 5.975326993963221ms on average
 ```
 
-- distillation and structured prunning
+- distillation
 ```
 # tokenizer should be same as teacher's 
 $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8
@@ -30,9 +35,11 @@ $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst
 * --state_loss_ratio > 0 : teacher's hidden_size == student's
 * --att_loss_ratio > 0   : teacher's num_attention_heads == student's
 
-$ python fastformers.py --teacher_config=configs/config-bert-cls.json --data_dir=data/sst2 --teacher_bert_model_name_or_path=./bert-checkpoint-teacher --teacher_model_path=pytorch-model-teacher.pt --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8 --bert_output_dir=bert-checkpoint --save_path=pytorch-model.pt --lr=5e-5 --epoch=10 --batch_size=64
+$ python fastformers.py --teacher_config=configs/config-bert-cls.json --data_dir=data/sst2 --teacher_bert_model_name_or_path=./bert-checkpoint-teacher --teacher_model_path=pytorch-model-teacher.pt --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8 --bert_output_dir=bert-checkpoint --save_path=pytorch-model.pt --lr=5e-5 --epoch=5 --batch_size=64
 
-* after distillation
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --model_path=pytorch-model.pt
+
+* bert-base-uncased
 
 ** loss: soft_cross_entropy, best model: eval_loss
 INFO:__main__:[Accuracy] : 0.8863,  1614/ 1821
@@ -43,10 +50,12 @@ INFO:__main__:[Accuracy] : 0.8929,  1626/ 1821
 INFO:__main__:[Elapsed Time] : 11389.132738113403ms, 6.185553493080558ms on average
 
 ** loss: soft_cross_entropy, best model: eval_acc
+INFO:__main__:[Accuracy] : 0.8869,  1615/ 1821
+INFO:__main__:[Elapsed Time] : 11153.580665588379ms, 6.077859558901944ms on average
 
+** loss: mse, best model: eval_acc, normal training using labeled data after distillation
 
-
-(under development)
+* bert-large-uncased
 
 
 ```
