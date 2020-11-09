@@ -149,7 +149,6 @@ def evaluate(model, config, val_loader):
 
 def save_model(config, model):
     opt = config['opt']
-    optimizer = config['optimizer']
     checkpoint_path = opt.save_path
     with open(checkpoint_path, 'wb') as f:
         checkpoint = model.state_dict()

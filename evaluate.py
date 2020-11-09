@@ -38,14 +38,12 @@ def set_path(config):
         opt.test_path = os.path.join(opt.data_dir, 'test.txt')
     opt.vocab_path = os.path.join(opt.data_dir, 'vocab.txt')
 
-def load_checkpoint(config, path=None):
+def load_checkpoint(config):
     opt = config['opt']
-    model_path = opt.model_path
-    if path: model_path = path
     if opt.device == 'cpu':
-        checkpoint = torch.load(model_path, map_location=lambda storage, loc: storage)
+        checkpoint = torch.load(opt.model_path, map_location=lambda storage, loc: storage)
     else:
-        checkpoint = torch.load(model_path)
+        checkpoint = torch.load(opt.model_path)
     logger.info("[Loading checkpoint done]")
     return checkpoint
 
