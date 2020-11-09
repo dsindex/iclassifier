@@ -230,11 +230,11 @@ def evaluate(opt):
         y = to_device(y, opt.device)
         convert_onnx(config, model, x)
         check_onnx(config)
-        logger.info("[ONNX model saved at {}".format(opt.onnx_path))
+        logger.info("[ONNX model saved] :{}".format(opt.onnx_path))
         # quantize onnx
         if opt.quantize_onnx:
             quantize_onnx(opt.onnx_path, opt.quantized_onnx_path)
-            logger.info("[Quantized ONNX model saved at {}".format(opt.quantized_onnx_path))
+            logger.info("[Quantized ONNX model saved] : {}".format(opt.quantized_onnx_path))
         return
 
     # load onnx model for using onnxruntime
@@ -251,7 +251,7 @@ def evaluate(opt):
         x = to_device(x, opt.device)
         y = to_device(y, opt.device)
         convert_tvm(config, model, x)
-        logger.info("[TVM model saved at {}".format(opt.tvm_path))
+        logger.info("[TVM model saved] : {}".format(opt.tvm_path))
         return
 
     # enable to use dynamic quantized model (pytorch>=1.3.0)

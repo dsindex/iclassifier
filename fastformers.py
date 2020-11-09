@@ -234,7 +234,7 @@ def distill(
                         student_tokenizer.save_pretrained(args.bert_output_dir)
                         student_model.bert_model.save_pretrained(args.bert_output_dir)
                         best_val_metric = curr_val_metric
-                        logger.info("Saved best student model to %s", args.bert_output_dir)
+                        logger.info("[Best student model saved] : {:10.6f}, {%s}".format(best_val_metric,args.bert_output_dir))
                 
                 # change student model back to train mode
                 student_model.train()
@@ -258,10 +258,10 @@ def train(opt):
     # set config
     teacher_config = load_config(opt, config_path=opt.teacher_config)
     teacher_config['opt'] = opt
-    logger.info("[teacher config]\n%s", teacher_config)
+    logger.info("[teacher config] :\n%s", teacher_config)
     student_config = load_config(opt, config_path=opt.config)
     student_config['opt'] = opt
-    logger.info("[student config]\n%s", student_config)
+    logger.info("[student config] :\n%s", student_config)
     
     # set path
     set_path(student_config)
@@ -277,15 +277,15 @@ def train(opt):
     teacher_checkpoint = load_checkpoint(opt.teacher_model_path, device=opt.device)
     teacher_model.load_state_dict(teacher_checkpoint)
     teacher_model = teacher_model.to(opt.device)
-    logger.info("prepare teacher model and loading done")
+    logger.info("[prepare teacher model and loading done]")
  
     # prepare student model
     student_model = prepare_model(student_config, bert_model_name_or_path=opt.bert_model_name_or_path)
     student_tokenizer = student_model.bert_tokenizer
-    logger.info("prepare student model done")
+    logger.info("[prepare student model done]")
 
     global_step, tr_loss = distill(teacher_config, teacher_model, student_config, student_model, train_loader, valid_loader, student_tokenizer)
-    logger.info(f"distillation done: {global_step}, {tr_loss}")
+    logger.info(f"[distillation done] : {global_step}, {tr_loss}")
     # ------------------------------------------------------------------------------------------------------- #
 
     # train again as normal

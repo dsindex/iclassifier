@@ -211,7 +211,7 @@ def reduce_bert_model(config, bert_model, bert_config):
         for layer_idx in layer_indexes:
             if layer_idx < 0 or layer_idx >= bert_config.num_hidden_layers: continue
             del(layer_list[layer_idx])
-            logger.info("%s layer removed" % (layer_idx))
+            logger.info("[layer removed] : %s" % (layer_idx))
         if len(layer_indexes) > 0:
             bert_config.num_hidden_layers = len(layer_list)
 
@@ -324,8 +324,8 @@ def train(opt):
             # for nni
             if opt.hp_search_nni:
                 nni.report_intermediate_result(eval_acc)
-                logger.info('eval_acc : %g', eval_acc)
-                logger.info('Pipe send intermediate result done.')
+                logger.info('[eval_acc] : %g', eval_acc)
+                logger.info('[Pipe send intermediate result done]')
             if opt.measure == 'loss': eval_measure = eval_loss 
             else: eval_measure = eval_acc
             # early stopping
@@ -363,8 +363,8 @@ def train(opt):
         # for nni
         if opt.hp_search_nni:
             nni.report_final_result(eval_acc)
-            logger.info('Final result : %g', eval_acc)
-            logger.info('Send final result done.')
+            logger.info('[Final result] : %g', eval_acc)
+            logger.info('[Send final result done]')
 
 # for optuna, global for passing opt 
 gopt = None
@@ -486,16 +486,16 @@ def main():
         study.optimize(hp_search_optuna, n_trials=opt.hp_trials)
         df = study.trials_dataframe(attrs=('number', 'value', 'params', 'state'))
         logger.info("%s", str(df))
-        logger.info("study.best_params : %s", study.best_params)
-        logger.info("study.best_value : %s", study.best_value)
-        logger.info("study.best_trial : %s", study.best_trial) # for all, study.trials
+        logger.info("[study.best_params] : %s", study.best_params)
+        logger.info("[study.best_value] : %s", study.best_value)
+        logger.info("[study.best_trial] : %s", study.best_trial) # for all, study.trials
     elif opt.hp_search_nni:
         try:
             # get parameters from tuner
             tuner_params = nni.get_next_parameter()
-            logger.info('tuner_params:')
+            logger.info('[tuner_params] :')
             logger.info(tuner_params)
-            logger.info('opt:')
+            logger.info('[opt] :')
             logger.info(opt)
             # merge to opt
             if tuner_params:
