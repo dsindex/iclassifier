@@ -22,24 +22,22 @@ from datasets.metric import temp_seed
 from sklearn.metrics import classification_report, confusion_matrix
 
 from train import train_epoch, evaluate, save_model, set_path, prepare_datasets, prepare_model, prepare_osws
+from transformers import AdamW, get_linear_schedule_with_warmup
+from torch.nn import MSELoss, CosineSimilarity
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 fileHandler = logging.FileHandler('./train.log')
 logger.addHandler(fileHandler)
 
-# ------------------------------------------------------------------------------ #
-# base code from https://github.com/microsoft/fastformers#distilling-models
-# ------------------------------------------------------------------------------ #
-
-from transformers import AdamW, get_linear_schedule_with_warmup
-from torch.nn import MSELoss, CosineSimilarity
-
 def set_seed(args):
     random.seed(args.seed)
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
     
+# ------------------------------------------------------------------------------ #
+# base code from https://github.com/microsoft/fastformers#distilling-models
+# ------------------------------------------------------------------------------ #
 def distill(
         teacher_config,
         teacher_model,
@@ -50,6 +48,9 @@ def distill(
         student_tokenizer):
 
     args = teacher_config['opt']
+
+    teacher_layer_num = teacher_model.bert_model.config.num_hidden_layers
+    student_layer_num = student_model.bert_model.config.num_hidden_layers
 
     num_training_steps_for_epoch = len(train_loader) // args.gradient_accumulation_steps
     num_training_steps = num_training_steps_for_epoch * args.epoch
@@ -70,9 +71,6 @@ def distill(
     scheduler = get_linear_schedule_with_warmup(
         optimizer, num_warmup_steps=num_warmup_steps, num_training_steps=num_training_steps
     )
-
-    teacher_layer_num = teacher_model.bert_model.config.num_hidden_layers
-    student_layer_num = student_model.bert_model.config.num_hidden_layers
 
     # prepare loss functions
     def soft_cross_entropy(predicts, targets):
@@ -129,10 +127,10 @@ def distill(
            
             # Knowledge Distillation loss
             # 1) logits distillation
-            #'''
+            '''
             kd_loss = soft_cross_entropy(output_student, output_teacher)
-            #'''
-            #kd_loss = loss_mse_sum(output_student, output_teacher)
+            '''
+            kd_loss = loss_mse_sum(output_student, output_teacher)
 
             loss = kd_loss
             tr_cls_loss += loss.item()
@@ -228,9 +226,10 @@ def distill(
                     logs['eval_loss'] = eval_loss
                     logs['eval_acc'] = eval_acc
                     logger.info(json.dumps({**logs, **{"step": global_step}}))
+                    # measured by accuracy
                     curr_val_metric = eval_acc
                     if best_val_metric is None or curr_val_metric > best_val_metric:
-                        # save
+                        # save model
                         save_model(student_config, student_model)
                         student_tokenizer.save_pretrained(args.bert_output_dir)
                         student_model.bert_model.save_pretrained(args.bert_output_dir)
@@ -289,8 +288,7 @@ def train(opt):
     logger.info(f"distillation done: {global_step}, {tr_loss}")
     # ------------------------------------------------------------------------------------------------------- #
 
-
-    # XXX train again
+    # train again as normal
 
     model = student_model
     config = student_config
