@@ -59,7 +59,8 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
     total_examples = 0
     st_time = time.time()
     optimizer.zero_grad()
-    for local_step, (x,y) in tqdm(enumerate(train_loader), total=len(train_loader)):
+    epoch_iterator = tqdm(train_loader, total=len(train_loader), desc=f"{Epoch {epoch_i}")
+    for local_step, (x,y) in enumerate(epoch_iterator):
         global_step = (len(train_loader) * epoch_i) + local_step
         x = to_device(x, opt.device)
         y = to_device(y, opt.device)
@@ -78,6 +79,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
                 loss = loss / opt.gradient_accumulation_steps
         # back-propagation - begin
         scaler.scale(loss).backward()
+        epoch_iterator.set_description(f"Epoch {epoch_i} loss: {loss:.3f}")
         if (local_step + 1) % opt.gradient_accumulation_steps == 0:
             scaler.unscale_(optimizer)
             torch.nn.utils.clip_grad_norm_(model.parameters(), opt.max_grad_norm)
