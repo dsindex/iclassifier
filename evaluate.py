@@ -75,6 +75,7 @@ def load_model(config, checkpoint):
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path)
     model.load_state_dict(checkpoint)
     model = model.to(opt.device)
+    logger.info("[model] :\n{}".format(model.__str__()))
     logger.info("[Model loaded]")
     return model
 

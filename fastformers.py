@@ -356,6 +356,8 @@ def prune_rewire(config, model, eval_loader, use_tqdm=True):
             head_importance[layer_num],
             args.target_num_heads,
             head_size)
+        print('query_weight = ', query_weight.shape)
+        print('query_bias = ', query_bias.shape)
         layers._modules[str(layer_num)].attention.self.query.weight = torch.nn.Parameter(query_weight)
         layers._modules[str(layer_num)].attention.self.query.bias = torch.nn.Parameter(query_bias)
         key_weight, key_bias = sort_by_importance(key_weight,
@@ -363,6 +365,8 @@ def prune_rewire(config, model, eval_loader, use_tqdm=True):
             head_importance[layer_num],
             args.target_num_heads,
             head_size)
+        print('key_weight = ', key_weight.shape)
+        print('key_bias = ', key_bias.shape)
         layers._modules[str(layer_num)].attention.self.key.weight = torch.nn.Parameter(key_weight)
         layers._modules[str(layer_num)].attention.self.key.bias = torch.nn.Parameter(key_bias)
         value_weight, value_bias = sort_by_importance(value_weight,
@@ -370,6 +374,8 @@ def prune_rewire(config, model, eval_loader, use_tqdm=True):
             head_importance[layer_num],
             args.target_num_heads,
             head_size)
+        print('value_weight = ', value_weight.shape)
+        print('value_bias = ', value_bias.shape)
         layers._modules[str(layer_num)].attention.self.value.weight = torch.nn.Parameter(value_weight)
         layers._modules[str(layer_num)].attention.self.value.bias = torch.nn.Parameter(value_bias)
 
@@ -381,6 +387,7 @@ def prune_rewire(config, model, eval_loader, use_tqdm=True):
             args.target_num_heads,
             head_size)
         weight_sorted = weight_sorted.transpose(0, 1)
+        print('attention.output.dense.weight = ', weight_sorted.shape)
         layers._modules[str(layer_num)].attention.output.dense.weight = torch.nn.Parameter(weight_sorted)
 
         weight_sorted, bias_sorted = sort_by_importance(
@@ -400,10 +407,10 @@ def prune_rewire(config, model, eval_loader, use_tqdm=True):
             args.target_ffn_dim,
             1)
         weight_sorted = weight_sorted.transpose(0, 1)
+        print('output.dense.weight = ', weight_sorted.shape)
         layers._modules[str(layer_num)].output.dense.weight = torch.nn.Parameter(weight_sorted)
 
     # set bert model's config for pruned model
-    bert_model.config.hidden_act = 'relu'    # use ReLU activation for the pruned models.
     bert_model.config.num_attention_heads = min([num_heads, args.target_num_heads])
     bert_model.config.intermediate_size = layers._modules['0'].intermediate.dense.weight.size(0)
 
@@ -476,14 +483,12 @@ def train(opt):
 
         prune_rewire(config, model, valid_loader, use_tqdm=True)
 
-        '''
         logger.info("[pruned model] :\n{}".format(model.__str__()))
         eval_loss, eval_acc = evaluate(model, config, valid_loader)
         logs['eval_loss'] = eval_loss
         logs['eval_acc'] = eval_acc
         logger.info("[after pruning] :")
         logger.info(json.dumps({**logs}))
-        '''
 
         # save pruned model to '--save_path_pruned', '--bert_output_dir_pruned'
         save_model(config, model, save_path=opt.save_path_pruned)

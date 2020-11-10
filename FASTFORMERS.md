@@ -35,8 +35,8 @@ INFO:__main__:[Elapsed Time] : 10948.646068572998ms, 5.960442338671003ms on aver
 # tokenizer should be same as teacher's 
 $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8
 
-* --state_loss_ratio > 0 : teacher's hidden_size == student's
-* --att_loss_ratio > 0   : teacher's num_attention_heads == student's
+* `--state_loss_ratio` > 0 : teacher's hidden_size == student's
+* `--att_loss_ratio` > 0   : teacher's num_attention_heads == student's
 
 $ python fastformers.py --do_distill --teacher_config=configs/config-bert-cls.json --data_dir=data/sst2 --teacher_bert_model_name_or_path=./bert-checkpoint-teacher --teacher_model_path=pytorch-model-teacher.pt --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8 --bert_output_dir=bert-checkpoint --save_path=pytorch-model.pt --lr=5e-5 --epoch=5 --batch_size=64
 
@@ -57,8 +57,35 @@ INFO:__main__:[Elapsed Time] : 11032.879114151001ms, 6.007225172860282ms on aver
 - structured pruning
 ```
 # after distillation, we have 'pytorch-model.pt', 'bert-checkpoint'
-$ python fastformers.py --do_prune --config=configs/config-bert-cls.json --data_dir=data/sst2 --model_path=./pytorch-model.pt --bert_output_dir=./bert-checkpoint --save_path_pruned=./pytorch-model-pruned.pt --bert_output_dir_pruned=./bert-checkpoint-pruned --target_num_heads=4 --target_ffn_dim=1024
 
+* hidden_size should be dividable by target_num_heads.
+
+* validation by `num_attention_heads` == `target_num_heads`
+$ python fastformers.py --do_prune --config=configs/config-bert-cls.json --data_dir=data/sst2 --model_path=./pytorch-model.pt --bert_output_dir=./bert-checkpoint --save_path_pruned=./pytorch-model-pruned.pt --bert_output_dir_pruned=./bert-checkpoint-pruned --target_num_heads=8 --target_ffn_dim=2048
+...
+INFO:__main__:[before pruning] :
+INFO:__main__:{"eval_loss": 0.4245558728318696, "eval_acc": 0.8841743119266054}
+...
+INFO:__main__:[after pruning] :
+INFO:__main__:{"eval_loss": 0.4245558597079111, "eval_acc": 0.8841743119266054}
+
+** evaluation
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint-pruned/ --model_path=pytorch-model-pruned.pt
+INFO:__main__:[Accuracy] : 0.9033,  1645/ 1821
+INFO:__main__:[Elapsed Time] : 10544.021606445312ms, 5.739573069981167ms on average
+
+* `--taget_ffn_dim=1024`
+$ python fastformers.py --do_prune --config=configs/config-bert-cls.json --data_dir=data/sst2 --model_path=./pytorch-model.pt --bert_output_dir=./bert-checkpoint --save_path_pruned=./pytorch-model-pruned.pt --bert_output_dir_pruned=./bert-checkpoint-pruned --target_num_heads=8 --target_ffn_dim=1024
+...
+INFO:__main__:[after pruning] :
+INFO:__main__:{"eval_loss": 0.4294150034222034, "eval_acc": 0.8795871559633027}
+
+** evaluation
+INFO:__main__:[Accuracy] : 0.8825,  1607/ 1821
+INFO:__main__:[Elapsed Time] : 10670.073509216309ms, 5.80617294206724ms on average
+
+* `--target_num_heads=4`
+(not working)
 
 ```
 
