@@ -38,7 +38,7 @@ $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst
 * --state_loss_ratio > 0 : teacher's hidden_size == student's
 * --att_loss_ratio > 0   : teacher's num_attention_heads == student's
 
-$ python fastformers.py --teacher_config=configs/config-bert-cls.json --data_dir=data/sst2 --teacher_bert_model_name_or_path=./bert-checkpoint-teacher --teacher_model_path=pytorch-model-teacher.pt --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8 --bert_output_dir=bert-checkpoint --save_path=pytorch-model.pt --lr=5e-5 --epoch=5 --batch_size=64
+$ python fastformers.py --do_distill --teacher_config=configs/config-bert-cls.json --data_dir=data/sst2 --teacher_bert_model_name_or_path=./bert-checkpoint-teacher --teacher_model_path=pytorch-model-teacher.pt --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8 --bert_output_dir=bert-checkpoint --save_path=pytorch-model.pt --lr=5e-5 --epoch=5 --batch_size=64
 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --model_path=pytorch-model.pt
 
@@ -54,8 +54,10 @@ INFO:__main__:[Elapsed Time] : 11032.879114151001ms, 6.007225172860282ms on aver
 
 ```
 
-- structured prunning
+- structured pruning
 ```
+# after distillation, we have 'pytorch-model.pt', 'bert-checkpoint'
+$ python fastformers.py --do_prune --config=configs/config-bert-cls.json --data_dir=data/sst2 --model_path=./pytorch-model.pt --bert_output_dir=./bert-checkpoint --save_path_pruned=./pytorch-model-pruned.pt --bert_output_dir_pruned=./bert-checkpoint-pruned --target_num_heads=4 --target_ffn_dim=1024
 
 
 ```
