@@ -149,9 +149,10 @@ def evaluate(model, config, val_loader):
     cur_acc  = correct / total_examples
     return cur_loss, cur_acc
 
-def save_model(config, model):
+def save_model(config, model, save_path=None):
     opt = config['opt']
     checkpoint_path = opt.save_path
+    if save_path: checkpoint_path = opt.save_path
     with open(checkpoint_path, 'wb') as f:
         checkpoint = model.state_dict()
         torch.save(checkpoint,f)
@@ -248,7 +249,7 @@ def prepare_model(config, bert_model_name_or_path=None):
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path, feature_based=opt.bert_use_feature_based)
     model.to(opt.device)
-    print(model)
+    logger.info("[model] :\n{}".format(model.__str__()))
     logger.info("[model prepared]")
     return model
 
