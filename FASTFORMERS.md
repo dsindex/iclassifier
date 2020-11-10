@@ -13,6 +13,8 @@ INFO:__main__:[Accuracy] : 0.9292,  1692/ 1821
 INFO:__main__:[Elapsed Time] : 26472.151517868042ms, 14.481851556798913ms on average
 
 * bert-large-uncased
+INFO:__main__:[Accuracy] : 0.9423,  1716/ 1821
+INFO:__main__:[Elapsed Time] : 44632.673501968384ms, 24.440080385941727ms on average
 
 ```
 
@@ -40,13 +42,20 @@ $ python fastformers.py --teacher_config=configs/config-bert-cls.json --data_dir
 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --model_path=pytorch-model.pt
 
-* bert-base-uncased
+* from bert-base-uncased
 
 ** loss: mse, best model: eval_acc 
 INFO:__main__:[Accuracy] : 0.8929,  1626/ 1821
 INFO:__main__:[Elapsed Time] : 10915.554285049438ms, 5.940870531312712ms on average
 
-* bert-large-uncased
+* from bert-large-uncased
+INFO:__main__:[Accuracy] : 0.9033,  1645/ 1821
+INFO:__main__:[Elapsed Time] : 11032.879114151001ms, 6.007225172860282ms on average
+
+```
+
+- structured prunning
+```
 
 
 ```

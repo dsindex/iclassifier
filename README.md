@@ -290,7 +290,7 @@ INFO:__main__:[Elapsed Time] : 12742.885112762451ms, 18.07960045013646ms on aver
 | DistilFromBERT, GloVe, DenseNet-CNN     | 88.52        | 3.6788  / -                 |                                |                          | augmented, from large    |
 | DistilFromBERT, GloVe, DenseNet-DSA     | 88.14        | 8.4647  / -                 |                                |                          | augmented, from large    |
 | DistilFromBERT, BERT-small, CLS         | 89.29        | 5.9408  / -                 |                                |                          | fastformers, from base   |
-| DistilFromBERT, BERT-small, CLS         | -            | -       / -                 |                                |                          | fastformers, from large  |
+| DistilFromBERT, BERT-small, CLS         | 90.33        | 6.0072  / -                 |                                |                          | fastformers, from large  |
 | DistilFromRoBERTa, GloVe, CNN           | 86.55        | 1.8483  / -                 |                                |                          | augmented, from large    |
 | DistilFromRoBERTa, GloVe, DenseNet-CNN  | 88.80        | 3.9580  / -                 |                                |                          | augmented, from large    |
 | DistilFromRoBERTa, GloVe, DenseNet-DSA  | 88.25        | 8.5627  / -                 |                                |                          | augmented, from large    |
@@ -298,7 +298,6 @@ INFO:__main__:[Elapsed Time] : 12742.885112762451ms, 18.07960045013646ms on aver
 | DistilFromELECTRA, GloVe, DenseNet-CNN  | 89.79        | 3.6406  / -                 |                                |                          | augmented, from large    |
 | DistilFromELECTRA, GloVe, DenseNet-DSA  | 88.58        | 8.3708  / -                 |                                |                          | augmented, from large    |
 | DistilFromELECTRA, DistilBERT, CLS      | 93.52        | 7.4879  / -                 |                                |                          | augmented, from large    |
-| DistilFromELECTRA, BERT-small, CLS      | -            | -       / -                 |                                |                          | fastformers, from large  |
 | BERT-tiny, CNN                          | 79.08        | 4.8604  / -                 |                                |                          |               |
 | BERT-tiny, CLS                          | 80.83        | 3.8461  / -                 |                                |                          |               |
 | BERT-mini, CNN                          | 83.36        | 7.0983  / -                 |                                |                          |               |
