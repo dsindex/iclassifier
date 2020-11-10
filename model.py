@@ -522,7 +522,7 @@ class TextBertCNN(BaseModel):
         self.layernorm_fc_hidden = nn.LayerNorm(fc_hidden_size)
         self.fc = nn.Linear(fc_hidden_size, label_size)
 
-    def _compute_bert_embedding(self, x):
+    def _compute_bert_embedding(self, x, head_mask=None):
         # x[0], x[1], x[2] : [batch_size, seq_size]
         params = {
             'input_ids': x[0],
@@ -533,6 +533,8 @@ class TextBertCNN(BaseModel):
         }
         if self.bert_model.config.model_type not in ['bart', 'distilbert']:
             params['token_type_ids'] = None if self.bert_model.config.model_type in ['roberta'] else x[2] # RoBERTa don't use segment_ids
+        if head_mask is not None:
+            params['head_mask'] = head_mask
         if self.bert_feature_based:
             # feature-based
             with torch.no_grad():
@@ -544,11 +546,11 @@ class TextBertCNN(BaseModel):
         # embedded : [batch_size, seq_size, bert_hidden_size]
         return embedded, bert_outputs
 
-    def forward(self, x, return_bert_outputs=False):
+    def forward(self, x, return_bert_outputs=False, head_mask=None):
         # x[0], x[1], x[2] : [batch_size, seq_size]
 
         # 1. bert embedding
-        embedded, bert_outputs = self._compute_bert_embedding(x)
+        embedded, bert_outputs = self._compute_bert_embedding(x, head_mask=head_mask)
         # embedded : [batch_size, seq_size, bert_hidden_size]
         embedded = self.dropout(embedded)
 
@@ -592,7 +594,7 @@ class TextBertCLS(BaseModel):
         label_size = len(self.labels)
         self.fc = nn.Linear(self.bert_hidden_size, label_size)
 
-    def _compute_bert_embedding(self, x):
+    def _compute_bert_embedding(self, x, head_mask=None):
         params = {
             'input_ids': x[0],
             'attention_mask': x[1],
@@ -602,6 +604,8 @@ class TextBertCLS(BaseModel):
         }
         if self.bert_model.config.model_type not in ['bart', 'distilbert']:
             params['token_type_ids'] = None if self.bert_model.config.model_type in ['roberta'] else x[2] # RoBERTa don't use segment_ids
+        if head_mask is not None:
+            params['head_mask'] = head_mask
         if self.bert_feature_based:
             # feature-based
             with torch.no_grad():
@@ -615,10 +619,10 @@ class TextBertCLS(BaseModel):
         embedded = pooled
         return embedded, bert_outputs
 
-    def forward(self, x, return_bert_outputs=False):
+    def forward(self, x, return_bert_outputs=False, head_mask=None):
         # x[0], x[1], x[2] : [batch_size, seq_size]
         # 1. bert embedding
-        embedded, bert_outputs = self._compute_bert_embedding(x)
+        embedded, bert_outputs = self._compute_bert_embedding(x, head_mask=head_mask)
         # embedded : [batch_size, bert_hidden_size]
         embedded = self.dropout(embedded)
 
