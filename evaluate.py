@@ -473,7 +473,7 @@ def main():
                         help="Set this flag to generate augmented.raw.inference(augmented.txt) for training.")
     # for BERT
     parser.add_argument('--bert_output_dir', type=str, default='bert-checkpoint',
-                        help="The output directory where the model predictions and checkpoints will be written.")
+                        help="The checkpoint directory of fine-tuned BERT model.")
     # for ONNX
     parser.add_argument('--convert_onnx', action='store_true',
                         help="Set this flag to convert to ONNX.")
