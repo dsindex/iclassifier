@@ -566,7 +566,9 @@ class TextBertCNN(BaseModel):
         fc_hidden_out = self.dropout(fc_hidden_out)
         fc_out = self.fc(fc_hidden_out)
         # fc_out : [batch_size, label_size]
-        if self.config['opt'].augmented: return fc_out
+        if self.config['opt'].augmented:
+            if return_bert_outputs: return fc_out, bert_outputs
+            return fc_out
         output = torch.softmax(fc_out, dim=-1)
         # output : [batch_size, label_size]
         if return_bert_outputs: return output, bert_outputs
@@ -628,7 +630,9 @@ class TextBertCLS(BaseModel):
 
         # 2. fully connected
         fc_out = self.fc(embedded)
-        if self.config['opt'].augmented: return fc_out
+        if self.config['opt'].augmented:
+            if return_bert_outputs: return fc_out, bert_outputs
+            return fc_out
         output = torch.softmax(fc_out, dim=-1)
         # output : [batch_size, label_size]
         if return_bert_outputs: return output, bert_outputs
