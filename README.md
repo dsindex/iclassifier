@@ -63,20 +63,20 @@
 
 ### experiments summary
 
-|                          | Accuracy (%) | GPU / CPU           | ONNX                         | CONDA                       | Dynamic                     | Inference         | Inference+Dynamic | Inference+ONNX                 | Etc            |
-| ------------------------ | ------------ | ------------------- | ---------------------------- | --------------------------- | --------------------------- | ----------------- | ----------------- | ------------------------------ | -------------- |    
-| GloVe, GNB               | 80.43        | 1.2929  / -         | -        / -       / -       | -       / -                 |                             | -                 |                   | -                              |                |
-| GloVe, CNN               | 97.86        | 1.7939  / -         | 7.5656   / 1.8689  / 1.7735  | 4.6868  / 2.7592            |                             | 1.9398            |                   | 0.3848  / -       / FAILED     | threads=14     |
-| GloVe, Densenet-CNN      | 97.57        | 3.6094  / -         | 19.1212  / 3.0717  / 3.0917  | 7.6969  / 6.5887            |                             | 4.9481            |                   | 0.8658  / -       / FAILED     | threads=14     |
-| GloVe, Densenet-DSA      | 97.43        | 7.5007  / -         | -        / 4.4936  / 4.9337  |         / 9.7873            |                             | 7.2086            |                   | 1.5420  / -       / FAILED     | threads=14     |
-| BERT-small, CLS          | 98.00        | 5.9837  / -         | -        / -       / 12.0953 | -       / -       / 17.4995 | -       / -       / 15.2820 | -       / 7.4538  | -       / 7.2436  | -       / 3.5445  / **2.4141** | threads=14     |
-| DistilBERT, CLS          | 97.71        | 9.3075  / -         | -        / 32.4263 / 31.1101 | -       / 37.7777           | -       / 29.3939           | 14.9494           | 10.4040           | 8.9942  / 10.1848 / 4.8818     | threads=14     |
-| SqueezeBERT, CLS         | -            | 18.0796 / -         | -        / -       / -       | -       / -       / 24.0667 | -       / -       / 23.8565 | -       / 20.3999 | -       / 20.0118 | -       / 11.9890 / FAILED     | threads=14     |
-| BERT-base(uncased), CNN  | 97.57        | 12.1273 / -         |                              | -       / 81.8787           | -       / -                 | 34.7878           | 30.5454           |                                | threads=14     |
-| BERT-base(uncased), CLS  | 97.43        | 12.7714 / 100.929   | 174.2222 / 46.4263 / 43.5078 | 69.4343 / 62.5959           | 66.9494 / 49.4747           | 30.7979           | 24.5353           | 16.9756                        | threads=14     |
-| BERT-base(uncased), CLS  | 97.00        | 9.2660  / 73.1010   | 113.2424 / 31.5400 / 26.9472 | 47.2323 / 42.8950           | 44.8080 / 33.4623           | 16.7419           | 13.5703           | 11.7487                        | del 8,9,19,11, threads=14 |
-| BERT-large, CNN          | **98.00**    | 24.277  / -         |                              |                             |                             |                   |                   |                                |                |
-| BERT-large, CLS          | 97.86        | 23.542  / -         |                              |                             |                             |                   |                   |                                |                |
+|                      | Accuracy (%) | GPU / CPU           | ONNX                         | CONDA                       | Dynamic                     | Inference         | Inference+Dynamic | Inference+ONNX                 | Etc            |
+| -------------------- | ------------ | ------------------- | ---------------------------- | --------------------------- | --------------------------- | ----------------- | ----------------- | ------------------------------ | -------------- |    
+| GloVe, GNB           | 80.43        | 1.2929  / -         | -        / -       / -       | -       / -                 |                             | -                 |                   | -                              |                |
+| GloVe, CNN           | 97.86        | 1.7939  / -         | 7.5656   / 1.8689  / 1.7735  | 4.6868  / 2.7592            |                             | 1.9398            |                   | 0.3848  / -       / FAILED     | threads=14     |
+| GloVe, Densenet-CNN  | 97.57        | 3.6094  / -         | 19.1212  / 3.0717  / 3.0917  | 7.6969  / 6.5887            |                             | 4.9481            |                   | 0.8658  / -       / FAILED     | threads=14     |
+| GloVe, Densenet-DSA  | 97.43        | 7.5007  / -         | -        / 4.4936  / 4.9337  |         / 9.7873            |                             | 7.2086            |                   | 1.5420  / -       / FAILED     | threads=14     |
+| BERT-small, CLS      | 98.00        | 5.9837  / -         | -        / -       / 12.0953 | -       / -       / 17.4995 | -       / -       / 15.2820 | -       / 7.4538  | -       / 7.2436  | -       / 3.5445  / **2.4141** | threads=14     |
+| DistilBERT, CLS      | 97.71        | 9.3075  / -         | -        / 32.4263 / 31.1101 | -       / 37.7777           | -       / 29.3939           | 14.9494           | 10.4040           | 8.9942  / 10.1848 / 4.8818     | threads=14     |
+| SqueezeBERT, CLS     | -            | 18.0796 / -         | -        / -       / -       | -       / -       / 24.0667 | -       / -       / 23.8565 | -       / 20.3999 | -       / 20.0118 | -       / 11.9890 / FAILED     | threads=14     |
+| BERT-base, CNN       | 97.57        | 12.1273 / -         |                              | -       / 81.8787           | -       / -                 | 34.7878           | 30.5454           |                                | threads=14     |
+| BERT-base, CLS       | 97.43        | 12.7714 / 100.929   | 174.2222 / 46.4263 / 43.5078 | 69.4343 / 62.5959           | 66.9494 / 49.4747           | 30.7979           | 24.5353           | 16.9756                        | threads=14     |
+| BERT-base, CLS       | 97.00        | 9.2660  / 73.1010   | 113.2424 / 31.5400 / 26.9472 | 47.2323 / 42.8950           | 44.8080 / 33.4623           | 16.7419           | 13.5703           | 11.7487                        | del 8,9,19,11, threads=14 |
+| BERT-large, CNN      | **98.00**    | 24.277  / -         |                              |                             |                             |                   |                   |                                |                |
+| BERT-large, CLS      | 97.86        | 23.542  / -         |                              |                             |                             |                   |                   |                                |                |
 
 ```
 * GPU / CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)  [Tesla V100 1 GPU, Intel(R) Xeon(R) Gold 5120 CPU @ 2.20GHz, 2 CPU, 14CORES/1CPU, HyperThreading]
@@ -290,18 +290,19 @@ INFO:__main__:[Elapsed Time] : 4279.639005661011ms, 5.983798800619887ms on avera
 | GloVe, CNN                              | 82.81        | 1.7670  / 3.9191  / 4.5757  |       - / 4.3131               |              - / 4.8686  | threads=14    |
 | GloVe, DenseNet-CNN                     | 86.38        | 3.6203  / 7.1414            |                                |                          | threads=14    |
 | GloVe, DenseNet-DSA                     | 85.34        | 6.2450  / -                 |                                |                          |               |
-| DistilFromBERT, GloVe, CNN              | 86.16        | 1.7900  / -                 |                                |                          | augmented, from large    |
-| DistilFromBERT, GloVe, DenseNet-CNN     | 88.52        | 3.6788  / -                 |                                |                          | augmented, from large    |
-| DistilFromBERT, GloVe, DenseNet-DSA     | 88.14        | 8.4647  / -                 |                                |                          | augmented, from large    |
-| DistilFromBERT, BERT-small, CLS         | 89.29        | 5.9408  / -                 |                                |                          | fastformers, from base   |
-| DistilFromBERT, BERT-small, CLS         | 90.33        | 6.0072  / -                 |                                |                          | fastformers, from large  |
-| DistilFromRoBERTa, GloVe, CNN           | 86.55        | 1.8483  / -                 |                                |                          | augmented, from large    |
-| DistilFromRoBERTa, GloVe, DenseNet-CNN  | 88.80        | 3.9580  / -                 |                                |                          | augmented, from large    |
-| DistilFromRoBERTa, GloVe, DenseNet-DSA  | 88.25        | 8.5627  / -                 |                                |                          | augmented, from large    |
-| DistilFromELECTRA, GloVe, CNN           | 86.55        | 1.7466  / -                 |                                |                          | augmented, from large    |
-| DistilFromELECTRA, GloVe, DenseNet-CNN  | 89.79        | 3.6406  / -                 |                                |                          | augmented, from large    |
-| DistilFromELECTRA, GloVe, DenseNet-DSA  | 88.58        | 8.3708  / -                 |                                |                          | augmented, from large    |
-| DistilFromELECTRA, DistilBERT, CLS      | 93.52        | 7.4879  / -                 |                                |                          | augmented, from large    |
+| DistilFromBERT, GloVe, CNN              | 86.16        | 1.7900  / -                 |                                |                          | augmented, from large             |
+| DistilFromBERT, GloVe, DenseNet-CNN     | 88.52        | 3.6788  / -                 |                                |                          | augmented, from large             |
+| DistilFromBERT, GloVe, DenseNet-DSA     | 88.14        | 8.4647  / -                 |                                |                          | augmented, from large             |
+| DistilFromBERT, BERT-small, CLS         | 89.29        | 5.9408  / -                 |                                |                          | fastformers, from base            |
+| DistilFromBERT, BERT-small, CLS         | -            | -       / -                 |                                |                          | fastformers, augmented, from base |
+| DistilFromBERT, BERT-small, CLS         | 90.33        | 6.0072  / -                 |                                |                          | fastformers, from large           |
+| DistilFromRoBERTa, GloVe, CNN           | 86.55        | 1.8483  / -                 |                                |                          | augmented, from large             |
+| DistilFromRoBERTa, GloVe, DenseNet-CNN  | 88.80        | 3.9580  / -                 |                                |                          | augmented, from large             |
+| DistilFromRoBERTa, GloVe, DenseNet-DSA  | 88.25        | 8.5627  / -                 |                                |                          | augmented, from large             |
+| DistilFromELECTRA, GloVe, CNN           | 86.55        | 1.7466  / -                 |                                |                          | augmented, from large             |
+| DistilFromELECTRA, GloVe, DenseNet-CNN  | 89.79        | 3.6406  / -                 |                                |                          | augmented, from large             |
+| DistilFromELECTRA, GloVe, DenseNet-DSA  | 88.58        | 8.3708  / -                 |                                |                          | augmented, from large             |
+| DistilFromELECTRA, DistilBERT, CLS      | 93.52        | 7.4879  / -                 |                                |                          | augmented, from large             |
 | BERT-tiny, CNN                          | 79.08        | 4.8604  / -                 |                                |                          |               |
 | BERT-tiny, CLS                          | 80.83        | 3.8461  / -                 |                                |                          |               |
 | BERT-mini, CNN                          | 83.36        | 7.0983  / -                 |                                |                          |               |
@@ -312,12 +313,12 @@ INFO:__main__:[Elapsed Time] : 4279.639005661011ms, 5.983798800619887ms on avera
 | BERT-medium, CLS                        | 89.24        | 9.5857  / -                 |                                |                          |               |
 | DistilBERT, CNN                         | 89.90        | 9.9362  / -                 |       - / 44.1111              |              - / 35.7070 | threads=14    |
 | **DistilBERT, CLS**                     | 91.10        | 8.9719  / -                 |       - / 37.2626              |              - / 29.4646 | threads=14    |
-| BERT-base(uncased), CNN                 | 92.04        | 14.1576 / -                 |                                |                          |               |
-| BERT-base(uncased), CLS                 | 92.42        | 12.7549 / 100.555 / 62.5050 | 68.5757 / 66.1818              | 66.4545(92.42) / 50.8080 | threads=14    |
-| BERT-base(uncased), CNN                 | 90.55        | 10.6824 / -                 |                                |                          | del 8,9,10,11 |
-| BERT-base(uncased), CLS                 | 91.49        | 8.7747  / 66.6363 / 42.8989 | 46.6262 / 45.6060              | 44.7676(90.61) / 34.3131 | del 8,9,10,11, threads=14         |
-| BERT-base(uncased), CLS                 | 90.23        | 7.0241  / 51.7676           | 43.5959                        |                          | del 6,7,8,9,10,11, threads=14     |
-| BERT-base(uncased), CLS                 | 86.66        | 5.8868  / 36.2121           | 26.5555                        |                          | del 4,5,6,7,8,9,10,11, threads=14 |
+| BERT-base, CNN                          | 92.04        | 14.1576 / -                 |                                |                          |               |
+| BERT-base, CLS                          | 92.42        | 12.7549 / 100.555 / 62.5050 | 68.5757 / 66.1818              | 66.4545(92.42) / 50.8080 | threads=14    |
+| BERT-base, CNN                          | 90.55        | 10.6824 / -                 |                                |                          | del 8,9,10,11 |
+| BERT-base, CLS                          | 91.49        | 8.7747  / 66.6363 / 42.8989 | 46.6262 / 45.6060              | 44.7676(90.61) / 34.3131 | del 8,9,10,11, threads=14         |
+| BERT-base, CLS                          | 90.23        | 7.0241  / 51.7676           | 43.5959                        |                          | del 6,7,8,9,10,11, threads=14     |
+| BERT-base, CLS                          | 86.66        | 5.8868  / 36.2121           | 26.5555                        |                          | del 4,5,6,7,8,9,10,11, threads=14 |
 | BERT-large, CNN                         | 93.08        | 28.6490 / -                 |                                |                          |               |
 | BERT-large, CLS                         | 94.12        | 22.3767 / -                 |                                |                          |               |
 | BERT-large, CNN                         | 88.47        | 14.7813 / -                 |                                |                          | del 12~23     |

@@ -1,4 +1,4 @@
-### conda pytorch
+## conda pytorch
 
 - install [anaconda](https://www.anaconda.com/distribution/#download-section)
 
@@ -20,7 +20,7 @@
 
 
 
-### dynamic quantization
+## dynamic quantization
 
 - [(EXPERIMENTAL) DYNAMIC QUANTIZATION ON BERT](https://pytorch.org/tutorials/intermediate/dynamic_quantization_bert_tutorial.html)
   - install pytorch>=1.3.0
@@ -28,7 +28,7 @@
 
 
 
-### conversion pytorch model to onnx format, inference with onnxruntime
+## conversion pytorch model to onnx format, inference with onnxruntime
 
 - requirements
 ```
@@ -130,7 +130,7 @@ $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=ber
 
 ```
 
-### hyper-parameter search
+## hyper-parameter search
 
 - optuna
 ```
@@ -255,7 +255,7 @@ $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data
 
 
 
-### references
+## references
 
 - train
   - [apex](https://github.com/NVIDIA/apex)
