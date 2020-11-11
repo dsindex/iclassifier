@@ -1,6 +1,6 @@
-### fastformers
+## fastformers
 
-- train teacher model
+### train teacher model
 ```
 $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased
 
@@ -18,7 +18,7 @@ INFO:__main__:[Elapsed Time] : 44632.673501968384ms, 24.440080385941727ms on ave
 
 ```
 
-- check student model's performance (stand-alone)
+### check student model's performance (stand-alone)
 ```
 $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8
 
@@ -30,7 +30,7 @@ INFO:__main__:[Elapsed Time] : 10948.646068572998ms, 5.960442338671003ms on aver
 
 ```
 
-- distillation
+### distillation
 ```
 # tokenizer should be same as teacher's 
 $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8
@@ -54,7 +54,7 @@ INFO:__main__:[Elapsed Time] : 11032.879114151001ms, 6.007225172860282ms on aver
 
 ```
 
-- structured pruning
+### structured pruning
 ```
 # after distillation, we have 'pytorch-model.pt', 'bert-checkpoint'
 
@@ -62,12 +62,6 @@ INFO:__main__:[Elapsed Time] : 11032.879114151001ms, 6.007225172860282ms on aver
 
 * validation by `num_attention_heads` == `target_num_heads`
 $ python fastformers.py --do_prune --config=configs/config-bert-cls.json --data_dir=data/sst2 --model_path=./pytorch-model.pt --bert_output_dir=./bert-checkpoint --save_path_pruned=./pytorch-model-pruned.pt --bert_output_dir_pruned=./bert-checkpoint-pruned --target_num_heads=8 --target_ffn_dim=2048
-...
-INFO:__main__:[before pruning] :
-INFO:__main__:{"eval_loss": 0.4245558728318696, "eval_acc": 0.8841743119266054}
-...
-INFO:__main__:[after pruning] :
-INFO:__main__:{"eval_loss": 0.4245558597079111, "eval_acc": 0.8841743119266054}
 
 ** evaluation
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint-pruned/ --model_path=pytorch-model-pruned.pt
@@ -76,18 +70,64 @@ INFO:__main__:[Elapsed Time] : 10544.021606445312ms, 5.739573069981167ms on aver
 
 * `--taget_ffn_dim=1024`
 $ python fastformers.py --do_prune --config=configs/config-bert-cls.json --data_dir=data/sst2 --model_path=./pytorch-model.pt --bert_output_dir=./bert-checkpoint --save_path_pruned=./pytorch-model-pruned.pt --bert_output_dir_pruned=./bert-checkpoint-pruned --target_num_heads=8 --target_ffn_dim=1024
-...
-INFO:__main__:[after pruning] :
-INFO:__main__:{"eval_loss": 0.4294150034222034, "eval_acc": 0.8795871559633027}
 
 ** evaluation
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint-pruned/ --model_path=pytorch-model-pruned.pt
 INFO:__main__:[Accuracy] : 0.8825,  1607/ 1821
 INFO:__main__:[Elapsed Time] : 10670.073509216309ms, 5.80617294206724ms on average
 
 * `--target_num_heads=4`
-(not working)
+$ python fastformers.py --do_prune --config=configs/config-bert-cls.json --data_dir=data/sst2 --model_path=./pytorch-model.pt --bert_output_dir=./bert-checkpoint --save_path_pruned=./pytorch-model-pruned.pt --bert_output_dir_pruned=./bert-checkpoint-pruned --target_num_heads=4 --target_ffn_dim=1024
+
+** modify transformers sources for `attention_head_size`, config.json
+$ vi /usr/local/lib/python3.6/dist-packages/transformers/modeling_bert.py
+    class BertSelfAttention(nn.Module):
+        ...
+        # XXX fastformers
+        #self.attention_head_size = int(config.hidden_size / config.num_attention_heads)
+        self.attention_head_size = config.attention_head_size
+        ...
+    class BertSelfOutput(nn.Module):
+        ...
+        # XXX fastformers
+        #self.dense = nn.Linear(config.hidden_size, config.hidden_size)
+        self.dense = nn.Linear(config.num_attention_heads * config.attention_head_size, config.hidden_size)
+        ...
+$ vi /usr/local/lib/python3.6/dist-packages/transformers/configuration_bert.py
+        ...
+        attention_head_size=64,
+        **kwargs
+    ):
+        ...
+        self.attention_head_size = attention_head_size
+
+$ vi bert-checkpoint-pruned/config.json
+    ...
+    "attention_head_size": 64,
+    ...
+
+** evaluation
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint-pruned/ --model_path=pytorch-model-pruned.pt
+INFO:__main__:[Accuracy] : 0.8578,  1562/ 1821
+INFO:__main__:[Elapsed Time] : 11202.386617660522ms, 6.099004797883087ms on average
+```
+
+### quantization
+```
+* convert to onnx
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint-pruned/ --model_path=pytorch-model-pruned.pt --convert_onnx --onnx_path=pytorch-model-pruned.onnx --device=cpu
+
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint-pruned/ --model_path=pytorch-model-pruned.pt --enable_ort --onnx_path=pytorch-model-pruned.onnx --device=cpu --num_threads=14 --enable_inference
+INFO:__main__:[Elapsed Time(total_duration_time, average)] : 6220.6597328186035ms, 3.41794490814209ms
+
+* onnx quatization
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint-pruned/ --model_path=pytorch-model-pruned.pt --convert_onnx --quantize_onnx --onnx_path=pytorch-model-pruned.onnx-quantized --device=cpu
+
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint-pruned/ --model_path=pytorch-model-pruned.pt --enable_ort --onnx_path=pytorch-model-pruned.onnx-quantized --device=cpu --num_threads=14 --enable_inference
+INFO:__main__:[Elapsed Time(total_duration_time, average)] : 6181.872844696045ms, 3.396633431151673ms
 
 ```
+
 
 - references
   - [FastFormers: Highly Efficient Transformer Models for Natural Language Understanding](https://arxiv.org/pdf/2010.13382.pdf)

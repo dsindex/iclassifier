@@ -483,13 +483,6 @@ def train(opt):
 
         prune_rewire(config, model, valid_loader, use_tqdm=True)
 
-        logger.info("[pruned model] :\n{}".format(model.__str__()))
-        eval_loss, eval_acc = evaluate(model, config, valid_loader)
-        logs['eval_loss'] = eval_loss
-        logs['eval_acc'] = eval_acc
-        logger.info("[after pruning] :")
-        logger.info(json.dumps({**logs}))
-
         # save pruned model to '--save_path_pruned', '--bert_output_dir_pruned'
         save_model(config, model, save_path=opt.save_path_pruned)
         model.bert_tokenizer.save_pretrained(opt.bert_output_dir_pruned)

@@ -799,6 +799,11 @@ INFO:__main__:[Elapsed Time] : 47163ms, 25.685714285714287ms on average
 # Optimization
 
 - [OPTIMIZATION.md](/OPTIMIZATION.md)
+  - Dynamic Quantization
+  - Conversion to ONNX
+  - Inference with ONNXRUNTIME
+  - Quantization
+  - Hyper-arameter Search
 
 <br>
 
@@ -814,6 +819,7 @@ INFO:__main__:[Elapsed Time] : 47163ms, 25.685714285714287ms on average
 - [FASTFORMERS.md](/FASTFORMERS.md)
   - Knowledge Distillation
   - Structured Prunning
+  - Quantization
 
 <br>
 
