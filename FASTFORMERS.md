@@ -59,10 +59,11 @@ $ cp -rf data/sst2/augmented.raw data/sst2/augmented.txt
 $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8 --augmented --augmented_filename=augmented.txt
 
 ** distillation
-$ python fastformers.py --do_distill --teacher_config=configs/config-bert-cls.json --data_dir=data/sst2 --teacher_bert_model_name_or_path=./bert-checkpoint-teacher --teacher_model_path=pytorch-model-teacher.pt --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8 --bert_output_dir=bert-checkpoint --save_path=pytorch-model.pt --lr=5e-5 --epoch=5 --batch_size=64 --augmented
+$ python fastformers.py --do_distill --teacher_config=configs/config-bert-cls.json --data_dir=data/sst2 --teacher_bert_model_name_or_path=./bert-checkpoint-teacher --teacher_model_path=pytorch-model-teacher.pt --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8 --bert_output_dir=bert-checkpoint --save_path=pytorch-model.pt --lr=5e-5 --epoch=3 --batch_size=64 --augmented
 
 ** evaluation
-
+INFO:__main__:[Accuracy] : 0.9149,  1666/ 1821
+INFO:__main__:[Elapsed Time] : 10863.076448440552ms, 5.911464874561016ms on average
 
 * from bert-large-uncased
 INFO:__main__:[Accuracy] : 0.9033,  1645/ 1821
