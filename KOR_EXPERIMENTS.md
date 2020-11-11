@@ -1,6 +1,4 @@
-# 한국어 데이터 대상 실험
-
-### Data
+## Data
 
 - [NSMC(Naver Sentiment Movie Corpus)](https://github.com/e9t/nsmc)
   - setup
@@ -46,9 +44,9 @@
     - './data/korean_bias_speech_morph'
       - `형태소분석기 tokenizer`를 적용한 데이터.
 
-### Pretrained models
+## Pretrained models
 
-##### GloVe
+#### GloVe
 
 - [Standford GloVe code](https://github.com/stanfordnlp/GloVe)를 이용해서 학습.
   - 한국어 문서 데이터 준비.
@@ -56,7 +54,7 @@
   - 형태소분석기 tokenizer를 적용해서 형태소 단위로 변경한 데이터를 이용해서 학습 진행.
   - ex) `kor.glove.300k.300d.txt` (inhouse)
 
-##### BERT
+#### BERT
 
 - [google original tf code](https://github.com/google-research/bert)를 이용해서 학습.
   - 한국어 문서 데이터 준비.
@@ -72,14 +70,14 @@
 - KcBERT
   - [kcbert-base, kcbert-large](https://github.com/Beomi/KcBERT)
 
-##### DistilBERT
+#### DistilBERT
 
 - [training-distilbert](https://github.com/dsindex/transformers_examples#training-distilbert)
   - 한국어 문서 데이터 준비.
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - ex) `kor-distil-bpe-bert.v1`, `kor-distil-dha-bert.v1` (inhouse)
 
-##### ELECTRA
+#### ELECTRA
 
 - KoELECTRA
   - [koelectra-base-discriminator](https://huggingface.co/monologg/koelectra-base-discriminator)
@@ -91,14 +89,16 @@
   - [train.sh](https://github.com/dsindex/electra/blob/master/train.sh)
   - ex) `kor-electra-base-bpe-30k-512-1m` (inhouse)
 
-##### RoBERTa
+#### RoBERTa
 
 - [huggingface](https://huggingface.co/blog/how-to-train)를 이용한 학습
   - 한국어 문서 데이터 준비.
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - ex) `kor-roberta-base-bbpe` (inhouse)
 
-### NMSC data
+
+
+## NMSC data
 
 - iclassifier
 
@@ -180,7 +180,7 @@
 | ETRIBERT          | **89.99**    |
 
 
-##### GloVe
+#### GloVe
 
 <details><summary><b>enc_class=gnb</b></summary>
 <p>
@@ -309,7 +309,7 @@ $ python evaluate.py --config=configs/config-densenet-dsa-iee.json --data_dir=./
 </details>
 
 
-##### BERT(kor-bert-base-bpe.v1, kor-bert-large-bpe, kcbert-base, kcbert-large)
+#### BERT(kor-bert-base-bpe.v1, kor-bert-large-bpe, kcbert-base, kcbert-large)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -408,7 +408,7 @@ INFO:__main__:[Elapsed Time] : 1124363.7096881866ms, 22.48598377803238ms on aver
 </details>
 
 
-##### BERT(kor-bert-base-dha.v1)
+#### BERT(kor-bert-base-dha.v1)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -490,7 +490,7 @@ INFO:__main__:[Elapsed Time] : 376557.34610557556ms, 7.529911446336728ms on aver
 </details>
 
 
-##### BERT(kor-bert-base-dha_bpe, kor-bert-large-dha_bpe)
+#### BERT(kor-bert-base-dha_bpe, kor-bert-large-dha_bpe)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -537,7 +537,7 @@ INFO:__main__:[Elapsed Time] : 1146557.6510429382ms, 22.930594570818535ms on ave
 </details>
 
 
-##### BERT(kor-bert-base-dha.v2)
+#### BERT(kor-bert-base-dha.v2)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -575,7 +575,7 @@ INFO:__main__:[Elapsed Time] : 639463ms, 12.787603008240659ms on average
 </details>
 
 
-##### ELECTRA(koelectra-base-discriminator)
+#### ELECTRA(koelectra-base-discriminator)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -622,7 +622,7 @@ INFO:__main__:[Elapsed Time] : 713403ms, 14.266721337707017ms on average
 </p>
 </details>
 
-##### ELECTRA(kor-electra-base-bpe-30k-512-1m)
+#### ELECTRA(kor-electra-base-bpe-30k-512-1m)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -671,7 +671,7 @@ INFO:__main__:[Elapsed Time] : 623643.3551311493ms, 12.471171410257925ms on aver
 </p>
 </details>
 
-##### RoBERTa(kor-roberta-base-bbpe)
+#### RoBERTa(kor-roberta-base-bbpe)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -709,7 +709,7 @@ INFO:__main__:[Elapsed Time] : 692853.7294864655ms, 13.855628213249918ms on aver
 </details>
 
 
-### korean-hate-speech data
+## korean-hate-speech data
 
 - iclassifier
 
@@ -758,7 +758,7 @@ INFO:__main__:[Elapsed Time] : 692853.7294864655ms, 13.855628213249918ms on aver
 | KoELECTRA-base    | **82.28**         | **67.25**         | with title, bias/hate joint training |
 
 
-##### GloVe
+#### GloVe
 
 <details><summary><b>enc_class=glove-gnb</b></summary>
 <p>
@@ -908,7 +908,7 @@ INFO:__main__:[Elapsed Time] : 3581.5823078155518ms, 7.451774718913626ms on aver
 
 
 
-##### BERT(kor-bert-base-dha.v1, kor-bert-large-dha_bpe)
+#### BERT(kor-bert-base-dha.v1, kor-bert-large-dha_bpe)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -1001,7 +1001,7 @@ INFO:__main__:[Elapsed Time] : 5894.242525100708ms, 12.312091665065035ms on aver
 </p>
 </details>
 
-##### BERT(kor-bert-base-bpe.v1)
+#### BERT(kor-bert-base-bpe.v1)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
