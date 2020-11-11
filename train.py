@@ -456,7 +456,7 @@ def get_params():
     parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'MSELoss' | 'KLDivLoss', default 'CrossEntropyLoss'")
     # for Augmentation
     parser.add_argument('--augmented', action='store_true',
-                        help="Set this flag to use augmented.txt for training.")
+                        help="Set this flag to use augmented.txt.ids or augmented.txt.fs for training.")
     # for BERT
     parser.add_argument('--bert_model_name_or_path', type=str, default='embeddings/bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
