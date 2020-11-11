@@ -16,6 +16,10 @@ INFO:__main__:[Elapsed Time] : 26472.151517868042ms, 14.481851556798913ms on ave
 INFO:__main__:[Accuracy] : 0.9423,  1716/ 1821
 INFO:__main__:[Elapsed Time] : 44632.673501968384ms, 24.440080385941727ms on average
 
+* bert-base-uncased, --data_dir=data/snips
+INFO:__main__:[Accuracy] : 0.9743,   682/  700
+INFO:__main__:[Elapsed Time] : 10138.131618499756ms, 14.333598774049074ms on average
+
 ```
 
 ### check student model's performance (stand-alone)
@@ -28,6 +32,9 @@ $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 
 INFO:__main__:[Accuracy] : 0.8825,  1607/ 1821
 INFO:__main__:[Elapsed Time] : 10948.646068572998ms, 5.960442338671003ms on average
 
+* --data_dir=data/snips
+INFO:__main__:[Accuracy] : 0.9671,   677/  700
+INFO:__main__:[Elapsed Time] : 4359.285593032837ms, 6.094431501942473ms on average
 ```
 
 ### distillation
@@ -43,14 +50,16 @@ $ python fastformers.py --do_distill --teacher_config=configs/config-bert-cls.js
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --model_path=pytorch-model.pt
 
 * from bert-base-uncased
-
-** loss: mse, best model: eval_acc 
 INFO:__main__:[Accuracy] : 0.8929,  1626/ 1821
 INFO:__main__:[Elapsed Time] : 10915.554285049438ms, 5.940870531312712ms on average
 
 * from bert-large-uncased
 INFO:__main__:[Accuracy] : 0.9033,  1645/ 1821
 INFO:__main__:[Elapsed Time] : 11032.879114151001ms, 6.007225172860282ms on average
+
+* from bert-base-uncased, --data-dir=data/snips
+INFO:__main__:[Accuracy] : 0.9743,   682/  700
+INFO:__main__:[Elapsed Time] : 4355.75795173645ms, 6.093895657038654ms on average
 
 ```
 
@@ -110,6 +119,11 @@ $ vi bert-checkpoint-pruned/config.json
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint-pruned/ --model_path=pytorch-model-pruned.pt
 INFO:__main__:[Accuracy] : 0.8578,  1562/ 1821
 INFO:__main__:[Elapsed Time] : 11202.386617660522ms, 6.099004797883087ms on average
+
+*** --data_dir=data/snips
+INFO:__main__:[Accuracy] : 0.9443,   661/  700
+INFO:__main__:[Elapsed Time] : 4355.768442153931ms, 6.091671440222744ms on average
+
 ```
 
 ### quantization
@@ -120,12 +134,17 @@ $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint-pruned/ --model_path=pytorch-model-pruned.pt --enable_ort --onnx_path=pytorch-model-pruned.onnx --device=cpu --num_threads=14 --enable_inference
 INFO:__main__:[Elapsed Time(total_duration_time, average)] : 6220.6597328186035ms, 3.41794490814209ms
 
+** --data_dir=data/snips
+INFO:__main__:[Elapsed Time(total_duration_time, average)] : 1647.9876041412354ms, 2.35763605742666ms
+
 * onnx quatization
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint-pruned/ --model_path=pytorch-model-pruned.pt --convert_onnx --quantize_onnx --onnx_path=pytorch-model-pruned.onnx-quantized --device=cpu
 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint-pruned/ --model_path=pytorch-model-pruned.pt --enable_ort --onnx_path=pytorch-model-pruned.onnx-quantized --device=cpu --num_threads=14 --enable_inference
 INFO:__main__:[Elapsed Time(total_duration_time, average)] : 6181.872844696045ms, 3.396633431151673ms
 
+** --data_dir=data/snips
+INFO:__main__:[Elapsed Time(total_duration_time, average)] : 1707.0832252502441ms, 2.44217914914198ms
 ```
 
 
