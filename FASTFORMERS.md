@@ -1,6 +1,4 @@
-## fastformers
-
-### train teacher model
+## train teacher model
 ```
 $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased
 
@@ -22,7 +20,7 @@ INFO:__main__:[Elapsed Time] : 10138.131618499756ms, 14.333598774049074ms on ave
 
 ```
 
-### check student model's performance (stand-alone)
+## check student model's performance (stand-alone)
 ```
 $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8
 
@@ -37,7 +35,7 @@ INFO:__main__:[Accuracy] : 0.9671,   677/  700
 INFO:__main__:[Elapsed Time] : 4359.285593032837ms, 6.094431501942473ms on average
 ```
 
-### distillation
+## distillation
 ```
 # tokenizer should be same as teacher's 
 $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8
@@ -76,7 +74,7 @@ INFO:__main__:[Elapsed Time] : 4355.75795173645ms, 6.093895657038654ms on averag
 
 ```
 
-### structured pruning
+## structured pruning
 ```
 # after distillation, we have 'pytorch-model.pt', 'bert-checkpoint'
 
@@ -132,7 +130,7 @@ INFO:__main__:[Elapsed Time] : 4355.768442153931ms, 6.091671440222744ms on avera
 
 ```
 
-### quantization
+## quantization
 ```
 * convert to onnx
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint-pruned/ --model_path=pytorch-model-pruned.pt --convert_onnx --onnx_path=pytorch-model-pruned.onnx --device=cpu
@@ -154,32 +152,16 @@ INFO:__main__:[Elapsed Time(total_duration_time, average)] : 1707.0832252502441m
 ```
 
 
-- references
-  - [FastFormers: Highly Efficient Transformer Models for Natural Language Understanding](https://arxiv.org/pdf/2010.13382.pdf)
-    - [microsoft/fastformers](https://github.com/microsoft/fastformers)
-    - [FastFormers: 233x Faster Transformers inference on CPU](https://parthplc.medium.com/fastformers-233x-faster-transformers-inference-on-cpu-4c0b7a720e1)
-  - methods
-    - Knowledge Distillation
-      - large teacher model -> distillation -> TinyBERT, distilroberta, distilbert
-      - [distill()](https://github.com/microsoft/fastformers/blob/main/examples/fastformers/run_superglue.py?fbclid=IwAR3mdQKsUtso0L5zKwLkrr4v9i81xnULjZFOihtf0MTncwIrV0L1eXgDT9U#L344)
-    - Structured pruning : heads, hidden states
-      - [prune_rewire()](https://github.com/microsoft/fastformers/blob/37bedfd7f10fedaaff5c2b419bb61fbd10485fc0/examples/fastformers/run_superglue.py#L743)
-      ```
-        elif args.do_prune:
-            result, preds, ex_ids = prune_rewire(args, args.task_name, model, tokenizer, prefix="")
-            result = dict((f"{k}", v) for k, v in result.items())
-            print("before pruning" + str(result))
-            # evaluate after pruning
-            config = config_class.from_pretrained(
-                args.output_dir + "/pruned_" + str(int(args.target_num_heads)) + "_" + str(int(args.target_ffn_dim)) + "/",
-                num_labels=num_labels,
-                finetuning_task=args.task_name,
-            )
-            model = model_class.from_pretrained(args.output_dir + "/pruned_" + str(int(args.target_num_heads)) + "_" + str(int(args.target_ffn_dim)) + "/")
-            model.to(args.device)
-            result, preds, ex_ids = evaluate(args, args.task_name, model, tokenizer, prefix="")
-            result = dict((f"{k}", v) for k, v in result.items())
-            print("after pruning" + str(result))
-      ```
-    - Model Quantization
-      - onnxruntime 8 bits quantization
+## references
+
+- [FastFormers: Highly Efficient Transformer Models for Natural Language Understanding](https://arxiv.org/pdf/2010.13382.pdf)
+  - [microsoft/fastformers](https://github.com/microsoft/fastformers)
+  - [FastFormers: 233x Faster Transformers inference on CPU](https://parthplc.medium.com/fastformers-233x-faster-transformers-inference-on-cpu-4c0b7a720e1)
+- methods
+  - Knowledge Distillation
+    - large teacher model -> distillation -> TinyBERT, distilroberta, distilbert
+    - [distill()](https://github.com/microsoft/fastformers/blob/main/examples/fastformers/run_superglue.py?fbclid=IwAR3mdQKsUtso0L5zKwLkrr4v9i81xnULjZFOihtf0MTncwIrV0L1eXgDT9U#L344)
+  - Structured pruning : heads, hidden states
+    - [prune_rewire()](https://github.com/microsoft/fastformers/blob/37bedfd7f10fedaaff5c2b419bb61fbd10485fc0/examples/fastformers/run_superglue.py#L743)
+  - Model Quantization
+    - onnxruntime 8 bits quantization

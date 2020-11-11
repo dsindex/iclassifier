@@ -1,6 +1,4 @@
-### Distilling BERT(RoBERTa, ELECTRA) based model to GloVe based small model
-
-#### SST-2 data
+## SST-2 data
 
 - prerequisites
 ```
@@ -144,7 +142,7 @@ $ python -m spacy download en_core_web_sm
     ```
 
 
-#### NSMC data
+## NSMC data
 
 - prerequisites
   - install khaiii(https://github.com/kakao/khaiii) or other morphological analyzer which was used to generate `data/clova_sentiments_morph` dataset.
@@ -268,7 +266,7 @@ $ python -m spacy download en_core_web_sm
     ```
 
 
-#### korean-hate-speech data
+## korean-hate-speech data
 
 - prerequisites
   - install khaiii(https://github.com/kakao/khaiii) or other morphological analyzer which was used to generate `data/korean_hate_speech_morph` dataset.
@@ -407,7 +405,7 @@ $ python -m spacy download en_core_web_sm
     ```
 
 
-#### References
+## References
 
 - [Distilling Task-Specific Knowledge from BERT into Simple Neural Networks](https://arxiv.org/abs/1903.12136)
   - [distil-bilstm](https://github.com/dsindex/distil-bilstm)
