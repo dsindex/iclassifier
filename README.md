@@ -594,6 +594,12 @@ INFO:__main__:[Elapsed Time] : 10800ms, 5.886813186813187ms on average
 INFO:__main__:[Accuracy] : 0.8671,  1579/ 1821
 INFO:__main__:[Elapsed Time] : 22229ms, 12.156043956043955ms on average
 
+** fine-tune bert-base-uncased using amazon_us_reviews data(https://huggingface.co/nlp/viewer/?dataset=amazon_us_reviewss&config=Video_v1_00). and then apply to sst2 data.
+$ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/amazon_us_reviews_Video_v1_00 --bert_model_name_or_path=./embeddings/bert-base-uncased
+$ python train.py --config=configs/config-bert-cls.json --data_dir=data/amazon_us_reviews_Video_v1_00 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_output_dir=bert-checkpoint-amazon --lr=1e-5 --epoch=3 --batch_size=64 
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/amazon_us_reviews_Video_v1_00 --bert_output_dir=bert-checkpoint-amazon
+
+
 ```
 
 </p>
