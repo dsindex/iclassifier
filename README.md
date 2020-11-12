@@ -322,6 +322,7 @@ INFO:__main__:[Elapsed Time] : 4279.639005661011ms, 5.983798800619887ms on avera
 | BERT-base, CLS                          | 86.66        | 5.8868  / 36.2121           | 26.5555                        |                          | del 4,5,6,7,8,9,10,11, threads=14 |
 | BERT-large, CNN                         | 93.08        | 28.6490 / -                 |                                |                          |               |
 | BERT-large, CLS                         | 94.12        | 22.3767 / -                 |                                |                          |               |
+| BERT-large, CLS                         | 92.64        | 25.2430 / -                 |                                |                          | fintuned using amazon reviews     |
 | BERT-large, CNN                         | 88.47        | 14.7813 / -                 |                                |                          | del 12~23     |
 | BERT-large, CLS                         | 86.71        | 12.1560 / -                 |                                |                          | del 12~23     |
 | SqueezeBERT, CNN                        | 90.61        | 19.2879 / -                 |       - / -       / 69.5269    |                          | threads=14    |
@@ -614,6 +615,15 @@ $ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --b
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 INFO:__main__:[Accuracy] : 0.9336,  1700/ 1821
 INFO:__main__:[Elapsed Time] : 28667.39320755005ms, 15.675509106981885ms on average
+
+** fine-tune bert-large-uncased using amazon_us_reviews
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/amazon_us_reviews_Video_v1_00 --bert_output_dir=bert-checkpoint-amazon
+INFO:__main__:[Accuracy] : 0.9719,  8973/ 9232
+INFO:__main__:[Elapsed Time] : 232065.03987312317ms, 25.12068054216575ms on average
+
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+INFO:__main__:[Accuracy] : 0.9264,  1687/ 1821
+INFO:__main__:[Elapsed Time] : 46093.640089035034ms, 25.243094727233217ms on average
 
 ```
 
