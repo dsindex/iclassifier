@@ -315,6 +315,7 @@ INFO:__main__:[Elapsed Time] : 4279.639005661011ms, 5.983798800619887ms on avera
 | **DistilBERT, CLS**                     | 91.10        | 8.9719  / -                 |       - / 37.2626              |              - / 29.4646 | threads=14    |
 | BERT-base, CNN                          | 92.04        | 14.1576 / -                 |                                |                          |               |
 | BERT-base, CLS                          | 92.42        | 12.7549 / 100.555 / 62.5050 | 68.5757 / 66.1818              | 66.4545(92.42) / 50.8080 | threads=14    |
+| BERT-base, CLS                          | 93.36        | 15.6755 / -                 |       - / -                    |              - / -       | fintuned using amazon reviews     |
 | BERT-base, CNN                          | 90.55        | 10.6824 / -                 |                                |                          | del 8,9,10,11 |
 | BERT-base, CLS                          | 91.49        | 8.7747  / 66.6363 / 42.8989 | 46.6262 / 45.6060              | 44.7676(90.61) / 34.3131 | del 8,9,10,11, threads=14         |
 | BERT-base, CLS                          | 90.23        | 7.0241  / 51.7676           | 43.5959                        |                          | del 6,7,8,9,10,11, threads=14     |
@@ -595,10 +596,24 @@ INFO:__main__:[Accuracy] : 0.8671,  1579/ 1821
 INFO:__main__:[Elapsed Time] : 22229ms, 12.156043956043955ms on average
 
 ** fine-tune bert-base-uncased using amazon_us_reviews data(https://huggingface.co/nlp/viewer/?dataset=amazon_us_reviewss&config=Video_v1_00). and then apply to sst2 data.
+$ cd etc
+$ python download_datasets.py --dataset_name=amazon_us_reviews --task_name=Video_v1_00 --split=train > ../data/amazon_us_reviews_Video_v1_00/total.txt
+$ cd ../data/amazon_us_reviews_Video_v1_00
+$ python ../etc/split.py --data_path=total.txt --base_path=data
+
+# we have 'data.train', 'data.valid', 'data.test'.
 $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/amazon_us_reviews_Video_v1_00 --bert_model_name_or_path=./embeddings/bert-base-uncased
 $ python train.py --config=configs/config-bert-cls.json --data_dir=data/amazon_us_reviews_Video_v1_00 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_output_dir=bert-checkpoint-amazon --lr=1e-5 --epoch=3 --batch_size=64 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/amazon_us_reviews_Video_v1_00 --bert_output_dir=bert-checkpoint-amazon
+INFO:__main__:[Accuracy] : 0.9659,  8917/ 9232
+INFO:__main__:[Elapsed Time] : 131532.05513954163ms, 14.232453539549446ms on average
 
+# apply `bert-checkpoint-amazon` to sst2 data
+$ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./bert-checkpoint-amazon
+$ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./bert-checkpoint-amazon --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+INFO:__main__:[Accuracy] : 0.9336,  1700/ 1821
+INFO:__main__:[Elapsed Time] : 28667.39320755005ms, 15.675509106981885ms on average
 
 ```
 
