@@ -316,6 +316,7 @@ INFO:__main__:[Elapsed Time] : 4279.639005661011ms, 5.983798800619887ms on avera
 | BERT-base, CNN                          | 92.04        | 14.1576 / -                 |                                |                          |               |
 | BERT-base, CLS                          | 92.42        | 12.7549 / 100.555 / 62.5050 | 68.5757 / 66.1818              | 66.4545(92.42) / 50.8080 | threads=14    |
 | BERT-base, CLS                          | 93.36        | 15.6755 / -                 |       - / -                    |              - / -       | fintuned using amazon reviews     |
+| BERT-base, CLS                          | 93.25        | 14.2535 / -                 |       - / -                    |              - / -       | augmented                         |
 | BERT-base, CNN                          | 90.55        | 10.6824 / -                 |                                |                          | del 8,9,10,11 |
 | BERT-base, CLS                          | 91.49        | 8.7747  / 66.6363 / 42.8989 | 46.6262 / 45.6060              | 44.7676(90.61) / 34.3131 | del 8,9,10,11, threads=14         |
 | BERT-base, CLS                          | 90.23        | 7.0241  / 51.7676           | 43.5959                        |                          | del 6,7,8,9,10,11, threads=14     |
@@ -627,6 +628,15 @@ INFO:__main__:[Elapsed Time] : 46093.640089035034ms, 25.243094727233217ms on ave
 *** --epoch=10 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
 INFO:__main__:[Accuracy] : 0.9357,  1704/ 1821
 INFO:__main__:[Elapsed Time] : 49913.90776634216ms, 27.320906356140807ms on average
+
+** augment train.txt
+$ python augment_data.py --input data/sst2/train.txt --output data/sst2/augmented.raw --lower --parallel --preserve_label --n_iter=5 --max_ng=3
+$ cp -rf data/sst2/augmented.raw data/sst2/augmented.txt
+$ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --augmented --augmented_filename=augmented.txt
+$ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64 --augmented
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+INFO:__main__:[Accuracy] : 0.9325,  1698/ 1821
+INFO:__main__:[Elapsed Time] : 26077.781438827515ms, 14.253564195318537ms on average
 
 ```
 
