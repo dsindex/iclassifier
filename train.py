@@ -79,7 +79,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
                 loss = loss / opt.gradient_accumulation_steps
         # back-propagation - begin
         scaler.scale(loss).backward()
-        epoch_iterator.set_description(f"Epoch {epoch_i} loss: {loss:.3f}")
+        epoch_iterator.set_description(f"Epoch {epoch_i}, local_step: {local_step}, loss: {loss:.3f}")
         if (local_step + 1) % opt.gradient_accumulation_steps == 0:
             scaler.unscale_(optimizer)
             torch.nn.utils.clip_grad_norm_(model.parameters(), opt.max_grad_norm)
@@ -90,6 +90,11 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
             if opt.eval_and_save_steps > 0 and global_step % opt.eval_and_save_steps == 0:
                 # evaluate
                 eval_loss, eval_acc = evaluate(model, config, val_loader)
+                curr_lr = scheduler.get_last_lr()[0] if scheduler else optimizer.param_groups[0]['lr']
+                if writer:
+                    writer.add_scalar('Loss/valid', eval_loss, global_step)
+                    writer.add_scalar('Acc/valid', eval_acc, global_step)
+                    writer.add_scalar('LearningRate/train', curr_lr, global_step)
                 if opt.measure == 'loss': eval_measure = eval_loss 
                 else: eval_measure = eval_acc
                 if opt.measure == 'loss': is_best = eval_measure < best_eval_measure
