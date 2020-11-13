@@ -507,7 +507,6 @@ def get_params():
     parser.add_argument('--att_loss_ratio', type=float, default=0.0)
     parser.add_argument('--warmup_ratio', default=0, type=float, help="Linear warmup over warmup_steps as a float.")
     parser.add_argument('--logging_steps', type=int, default=500, help="Log every X updates steps.")
-    parser.add_argument('--eval_and_save_steps', type=int, default=500, help="Save checkpoint every X updates steps.")
     parser.add_argument('--log_evaluate_during_training', action="store_true", help="Run evaluation during training at each logging step.")
   
     # For prune
@@ -529,6 +528,7 @@ def get_params():
     parser.add_argument('--batch_size', type=int, default=128)
     parser.add_argument('--eval_batch_size', type=int, default=128)
     parser.add_argument('--epoch', type=int, default=64)
+    parser.add_argument('--eval_and_save_steps', type=int, default=500, help="Save checkpoint every X updates steps.")
     parser.add_argument('--lr', type=float, default=2e-4)
     parser.add_argument('--lr_decay_rate', type=float, default=1.0, help="Disjoint with --use_transformers_optimizer")
     parser.add_argument('--lr_decay_steps', type=float, default=2, help="Number of decay epoch steps to be paitent. disjoint with --use_transformers_optimizer")

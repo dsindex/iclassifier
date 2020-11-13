@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 fileHandler = logging.FileHandler('./train.log')
 logger.addHandler(fileHandler)
 
-def train_epoch(model, config, train_loader, val_loader, epoch_i):
+def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_measure):
     optimizer = config['optimizer']
     scheduler = config['scheduler']
     writer = config['writer']
@@ -87,6 +87,23 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
             scaler.update()
             optimizer.zero_grad()
             if opt.use_transformers_optimizer: scheduler.step()
+            if opt.eval_and_save_steps > 0 and global_step % opt.eval_and_save_steps == 0:
+                eval_loss, eval_acc = evaluate(model, config, val_loader)
+                if opt.measure == 'loss': eval_measure = eval_loss 
+                else: eval_measure = eval_acc
+                if opt.measure == 'loss': is_best = eval_measure < best_eval_measure
+                else: is_best = eval_measure > best_eval_measure
+                if is_best:
+                    best_eval_measure = eval_measure
+                    if opt.save_path and not opt.hp_search_optuna and not opt.hp_search_nni:
+                        logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
+                        save_model(config, model)
+                        # save finetuned bert model/config/tokenizer
+                        if config['emb_class'] not in ['glove']:
+                            if not os.path.exists(opt.bert_output_dir):
+                                os.makedirs(opt.bert_output_dir)
+                            model.bert_tokenizer.save_pretrained(opt.bert_output_dir)
+                            model.bert_model.save_pretrained(opt.bert_output_dir)
         # back-propagation - end
         cur_examples = y.size(0)
         total_examples += cur_examples
@@ -94,7 +111,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
         if writer: writer.add_scalar('Loss/train', loss.item(), global_step)
     cur_loss = total_loss / total_examples
 
-    # evaluate
+    # evaluate at the end of epoch
     eval_loss, eval_acc = evaluate(model, config, val_loader)
     curr_time = time.time()
     elapsed_time = (curr_time - st_time) / 60
@@ -106,7 +123,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i):
         writer.add_scalar('Loss/valid', eval_loss, global_step)
         writer.add_scalar('Acc/valid', eval_acc, global_step)
         writer.add_scalar('LearningRate/train', curr_lr, global_step)
-    return eval_loss, eval_acc
+    return eval_loss, eval_acc, best_eval_measure
  
 def evaluate(model, config, val_loader):
     opt = config['opt']
@@ -321,7 +338,7 @@ def train(opt):
         best_eval_measure = float('inf') if opt.measure == 'loss' else -float('inf')
         for epoch_i in range(opt.epoch):
             epoch_st_time = time.time()
-            eval_loss, eval_acc = train_epoch(model, config, train_loader, valid_loader, epoch_i)
+            eval_loss, eval_acc, best_eval_measure = train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_measure)
             # for nni
             if opt.hp_search_nni:
                 nni.report_intermediate_result(eval_acc)
@@ -335,8 +352,8 @@ def train(opt):
             else: is_best = eval_measure > best_eval_measure
             if is_best:
                 best_eval_measure = eval_measure
-                if opt.save_path:
-                    logger.info("[Best model saved] : {:10.6f}".format(best_eval_measure))
+                if opt.save_path and not opt.hp_search_optuna and not opt.hp_search_nni:
+                    logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
                     save_model(config, model)
                     # save finetuned bert model/config/tokenizer
                     if config['emb_class'] not in ['glove']:
@@ -406,7 +423,7 @@ def hp_search_optuna(trial: optuna.Trial):
         early_stopping = EarlyStopping(logger, patience=opt.patience, measure=opt.measure, verbose=1)
         best_eval_measure = float('inf') if opt.measure == 'loss' else -float('inf')
         for epoch in range(epochs):
-            eval_loss, eval_acc = train_epoch(model, config, train_loader, valid_loader, epoch)
+            eval_loss, eval_acc, best_eval_measure = train_epoch(model, config, train_loader, valid_loader, epoch, best_eval_measure)
 
             if opt.measure == 'loss': eval_measure = eval_loss 
             else: eval_measure = eval_acc
@@ -435,6 +452,7 @@ def get_params():
     parser.add_argument('--batch_size', type=int, default=128)
     parser.add_argument('--eval_batch_size', type=int, default=128)
     parser.add_argument('--epoch', type=int, default=64)
+    parser.add_argument('--eval_and_save_steps', type=int, default=500, help="Save checkpoint every X updates steps.")
     parser.add_argument('--lr', type=float, default=2e-4)
     parser.add_argument('--lr_decay_rate', type=float, default=1.0, help="Disjoint with --use_transformers_optimizer")
     parser.add_argument('--lr_decay_steps', type=float, default=2, help="Number of decay epoch steps to be paitent. disjoint with --use_transformers_optimizer")
