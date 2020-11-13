@@ -80,7 +80,8 @@
 #### ELECTRA
 
 - KoELECTRA
-  - [koelectra-base-discriminator](https://huggingface.co/monologg/koelectra-base-discriminator)
+  - [koelectra-base-v1-discriminator](https://huggingface.co/monologg/koelectra-base-v1-discriminator)
+  - [koelectra-base-v3-discriminator](https://huggingface.co/monologg/koelectra-base-v3-discriminator)
 
 - [electra](https://github.com/dsindex/electra#pretraining-electra)를 이용해서 학습.
   - 한국어 문서 데이터 준비.
@@ -137,8 +138,10 @@
 | dha-bpe BERT-large, CLS                   | 90.68        | 22.9305 / -       |         |            |
 | dha BERT(v2), CNN                         | 89.08        | 15.3276 / -       |         |            |
 | dha BERT(v2), CLS                         | 89.25        | 12.7876 / -       |         |            |
-| KoELECTRA-Base, CNN                       | 89.51        | 15.5452 / -       |         |            |
-| KoELECTRA-Base, CLS                       | 89.63        | 14.2667 / -       |         |            |
+| KoELECTRA-Base-v1, CNN                    | 89.51        | 15.5452 / -       |         |            |
+| KoELECTRA-Base-v1, CLS                    | 89.63        | 14.2667 / -       |         |            |
+| KoELECTRA-Base-v3, CNN                    | -            | -       / -       |         |            |
+| KoELECTRA-Base-v3, CLS                    | -            | -       / -       |         |            |
 | bpe ELECTRA-base(1m) , CNN                | 88.55        | 14.2144 / -       |         |            |
 | bpe ELECTRA-base(1m) , CLS                | 88.42        | 13.5920 / -       |         |            |
 | RoBERTa-base , CNN                        | 90.42        | 14.9544 / -       |         |            |
@@ -154,13 +157,13 @@
 
 |                   | Accuracy (%) | Etc        |
 | ----------------- | ------------ | ---------- |
-| KoELECTRA-Base    | **90.21**    |            |
-| KoELECTRA-Base-v2 | 89.70        | vocab from https://github.com/enlipleai/kor_pretrain_LM |
-| XML-RoBERTa       | 89.49        |            |
-| HanBert-54kN      | 90.16        |            |
-| HanBert-54kN-IP   | 88.72        |            |
-| KoBERT            | 89.63        |            |
-| DistilKoBERT      | 88.41        |            |
+| KoELECTRA-Base-v1 | 90.33        |            |
+| KoELECTRA-Base-v2 | 89.56        |            |
+| KoELECTRA-Base-v3 | **90.63**    |            |
+| XML-RoBERTa       | 89.03        |            |
+| HanBERT           | 90.06        |            |
+| KoBERT            | 89.59        |            |
+| DistilKoBERT      | 88.60        |            |
 | Bert-Multilingual | 87.07        |            |
 | FastText          | 85.50        |            |
 
@@ -575,7 +578,7 @@ INFO:__main__:[Elapsed Time] : 639463ms, 12.787603008240659ms on average
 </details>
 
 
-#### ELECTRA(koelectra-base-discriminator)
+#### ELECTRA(koelectra-base-v1-discriminator)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -584,13 +587,13 @@ INFO:__main__:[Elapsed Time] : 639463ms, 12.787603008240659ms on average
 ```
 * enc_class=cnn
 
-$ python preprocess.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/koelectra-base-discriminator --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/koelectra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64 --data_dir=./data/clova_sentiments
+$ python preprocess.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/koelectra-base-v1-discriminator --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/koelectra-base-v1-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64 --data_dir=./data/clova_sentiments
 
 * enc_class=cls
 
-$ python preprocess.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/koelectra-base-discriminator --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/koelectra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64 --data_dir=./data/clova_sentiments
+$ python preprocess.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/koelectra-base-v1-discriminator --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/koelectra-base-v1-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64 --data_dir=./data/clova_sentiments
 ```
 
 - evaluation
@@ -606,6 +609,9 @@ INFO:__main__:[Elapsed Time] : 784375ms, 15.636230898471878ms on average
 INFO:__main__:[Accuracy] : 0.8951, 44750/49997
 INFO:__main__:[Elapsed Time] : 777338ms, 15.54522361788943ms on average
 
+** --bert_model_name_or_path=./embeddings/koelectra-base-v3-discriminator --use_transformers_optimizer --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
+
+
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
@@ -616,6 +622,9 @@ INFO:__main__:[Elapsed Time] : 721693ms, 14.425894071525722ms on average
 ** --use_transformers_optimizer --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
 INFO:__main__:[Accuracy] : 0.8963, 44814/49997
 INFO:__main__:[Elapsed Time] : 713403ms, 14.266721337707017ms on average
+
+** --bert_model_name_or_path=./embeddings/koelectra-base-v3-discriminator --use_transformers_optimizer --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
+
 
 ```
 
