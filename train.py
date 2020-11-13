@@ -88,6 +88,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
             optimizer.zero_grad()
             if opt.use_transformers_optimizer: scheduler.step()
             if opt.eval_and_save_steps > 0 and global_step % opt.eval_and_save_steps == 0:
+                # evaluate
                 eval_loss, eval_acc = evaluate(model, config, val_loader)
                 if opt.measure == 'loss': eval_measure = eval_loss 
                 else: eval_measure = eval_acc
