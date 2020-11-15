@@ -141,7 +141,7 @@
 | KoELECTRA-Base-v1, CNN                    | 89.51        | 15.5452 / -       |         |            |
 | KoELECTRA-Base-v1, CLS                    | 89.63        | 14.2667 / -       |         |            |
 | KoELECTRA-Base-v3, CNN                    | -            | -       / -       |         |            |
-| KoELECTRA-Base-v3, CLS                    | -            | -       / -       |         |            |
+| KoELECTRA-Base-v3, CLS                    | 90.66        | 13.7968 / -       |         |            |
 | bpe ELECTRA-base(1m) , CNN                | 88.55        | 14.2144 / -       |         |            |
 | bpe ELECTRA-base(1m) , CLS                | 88.42        | 13.5920 / -       |         |            |
 | RoBERTa-base , CNN                        | 90.42        | 14.9544 / -       |         |            |
@@ -562,14 +562,12 @@ $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_pat
 * enc_class=cnn
 
 $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
-
 INFO:__main__:[Accuracy] : 0.8908, 44536/49997
 INFO:__main__:[Elapsed Time] : 766457ms, 15.327646211696935ms on average
 
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
-
 INFO:__main__:[Accuracy] : 0.8925, 44622/49997
 INFO:__main__:[Elapsed Time] : 639463ms, 12.787603008240659ms on average
 ```
@@ -601,7 +599,6 @@ $ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_
 * enc_class=cnn
 
 $ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
-
 INFO:__main__:[Accuracy] : 0.8937, 44684/49997
 INFO:__main__:[Elapsed Time] : 784375ms, 15.636230898471878ms on average
 
@@ -615,7 +612,6 @@ INFO:__main__:[Elapsed Time] : 777338ms, 15.54522361788943ms on average
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
-
 INFO:__main__:[Accuracy] : 0.8930, 44646/49997
 INFO:__main__:[Elapsed Time] : 721693ms, 14.425894071525722ms on average
 
@@ -624,7 +620,8 @@ INFO:__main__:[Accuracy] : 0.8963, 44814/49997
 INFO:__main__:[Elapsed Time] : 713403ms, 14.266721337707017ms on average
 
 ** --bert_model_name_or_path=./embeddings/koelectra-base-v3-discriminator --use_transformers_optimizer --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
-
+INFO:__main__:[Accuracy] : 0.9066, 45325/49997
+INFO:__main__:[Elapsed Time] : 689906.133890152ms, 13.796895782950783ms on average
 
 ```
 

@@ -54,8 +54,10 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
 
     # train one epoch
     model.train()
-    total_loss = 0.
-    final_val_loss = 0.
+    total_loss = 0
+    avg_loss = 0
+    best_eval_loss = float('inf')
+    best_eval_acc = 0
     total_examples = 0
     st_time = time.time()
     optimizer.zero_grad()
@@ -90,6 +92,8 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
             if opt.eval_and_save_steps > 0 and global_step % opt.eval_and_save_steps == 0:
                 # evaluate
                 eval_loss, eval_acc = evaluate(model, config, val_loader)
+                if best_eval_loss < eval_loss: best_eval_loss = eval_loss
+                if best_eval_acc > eval_acc: best_eval_acc = eval_acc
                 curr_lr = scheduler.get_last_lr()[0] if scheduler else optimizer.param_groups[0]['lr']
                 if writer:
                     writer.add_scalar('Loss/valid', eval_loss, global_step)
@@ -115,21 +119,40 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
         total_examples += cur_examples
         total_loss += (loss.item() * cur_examples)
         if writer: writer.add_scalar('Loss/train', loss.item(), global_step)
-    cur_loss = total_loss / total_examples
+    avg_loss = total_loss / total_examples
 
     # evaluate at the end of epoch
     eval_loss, eval_acc = evaluate(model, config, val_loader)
-    curr_time = time.time()
-    elapsed_time = (curr_time - st_time) / 60
-    st_time = curr_time
+    if best_eval_loss < eval_loss: best_eval_loss = eval_loss
+    if best_eval_acc > eval_acc: best_eval_acc = eval_acc
     curr_lr = scheduler.get_last_lr()[0] if scheduler else optimizer.param_groups[0]['lr']
-    logger.info('{:3d} epoch | {:5d}/{:5d} | train loss : {:6.3f}, valid loss {:6.3f}, valid acc {:.4f}| lr :{:7.6f} | {:5.2f} min elapsed'.\
-            format(epoch_i, local_step+1, len(train_loader), cur_loss, eval_loss, eval_acc, curr_lr, elapsed_time)) 
     if writer:
         writer.add_scalar('Loss/valid', eval_loss, global_step)
         writer.add_scalar('Acc/valid', eval_acc, global_step)
         writer.add_scalar('LearningRate/train', curr_lr, global_step)
-    return eval_loss, eval_acc, best_eval_measure
+    if opt.measure == 'loss': eval_measure = eval_loss 
+    else: eval_measure = eval_acc
+    if opt.measure == 'loss': is_best = eval_measure < best_eval_measure
+    else: is_best = eval_measure > best_eval_measure
+    if is_best:
+        best_eval_measure = eval_measure
+        if opt.save_path and not opt.hp_search_optuna and not opt.hp_search_nni:
+            logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
+            save_model(config, model)
+            # save finetuned bert model/config/tokenizer
+            if config['emb_class'] not in ['glove']:
+                if not os.path.exists(opt.bert_output_dir):
+                    os.makedirs(opt.bert_output_dir)
+                model.bert_tokenizer.save_pretrained(opt.bert_output_dir)
+                model.bert_model.save_pretrained(opt.bert_output_dir)
+
+    curr_time = time.time()
+    elapsed_time = (curr_time - st_time) / 60
+    st_time = curr_time
+    logger.info('{:3d} epoch | {:5d}/{:5d} | train loss : {:6.3f} | {:5.2f} min elapsed'.\
+            format(epoch_i, local_step+1, len(train_loader), avg_loss, elapsed_time)) 
+
+    return best_eval_loss, best_eval_acc, best_eval_measure
  
 def evaluate(model, config, val_loader):
     opt = config['opt']
@@ -358,15 +381,6 @@ def train(opt):
             else: is_best = eval_measure > best_eval_measure
             if is_best:
                 best_eval_measure = eval_measure
-                if opt.save_path and not opt.hp_search_optuna and not opt.hp_search_nni:
-                    logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
-                    save_model(config, model)
-                    # save finetuned bert model/config/tokenizer
-                    if config['emb_class'] not in ['glove']:
-                        if not os.path.exists(opt.bert_output_dir):
-                            os.makedirs(opt.bert_output_dir)
-                        model.bert_tokenizer.save_pretrained(opt.bert_output_dir)
-                        model.bert_model.save_pretrained(opt.bert_output_dir)
                 early_stopping.reset(best_eval_measure)
             early_stopping.status()
             # begin: scheduling, apply rate decay at the measure(ex, loss) getting worse for the number of deacy epoch steps.
