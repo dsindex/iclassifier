@@ -81,7 +81,6 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
                 loss = loss / opt.gradient_accumulation_steps
         # back-propagation - begin
         scaler.scale(loss).backward()
-        epoch_iterator.set_description(f"Epoch {epoch_i}, local_step: {local_step}, loss: {loss:.3f}")
         if (local_step + 1) % opt.gradient_accumulation_steps == 0:
             scaler.unscale_(optimizer)
             torch.nn.utils.clip_grad_norm_(model.parameters(), opt.max_grad_norm)
@@ -89,12 +88,13 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
             scaler.update()
             optimizer.zero_grad()
             if opt.use_transformers_optimizer: scheduler.step()
+            curr_lr = scheduler.get_last_lr()[0] if scheduler else optimizer.param_groups[0]['lr']
+            epoch_iterator.set_description(f"Epoch {epoch_i}, local_step: {local_step}, loss: {loss:.3f}, curr_lr: {curr_lr:.7f}")
             if opt.eval_and_save_steps > 0 and global_step % opt.eval_and_save_steps == 0:
                 # evaluate
                 eval_loss, eval_acc = evaluate(model, config, val_loader)
                 if best_eval_loss < eval_loss: best_eval_loss = eval_loss
                 if best_eval_acc > eval_acc: best_eval_acc = eval_acc
-                curr_lr = scheduler.get_last_lr()[0] if scheduler else optimizer.param_groups[0]['lr']
                 if writer:
                     writer.add_scalar('Loss/valid', eval_loss, global_step)
                     writer.add_scalar('Acc/valid', eval_acc, global_step)
@@ -125,7 +125,6 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
     eval_loss, eval_acc = evaluate(model, config, val_loader)
     if best_eval_loss < eval_loss: best_eval_loss = eval_loss
     if best_eval_acc > eval_acc: best_eval_acc = eval_acc
-    curr_lr = scheduler.get_last_lr()[0] if scheduler else optimizer.param_groups[0]['lr']
     if writer:
         writer.add_scalar('Loss/valid', eval_loss, global_step)
         writer.add_scalar('Acc/valid', eval_acc, global_step)
