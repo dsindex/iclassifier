@@ -93,8 +93,8 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
             if opt.eval_and_save_steps > 0 and global_step != 0 and global_step % opt.eval_and_save_steps == 0:
                 # evaluate
                 eval_loss, eval_acc = evaluate(model, config, val_loader)
-                if best_eval_loss < eval_loss: best_eval_loss = eval_loss
-                if best_eval_acc > eval_acc: best_eval_acc = eval_acc
+                if best_eval_loss > eval_loss: best_eval_loss = eval_loss
+                if best_eval_acc < eval_acc: best_eval_acc = eval_acc
                 if writer:
                     writer.add_scalar('Loss/valid', eval_loss, global_step)
                     writer.add_scalar('Acc/valid', eval_acc, global_step)
@@ -123,8 +123,8 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
 
     # evaluate at the end of epoch
     eval_loss, eval_acc = evaluate(model, config, val_loader)
-    if best_eval_loss < eval_loss: best_eval_loss = eval_loss
-    if best_eval_acc > eval_acc: best_eval_acc = eval_acc
+    if best_eval_loss > eval_loss: best_eval_loss = eval_loss
+    if best_eval_acc < eval_acc: best_eval_acc = eval_acc
     if writer:
         writer.add_scalar('Loss/valid', eval_loss, global_step)
         writer.add_scalar('Acc/valid', eval_acc, global_step)
