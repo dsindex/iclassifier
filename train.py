@@ -90,7 +90,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
             if opt.use_transformers_optimizer: scheduler.step()
             curr_lr = scheduler.get_last_lr()[0] if scheduler else optimizer.param_groups[0]['lr']
             epoch_iterator.set_description(f"Epoch {epoch_i}, local_step: {local_step}, loss: {loss:.3f}, curr_lr: {curr_lr:.7f}")
-            if opt.eval_and_save_steps > 0 and global_step % opt.eval_and_save_steps == 0:
+            if opt.eval_and_save_steps > 0 and global_step != 0 and global_step % opt.eval_and_save_steps == 0:
                 # evaluate
                 eval_loss, eval_acc = evaluate(model, config, val_loader)
                 if best_eval_loss < eval_loss: best_eval_loss = eval_loss
