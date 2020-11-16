@@ -76,6 +76,8 @@
   - 한국어 문서 데이터 준비.
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - ex) `kor-distil-bpe-bert.v1`, `kor-distil-dha-bert.v1` (inhouse)
+  - ex) `kor-distil-wp-bert.v1` (inhouse)
+    - `koelectra-base-v3-discriminator`를 distillation. 학습데이터는 동일.
 
 #### ELECTRA
 
@@ -118,6 +120,8 @@
 | bpe BERT(v1), CLS                         | 88.92        | 9.3280  / 70.3232 |         | del 8,9,10,11, threads=14 |
 | bpe DistilBERT(v1), CNN                   | 88.39        | 9.6396  / -       | 38.7144 | threads=14 |
 | bpe DistilBERT(v1), CLS                   | 88.55        | 8.2834  / -       | 31.5655 | threads=14 |
+| wp  DistilBERT(v1), CNN                   | -            | -       / -       | -       |            |
+| wp  DistilBERT(v1), CLS                   | -            | -       / -       | -       |            |
 | bpe BERT-large, CNN                       | 89.85        | 24.4099 / -       |         |            |
 | bpe BERT-large, CLS                       | 89.78        | 22.6002 / -       |         |            |
 | KcBERT-base , CNN                         | 90.10        | 14.2056 / -       |         |            |
@@ -140,7 +144,7 @@
 | dha BERT(v2), CLS                         | 89.25        | 12.7876 / -       |         |            |
 | KoELECTRA-Base-v1, CNN                    | 89.51        | 15.5452 / -       |         |            |
 | KoELECTRA-Base-v1, CLS                    | 89.63        | 14.2667 / -       |         |            |
-| KoELECTRA-Base-v3, CNN                    | -            | -       / -       |         |            |
+| KoELECTRA-Base-v3, CNN                    | 90.72        | 15.3168 / -       |         |            |
 | KoELECTRA-Base-v3, CLS                    | 90.66        | 13.7968 / -       |         |            |
 | bpe ELECTRA-base(1m) , CNN                | 88.55        | 14.2144 / -       |         |            |
 | bpe ELECTRA-base(1m) , CLS                | 88.42        | 13.5920 / -       |         |            |
@@ -351,6 +355,10 @@ INFO:__main__:[Elapsed Time] : 827306ms, 16.545303624289943ms on average
 INFO:__main__:[Accuracy] : 0.8839, 44190/49997
 INFO:__main__:[Elapsed Time] : 482054.96978759766ms, 9.639614557722052ms on average
 
+** --configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-wp-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+
+
+
 ** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 INFO:__main__:[Accuracy] : 0.8985, 44923/49997
 INFO:__main__:[Elapsed Time] : 1220545.0494289398ms, 24.40995301749384ms on average
@@ -392,6 +400,13 @@ INFO:__main__:[Elapsed Time] : 466825ms, 9.32800624049924ms on average
 ** --configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-bpe-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.8855, 44271/49997
 INFO:__main__:[Elapsed Time] : 414233.4134578705ms, 8.283499222067283ms on average
+
+** --configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-wp-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+INFO:__main__:[Accuracy] : 0.8738, 43685/49997
+INFO:__main__:[Elapsed Time] : 402539.91866111755ms, 8.049534148087988ms on average
+
+
+
 
 ** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 INFO:__main__:[Accuracy] : 0.8978, 44885/49997
@@ -607,7 +622,8 @@ INFO:__main__:[Accuracy] : 0.8951, 44750/49997
 INFO:__main__:[Elapsed Time] : 777338ms, 15.54522361788943ms on average
 
 ** --bert_model_name_or_path=./embeddings/koelectra-base-v3-discriminator --use_transformers_optimizer --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
-
+INFO:__main__:[Accuracy] : 0.9072, 45356/49997
+INFO:__main__:[Elapsed Time] : 765895.2033519745ms, 15.316871435453972ms on average
 
 * enc_class=cls
 
