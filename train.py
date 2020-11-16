@@ -53,7 +53,6 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
         criterion = torch.nn.CrossEntropyLoss().to(opt.device)
 
     # train one epoch
-    model.train()
     total_loss = 0
     avg_loss = 0
     best_eval_loss = float('inf')
@@ -63,6 +62,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
     optimizer.zero_grad()
     epoch_iterator = tqdm(train_loader, total=len(train_loader), desc=f"Epoch {epoch_i}")
     for local_step, (x,y) in enumerate(epoch_iterator):
+        model.train()
         global_step = (len(train_loader) * epoch_i) + local_step
         x = to_device(x, opt.device)
         y = to_device(y, opt.device)
@@ -155,7 +155,6 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
  
 def evaluate(model, config, val_loader):
     opt = config['opt']
-    model.eval()
     total_loss = 0.
     total_examples = 0 
     correct = 0
@@ -164,6 +163,7 @@ def evaluate(model, config, val_loader):
     ys    = None
     with torch.no_grad():
         for i, (x,y) in tqdm(enumerate(val_loader), total=len(val_loader)):
+            model.eval()
             x = to_device(x, opt.device)
             y = to_device(y, opt.device)
             logits = model(x)
