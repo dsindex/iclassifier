@@ -649,19 +649,20 @@ INFO:__main__:[Elapsed Time] : 26077.781438827515ms, 14.253564195318537ms on ave
 
 - train
 ```
+* share config-bert-*.json
 * n_ctx size should be less than 512
 
 * enc_class=cnn
 
-$ python preprocess.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2
-$ python train.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64
+$ python preprocess.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2
+$ python train.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/albert-base-v2 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64
 ```
 
 - evaluation
 ```
 * enc_class=cnn
 
-$ python evaluate.py --config=configs/config-albert-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint 
+$ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint 
 
 INFO:__main__:[Accuracy] : 0.9204,  1676/ 1821
 INFO:__main__:[Elapsed Time] : 29321ms, 16.055494505494504ms on average
@@ -672,7 +673,7 @@ INFO:__main__:[Elapsed Time] : 104769ms, 57.463186813186816ms on average
 
 * enc_class=cls
 
-$ python evaluate.py --config=configs/config-albert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.9001,  1639/ 1821
 INFO:__main__:[Elapsed Time] : 26819ms, 14.672527472527472ms on average
@@ -788,24 +789,25 @@ INFO:__main__:[Elapsed Time] : 61015ms, 33.386263736263736ms on average
 
 - train
 ```
+* share config-bert-*.json
 * n_ctx size should be less than 512
 
 * enc_class=cnn
 
-$ python preprocess.py --config=configs/config-electra-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator
-$ python train.py --config=configs/config-electra-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64
+$ python preprocess.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator
+$ python train.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64
 
 * enc_class=cls
 
-$ python preprocess.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator
-$ python train.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64
+$ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator
+$ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64
 ```
 
 - evaluation
 ```
 * enc_class=cnn
 
-$ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint 
+$ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint 
 
 INFO:__main__:[Accuracy] : 0.9539,  1737/ 1821
 INFO:__main__:[Elapsed Time] : 29602ms, 14.98021978021978ms on average
@@ -820,7 +822,7 @@ INFO:__main__:[Elapsed Time] : 52163ms, 27.286813186813188ms on average
 
 * enc_lass=cls
 
-$ python evaluate.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
 INFO:__main__:[Accuracy] : 0.9522,  1734/ 1821
 INFO:__main__:[Elapsed Time] : 25956ms, 14.008791208791209ms on average
@@ -873,7 +875,6 @@ INFO:__main__:[Elapsed Time] : 47163ms, 25.685714285714287ms on average
 - archiving and start torch server
 ```
 $ cd torchserve
-* modify for emb_class to use.
 $ ./archiver.sh -v -v
 $ ./start-torchserve.sh -v -v
 ```

@@ -145,7 +145,7 @@ function archive {
       --runtime python3
 }
 
-config_file=${PDIR}/configs/config-electra-cls.json
+config_file=${PDIR}/configs/config-bert-cls.json
 data_dir=${PDIR}/data/clova_sentiments
 model_name='electra'
 model_file=${PDIR}/pytorch-model.pt

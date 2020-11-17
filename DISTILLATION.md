@@ -28,9 +28,9 @@ $ python -m spacy download en_core_web_sm
 
   - ELECTRA-large, CLS (electra-large-discriminator)
   ```
-  $ python preprocess.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-large-discriminator 
-  $ python train.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-large-discriminator --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=15 --batch_size=64
-  $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+  $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-large-discriminator 
+  $ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-large-discriminator --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=15 --batch_size=64
+  $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
   INFO:__main__:[Accuracy] : 0.9643,  1756/ 1821
   INFO:__main__:[Elapsed Time] : 41302.36577987671ms, 22.629007140358727ms on average
   ```
@@ -60,8 +60,8 @@ $ python -m spacy download en_core_web_sm
   $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
   * from electra-large
-  $ python preprocess.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-large-discriminator --augmented --augmented_filename=augmented.raw
-  $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
+  $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-large-discriminator --augmented --augmented_filename=augmented.raw
+  $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
   $ cp -rf data/sst2/augmented.raw.pred data/sst2/augmented.txt
   ```
