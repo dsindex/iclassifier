@@ -148,8 +148,21 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
     curr_time = time.time()
     elapsed_time = (curr_time - st_time) / 60
     st_time = curr_time
-    logger.info('{:3d} epoch | {:5d}/{:5d} | train loss : {:6.3f} | {:5.2f} min elapsed'.\
-            format(epoch_i, local_step+1, len(train_loader), avg_loss, elapsed_time)) 
+    logger.info('epoch: {:3d}, \
+            local_step/epoch_step: {:5d}/{:5d}, \
+            train loss: {:6.3f}, \
+            local_best_eval_loss: {:6.3f},\
+            local_best_eval_acc: {:6.3f},\
+            best_eval_measure: {:6.3f},\
+            {:5.2f} min elapsed'.\
+            format(epoch_i,
+                local_step+1,
+                len(train_loader),
+                avg_loss,
+                local_best_eval_loss,
+                local_best_eval_acc,
+                best_eval_measure,
+                elapsed_time)) 
 
     return local_best_eval_loss, local_best_eval_acc, best_eval_measure
  
@@ -372,7 +385,7 @@ def train(opt):
             else: eval_measure = eval_acc
             # early stopping
             if early_stopping.validate(eval_measure, measure=opt.measure): break
-            if eval_measure == best_eval_measure
+            if eval_measure == best_eval_measure:
                 early_stopping.reset(best_eval_measure)
             early_stopping.status()
         # for nni
@@ -426,7 +439,7 @@ def hp_search_optuna(trial: optuna.Trial):
             else: eval_measure = eval_acc
             # early stopping
             if early_stopping.validate(eval_measure, measure=opt.measure): break
-            if eval_measure == best_eval_measure
+            if eval_measure == best_eval_measure:
                 early_stopping.reset(best_eval_measure)
             early_stopping.status()
 
