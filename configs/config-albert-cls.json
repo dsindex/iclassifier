@@ -1,6 +1,0 @@
-{
-    "emb_class": "albert",
-    "enc_class": "cls",
-    "n_ctx": 100,
-    "dropout": 0.2
-}
