@@ -55,8 +55,8 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
     # train one epoch
     total_loss = 0
     avg_loss = 0
-    best_eval_loss = float('inf')
-    best_eval_acc = 0
+    local_best_eval_loss = float('inf')
+    local_best_eval_acc = 0
     total_examples = 0
     st_time = time.time()
     optimizer.zero_grad()
@@ -87,14 +87,14 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
             scaler.step(optimizer)
             scaler.update()
             optimizer.zero_grad()
-            if opt.use_transformers_optimizer: scheduler.step()
+            scheduler.step()
             curr_lr = scheduler.get_last_lr()[0] if scheduler else optimizer.param_groups[0]['lr']
             epoch_iterator.set_description(f"Epoch {epoch_i}, local_step: {local_step}, loss: {loss:.3f}, curr_lr: {curr_lr:.7f}")
             if opt.eval_and_save_steps > 0 and global_step != 0 and global_step % opt.eval_and_save_steps == 0:
                 # evaluate
                 eval_loss, eval_acc = evaluate(model, config, val_loader)
-                if best_eval_loss > eval_loss: best_eval_loss = eval_loss
-                if best_eval_acc < eval_acc: best_eval_acc = eval_acc
+                if local_best_eval_loss > eval_loss: local_best_eval_loss = eval_loss
+                if local_best_eval_acc < eval_acc: local_best_eval_acc = eval_acc
                 if writer:
                     writer.add_scalar('Loss/valid', eval_loss, global_step)
                     writer.add_scalar('Acc/valid', eval_acc, global_step)
@@ -123,8 +123,8 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
 
     # evaluate at the end of epoch
     eval_loss, eval_acc = evaluate(model, config, val_loader)
-    if best_eval_loss > eval_loss: best_eval_loss = eval_loss
-    if best_eval_acc < eval_acc: best_eval_acc = eval_acc
+    if local_best_eval_loss > eval_loss: local_best_eval_loss = eval_loss
+    if local_best_eval_acc < eval_acc: local_best_eval_acc = eval_acc
     if writer:
         writer.add_scalar('Loss/valid', eval_loss, global_step)
         writer.add_scalar('Acc/valid', eval_acc, global_step)
@@ -151,7 +151,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
     logger.info('{:3d} epoch | {:5d}/{:5d} | train loss : {:6.3f} | {:5.2f} min elapsed'.\
             format(epoch_i, local_step+1, len(train_loader), avg_loss, elapsed_time)) 
 
-    return best_eval_loss, best_eval_acc, best_eval_measure
+    return local_best_eval_loss, local_best_eval_acc, best_eval_measure
  
 def evaluate(model, config, val_loader):
     opt = config['opt']
@@ -303,25 +303,22 @@ def prepare_osws(config, model, train_loader, hp_search_optuna_lr=None):
     lr = opt.lr
     # for optuna
     if hp_search_optuna_lr: lr = hp_search_optuna_lr
-    optimizer = torch.optim.AdamW(model.parameters(), lr=lr, eps=opt.adam_epsilon, weight_decay=opt.weight_decay)
-    scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer=optimizer, gamma=opt.lr_decay_rate)
-    if opt.use_transformers_optimizer:
-        from transformers import AdamW, get_linear_schedule_with_warmup
-        num_training_steps_for_epoch = len(train_loader) // opt.gradient_accumulation_steps
-        num_training_steps = num_training_steps_for_epoch * opt.epoch
-        num_warmup_steps = num_training_steps_for_epoch * opt.warmup_epoch
-        logger.info("(num_training_steps_for_epoch, num_training_steps, num_warmup_steps): ({}, {}, {})".\
-            format(num_training_steps_for_epoch, num_training_steps, num_warmup_steps))        
-        no_decay = ['bias', 'LayerNorm.weight']
-        optimizer_grouped_parameters = [
-            {'params': [p for n, p in model.named_parameters() if not any(nd in n for nd in no_decay)],
-             'weight_decay': opt.weight_decay},
-            {'params': [p for n, p in model.named_parameters() if any(nd in n for nd in no_decay)], 'weight_decay': 0.0}
-        ]
-        optimizer = AdamW(optimizer_grouped_parameters, lr=lr, eps=opt.adam_epsilon)
-        scheduler = get_linear_schedule_with_warmup(optimizer,
-            num_warmup_steps=num_warmup_steps,
-            num_training_steps=num_training_steps)
+    from transformers import AdamW, get_linear_schedule_with_warmup
+    num_training_steps_for_epoch = len(train_loader) // opt.gradient_accumulation_steps
+    num_training_steps = num_training_steps_for_epoch * opt.epoch
+    num_warmup_steps = num_training_steps_for_epoch * opt.warmup_epoch
+    logger.info("(num_training_steps_for_epoch, num_training_steps, num_warmup_steps): ({}, {}, {})".\
+        format(num_training_steps_for_epoch, num_training_steps, num_warmup_steps))        
+    no_decay = ['bias', 'LayerNorm.weight']
+    optimizer_grouped_parameters = [
+        {'params': [p for n, p in model.named_parameters() if not any(nd in n for nd in no_decay)],
+         'weight_decay': opt.weight_decay},
+        {'params': [p for n, p in model.named_parameters() if any(nd in n for nd in no_decay)], 'weight_decay': 0.0}
+    ]
+    optimizer = AdamW(optimizer_grouped_parameters, lr=lr, eps=opt.adam_epsilon)
+    scheduler = get_linear_schedule_with_warmup(optimizer,
+        num_warmup_steps=num_warmup_steps,
+        num_training_steps=num_training_steps)
     try:
         writer = SummaryWriter(log_dir=opt.log_dir)
     except:
@@ -382,21 +379,6 @@ def train(opt):
                 best_eval_measure = eval_measure
                 early_stopping.reset(best_eval_measure)
             early_stopping.status()
-            # begin: scheduling, apply rate decay at the measure(ex, loss) getting worse for the number of deacy epoch steps.
-            if opt.measure == 'loss': getting_worse = prev_eval_measure <= eval_measure
-            else: getting_worse = prev_eval_measure >= eval_measure
-            if getting_worse:
-                local_worse_epoch += 1
-            else:
-                local_worse_epoch = 0
-            logger.info('Scheduler: local_worse_epoch / opt.lr_decay_epoch = %d / %d' % (local_worse_epoch, opt.lr_decay_epoch))
-            if not opt.use_transformers_optimizer and \
-               epoch_i > opt.warmup_epoch and \
-               (local_worse_epoch >= opt.lr_decay_epoch or early_stopping.step() > opt.lr_decay_epoch):
-                scheduler.step()
-                local_worse_epoch = 0
-            prev_eval_measure = eval_measure
-            # end: scheduling
         # for nni
         if opt.hp_search_nni:
             nni.report_final_result(eval_acc)
@@ -473,9 +455,7 @@ def get_params():
     parser.add_argument('--epoch', type=int, default=64)
     parser.add_argument('--eval_and_save_steps', type=int, default=500, help="Save checkpoint every X updates steps.")
     parser.add_argument('--lr', type=float, default=2e-4)
-    parser.add_argument('--lr_decay_rate', type=float, default=1.0, help="Disjoint with --use_transformers_optimizer")
-    parser.add_argument('--lr_decay_epoch', type=float, default=2, help="Number of decay epoch to be paitent. disjoint with --use_transformers_optimizer")
-    parser.add_argument('--warmup_epoch', type=int, default=4,  help="Number of warmup epoch steps")
+    parser.add_argument('--warmup_epoch', type=int, default=0,  help="Number of warmup epoch steps")
     parser.add_argument('--patience', default=7, type=int, help="Max number of epoch to be patient for early stopping.")
     parser.add_argument('--save_path', type=str, default='pytorch-model.pt')
     parser.add_argument('--adam_epsilon', type=float, default=1e-8)
@@ -486,7 +466,6 @@ def get_params():
     parser.add_argument('--log_dir', type=str, default='runs')
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--embedding_trainable', action='store_true', help="Set word embedding(Glove) trainable")
-    parser.add_argument('--use_transformers_optimizer', action='store_true', help="Use transformers AdamW, get_linear_schedule_with_warmup.")
     parser.add_argument('--use_amp', action='store_true', help="Use automatic mixed precision.")
     parser.add_argument('--use_profiler', action='store_true', help="Use profiler.")
     parser.add_argument('--measure', type=str, default='loss', help="Evaluation measure, 'loss' | 'accuracy', default 'loss'.")

@@ -125,7 +125,7 @@
 ```
 * token_emb_dim in configs/config-glove-gnb.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py --config=configs/config-glove-gnb.json
-$ python train.py --config=configs/config-glove-gnb.json --lr_decay_rate=0.9
+$ python train.py --config=configs/config-glove-gnb.json
 ```
 
 - evaluation
@@ -147,7 +147,7 @@ INFO:__main__:[Elapsed Time] : 980.9308052062988ms, 1.292972264542259ms on avera
 ```
 * token_emb_dim in configs/config-glove-cnn.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py --config=configs/config-glove-cnn.json
-$ python train.py --config=configs/config-glove-cnn.json --lr_decay_rate=0.9 --embedding_trainable
+$ python train.py --config=configs/config-glove-cnn.json --embedding_trainable
 
 * tensorboardX
 $ rm -rf runs
@@ -172,7 +172,7 @@ INFO:__main__:[Elapsed Time] : 1351ms, 1.793991416309013ms on average
 ```
 * token_emb_dim in configs/config-densenet-cnn.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py --config=configs/config-densenet-cnn.json
-$ python train.py --config=configs/config-densenet-cnn.json --lr_decay_rate=0.9 --embedding_trainable
+$ python train.py --config=configs/config-densenet-cnn.json --embedding_trainable
 ```
 
 - evaluation
@@ -194,7 +194,7 @@ INFO:__main__:[Elapsed Time] : 2633ms, 3.609442060085837ms on average
 ```
 * token_emb_dim in configs/config-densenet-dsa.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py --config=configs/config-densenet-dsa.json
-$ python train.py --config=configs/config-densenet-dsa.json --lr_decay_rate=0.9
+$ python train.py --config=configs/config-densenet-dsa.json
 ```
 
 - evaluation
@@ -367,7 +367,7 @@ INFO:__main__:[Elapsed Time] : 4279.639005661011ms, 5.983798800619887ms on avera
 ```
 * token_emb_dim in configs/config-glove-gnb.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py --config=configs/config-glove-gnb.json --data_dir=data/sst2
-$ python train.py --config=configs/config-glove-gnb.json --data_dir=data/sst2 --lr=1e-3 --lr_decay_rate=0.9
+$ python train.py --config=configs/config-glove-gnb.json --data_dir=data/sst2 --lr=1e-3
 ```
 
 - evaluation
@@ -389,7 +389,7 @@ INFO:__main__:[Elapsed Time] : 2310.748338699341ms, 1.2253080095563615ms on aver
 ```
 * token_emb_dim in configs/config-glove-cnn.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py --data_dir=data/sst2
-$ python train.py --data_dir=data/sst2 --lr=1e-3 --lr_decay_rate=0.9
+$ python train.py --data_dir=data/sst2 --lr=1e-3 
 ```
 
 - evaluation
@@ -412,7 +412,7 @@ INFO:__main__:[Elapsed Time] : 3300ms, 1.767032967032967ms on average
 ```
 * token_emb_dim in configs/config-densenet-cnn.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2
-$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2 --lr_decay_rate=0.9
+$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/sst2
 ```
 
 - evaluation
@@ -434,7 +434,7 @@ INFO:__main__:[Elapsed Time] : 6678ms, 3.6203296703296703ms on average
 ```
 * token_emb_dim in configs/config-densenet-dsa.json == 300 (ex, glove.6B.300d.txt )
 $ python preprocess.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2
-$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2 --lr_decay_rate=0.9
+$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/sst2
 ```
 
 - evaluation
@@ -508,7 +508,7 @@ INFO:__main__:[Elapsed Time] : 8951ms, 4.86043956043956ms on average
 INFO:__main__:[Accuracy] : 0.8990,  1637/ 1821
 INFO:__main__:[Elapsed Time] : 18193ms, 9.936263736263736ms on average
 
-** --bert_model_name_or_path=./embeddings/squeezebert-uncased --epoch=20 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+** --bert_model_name_or_path=./embeddings/squeezebert-uncased --epoch=20 --warmup_epoch=0 --weight_decay=0.0
 INFO:__main__:[Accuracy] : 0.9061,  1650/ 1821
 INFO:__main__:[Elapsed Time] : 35230.47494888306ms, 19.287928644117418ms on average
 
@@ -540,7 +540,7 @@ INFO:__main__:[Elapsed Time] : 23314ms, 12.754945054945056ms on average
 INFO:__main__:[Accuracy] : 0.9259,  1686/ 1821
 INFO:__main__:[Elapsed Time] : 23765.23184776306ms, 13.007715246179602ms on average
 
-** n_ctx=64, --lr=2e-5 --epoch=3 --batch_size=64 --use_transformers_optimizer --warmup_epoch=1 --weight_decay=0.0 --seed=0
+** n_ctx=64, --lr=2e-5 --epoch=3 --batch_size=64  --warmup_epoch=1 --weight_decay=0.0 --seed=0
 INFO:__main__:[Accuracy] : 0.9281,  1690/ 1821
 INFO:__main__:[Elapsed Time] : 21707.942724227905ms, 11.878120244204343ms on average
 
@@ -568,7 +568,7 @@ INFO:__main__:[Elapsed Time] : 7124ms, 3.8461538461538463ms on average
 INFO:__main__:[Accuracy] : 0.9110,  1659/ 1821
 INFO:__main__:[Elapsed Time] : 16431ms, 8.971978021978021ms on average
 
-** --bert_model_name_or_path=./embeddings/squeezebert-uncased --epoch=20 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+** --bert_model_name_or_path=./embeddings/squeezebert-uncased --epoch=20  --warmup_epoch=0 --weight_decay=0.0
 INFO:__main__:[Accuracy] : 0.9012,  1641/ 1821
 INFO:__main__:[Elapsed Time] : 31975.939989089966ms, 17.499822050660523ms on average
 
@@ -625,7 +625,7 @@ INFO:__main__:[Elapsed Time] : 232065.03987312317ms, 25.12068054216575ms on aver
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 INFO:__main__:[Accuracy] : 0.9264,  1687/ 1821
 INFO:__main__:[Elapsed Time] : 46093.640089035034ms, 25.243094727233217ms on average
-*** --epoch=10 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+*** --epoch=10  --warmup_epoch=0 --weight_decay=0.0
 INFO:__main__:[Accuracy] : 0.9357,  1704/ 1821
 INFO:__main__:[Elapsed Time] : 49913.90776634216ms, 27.320906356140807ms on average
 
@@ -697,12 +697,12 @@ INFO:__main__:[Elapsed Time] : 94456ms, 51.80274725274725ms on average
 * enc_class=cnn
 
 $ python preprocess.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large
-$ python train.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --lr_decay_rate=0.9 --batch_size=64
+$ python train.py --config=configs/config-roberta-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64
 
 * enc_class=cls
 
 $ python preprocess.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large 
-$ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --lr_decay_rate=0.9 --batch_size=64
+$ python train.py --config=configs/config-roberta-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/roberta-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64
 ```
 
 - evaluation
@@ -753,12 +753,12 @@ INFO:__main__:[Elapsed Time] : 18344ms, 10.02967032967033ms on average
 * enc_class=cnn
 
 $ python preprocess.py --config=configs/config-bart-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bart-large
-$ python train.py --config=configs/config-bart-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bart-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --lr_decay_rate=0.9 --batch_size=64
+$ python train.py --config=configs/config-bart-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bart-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64
 
 * enc_class=cls
 
 $ python preprocess.py --config=configs/config-bart-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bart-large 
-$ python train.py --config=configs/config-bart-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bart-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --lr_decay_rate=0.9 --batch_size=64
+$ python train.py --config=configs/config-bart-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bart-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64
 ```
 
 - evaluation
@@ -793,12 +793,12 @@ INFO:__main__:[Elapsed Time] : 61015ms, 33.386263736263736ms on average
 * enc_class=cnn
 
 $ python preprocess.py --config=configs/config-electra-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator
-$ python train.py --config=configs/config-electra-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --lr_decay_rate=0.9 --batch_size=64
+$ python train.py --config=configs/config-electra-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64
 
 * enc_class=cls
 
 $ python preprocess.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator
-$ python train.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --lr_decay_rate=0.9 --batch_size=64
+$ python train.py --config=configs/config-electra-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/electra-base-discriminator --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64
 ```
 
 - evaluation

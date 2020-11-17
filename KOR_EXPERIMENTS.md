@@ -195,7 +195,7 @@
 - train
 ```
 $ python preprocess.py --config=configs/config-glove-gnb.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
-$ python train.py --config=configs/config-glove-gnb.json --data_dir=data/clova_sentiments_morph --lr_decay_rate=0.9 --embedding_trainable
+$ python train.py --config=configs/config-glove-gnb.json --data_dir=data/clova_sentiments_morph --embedding_trainable
 ```
 
 - evaluation
@@ -215,7 +215,7 @@ INFO:__main__:[Elapsed Time] : 67916.67175292969ms, 1.3568544208512268ms on aver
 - train
 ```
 $ python preprocess.py --config=configs/config-glove-cnn.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
-$ python train.py --config=configs/config-glove-cnn.json --data_dir=data/clova_sentiments_morph --lr_decay_rate=0.9 --embedding_trainable
+$ python train.py --config=configs/config-glove-cnn.json --data_dir=data/clova_sentiments_morph --embedding_trainable
 ```
 
 - evaluation
@@ -236,11 +236,11 @@ INFO:__main__:[Elapsed Time] : 97481ms, 1.9479358348667895ms on average
 - train
 ```
 $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
-$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --lr_decay_rate=0.9
+$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph 
 
 * iee_corpus_morph
 $ python preprocess.py --config=configs/config-densenet-cnn-iee.json --data_dir=data/iee_corpus_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
-$ python train.py --config=configs/config-densenet-cnn-iee.json --data_dir=data/iee_corpus_morph --lr_decay_rate=0.9
+$ python train.py --config=configs/config-densenet-cnn-iee.json --data_dir=data/iee_corpus_morph 
 ```
 
 - evaluation
@@ -253,7 +253,7 @@ INFO:__main__:[Elapsed Time] : 173152ms, 3.4614969197535803ms on average
 INFO:__main__:[Accuracy] : 0.8799, 43991/49997
 INFO:__main__:[Elapsed Time] : 179413.97333145142ms, 3.58712682724762ms on average
 
-* --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+*  --warmup_epoch=0 --weight_decay=0.0
 INFO:__main__:[Accuracy] : 0.8804, 44017/49997
 INFO:__main__:[Elapsed Time] : 160672.52135276794ms, 3.211939556139528ms on average
 
@@ -261,7 +261,7 @@ INFO:__main__:[Accuracy] : 0.8803, 44012/49997
 INFO:__main__:[Elapsed Time] : 161198.18258285522ms, 3.2225625831057085ms on average
 
 * hyper-parameter search by optuna
-* --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=0.00014915118702339241 --batch_size=128 --seed=34 --epoch=32
+*  --warmup_epoch=0 --weight_decay=0.0 --lr=0.00014915118702339241 --batch_size=128 --seed=34 --epoch=32
 INFO:__main__:[Accuracy] : 0.8822, 44108/49997
 INFO:__main__:[Elapsed Time] : 189978.82962226868ms, 3.7981278658466384ms on average
 
@@ -280,11 +280,11 @@ $ python evaluate.py --config=configs/config-densenet-cnn-iee.json --data_dir=./
 - train
 ```
 $ python preprocess.py --config=configs/config-densenet-dsa.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
-$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/clova_sentiments_morph --lr_decay_rate=0.9
+$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/clova_sentiments_morph 
 
 * iee_corpus_morph
 $ python preprocess.py --config=configs/config-densenet-dsa-iee.json --data_dir=data/iee_corpus_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
-$ python train.py --config=configs/config-densenet-dsa-iee.json --data_dir=data/iee_corpus_morph --lr_decay_rate=0.9 --batch_size=256
+$ python train.py --config=configs/config-densenet-dsa-iee.json --data_dir=data/iee_corpus_morph --batch_size=256
 ```
 
 - evaluation
@@ -304,7 +304,7 @@ INFO:__main__:[Elapsed Time] : 404403.4924507141ms, 8.087184512335755ms on avera
 INFO:__main__:[Accuracy] : 0.8747, 43732/49997
 INFO:__main__:[Elapsed Time] : 596904ms, 11.936694935594847ms on average
 
-* --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+*  --warmup_epoch=0 --weight_decay=0.0
 INFO:__main__:[Accuracy] : 0.8735, 43670/49997
 INFO:__main__:[Elapsed Time] : 410616.1913871765ms, 8.211271306382855ms on average
 
@@ -347,31 +347,31 @@ INFO:__main__:[Elapsed Time] : 734983ms, 14.697815825266021ms on average
 INFO:__main__:[Accuracy] : 0.8862, 44309/49997
 INFO:__main__:[Elapsed Time] : 535186ms, 10.702336186894952ms on average
 
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+**  --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.9011, 45053/49997
 INFO:__main__:[Elapsed Time] : 827306ms, 16.545303624289943ms on average
 
-** --configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-bpe-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+** --configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-bpe-bert.v1  --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.8839, 44190/49997
 INFO:__main__:[Elapsed Time] : 482054.96978759766ms, 9.639614557722052ms on average
 
-** --configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-wp-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+** --configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-wp-bert.v1  --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.8798, 43987/49997
 INFO:__main__:[Elapsed Time] : 449726.8953323364ms, 8.992428302345242ms on average
 
-** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
+** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 INFO:__main__:[Accuracy] : 0.8985, 44923/49997
 INFO:__main__:[Elapsed Time] : 1220545.0494289398ms, 24.40995301749384ms on average
 
-** --bert_model_name_or_path=./embeddings/kcbert-base --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+** --bert_model_name_or_path=./embeddings/kcbert-base  --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.9010, 45047/49997
 INFO:__main__:[Elapsed Time] : 710366.4381504059ms, 14.20562694488368ms on average
 
-** --bert_model_name_or_path=./embeddings/kcbert-large --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+** --bert_model_name_or_path=./embeddings/kcbert-large  --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.9102, 45509/49997
 INFO:__main__:[Elapsed Time] : 1230672.8971004486ms, 24.612369814131945ms on average
 
-** --bert_model_name_or_path=./embeddings/kcbert-large --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5
+** --bert_model_name_or_path=./embeddings/kcbert-large  --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5
 INFO:__main__:[Accuracy] : 0.9126, 45627/49997
 INFO:__main__:[Elapsed Time] : 1210648.3128070831ms, 24.212181653983308ms on average
 
@@ -385,11 +385,11 @@ INFO:__main__:[Elapsed Time] : 672027ms, 13.439275142011361ms on average
 INFO:__main__:[Accuracy] : 0.8959, 44790/49997
 INFO:__main__:[Elapsed Time] : 703563ms, 14.07036562925034ms on average
 
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+**  --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.8991, 44952/49997
 INFO:__main__:[Elapsed Time] : 747975ms, 14.958656692535403ms on average
 
-** n_ctx=64,  --use_transformers_optimizer --warmup_epoch=1 --weight_decay=0.0 --seed=0 --epoch=30
+** n_ctx=64,   --warmup_epoch=1 --weight_decay=0.0 --seed=0 --epoch=30
 INFO:__main__:[Accuracy] : 0.8970, 44848/49997
 INFO:__main__:[Elapsed Time] : 595030.0581455231ms, 11.899778242826137ms on average
 
@@ -397,24 +397,24 @@ INFO:__main__:[Elapsed Time] : 595030.0581455231ms, 11.899778242826137ms on aver
 INFO:__main__:[Accuracy] : 0.8892, 44457/49997
 INFO:__main__:[Elapsed Time] : 466825ms, 9.32800624049924ms on average
 
-** --configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-bpe-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+** --configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-bpe-bert.v1  --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.8855, 44271/49997
 INFO:__main__:[Elapsed Time] : 414233.4134578705ms, 8.283499222067283ms on average
 
-** --configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-wp-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+** --configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-wp-bert.v1  --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.8738, 43685/49997
 INFO:__main__:[Elapsed Time] : 402539.91866111755ms, 8.049534148087988ms on average
 
 
-** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
+** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 INFO:__main__:[Accuracy] : 0.8978, 44885/49997
 INFO:__main__:[Elapsed Time] : 1130058.8986873627ms, 22.60026191461467ms on average
 
-** --bert_model_name_or_path=./embeddings/kcbert-base --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+** --bert_model_name_or_path=./embeddings/kcbert-base  --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.9023, 45110/49997
 INFO:__main__:[Elapsed Time] : 678645.0374126434ms, 13.571247471572018ms on average
 
-** --bert_model_name_or_path=./embeddings/kcbert-large --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5
+** --bert_model_name_or_path=./embeddings/kcbert-large  --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5
 INFO:__main__:[Accuracy] : 0.9136, 45677/49997
 INFO:__main__:[Elapsed Time] : 1124363.7096881866ms, 22.48598377803238ms on average
 
@@ -455,11 +455,11 @@ INFO:__main__:[Elapsed Time] : 743973ms, 14.877990239219137ms on average
 INFO:__main__:[Accuracy] : 0.8888, 44438/49997
 INFO:__main__:[Elapsed Time] : 525917ms, 10.515781262501ms on average
 
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20
+**  --warmup_epoch=0 --weight_decay=0.0 --epoch=20
 INFO:__main__:[Accuracy] : 0.9025, 45123/49997
 INFO:__main__:[Elapsed Time] : 778762ms, 15.573805904472358ms on average
 
-** --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=20
+** --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1  --warmup_epoch=0 --weight_decay=0.0 --epoch=20
 (1) epoch_0
 INFO:__main__:[Accuracy] : 0.8872, 44358/49997
 INFO:__main__:[Elapsed Time] : 572516.1464214325ms, 11.448896296530382ms on average
@@ -487,11 +487,11 @@ INFO:__main__:[Elapsed Time] : 360213ms, 7.202776222097768ms on average
 INFO:__main__:[Accuracy] : 0.8754, 43765/49997
 INFO:__main__:[Elapsed Time] : 288307ms, 5.764541163293064ms on average
 
-** --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+**  --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.9018, 45089/49997
 INFO:__main__:[Elapsed Time] : 666997.1199035645ms, 13.339050636929372ms on average
 
-** --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+** --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1  --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 (1) epoch_0
 INFO:__main__:[Accuracy] : 0.8847, 44234/49997
 INFO:__main__:[Elapsed Time] : 486852.8757095337ms, 9.7360708339852ms on average
@@ -532,7 +532,7 @@ $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova
 INFO:__main__:[Accuracy] : 0.8907, 44533/49997
 INFO:__main__:[Elapsed Time] : 747351ms, 14.945475638051045ms on average
 
-** --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
+** --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 INFO:__main__:[Accuracy] : 0.9084, 45417/49997
 INFO:__main__:[Elapsed Time] : 1225501.6918182373ms, 24.509510690474073ms on average
 
@@ -543,7 +543,7 @@ $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova
 INFO:__main__:[Accuracy] : 0.8901, 44503/49997
 INFO:__main__:[Elapsed Time] : 639988ms, 12.798163853108248ms on average
 
-** --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
+** --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 INFO:__main__:[Accuracy] : 0.9068, 45337/49997
 INFO:__main__:[Elapsed Time] : 1146557.6510429382ms, 22.930594570818535ms on average
 
@@ -615,11 +615,11 @@ $ python evaluate.py --config=configs/config-electra-cnn.json --data_dir=./data/
 INFO:__main__:[Accuracy] : 0.8937, 44684/49997
 INFO:__main__:[Elapsed Time] : 784375ms, 15.636230898471878ms on average
 
-** --use_transformers_optimizer --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
+**  --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
 INFO:__main__:[Accuracy] : 0.8951, 44750/49997
 INFO:__main__:[Elapsed Time] : 777338ms, 15.54522361788943ms on average
 
-** --bert_model_name_or_path=./embeddings/koelectra-base-v3-discriminator --use_transformers_optimizer --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
+** --bert_model_name_or_path=./embeddings/koelectra-base-v3-discriminator  --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
 INFO:__main__:[Accuracy] : 0.9072, 45356/49997
 INFO:__main__:[Elapsed Time] : 765895.2033519745ms, 15.316871435453972ms on average
 
@@ -629,11 +629,11 @@ $ python evaluate.py --config=configs/config-electra-cls.json --data_dir=./data/
 INFO:__main__:[Accuracy] : 0.8930, 44646/49997
 INFO:__main__:[Elapsed Time] : 721693ms, 14.425894071525722ms on average
 
-** --use_transformers_optimizer --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
+**  --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
 INFO:__main__:[Accuracy] : 0.8963, 44814/49997
 INFO:__main__:[Elapsed Time] : 713403ms, 14.266721337707017ms on average
 
-** --bert_model_name_or_path=./embeddings/koelectra-base-v3-discriminator --use_transformers_optimizer --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
+** --bert_model_name_or_path=./embeddings/koelectra-base-v3-discriminator  --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
 INFO:__main__:[Accuracy] : 0.9066, 45325/49997
 INFO:__main__:[Elapsed Time] : 689906.133890152ms, 13.796895782950783ms on average
 
@@ -652,12 +652,12 @@ INFO:__main__:[Elapsed Time] : 689906.133890152ms, 13.796895782950783ms on avera
 * enc_class=cnn
 
 $ python preprocess.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-30k-512-1m --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-30k-512-1m --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 
+$ python train.py --config=configs/config-electra-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-30k-512-1m --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments  --warmup_epoch=0 --weight_decay=0.0 
 
 * enc_class=cls
 
 $ python preprocess.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-30k-512-1m --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-30k-512-1m --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+$ python train.py --config=configs/config-electra-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-30k-512-1m --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments  --warmup_epoch=0 --weight_decay=0.0
 ```
 
 - evaluation
@@ -701,12 +701,12 @@ INFO:__main__:[Elapsed Time] : 623643.3551311493ms, 12.471171410257925ms on aver
 * enc_class=cnn
 
 $ python preprocess.py --config=configs/config-roberta-cnn.json --bert_model_name_or_path=./embeddings/kor-roberta-base-bbpe --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-roberta-cnn.json --bert_model_name_or_path=./embeddings/kor-roberta-base-bbpe --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 
+$ python train.py --config=configs/config-roberta-cnn.json --bert_model_name_or_path=./embeddings/kor-roberta-base-bbpe --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments  --warmup_epoch=0 --weight_decay=0.0 
 
 * enc_class=cls
 
 $ python preprocess.py --config=configs/config-roberta-cls.json --bert_model_name_or_path=./embeddings/kor-roberta-base-bbpe --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-roberta-cls.json --bert_model_name_or_path=./embeddings/kor-roberta-base-bbpe --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0
+$ python train.py --config=configs/config-roberta-cls.json --bert_model_name_or_path=./embeddings/kor-roberta-base-bbpe --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments  --warmup_epoch=0 --weight_decay=0.0
 ```
 
 - evaluation
@@ -786,7 +786,7 @@ INFO:__main__:[Elapsed Time] : 692853.7294864655ms, 13.855628213249918ms on aver
 - train
 ```
 $ python preprocess.py --config=configs/config-glove-gnb.json --data_dir=data/korean_hate_speech_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
-$ python train.py --config=configs/config-glove-gnb.json --data_dir=data/korean_hate_speech_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-gnb.pt
+$ python train.py --config=configs/config-glove-gnb.json --data_dir=data/korean_hate_speech_morph  --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-gnb.pt
 
 ```
 
@@ -805,7 +805,7 @@ INFO:__main__:[Elapsed Time] : 673.8839149475098ms, 1.2677735470710916ms on aver
 ** augmentation
 $ python augment_data.py --input data/korean_hate_speech/train.txt --output data/korean_hate_speech_morph/augmented.txt --analyzer=npc --n_iter=5 --max_ng=3 --preserve_label --parallel
 $ python preprocess.py --config=configs/config-glove-gnb.json --data_dir=data/korean_hate_speech_morph --embedding_path=embeddings/kor.glove.300k.300d.txt --augmented --augmented_filename augmented.txt
-$ python train.py --config=configs/config-glove-gnb.json --data_dir=data/korean_hate_speech_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-gnb.pt --augmented --criterion CrossEntropyLoss
+$ python train.py --config=configs/config-glove-gnb.json --data_dir=data/korean_hate_speech_morph  --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-gnb.pt --augmented --criterion CrossEntropyLoss
 $ python evaluate.py --config=configs/config-glove-gnb.json --data_dir=./data/korean_hate_speech_morph --model_path=pytorch-model-kor-gnb.pt
 INFO:__main__:[Accuracy] : 0.3885,   183/  471
 INFO:__main__:[Elapsed Time] : 703.909158706665ms, 1.3125252216420276ms on average
@@ -825,7 +825,7 @@ INFO:__main__:[Elapsed Time] : 652.2922515869141ms, 1.2430145385417533ms on aver
 - train
 ```
 $ python preprocess.py --config=configs/config-glove-cnn.json --data_dir=data/korean_hate_speech_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
-$ python train.py --config=configs/config-glove-cnn.json --data_dir=data/korean_hate_speech_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-cnn.pt
+$ python train.py --config=configs/config-glove-cnn.json --data_dir=data/korean_hate_speech_morph  --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-cnn.pt
 
 ```
 
@@ -861,7 +861,7 @@ INFO:__main__:[Elapsed Time] : 1002.643346786499ms, 1.9655851607627057ms on aver
 - train
 ```
 $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
-$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-cnn.pt
+$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/korean_hate_speech_morph  --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-cnn.pt
 
 ```
 
@@ -897,7 +897,7 @@ INFO:__main__:[Elapsed Time] : 1687.3586177825928ms, 3.401884119561378ms on aver
 - train
 ```
 $ python preprocess.py --config=configs/config-densenet-dsa.json --data_dir=data/korean_hate_speech_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
-$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/korean_hate_speech_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-dsa.pt
+$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/korean_hate_speech_morph  --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --save_path=pytorch-model-kor-dsa.pt
 
 ```
 
@@ -938,12 +938,12 @@ INFO:__main__:[Elapsed Time] : 3581.5823078155518ms, 7.451774718913626ms on aver
 * enc_class=cnn
 
 $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --data_dir=./data/korean_hate_speech_morph
-$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech_morph --save_path=pytorch-model-kor-bert.pt
+$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64  --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech_morph --save_path=pytorch-model-kor-bert.pt
 
 * enc_class=cls
 
 $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --data_dir=./data/korean_hate_speech_morph
-$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech_morph --save_path=pytorch-model-kor-bert.pt
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v1 --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64  --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech_morph --save_path=pytorch-model-kor-bert.pt
 ```
 
 - evaluation
@@ -1031,12 +1031,12 @@ INFO:__main__:[Elapsed Time] : 5894.242525100708ms, 12.312091665065035ms on aver
 * enc_class=cnn
 
 $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-bpe.v1 --data_dir=./data/korean_hate_speech
-$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-bpe.v1 --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech --save_path=pytorch-model-kor-bert.pt
+$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-bpe.v1 --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64  --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech --save_path=pytorch-model-kor-bert.pt
 
 * enc_class=cls
 
 $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-bpe.v1 --data_dir=./data/korean_hate_speech
-$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-bpe.v1 --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64 --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech --save_path=pytorch-model-kor-bert.pt
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-bpe.v1 --bert_output_dir=bert-checkpoint-kor-bert --lr=2e-5 --epoch=30 --batch_size=64  --warmup_epoch=0 --weight_decay=0.0 --data_dir=./data/korean_hate_speech --save_path=pytorch-model-kor-bert.pt
 ```
 
 - evaluation

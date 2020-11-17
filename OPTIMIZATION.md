@@ -62,11 +62,11 @@ $ python onnx-test.py
   - train a pytorch model
   ```
   ** glove
-  $ python train.py --lr_decay_rate=0.9 --embedding_trainable
+  $ python train.py --embedding_trainable
 
   ** densenet-cnn, densenet-dsa
-  $ python train.py --config=configs/config-densenet-cnn.json --lr_decay_rate=0.9
-  $ python train.py --config=configs/config-densenet-dsa.json --lr_decay_rate=0.9
+  $ python train.py --config=configs/config-densenet-cnn.json 
+  $ python train.py --config=configs/config-densenet-dsa.json
 
   ** bert
   $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
@@ -137,7 +137,7 @@ $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=ber
 * glove-cnn
 $ python preprocess.py --config=configs/config-glove-cnn.json
 
-$ python train.py --config=configs/config-glove-cnn.json --lr_decay_rate=0.9 --hp_search_optuna --hp_trials=24 --epoch=12
+$ python train.py --config=configs/config-glove-cnn.json --hp_search_optuna --hp_trials=24 --epoch=12
 ...
 [I 2020-09-24 13:51:14,081] Trial 23 finished with value: 0.9828571428571429 and parameters: {'lr': 9.769218925183409e-05, 'batch_size': 32, 'seed': 31, 'epochs': 1}. Best is trial 10 with value: 0.9914285714285714.
     number     value  params_batch_size  params_epochs  params_lr  params_seed     state
@@ -158,7 +158,7 @@ INFO:__main__:study.best_params : {'lr': 8.498517957591607e-05, 'batch_size': 32
 INFO:__main__:study.best_value : 0.9914285714285714
 INFO:__main__:study.best_trial : FrozenTrial(number=10, value=0.9914285714285714, datetime_start=datetime.datetime(2020, 9, 24, 13, 45, 46, 479083), datetime_complete=datetime.datetime(2020, 9, 24, 13, 46, 38, 86933), params={'lr': 8.498517957591607e-05, 'batch_size': 32, 'seed': 17, 'epochs': 11}, distributions={'lr': LogUniformDistribution(high=0.0002, low=1e-05), 'batch_size': CategoricalDistribution(choices=(32, 64, 128)), 'seed': IntUniformDistribution(high=42, low=17, step=1), 'epochs': IntUniformDistribution(high=12, low=1, step=1)}, user_attrs={}, system_attrs={}, intermediate_values={0: 0.9828571428571429, 1: 0.9857142857142858, 2: 0.9885714285714285, 3: 0.9842857142857143, 4: 0.9828571428571429, 5: 0.9814285714285714, 6: 0.9885714285714285, 7: 0.9857142857142858, 8: 0.9828571428571429, 9: 0.9828571428571429, 10: 0.9914285714285714}, trial_id=10, state=TrialState.COMPLETE)
 
-$ python train.py --config=configs/config-glove-cnn.json --lr_decay_rate=0.9 --epoch=24 --seed=17 --batch_size=32 --lr=8.498517957591607e-05
+$ python train.py --config=configs/config-glove-cnn.json --epoch=24 --seed=17 --batch_size=32 --lr=8.498517957591607e-05
 ...
 INFO:__main__: 11 epoch |   409/  409 | train loss :  1.169, valid loss  1.174, valid acc 0.9929| lr :0.000056 |  0.14 min elapsed
 INFO:__main__:[Best model saved] :   1.174044
@@ -174,7 +174,7 @@ INFO:__main__:[Elapsed Time] : 1646.5208530426025ms, 2.1808976267540405ms on ave
 * densenet-cnn
 $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
 
-$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=18 --hp_search_optuna --hp_trials=24 --patience=4
+$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph  --warmup_epoch=0 --weight_decay=0.0 --epoch=18 --hp_search_optuna --hp_trials=24 --patience=4
 INFO:__main__:    number     value  params_batch_size  params_epochs  params_lr  params_seed     state
 0        0  0.880073                128             13   0.000149           34  COMPLETE
 1        1  0.871052                 64              4   0.000544           17  COMPLETE
@@ -190,7 +190,7 @@ INFO:__main__:study.best_params : {'lr': 0.00014915118702339241, 'batch_size': 1
 study.best_value : 0.8800728043682621
 INFO:__main__:study.best_value : 0.8800728043682621
 
-$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=0.00014915118702339241 --batch_size=128 --seed=34 --epoch=32
+$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph  --warmup_epoch=0 --weight_decay=0.0 --lr=0.00014915118702339241 --batch_size=128 --seed=34 --epoch=32
 
 $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/clova_sentiments_morph
 INFO:__main__:[Accuracy] : 0.8822, 44108/49997
@@ -201,7 +201,7 @@ INFO:__main__:[Elapsed Time] : 189978.82962226868ms, 3.7981278658466384ms on ave
 * densenet-dsa
 $ python preprocess.py --config=configs/config-densenet-dsa.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
 
-$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --hp_search_optuna --hp_trials=24 --epoch=18 --patience=4
+$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/clova_sentiments_morph  --warmup_epoch=0 --weight_decay=0.0 --hp_search_optuna --hp_trials=24 --epoch=18 --patience=4
 INFO:__main__:    number     value  params_batch_size  params_epochs  params_lr  params_seed     state
 0        0  0.863932                 32              8   0.000437           32  COMPLETE
 ...
@@ -216,7 +216,7 @@ INFO:__main__:study.best_params : {'lr': 0.00024401408580204797, 'batch_size': 1
 study.best_value : 0.8753325199511971
 INFO:__main__:study.best_value : 0.8753325199511971
 
-$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=32 --lr=0.00024401408580204797 --batch_size=128 --seed=37
+$ python train.py --config=configs/config-densenet-dsa.json --data_dir=data/clova_sentiments_morph  --warmup_epoch=0 --weight_decay=0.0 --epoch=32 --lr=0.00024401408580204797 --batch_size=128 --seed=37
 
 $ python evaluate.py --config=configs/config-densenet-dsa.json --data_dir=./data/clova_sentiments_morph
 INFO:__main__:[Accuracy] : 0.8759, 43794/49997
@@ -232,7 +232,7 @@ INFO:__main__:[Elapsed Time] : 410282.794713974ms, 8.204527655280355ms on averag
 $ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
 
 ** modify nni_config.yml
-  command: python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --epoch=18 --hp_search_nni --patience=4
+  command: python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph  --warmup_epoch=0 --weight_decay=0.0 --epoch=18 --hp_search_nni --patience=4
 
 ** modify nni_search_space.json
 
@@ -247,7 +247,7 @@ $ nnictl tensorboard start
 
 ** train with best params
 
-$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --use_transformers_optimizer --warmup_epoch=0 --weight_decay=0.0 --lr=  --batch_size= --seed=
+$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph  --warmup_epoch=0 --weight_decay=0.0 --lr=  --batch_size= --seed=
 
 $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/clova_sentiments_morph
 
