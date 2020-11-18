@@ -90,7 +90,7 @@
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - [README.md](https://github.com/dsindex/electra/blob/master/README.md)
   - [train.sh](https://github.com/dsindex/electra/blob/master/train.sh)
-  - ex) `kor-electra-base-bpe-30k-512-1m` (inhouse)
+  - ex) `kor-electra-base-bpe-v1` (inhouse)
 
 #### RoBERTa
 
@@ -146,8 +146,8 @@
 | KoELECTRA-Base-v1, CLS                    | 89.63        | 14.2667 / -       |         |            |
 | KoELECTRA-Base-v3, CNN                    | 90.72        | 15.3168 / -       |         |            |
 | KoELECTRA-Base-v3, CLS                    | 90.66        | 13.7968 / -       |         |            |
-| bpe ELECTRA-base(1m) , CNN                | 88.55        | 14.2144 / -       |         |            |
-| bpe ELECTRA-base(1m) , CLS                | 88.42        | 13.5920 / -       |         |            |
+| bpe ELECTRA-base(v1) , CNN                | -            | -       / -       |         |            |
+| bpe ELECTRA-base(v1) , CLS                | -            | -       / -       |         |            |
 | RoBERTa-base , CNN                        | 90.42        | 14.9544 / -       |         |            |
 | RoBERTa-base , CLS                        | 90.34        | 13.8556 / -       |         |            |
 
@@ -642,7 +642,7 @@ INFO:__main__:[Elapsed Time] : 689906.133890152ms, 13.796895782950783ms on avera
 </p>
 </details>
 
-#### ELECTRA(kor-electra-base-bpe-30k-512-1m)
+#### ELECTRA(kor-electra-base-bpe-v1)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -651,13 +651,13 @@ INFO:__main__:[Elapsed Time] : 689906.133890152ms, 13.796895782950783ms on avera
 ```
 * enc_class=cnn
 
-$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-30k-512-1m --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-30k-512-1m --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments  --warmup_epoch=0 --weight_decay=0.0 
+$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-v1 --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-v1 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments  --warmup_epoch=0 --weight_decay=0.0 
 
 * enc_class=cls
 
-$ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-30k-512-1m --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-30k-512-1m --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments  --warmup_epoch=0 --weight_decay=0.0
+$ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-v1 --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe-v1 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments  --warmup_epoch=0 --weight_decay=0.0
 ```
 
 - evaluation
@@ -666,25 +666,11 @@ $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_pat
 
 $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
-** 2981k
-INFO:__main__:[Accuracy] : 0.8855, 44272/49997
-INFO:__main__:[Elapsed Time] : 710791.2123203278ms, 14.214471317556479ms on average
-
-** 3342k
-INFO:__main__:[Accuracy] : 0.8848, 44237/49997
-INFO:__main__:[Elapsed Time] : 745171.3743209839ms, 14.902009345195857ms on average
 
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
-** 2981k
-INFO:__main__:[Accuracy] : 0.8842, 44207/49997
-INFO:__main__:[Elapsed Time] : 679682.5699806213ms, 13.592031333186892ms on average
-
-** 3342k
-INFO:__main__:[Accuracy] : 0.8843, 44211/49997
-INFO:__main__:[Elapsed Time] : 623643.3551311493ms, 12.471171410257925ms on average
 
 ```
 
