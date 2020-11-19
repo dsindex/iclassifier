@@ -170,7 +170,8 @@ def evaluate(model, config, val_loader):
     preds = None
     ys    = None
     with torch.no_grad():
-        for i, (x,y) in tqdm(enumerate(val_loader), total=len(val_loader)):
+        iterator = tqdm(val_loader, total=len(val_loader), desc=f"Evaluate")
+        for i, (x,y) in enumerate(iterator):
             model.eval()
             x = to_device(x, opt.device)
             y = to_device(y, opt.device)
