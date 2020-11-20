@@ -120,8 +120,8 @@
 | bpe BERT(v1), CLS                         | 88.92        | 9.3280  / 70.3232 |         | del 8,9,10,11, threads=14 |
 | bpe DistilBERT(v1), CNN                   | 88.39        | 9.6396  / -       | 38.7144 | threads=14 |
 | bpe DistilBERT(v1), CLS                   | 88.55        | 8.2834  / -       | 31.5655 | threads=14 |
-| wp  DistilBERT(v1), CNN                   | 87.98        | 8.9924  / -       | -       |            |
-| wp  DistilBERT(v1), CLS                   | 87.38        | 8.0495  / -       | -       |            |
+| wp  DistilBERT(v1), CNN                   | 87.82        | 9.2226  / -       | -       |            |
+| wp  DistilBERT(v1), CLS                   | 87.74        | 7.8642  / -       | -       |            |
 | bpe BERT-large, CNN                       | 89.85        | 24.4099 / -       |         |            |
 | bpe BERT-large, CLS                       | 89.78        | 22.6002 / -       |         |            |
 | KcBERT-base , CNN                         | 90.10        | 14.2056 / -       |         |            |
@@ -356,8 +356,8 @@ INFO:__main__:[Accuracy] : 0.8839, 44190/49997
 INFO:__main__:[Elapsed Time] : 482054.96978759766ms, 9.639614557722052ms on average
 
 ** --configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-wp-bert.v1  --warmup_epoch=0 --weight_decay=0.0 --epoch=30
-INFO:__main__:[Accuracy] : 0.8798, 43987/49997
-INFO:__main__:[Elapsed Time] : 449726.8953323364ms, 8.992428302345242ms on average
+INFO:__main__:[Accuracy] : 0.8782, 43907/49997
+INFO:__main__:[Elapsed Time] : 461199.3000507355ms, 9.22264648595899ms on average
 
 ** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 INFO:__main__:[Accuracy] : 0.8985, 44923/49997
@@ -402,9 +402,8 @@ INFO:__main__:[Accuracy] : 0.8855, 44271/49997
 INFO:__main__:[Elapsed Time] : 414233.4134578705ms, 8.283499222067283ms on average
 
 ** --configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-wp-bert.v1  --warmup_epoch=0 --weight_decay=0.0 --epoch=30
-INFO:__main__:[Accuracy] : 0.8738, 43685/49997
-INFO:__main__:[Elapsed Time] : 402539.91866111755ms, 8.049534148087988ms on average
-
+INFO:__main__:[Accuracy] : 0.8774, 43867/49997
+INFO:__main__:[Elapsed Time] : 393273.8845348358ms, 7.864200922954329ms on average
 
 ** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 INFO:__main__:[Accuracy] : 0.8978, 44885/49997
