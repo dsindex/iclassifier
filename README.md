@@ -292,7 +292,7 @@ INFO:__main__:[Elapsed Time] : 4279.639005661011ms, 5.983798800619887ms on avera
 | GloVe, CNN                              | 84.90        | 2.7672  / -       / -       |       - / -                    |              - / -       | conceptnet-numberbatch, optuna    |
 | GloVe, DenseNet-CNN                     | 86.38        | 3.6203  / 7.1414            |                                |                          | threads=14    |
 | GloVe, DenseNet-CNN                     | 87.26        | 3.7052  / -                 |                                |                          | conceptnet-numberbatch            |
-| GloVe, DenseNet-CNN                     | -            | -       / -                 |                                |                          | conceptnet-numberbatch, optuna    |
+| GloVe, DenseNet-CNN                     | 87.26        | 3.5377  / -                 |                                |                          | conceptnet-numberbatch, optuna    |
 | GloVe, DenseNet-DSA                     | 85.34        | 6.2450  / -                 |                                |                          |               |
 | DistilFromBERT, GloVe, CNN              | 86.16        | 1.7900  / -                 |                                |                          | augmented, from large             |
 | DistilFromBERT, GloVe, DenseNet-CNN     | 88.52        | 3.6788  / -                 |                                |                          | augmented, from large             |
@@ -439,6 +439,8 @@ INFO:__main__:[Accuracy] : 0.8726,  1589/ 1821
 INFO:__main__:[Elapsed Time] : 6822.043418884277ms, 3.7052182050851674ms on average
 
 * --embedding_path=./embeddings/numberbatch-en-19.08.txt --seed 42 --batch_size 64 --lr 0.0005115118656470668 (by optuna)
+INFO:__main__:[Accuracy] : 0.8726,  1589/ 1821
+INFO:__main__:[Elapsed Time] : 6442.193614435720869ms, 3.537723017262889ms on average
 
 ```
 
