@@ -288,11 +288,11 @@ INFO:__main__:[Elapsed Time] : 4279.639005661011ms, 5.983798800619887ms on avera
 | --------------------------------------- | ------------ | --------------------------- | ------------------------------ | ------------------------ | ------------- |
 | GloVe, GNB                              | 72.27        | 1.2253  / -       / -       |       - / -                    |              - / -       | -             |
 | GloVe, CNN                              | 82.81        | 1.7670  / 3.9191  / 4.5757  |       - / 4.3131               |              - / 4.8686  | threads=14    |
-| GloVe, CNN                              | 84.79        | 2.8304  / -       / -       |       - / -                    |              - / -       | conceptnet-numberbatch            |
-| GloVe, CNN                              | 84.90        | 2.7672  / -       / -       |       - / -                    |              - / -       | conceptnet-numberbatch, optuna    |
+| ConceptNet, CNN                         | 84.79        | 2.8304  / -       / -       |       - / -                    |              - / -       |               |
+| ConceptNet, CNN                         | 84.90        | 2.7672  / -       / -       |       - / -                    |              - / -       | optuna        |
 | GloVe, DenseNet-CNN                     | 86.38        | 3.6203  / 7.1414            |                                |                          | threads=14    |
-| GloVe, DenseNet-CNN                     | 87.26        | 3.7052  / -                 |                                |                          | conceptnet-numberbatch            |
-| GloVe, DenseNet-CNN                     | 87.26        | 3.5377  / -                 |                                |                          | conceptnet-numberbatch, optuna    |
+| ConceptNet, DenseNet-CNN                | 87.26        | 3.7052  / -                 |                                |                          |               |
+| ConceptNet, DenseNet-CNN                | 87.26        | 3.5377  / -                 |                                |                          | optuna        |
 | GloVe, DenseNet-DSA                     | 85.34        | 6.2450  / -                 |                                |                          |               |
 | DistilFromBERT, GloVe, CNN              | 86.16        | 1.7900  / -                 |                                |                          | augmented, from large             |
 | DistilFromBERT, GloVe, DenseNet-CNN     | 88.52        | 3.6788  / -                 |                                |                          | augmented, from large             |
@@ -403,7 +403,7 @@ $ python evaluate.py --data_dir=data/sst2
 INFO:__main__:[Accuracy] : 0.8281,  1508/ 1821
 INFO:__main__:[Elapsed Time] : 3300ms, 1.767032967032967ms on average
 
-* --embedding_path=./embeddings/numberbatch-en-19.08.txt (from conceptnet-numberbatch https://github.com/commonsense/conceptnet-numberbatch)
+* --embedding_path=./embeddings/numberbatch-en-19.08.txt (from https://github.com/commonsense/conceptnet-numberbatch)
 INFO:__main__:[Accuracy] : 0.8479,  1544/ 1821
 INFO:__main__:[Elapsed Time] : 5237.588167190552ms, 2.830480088244428ms on average
 
@@ -434,7 +434,7 @@ $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=data/s
 INFO:__main__:[Accuracy] : 0.8638,  1573/ 1821
 INFO:__main__:[Elapsed Time] : 6678ms, 3.6203296703296703ms on average
 
-* --embedding_path=./embeddings/numberbatch-en-19.08.txt (from conceptnet-numberbatch https://github.com/commonsense/conceptnet-numberbatch)
+* --embedding_path=./embeddings/numberbatch-en-19.08.txt (from https://github.com/commonsense/conceptnet-numberbatch)
 INFO:__main__:[Accuracy] : 0.8726,  1589/ 1821
 INFO:__main__:[Elapsed Time] : 6822.043418884277ms, 3.7052182050851674ms on average
 
