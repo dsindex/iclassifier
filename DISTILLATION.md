@@ -157,10 +157,10 @@ $ python -m spacy download en_core_web_sm
   INFO:__main__:[Accuracy] : 0.9018, 45089/49997
   INFO:__main__:[Elapsed Time] : 666997.1199035645ms, 13.339050636929372ms on average
   ```
-  - dha-bpe BERT-large, CNN
+  - dha-bpe BERT-large(v1), CNN
   ```
-  $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe --data_dir=./data/clova_sentiments_morph
-  $ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments_morph  --warmup_epoch=0 --weight_decay=0.0
+  $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe.v1 --data_dir=./data/clova_sentiments_morph
+  $ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe.v1 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments_morph  --warmup_epoch=0 --weight_decay=0.0
   $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
   INFO:__main__:[Accuracy] : 0.9084, 45417/49997
   INFO:__main__:[Elapsed Time] : 1225501.6918182373ms, 24.509510690474073ms on average
@@ -185,7 +185,7 @@ $ python -m spacy download en_core_web_sm
   $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
   * from dha bert-large
-  $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe --data_dir=./data/clova_sentiments_morph --augmented --augmented_filename=augmented.raw
+  $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe.v1 --data_dir=./data/clova_sentiments_morph --augmented --augmented_filename=augmented.raw
   $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint --batch_size=128 --augmented
 
   $ cp -rf ./data/clova_sentiments_morph/augmented.raw.pred ./data/clova_sentiments_morph/augmented.txt
