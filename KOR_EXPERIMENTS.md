@@ -61,7 +61,7 @@
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - `character-level bpe`
     - vocab.txt는 [sentencepiece](https://github.com/google/sentencepiece)를 이용해서 생성.
-    - ex) `kor-bert-base-bpe.v1`, `kor-bert-large-bpe` (inhouse)
+    - ex) `kor-bert-base-bpe.v1`, `kor-bert-large-bpe.v1` (inhouse)
   - `character-level bpe + 형태소분석기`
     - ex) `kor-bert-base-dha_bpe.v1`, `kor-bert-large-dha_bpe.v1` (inhouse)
   - `형태소분석기`
@@ -122,8 +122,8 @@
 | bpe DistilBERT(v1), CLS                   | 88.55        | 8.2834  / -       | 31.5655 | threads=14 |
 | wp  DistilBERT(v1), CNN                   | 88.04        | 8.7733  / -       | -       |            |
 | wp  DistilBERT(v1), CLS                   | 88.08        | 8.0111  / -       | -       |            |
-| bpe BERT-large, CNN                       | 89.85        | 24.4099 / -       |         |            |
-| bpe BERT-large, CLS                       | 89.78        | 22.6002 / -       |         |            |
+| bpe BERT-large(v1), CNN                   | 89.85        | 24.4099 / -       |         |            |
+| bpe BERT-large(v1), CLS                   | 89.78        | 22.6002 / -       |         |            |
 | KcBERT-base , CNN                         | 90.10        | 14.2056 / -       |         |            |
 | KcBERT-base , CLS                         | 90.23        | 13.5712 / -       |         |            |
 | KcBERT-large , CNN                        | 91.26        | 24.2121 / -       |         |            |
@@ -316,7 +316,7 @@ $ python evaluate.py --config=configs/config-densenet-dsa-iee.json --data_dir=./
 </details>
 
 
-#### BERT(kor-bert-base-bpe.v1, kor-bert-large-bpe, kcbert-base, kcbert-large)
+#### BERT(kor-bert-base-bpe.v1, kor-bert-large-bpe.v1, kcbert-base, kcbert-large)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -359,7 +359,7 @@ INFO:__main__:[Elapsed Time] : 482054.96978759766ms, 9.639614557722052ms on aver
 INFO:__main__:[Accuracy] : 0.8804, 44018/49997
 INFO:__main__:[Elapsed Time] : 438734.2314720154ms, 8.773349530125191ms on average
 
-** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
+** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe.v1  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 INFO:__main__:[Accuracy] : 0.8985, 44923/49997
 INFO:__main__:[Elapsed Time] : 1220545.0494289398ms, 24.40995301749384ms on average
 
@@ -405,7 +405,7 @@ INFO:__main__:[Elapsed Time] : 414233.4134578705ms, 8.283499222067283ms on avera
 INFO:__main__:[Accuracy] : 0.8808, 44036/49997
 INFO:__main__:[Elapsed Time] : 400613.59667778015ms, 8.011125518718865ms on average
 
-** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
+** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe.v1  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 INFO:__main__:[Accuracy] : 0.8978, 44885/49997
 INFO:__main__:[Elapsed Time] : 1130058.8986873627ms, 22.60026191461467ms on average
 
