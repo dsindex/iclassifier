@@ -63,9 +63,9 @@
     - vocab.txt는 [sentencepiece](https://github.com/google/sentencepiece)를 이용해서 생성.
     - ex) `kor-bert-base-bpe.v1`, `kor-bert-large-bpe.v1` (inhouse)
   - `character-level bpe + 형태소분석기`
-    - ex) `kor-bert-base-dha_bpe.v1`, `kor-bert-base-dha_bpe.v3`, `kor-bert-large-dha_bpe.v1` (inhouse)
+    - ex) `kor-bert-base-dha_bpe.v1, v3`, `kor-bert-large-dha_bpe.v1, v3` (inhouse)
   - `형태소분석기`
-    - ex) `kor-bert-base-dha.v1`, `kor-bert-base-dha.v2` (inhouse)
+    - ex) `kor-bert-base-dha.v1, v2` (inhouse)
 
 - KcBERT
   - [kcbert-base, kcbert-large](https://github.com/Beomi/KcBERT)
@@ -144,6 +144,8 @@
 | dha-bpe BERT(v3), CLS                     | 89.93        | 13.6896 / -       |         |            |
 | dha-bpe BERT-large(v1), CNN               | 90.84        | 24.5095 / -       |         |            |
 | dha-bpe BERT-large(v1), CLS               | 90.68        | 22.9305 / -       |         |            |
+| dha-bpe BERT-large(v3), CNN               | -            | -       / -       |         |            |
+| dha-bpe BERT-large(v3), CLS               | -            | -       / -       |         |            |
 | KoELECTRA-Base-v1, CNN                    | 89.51        | 15.5452 / -       |         |            |
 | KoELECTRA-Base-v1, CLS                    | 89.63        | 14.2667 / -       |         |            |
 | KoELECTRA-Base-v3, CNN                    | 90.72        | 15.3168 / -       |         |            |
@@ -507,7 +509,7 @@ INFO:__main__:[Elapsed Time] : 376557.34610557556ms, 7.529911446336728ms on aver
 </details>
 
 
-#### BERT(kor-bert-base-dha_bpe.v1 ~ v3, kor-bert-large-dha_bpe.v1)
+#### BERT(kor-bert-base-dha_bpe.v1 ~ v3, kor-bert-large-dha_bpe.v1 ~ v3)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -555,6 +557,9 @@ INFO:__main__:[Elapsed Time] : 684546.1826324463ms, 13.68961429412827ms on avera
 ** --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe.v1  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 INFO:__main__:[Accuracy] : 0.9068, 45337/49997
 INFO:__main__:[Elapsed Time] : 1146557.6510429382ms, 22.930594570818535ms on average
+
+** --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe.v3  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=20 --warmup_epoch=0 --weight_decay=0.0 --patience 4
+
 
 ```
 
