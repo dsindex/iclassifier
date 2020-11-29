@@ -61,7 +61,7 @@
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - `character-level bpe`
     - vocab.txt는 [sentencepiece](https://github.com/google/sentencepiece)를 이용해서 생성.
-    - ex) `kor-bert-base-bpe.v1`, `kor-bert-large-bpe.v1` (inhouse)
+    - ex) `kor-bert-base-bpe.v1`, `kor-bert-large-bpe.v1, v3` (inhouse)
   - `character-level bpe + 형태소분석기`
     - ex) `kor-bert-base-dha_bpe.v1, v3`, `kor-bert-large-dha_bpe.v1, v3` (inhouse)
   - `형태소분석기`
@@ -114,20 +114,24 @@
 | DistilFromBERT, GloVe, DenseNet-CNN       | 89.21        | 3.5383  / -       |         | augmented, from 'dha BERT(v1), CLS'           |
 | DistilFromBERT, GloVe, DenseNet-CNN       | 89.14        | 3.6146  / -       |         | augmented, from 'dha-bpe BERT-large(v1), CNN' |
 | DistilFromBERT, dha DistilBERT(v1), CLS   | 90.19        | 8.9599  / -       |         | augmented, from 'dha-bpe BERT-large(v1), CNN' |
-| bpe BERT(v1), CNN                         | 90.11        | 16.5453 / -       |         |            |
-| bpe BERT(v1), CLS                         | 89.91        | 14.9586 / -       |         |            |
-| bpe BERT(v1), CNN                         | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
-| bpe BERT(v1), CLS                         | 88.92        | 9.3280  / 70.3232 |         | del 8,9,10,11, threads=14 |
 | bpe DistilBERT(v1), CNN                   | 88.39        | 9.6396  / -       | 38.7144 | threads=14 |
 | bpe DistilBERT(v1), CLS                   | 88.55        | 8.2834  / -       | 31.5655 | threads=14 |
 | wp  DistilBERT(v1), CNN                   | 88.04        | 8.7733  / -       | -       |            |
 | wp  DistilBERT(v1), CLS                   | 88.08        | 8.0111  / -       | -       |            |
+| bpe BERT(v1), CNN                         | 90.11        | 16.5453 / -       |         |            |
+| bpe BERT(v1), CLS                         | 89.91        | 14.9586 / -       |         |            |
+| bpe BERT(v1), CNN                         | 88.62        | 10.7023 / 73.4141 |         | del 8,9,10,11, threads=14 |
+| bpe BERT(v1), CLS                         | 88.92        | 9.3280  / 70.3232 |         | del 8,9,10,11, threads=14 |
 | bpe BERT-large(v1), CNN                   | 89.85        | 24.4099 / -       |         |            |
 | bpe BERT-large(v1), CLS                   | 89.78        | 22.6002 / -       |         |            |
+| bpe BERT-large(v3), CNN                   | -            | -       / -       |         |            |
+| bpe BERT-large(v3), CLS                   | -            | -       / -       |         |            |
 | KcBERT-base , CNN                         | 90.10        | 14.2056 / -       |         |            |
 | KcBERT-base , CLS                         | 90.23        | 13.5712 / -       |         |            |
 | KcBERT-large , CNN                        | 91.26        | 24.2121 / -       |         |            |
 | KcBERT-large , CLS                        | **91.36**    | 22.4859 / -       |         |            |
+| dha DistilBERT(v1), CNN                   | 88.72        | 11.4488 / -       |         |            |
+| dha DistilBERT(v1), CLS                   | 88.51        | 7.5299  / -       |         |            |
 | dha BERT(v1), CNN                         | 90.25        | 15.5738 / -       |         |            |
 | dha BERT(v1), CLS                         | 90.18        | 13.3390 / -       |         |            |
 | dha BERT(v1), CNN                         | 88.88        | 10.5157 / 72.7777 |         | del 8,9,10,11, threads=14         |
@@ -136,8 +140,6 @@
 | dha BERT(v1), CLS                         | 87.54        | 5.7645  / 36.8686 | 28.2626 | del 4,5,6,7,8,9,10,11, threads=14 |
 | dha BERT(v2), CNN                         | 89.08        | 15.3276 / -       |         |            |
 | dha BERT(v2), CLS                         | 89.25        | 12.7876 / -       |         |            |
-| dha DistilBERT(v1), CNN                   | 88.72        | 11.4488 / -       |         |            |
-| dha DistilBERT(v1), CLS                   | 88.51        | 7.5299  / -       |         |            |
 | dha-bpe BERT(v1), CNN                     | 89.07        | 14.9454 / -       |         |            |
 | dha-bpe BERT(v1), CLS                     | 89.01        | 12.7981 / -       |         |            |
 | dha-bpe BERT(v3), CNN                     | 89.91        | 14.8520 / -       |         |            |
@@ -320,7 +322,7 @@ $ python evaluate.py --config=configs/config-densenet-dsa-iee.json --data_dir=./
 </details>
 
 
-#### BERT(kor-bert-base-bpe.v1, kor-bert-large-bpe.v1, kcbert-base, kcbert-large)
+#### BERT(kor-bert-base-bpe, kor-bert-large-bpe, kcbert-base, kcbert-large)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -366,6 +368,9 @@ INFO:__main__:[Elapsed Time] : 438734.2314720154ms, 8.773349530125191ms on avera
 ** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe.v1  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 INFO:__main__:[Accuracy] : 0.8985, 44923/49997
 INFO:__main__:[Elapsed Time] : 1220545.0494289398ms, 24.40995301749384ms on average
+
+** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe.v3  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=20 --patience=4
+
 
 ** --bert_model_name_or_path=./embeddings/kcbert-base  --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.9010, 45047/49997
@@ -413,6 +418,9 @@ INFO:__main__:[Elapsed Time] : 400613.59667778015ms, 8.011125518718865ms on aver
 INFO:__main__:[Accuracy] : 0.8978, 44885/49997
 INFO:__main__:[Elapsed Time] : 1130058.8986873627ms, 22.60026191461467ms on average
 
+** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe.v3  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=20 --patience=4
+
+
 ** --bert_model_name_or_path=./embeddings/kcbert-base  --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.9023, 45110/49997
 INFO:__main__:[Elapsed Time] : 678645.0374126434ms, 13.571247471572018ms on average
@@ -427,7 +435,7 @@ INFO:__main__:[Elapsed Time] : 1124363.7096881866ms, 22.48598377803238ms on aver
 </details>
 
 
-#### BERT(kor-bert-base-dha.v1)
+#### BERT(kor-bert-base-dha)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -509,7 +517,7 @@ INFO:__main__:[Elapsed Time] : 376557.34610557556ms, 7.529911446336728ms on aver
 </details>
 
 
-#### BERT(kor-bert-base-dha_bpe.v1 ~ v3, kor-bert-large-dha_bpe.v1 ~ v3)
+#### BERT(kor-bert-base-dha_bpe, kor-bert-large-dha_bpe)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -543,6 +551,9 @@ INFO:__main__:[Elapsed Time] : 742653.1262397766ms, 14.852031124754996ms on aver
 INFO:__main__:[Accuracy] : 0.9084, 45417/49997
 INFO:__main__:[Elapsed Time] : 1225501.6918182373ms, 24.509510690474073ms on average
 
+** --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe.v3  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=20 --patience 4
+
+
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
@@ -558,7 +569,7 @@ INFO:__main__:[Elapsed Time] : 684546.1826324463ms, 13.68961429412827ms on avera
 INFO:__main__:[Accuracy] : 0.9068, 45337/49997
 INFO:__main__:[Elapsed Time] : 1146557.6510429382ms, 22.930594570818535ms on average
 
-** --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe.v3  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=20 --warmup_epoch=0 --weight_decay=0.0 --patience 4
+** --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe.v3  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=20 --patience 4
 
 
 ```
@@ -567,7 +578,7 @@ INFO:__main__:[Elapsed Time] : 1146557.6510429382ms, 22.930594570818535ms on ave
 </details>
 
 
-#### BERT(kor-bert-base-dha.v2)
+#### BERT(kor-bert-base-dha)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -603,7 +614,7 @@ INFO:__main__:[Elapsed Time] : 639463ms, 12.787603008240659ms on average
 </details>
 
 
-#### ELECTRA(koelectra-base-v1-discriminator)
+#### ELECTRA(koelectra-base-discriminator)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -656,7 +667,7 @@ INFO:__main__:[Elapsed Time] : 689906.133890152ms, 13.796895782950783ms on avera
 </p>
 </details>
 
-#### ELECTRA(kor-electra-base-bpe.v1)
+#### ELECTRA(kor-electra-base-bpe)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -759,10 +770,10 @@ INFO:__main__:[Elapsed Time] : 692853.7294864655ms, 13.855628213249918ms on aver
 | dha BERT(v1)-NSMC, CLS                    | 82.80             | 66.03             | 13.3459 / -       |         | finetuned with 'dha BERT(v1), CLS', NSMC           |
 | dha-bpe BERT-large(v1), CNN               | 83.86             | 66.03             | 33.4405 / -       |         |                                                    |
 | dha-bpe BERT-large(v1), CLS               | 83.86             | 66.67             | 28.3876 / -       |         |                                                    |
-| bpe BERT(v1), CNN                         | 82.80             | 63.27             | 15.0740 / -       |         |                                                    |
-| bpe BERT(v1), CLS                         | 82.38             | 63.69             | 13.1576 / -       |         |                                                    |
 | bpe DistilBERT(v1), CNN                   | 82.38             | 60.93             | 8.7683  / -       |         |                                                    |
 | bpe DistilBERT(v1), CLS                   | 81.53             | 61.36             | 7.6983  / -       |         |                                                    |
+| bpe BERT(v1), CNN                         | 82.80             | 63.27             | 15.0740 / -       |         |                                                    |
+| bpe BERT(v1), CLS                         | 82.38             | 63.69             | 13.1576 / -       |         |                                                    |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU(pip 1.2.0)
@@ -930,7 +941,7 @@ INFO:__main__:[Elapsed Time] : 3581.5823078155518ms, 7.451774718913626ms on aver
 
 
 
-#### BERT(kor-bert-base-dha.v1, kor-bert-large-dha_bpe.v1)
+#### BERT(kor-bert-base-dha, kor-bert-large-dha_bpe)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -1023,7 +1034,7 @@ INFO:__main__:[Elapsed Time] : 5894.242525100708ms, 12.312091665065035ms on aver
 </p>
 </details>
 
-#### BERT(kor-bert-base-bpe.v1)
+#### BERT(kor-bert-base-bpe)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
