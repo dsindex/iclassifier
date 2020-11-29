@@ -470,6 +470,10 @@ INFO:__main__:[Elapsed Time] : 525917ms, 10.515781262501ms on average
 INFO:__main__:[Accuracy] : 0.9025, 45123/49997
 INFO:__main__:[Elapsed Time] : 778762ms, 15.573805904472358ms on average
 
+** --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v2
+INFO:__main__:[Accuracy] : 0.8908, 44536/49997
+INFO:__main__:[Elapsed Time] : 766457ms, 15.327646211696935ms on average
+
 ** --config=configs/config-distilbert-cnn.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1  --warmup_epoch=0 --weight_decay=0.0 --epoch=20
 (1) epoch_0
 INFO:__main__:[Accuracy] : 0.8872, 44358/49997
@@ -501,6 +505,10 @@ INFO:__main__:[Elapsed Time] : 288307ms, 5.764541163293064ms on average
 **  --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.9018, 45089/49997
 INFO:__main__:[Elapsed Time] : 666997.1199035645ms, 13.339050636929372ms on average
+
+** --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v2
+INFO:__main__:[Accuracy] : 0.8925, 44622/49997
+INFO:__main__:[Elapsed Time] : 639463ms, 12.787603008240659ms on average
 
 ** --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/kor-distil-dha-bert.v1  --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 (1) epoch_0
@@ -572,42 +580,6 @@ INFO:__main__:[Elapsed Time] : 1146557.6510429382ms, 22.930594570818535ms on ave
 ** --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe.v3  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=20 --patience 4
 
 
-```
-
-</p>
-</details>
-
-
-#### BERT(kor-bert-base-dha)
- 
-<details><summary><b>enc_class=cnn | cls</b></summary>
-<p>
-
-- train
-```
-* enc_class=cnn
-
-$ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v2 --data_dir=./data/clova_sentiments_morph
-$ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v2 --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
-
-* enc_class=cls
-
-$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/kor-bert-base-dha.v2 --bert_output_dir=bert-checkpoint --lr=2e-5 --epoch=3 --batch_size=64 --data_dir=./data/clova_sentiments_morph/
-```
-
-- evaluation
-```
-* enc_class=cnn
-
-$ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
-INFO:__main__:[Accuracy] : 0.8908, 44536/49997
-INFO:__main__:[Elapsed Time] : 766457ms, 15.327646211696935ms on average
-
-* enc_class=cls
-
-$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clova_sentiments_morph --bert_output_dir=bert-checkpoint
-INFO:__main__:[Accuracy] : 0.8925, 44622/49997
-INFO:__main__:[Elapsed Time] : 639463ms, 12.787603008240659ms on average
 ```
 
 </p>
