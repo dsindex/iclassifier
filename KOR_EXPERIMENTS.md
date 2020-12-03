@@ -124,8 +124,8 @@
 | bpe BERT(v1), CLS                         | 88.92        | 9.3280  / 70.3232 |         | del 8,9,10,11, threads=14 |
 | bpe BERT-large(v1), CNN                   | 89.85        | 24.4099 / -       |         |            |
 | bpe BERT-large(v1), CLS                   | 89.78        | 22.6002 / -       |         |            |
-| bpe BERT-large(v3), CNN                   | -            | -       / -       |         |            |
-| bpe BERT-large(v3), CLS                   | -            | -       / -       |         |            |
+| bpe BERT-large(v3), CNN                   | 89.45        | 26.5318 / -       |         |            |
+| bpe BERT-large(v3), CLS                   | 89.06        | 25.0526 / -       |         |            |
 | KcBERT-base , CNN                         | 90.10        | 14.2056 / -       |         |            |
 | KcBERT-base , CLS                         | 90.23        | 13.5712 / -       |         |            |
 | KcBERT-large , CNN                        | 91.26        | 24.2121 / -       |         |            |
@@ -146,8 +146,8 @@
 | dha-bpe BERT(v3), CLS                     | 89.93        | 13.6896 / -       |         |            |
 | dha-bpe BERT-large(v1), CNN               | 90.84        | 24.5095 / -       |         |            |
 | dha-bpe BERT-large(v1), CLS               | 90.68        | 22.9305 / -       |         |            |
-| dha-bpe BERT-large(v3), CNN               | -            | -       / -       |         |            |
-| dha-bpe BERT-large(v3), CLS               | -            | -       / -       |         |            |
+| dha-bpe BERT-large(v3), CNN               | 90.44        | 28.7014 / -       |         |            |
+| dha-bpe BERT-large(v3), CLS               | 90.57        | 25.5458 / -       |         |            |
 | KoELECTRA-Base-v1, CNN                    | 89.51        | 15.5452 / -       |         |            |
 | KoELECTRA-Base-v1, CLS                    | 89.63        | 14.2667 / -       |         |            |
 | KoELECTRA-Base-v3, CNN                    | 90.72        | 15.3168 / -       |         |            |
@@ -370,7 +370,8 @@ INFO:__main__:[Accuracy] : 0.8985, 44923/49997
 INFO:__main__:[Elapsed Time] : 1220545.0494289398ms, 24.40995301749384ms on average
 
 ** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe.v3  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=20 --patience=4
-
+INFO:__main__:[Accuracy] : 0.8945, 44722/49997
+INFO:__main__:[Elapsed Time] : 1326633.1841945648ms, 26.53188067003673ms on average
 
 ** --bert_model_name_or_path=./embeddings/kcbert-base  --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.9010, 45047/49997
@@ -419,7 +420,8 @@ INFO:__main__:[Accuracy] : 0.8978, 44885/49997
 INFO:__main__:[Elapsed Time] : 1130058.8986873627ms, 22.60026191461467ms on average
 
 ** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe.v3  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=20 --patience=4
-
+INFO:__main__:[Accuracy] : 0.8906, 44526/49997
+INFO:__main__:[Elapsed Time] : 1252674.3474006653ms, 25.05268840963759ms on average
 
 ** --bert_model_name_or_path=./embeddings/kcbert-base  --warmup_epoch=0 --weight_decay=0.0 --epoch=30
 INFO:__main__:[Accuracy] : 0.9023, 45110/49997
@@ -560,7 +562,8 @@ INFO:__main__:[Accuracy] : 0.9084, 45417/49997
 INFO:__main__:[Elapsed Time] : 1225501.6918182373ms, 24.509510690474073ms on average
 
 ** --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe.v3  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=20 --patience 4
-
+INFO:__main__:[Accuracy] : 0.9044, 45219/49997
+INFO:__main__:[Elapsed Time] : 1435084.29813385ms, 28.701459281835014ms on average
 
 * enc_class=cls
 
@@ -578,7 +581,8 @@ INFO:__main__:[Accuracy] : 0.9068, 45337/49997
 INFO:__main__:[Elapsed Time] : 1146557.6510429382ms, 22.930594570818535ms on average
 
 ** --bert_model_name_or_path=./embeddings/kor-bert-large-dha_bpe.v3  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=20 --patience 4
-
+INFO:__main__:[Accuracy] : 0.9057, 45281/49997
+INFO:__main__:[Elapsed Time] : 1277329.5888900757ms, 25.545897660460298ms on average
 
 ```
 
