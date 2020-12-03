@@ -22,6 +22,8 @@
 
 <br>
 
+
+
 # Requirements
 
 - python >= 3.6
@@ -42,22 +44,30 @@
   - [SpanBERT](https://github.com/facebookresearch/SpanBERT/blob/master/README.md)
     - pretrained SpanBERT models are compatible with huggingface's BERT modele except `'bert.pooler.dense.weight', 'bert.pooler.dense.bias'`.
 
-- data
-  - Snips
-    - `data/snips`
-    - from [joint-intent-classification-and-slot-filling-based-on-BERT](https://github.com/lytum/joint-intent-classification-and-slot-filling-based-on-BERT)
-      - paper : [BERT for Joint Intent Classification and Slot Filling](https://arxiv.org/pdf/1902.10909.pdf)
-        - intent classification accuracy : **98.6%** (test set)
-    - [previous SOTA on SNIPS data](https://paperswithcode.com/sota/intent-detection-on-snips)
-  - SST-2
-    - `data/sst2`
-    - from [GLUE benchmark data](https://github.com/nyu-mll/GLUE-baselines/blob/master/download_glue_data.py)
-      - `test.txt` from [pytorch-sentiment-classification](https://github.com/clairett/pytorch-sentiment-classification)
-  - TCCC
-    - [Toxic Comment Classification Challenge](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge/overview)
-      - pending
+<br>
+
+
+
+# Data
+
+- Snips
+  - `data/snips`
+  - from [joint-intent-classification-and-slot-filling-based-on-BERT](https://github.com/lytum/joint-intent-classification-and-slot-filling-based-on-BERT)
+    - paper : [BERT for Joint Intent Classification and Slot Filling](https://arxiv.org/pdf/1902.10909.pdf)
+      - intent classification accuracy : **98.6%** (test set)
+  - [previous SOTA on SNIPS data](https://paperswithcode.com/sota/intent-detection-on-snips)
+
+- SST-2
+  - `data/sst2`
+  - from [GLUE benchmark data](https://github.com/nyu-mll/GLUE-baselines/blob/master/download_glue_data.py)
+    - `test.txt` from [pytorch-sentiment-classification](https://github.com/clairett/pytorch-sentiment-classification)
+
+- TCCC
+  - [Toxic Comment Classification Challenge](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge/overview)
+    - pending
 
 <br>
+
 
 # Snips data
 
@@ -277,6 +287,8 @@ INFO:__main__:[Elapsed Time] : 4279.639005661011ms, 5.983798800619887ms on avera
 </details>
 
 <br>
+
+
 
 # SST-2 data
 
@@ -858,11 +870,15 @@ INFO:__main__:[Elapsed Time] : 47163ms, 25.685714285714287ms on average
 
 <br>
 
+
+
 # Experiments for Korean
 
 - [KOR_EXPERIMENTS.md](/KOR_EXPERIMENTS.md)
 
 <br>
+
+
 
 # Optimization
 
@@ -875,12 +891,18 @@ INFO:__main__:[Elapsed Time] : 47163ms, 25.685714285714287ms on average
 
 <br>
 
+
+
 # Distillation
 
 - [DISTILLATION.md](/DISTILLATION.md)
   - Augmentation
   - Knowledge Distillation
     - ex) BERT-large, RoBERTa-large, ELECTRA-large -> augmentation/distillation -> GloVe, DenseNet-CNN, DenseNet-DSA
+
+<br>
+
+
 
 # Fastformers
 
@@ -890,6 +912,8 @@ INFO:__main__:[Elapsed Time] : 47163ms, 25.685714285714287ms on average
   - Quantization
 
 <br>
+
+
 
 # TorchServe
 
@@ -935,6 +959,8 @@ $ curl -X POST http://localhost:16543/predictions/electra --form data='이 영�
 
 <br>
 
+
+
 # Citation
 
 ```
@@ -947,6 +973,10 @@ $ curl -X POST http://localhost:16543/predictions/electra --form data='이 영�
   howpublished = {\url{https://github.com/dsindex/iclassifier}},
 }
 ```
+
+<br>
+
+
 
 # References
 
