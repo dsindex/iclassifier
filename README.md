@@ -30,20 +30,6 @@
 
 - pip install -r requirements.txt
 
-- pretrained embedding
-  - glove
-    - [download GloVe6B](http://nlp.stanford.edu/data/glove.6B.zip)
-  - unzip to 'embeddings' dir
-  ```
-  $ mkdir embeddings
-  $ ls embeddings
-  glove.6B.zip
-  $ unzip glove.6B.zip 
-  ```
-  - BERT, ALBERT, RoBERTa, BART, ELECTRA(huggingface's [transformers](https://github.com/huggingface/transformers.git))
-  - [SpanBERT](https://github.com/facebookresearch/SpanBERT/blob/master/README.md)
-    - pretrained SpanBERT models are compatible with huggingface's BERT modele except `'bert.pooler.dense.weight', 'bert.pooler.dense.bias'`.
-
 <br>
 
 
@@ -67,6 +53,28 @@
     - pending
 
 <br>
+
+
+
+# Pretrained models
+
+- glove
+  - [download GloVe6B](http://nlp.stanford.edu/data/glove.6B.zip)
+  - unzip to 'embeddings' dir
+  ```
+  $ mkdir embeddings
+  $ ls embeddings
+  glove.6B.zip
+  $ unzip glove.6B.zip 
+  ```
+
+- BERT, ALBERT, RoBERTa, BART, ELECTRA(huggingface's [transformers](https://github.com/huggingface/transformers.git))
+
+- [SpanBERT](https://github.com/facebookresearch/SpanBERT/blob/master/README.md)
+  - pretrained SpanBERT models are compatible with huggingface's BERT modele except `'bert.pooler.dense.weight', 'bert.pooler.dense.bias'`.
+
+<br>
+
 
 
 # Snips data
