@@ -1,11 +1,7 @@
-## conda pytorch
+## pytorch
 
-- install [anaconda](https://www.anaconda.com/distribution/#download-section)
-
-- install pytorch>=1.2.0
-  - 1.5.0, 1.6.0 : recommended
+- install pytorch >=1.5.0 recommended
   ```
-  $ conda install pytorch=1.6.0 --channel pytorch
   * Do not install the proper version of cudatoolkit.
        ex) cudatoolkit10.1, cuda10.1 on the system
     if we match these versions, the inference speed on CPU might be going worse.
@@ -23,8 +19,7 @@
 ## dynamic quantization
 
 - [(EXPERIMENTAL) DYNAMIC QUANTIZATION ON BERT](https://pytorch.org/tutorials/intermediate/dynamic_quantization_bert_tutorial.html)
-  - install pytorch>=1.3.0
-    - 1.5.0, 1.6.0 recommended
+  - install pytorch>=1.5.0 recommended
 
 
 
@@ -112,8 +107,6 @@ get_fused_operator_statistics: Optimized operators:{'EmbedLayerNormalization': 0
 
 - inference using onnxruntime
 ```
-* on environment pytorch installed from pip
-* since released pytorch versions(ex, pytorch==1.2.0, 1.5.0, 1.6.0) are highly optimized, inference should be done with pytorch version via pip instead from source.
 
 ** glove
 $ python evaluate.py --enable_ort --onnx_path pytorch-model.onnx --device=cpu --num_threads=14
