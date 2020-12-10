@@ -1,4 +1,5 @@
 torch
+numpy
 tqdm
 tensorboardX
 transformers
@@ -6,3 +7,5 @@ sklearn
 datasets
 optuna
 nni
+onnx
+onnxruntime

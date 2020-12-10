@@ -27,7 +27,7 @@
 
 - requirements
 ```
-$ pip install onnx onnxruntime onnxruntime-tools
+$ pip install onnx onnxruntime
 * numpy >= 1.18.0
 * onnx >= 1.7.0
 * onnxruntime >= 1.4.0
