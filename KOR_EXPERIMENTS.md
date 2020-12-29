@@ -48,7 +48,8 @@
 
 #### GloVe
 
-- [Standford GloVe code](https://github.com/stanfordnlp/GloVe)를 이용해서 학습.
+- GloVe
+  - [Standford GloVe code](https://github.com/stanfordnlp/GloVe)를 이용해서 학습.
   - 한국어 문서 데이터 준비.
     - 다양한 문서 데이터(위키, 백과, 뉴스, 블로그 등등)를 크롤링.
   - 형태소분석기 tokenizer를 적용해서 형태소 단위로 변경한 데이터를 이용해서 학습 진행.
@@ -56,7 +57,8 @@
 
 #### BERT
 
-- [google original tf code](https://github.com/google-research/bert)를 이용해서 학습.
+- BERT, BERT-large
+  - [google original tf code](https://github.com/google-research/bert)를 이용해서 학습.
   - 한국어 문서 데이터 준비.
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - `character-level bpe`
@@ -67,12 +69,14 @@
   - `형태소분석기`
     - ex) `kor-bert-base-dha.v1, v2` (inhouse)
 
-- KcBERT
-  - [kcbert-base, kcbert-large](https://github.com/Beomi/KcBERT)
+- KcBERT 
+  - [KcBERT](https://github.com/Beomi/KcBERT)
+    - `kcbert-base`, `kcbert-large`
 
 #### DistilBERT
 
-- [training-distilbert](https://github.com/dsindex/transformers_examples#training-distilbert)
+- DistilBERT
+  - [training-distilbert](https://github.com/dsindex/transformers_examples#training-distilbert)
   - 한국어 문서 데이터 준비.
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - ex) `kor-distil-bpe-bert.v1`, `kor-distil-dha-bert.v1` (inhouse)
@@ -81,11 +85,16 @@
 
 #### ELECTRA
 
-- KoELECTRA
-  - [koelectra-base-v1-discriminator](https://huggingface.co/monologg/koelectra-base-v1-discriminator)
-  - [koelectra-base-v3-discriminator](https://huggingface.co/monologg/koelectra-base-v3-discriminator)
+- KoELECTRA-Base
+  - [KoELECTRA](https://github.com/monologg/KoELECTRA)
+    - `monologg/koelectra-base-v1-discriminator`, `monologg/koelectra-base-v3-discriminator`
 
-- [electra](https://github.com/dsindex/electra#pretraining-electra)를 이용해서 학습.
+- LM-KOR-ELECTRA
+  - [LM-kor](https://github.com/kiyoungkim1/LM-kor)
+    - `kykim/electra-kor-base`
+
+- ELECTRA-base
+  - [electra](https://github.com/dsindex/electra#pretraining-electra)를 이용해서 학습.
   - 한국어 문서 데이터 준비.
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - [README.md](https://github.com/dsindex/electra/blob/master/README.md)
@@ -94,10 +103,11 @@
 
 #### RoBERTa
 
-- [huggingface](https://huggingface.co/blog/how-to-train)를 이용한 학습
-  - 한국어 문서 데이터 준비.
-    - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
-  - ex) `kor-roberta-base-bbpe` (inhouse)
+- RoBERTa-base
+  - [huggingface](https://huggingface.co/blog/how-to-train)를 이용한 학습
+    - 한국어 문서 데이터 준비.
+      - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
+    - ex) `kor-roberta-base-bbpe` (inhouse)
 
 
 
@@ -152,6 +162,8 @@
 | KoELECTRA-Base-v1, CLS                    | 89.63        | 14.2667 / -       |         |            |
 | KoELECTRA-Base-v3, CNN                    | 90.72        | 15.3168 / -       |         |            |
 | KoELECTRA-Base-v3, CLS                    | 90.66        | 13.7968 / -       |         |            |
+| LM-KOR-ELECTRA, CNN                       | -            | -       / -       |         |            |
+| LM-KOR-ELECTRA, CLS                       | -            | -       / -       |         |            |
 | bpe ELECTRA-base(v1) , CNN                | 89.59        | 15.8888 / -       |         |            |
 | bpe ELECTRA-base(v1) , CLS                | 89.59        | 14.3914 / -       |         |            |
 | RoBERTa-base , CNN                        | 90.42        | 14.9544 / -       |         |            |
@@ -163,13 +175,14 @@
 * default batch size, learning rate, n_ctx(max_seq_length) : 128, 2e-4, 100
 ```
 
-- [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results), [KoELECTRA](https://github.com/monologg/KoELECTRA)
+- [HanBert-nsmc](https://github.com/monologg/HanBert-nsmc#results), [KoELECTRA](https://github.com/monologg/KoELECTRA), [LM-kor](https://github.com/kiyoungkim1/LM-kor)
 
 |                   | Accuracy (%) | Etc        |
 | ----------------- | ------------ | ---------- |
 | KoELECTRA-Base-v1 | 90.33        |            |
 | KoELECTRA-Base-v2 | 89.56        |            |
-| KoELECTRA-Base-v3 | **90.63**    |            |
+| KoELECTRA-Base-v3 | 90.63        |            |
+| LM-KOR-ELECTRA    | **91.29**    |            |
 | XML-RoBERTa       | 89.03        |            |
 | HanBERT           | 90.06        |            |
 | KoBERT            | 89.59        |            |
@@ -590,7 +603,7 @@ INFO:__main__:[Elapsed Time] : 1277329.5888900757ms, 25.545897660460298ms on ave
 </details>
 
 
-#### ELECTRA(koelectra-base-discriminator)
+#### ELECTRA(koelectra-base-discriminator, electra-kor-base)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -624,6 +637,9 @@ INFO:__main__:[Elapsed Time] : 777338ms, 15.54522361788943ms on average
 INFO:__main__:[Accuracy] : 0.9072, 45356/49997
 INFO:__main__:[Elapsed Time] : 765895.2033519745ms, 15.316871435453972ms on average
 
+** --bert_model_name_or_path='kykim/electra-kor-base' --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
+
+
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
@@ -637,6 +653,9 @@ INFO:__main__:[Elapsed Time] : 713403ms, 14.266721337707017ms on average
 ** --bert_model_name_or_path=./embeddings/koelectra-base-v3-discriminator  --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
 INFO:__main__:[Accuracy] : 0.9066, 45325/49997
 INFO:__main__:[Elapsed Time] : 689906.133890152ms, 13.796895782950783ms on average
+
+** --bert_model_name_or_path='kykim/electra-kor-base' --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
+
 
 ```
 
