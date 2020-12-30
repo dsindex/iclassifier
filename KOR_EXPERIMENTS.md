@@ -57,7 +57,7 @@
 
 #### BERT
 
-- BERT, BERT-large
+- bpe / dha / dha_bpe BERT, BERT-large
   - [google original tf code](https://github.com/google-research/bert)를 이용해서 학습.
   - 한국어 문서 데이터 준비.
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
@@ -162,8 +162,8 @@
 | KoELECTRA-Base-v1, CLS                    | 89.63        | 14.2667 / -       |         |            |
 | KoELECTRA-Base-v3, CNN                    | 90.72        | 15.3168 / -       |         |            |
 | KoELECTRA-Base-v3, CLS                    | 90.66        | 13.7968 / -       |         |            |
-| LM-KOR-ELECTRA, CNN                       | -            | -       / -       |         |            |
-| LM-KOR-ELECTRA, CLS                       | -            | -       / -       |         |            |
+| LM-KOR-ELECTRA, CNN                       | 90.52        | 15.8000 / -       |         |            |
+| LM-KOR-ELECTRA, CLS                       | 91.04        | 14.2696 / -       |         |            |
 | bpe ELECTRA-base(v1) , CNN                | 89.59        | 15.8888 / -       |         |            |
 | bpe ELECTRA-base(v1) , CLS                | 89.59        | 14.3914 / -       |         |            |
 | RoBERTa-base , CNN                        | 90.42        | 14.9544 / -       |         |            |
@@ -638,7 +638,8 @@ INFO:__main__:[Accuracy] : 0.9072, 45356/49997
 INFO:__main__:[Elapsed Time] : 765895.2033519745ms, 15.316871435453972ms on average
 
 ** --bert_model_name_or_path='kykim/electra-kor-base' --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
-
+INFO:__main__:[Accuracy] : 0.9052, 45257/49997
+INFO:__main__:[Elapsed Time] : 790089.4966125488ms, 15.800023858132711ms on average
 
 * enc_class=cls
 
@@ -655,7 +656,8 @@ INFO:__main__:[Accuracy] : 0.9066, 45325/49997
 INFO:__main__:[Elapsed Time] : 689906.133890152ms, 13.796895782950783ms on average
 
 ** --bert_model_name_or_path='kykim/electra-kor-base' --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
-
+INFO:__main__:[Accuracy] : 0.9104, 45516/49997
+INFO:__main__:[Elapsed Time] : 713545.1235771179ms, 14.269641169796696ms on average
 
 ```
 
