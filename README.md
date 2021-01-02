@@ -81,35 +81,35 @@
 
 ### experiments summary
 
-|                      | Accuracy (%) | GPU / CPU           | ONNX    | CONDA             | Dynamic           | Inference         | Inference+Dynamic | Inference+ONNX                 | Etc            |
-| -------------------- | ------------ | ------------------- | ------- |------------------ | ----------------- | ----------------- | ----------------- | ------------------------------ | -------------- |    
-| GloVe, GNB           | 80.43        | 1.2929  / -         | -       | -                 |                   | -                 |                   | -                              |                |
-| GloVe, CNN           | 97.86        | 1.7939  / -         | 1.8689  | 2.7592            |                   | 1.9398            |                   | 0.3848  / -       / FAILED     | threads=14     |
-| GloVe, Densenet-CNN  | 97.57        | 3.6094  / -         | 3.0717  | 6.5887            |                   | 4.9481            |                   | 0.8658  / -       / FAILED     | threads=14     |
-| GloVe, Densenet-DSA  | 97.43        | 7.5007  / -         | 4.4936  | 9.7873            |                   | 7.2086            |                   | 1.5420  / -       / FAILED     | threads=14     |
-| BERT-small, CLS      | 98.00        | 5.9837  / -         | -       | -       / 17.4995 | -       / 15.2820 | -       / 7.4538  | -       / 7.2436  | -       / 3.5445  / **2.4141** | threads=14     |
-| DistilBERT, CLS      | 97.71        | 9.3075  / -         | 32.4263 | 37.7777           | 29.3939           | 14.9494           | 10.4040           | 8.9942  / 10.1848 / 4.8818     | threads=14     |
-| SqueezeBERT, CLS     | -            | 18.0796 / -         | -       | -       / 24.0667 | -       / 23.8565 | -       / 20.3999 | -       / 20.0118 | -       / 11.9890 / FAILED     | threads=14     |
-| BERT-base, CNN       | 97.57        | 12.1273 / -         |         | 81.8787           | -                 | 34.7878           | 30.5454           |                                | threads=14     |
-| BERT-base, CLS       | 97.43        | 12.7714 / -         | 46.4263 | 62.5959           | 49.4747           | 30.7979           | 24.5353           | 16.9756                        | threads=14     |
-| BERT-base, CLS       | 97.00        | 9.2660  / -         | 31.5400 | 42.8950           | 33.4623           | 16.7419           | 13.5703           | 11.7487                        | del 8,9,19,11, threads=14 |
-| BERT-large, CNN      | **98.00**    | 24.277  / -         |         |                   |                   |                   |                   |                                |                |
-| BERT-large, CLS      | 97.86        | 23.542  / -         |         |                   |                   |                   |                   |                                |                |
+|                      | Accuracy (%) | GPU / CPU           | ONNX              | Dynamic           | Inference         | Inference+Dynamic | Inference+ONNX                 | Etc            |
+| -------------------- | ------------ | ------------------- | ----------------- |------------------ | ----------------- | ----------------- | ------------------------------ | -------------- |    
+| GloVe, GNB           | 80.43        | 1.2929  / -         | -                 | -                 | -                 | -                 | -                              |                |
+| GloVe, CNN           | 97.86        | 1.7939  / -         | 1.8689            | -                 | 1.9398            | -                 | 0.3848  / -       / FAILED     | threads=14     |
+| GloVe, Densenet-CNN  | 97.57        | 3.6094  / -         | 3.0717            | -                 | 4.9481            | -                 | 0.8658  / -       / FAILED     | threads=14     |
+| GloVe, Densenet-DSA  | 97.43        | 7.5007  / -         | 4.4936            | -                 | 7.2086            | -                 | 1.5420  / -       / FAILED     | threads=14     |
+| BERT-small, CLS      | 98.00        | 5.9837  / -         | -                 | -       / 15.2820 | -       / 7.4538  | -       / 7.2436  | -       / 3.5445  / **2.4141** | threads=14     |
+| DistilBERT, CLS      | 97.71        | 9.3075  / -         | 32.4263 / 33.9696 | 29.3939 / 33.1947 | 14.9494 / 12.7506 | 10.4040 / 10.7088 | 8.9942  / 8.3032  / 4.3144     | threads=14     |
+| SqueezeBERT, CLS     | 97.29        | 18.0796 / -         | -                 | -       / 23.8565 | -       / 20.3999 | -       / 20.0118 | -       / 11.9890 / FAILED     | threads=14     |
+| MiniLM, CLS          | 96.86        | 12.2094 / -         | -       / 17.5638 | -       / 38.2084 | -       / 16.8337 | -       / 17.7702 | -       / 5.0394  / 4.3123     | threads=14     |
+| BERT-base, CNN       | 97.57        | 12.1273 / -         | -                 | -                 | 34.7878           | 30.5454           | -                              | threads=14     |
+| BERT-base, CLS       | 97.43        | 12.7714 / -         | 46.4263           | 49.4747           | 30.7979           | 24.5353           | 16.9756                        | threads=14     |
+| BERT-base, CLS       | 97.00        | 9.2660  / -         | 31.5400           | 33.4623           | 16.7419           | 13.5703           | 11.7487                        | del 8,9,19,11, threads=14 |
+| BERT-large, CNN      | **98.00**    | 24.277  / -         | -                 | -                 | -                 | -                 | -                              |                |
+| BERT-large, CLS      | 97.86        | 23.542  / -         | -                 | -                 | -                 | -                 | -                              |                |
 
 ```
 * GPU / CPU : Elapsed time/example(ms), GPU / CPU  [Tesla V100 1 GPU, Intel(R) Xeon(R) Gold 5120 CPU @ 2.20GHz, 2 CPU, 14CORES/1CPU, HyperThreading]
-* ONNX : onnxruntime 1.3.0, conda pytorch=1.5.0 
-* CONDA : conda pytorch=1.5.0
-          / conda pytorch=1.6.0
-* Dynamic : conda pytorch=1.5.0, --enable_dqm
-            / conda pytorch=1.6.0, --enable_dqm
-* Inference : conda pytorch=1.5.0, --enable_inference
-              / conda pytorch=1.6.0, --enable_inference
-* Inference+Dynamic : conda pytorch=1.5.0, --enable_dqm, --enable_inference
-                      / conda pytorch=1.6.0, --enable_dqm, --enable_inference 
-* Inference+ONNX : conda pytorch=1.5.0, --enable_ort(onnxruntime 1.3.0), --enable_inference
-                   / conda pytorch=1.6.0, --enable_ort(onnxruntime 1.4.0), --enable_inference 
-                   / conda pytorch=1.6.0, --enable_ort(onnxruntime 1.4.0), --enable_inference, --quantize_onnx
+* ONNX : onnxruntime 1.3.0, pytorch=1.5.0
+         / onnxruntime 1.4.0, pytorch=1.6.0
+* Dynamic : pytorch=1.5.0, --enable_dqm
+            / pytorch=1.6.0, --enable_dqm
+* Inference : pytorch=1.5.0, --enable_inference
+              / pytorch=1.6.0, --enable_inference
+* Inference+Dynamic : pytorch=1.5.0, --enable_dqm, --enable_inference
+                      / pytorch=1.6.0, --enable_dqm, --enable_inference 
+* Inference+ONNX : pytorch=1.5.0, --enable_ort(onnxruntime 1.3.0), --enable_inference
+                   / pytorch=1.6.0, --enable_ort(onnxruntime 1.4.0), --enable_inference 
+                   / pytorch=1.6.0, --enable_ort(onnxruntime 1.4.0), --enable_inference, --quantize_onnx
 * default batch size, learning rate, n_ctx(max_seq_length) : 128, 2e-4, 100
 * number of tokens / sentence : MEAN : 9.08, MAX:24, MIN:3, MEDIAN:9
 ```
@@ -285,6 +285,10 @@ INFO:__main__:[Elapsed Time] : 12742.885112762451ms, 18.07960045013646ms on aver
 INFO:__main__:[Accuracy] : 0.9800,   686/  700
 INFO:__main__:[Elapsed Time] : 4279.639005661011ms, 5.983798800619887ms on average
 
+** --config=configs/config-bert-cls.json --bert_model_name_or_paht=./embeddings/MiniLM-L12-H384-uncased
+INFO:__main__:[Accuracy] : 0.9686,   678/  700
+INFO:__main__:[Elapsed Time] : 8598.786115646362ms, 12.209460459042004ms on average
+
 ```
 
 </p>
@@ -333,6 +337,8 @@ INFO:__main__:[Elapsed Time] : 4279.639005661011ms, 5.983798800619887ms on avera
 | BERT-medium, CLS                        | 89.24        | 9.5857  / -       |                          |               |
 | DistilBERT, CNN                         | 89.90        | 9.9362  / -       |              - / 35.7070 | threads=14    |
 | **DistilBERT, CLS**                     | 91.10        | 8.9719  / -       |              - / 29.4646 | threads=14    |
+| MiniLM, CNN                             | 91.49        | 13.5255 / -       |              - / -       |               |
+| MiniLM, CLS                             | 91.21        | 12.2066 / -       |              - / -       |               |
 | BERT-base, CNN                          | 92.04        | 14.1576 / -       |                          |               |
 | BERT-base, CLS                          | 92.42        | 12.7549 / 62.5050 | 66.4545(92.42) / 50.8080 | threads=14    |
 | BERT-base, CLS                          | 93.36        | 15.6755 / -       |              - / -       | fintuned using amazon reviews     |
@@ -545,6 +551,10 @@ INFO:__main__:[Elapsed Time] : 8951ms, 4.86043956043956ms on average
 INFO:__main__:[Accuracy] : 0.8990,  1637/ 1821
 INFO:__main__:[Elapsed Time] : 18193ms, 9.936263736263736ms on average
 
+** --configs/config-bert-cnn.json --bert_model_name_or_path=embeddings/MiniLM-L12-H384-uncased
+INFO:__main__:[Accuracy] : 0.9149,  1666/ 1821
+INFO:__main__:[Elapsed Time] : 24706.911087036133ms, 13.525558042002249ms on average
+
 ** --bert_model_name_or_path=./embeddings/squeezebert-uncased --epoch=20 --warmup_epoch=0 --weight_decay=0.0
 INFO:__main__:[Accuracy] : 0.9061,  1650/ 1821
 INFO:__main__:[Elapsed Time] : 35230.47494888306ms, 19.287928644117418ms on average
@@ -604,6 +614,10 @@ INFO:__main__:[Elapsed Time] : 7124ms, 3.8461538461538463ms on average
 ** --configs/config-distilbert-cls.json --bert_model_name_or_path=embeddings/distilbert-base-uncased
 INFO:__main__:[Accuracy] : 0.9110,  1659/ 1821
 INFO:__main__:[Elapsed Time] : 16431ms, 8.971978021978021ms on average
+
+** --configs/config-bert-cls.json --bert_model_name_or_path=embeddings/MiniLM-L12-H384-uncased
+INFO:__main__:[Accuracy] : 0.9121,  1661/ 1821
+INFO:__main__:[Elapsed Time] : 22304.69584465027ms, 12.206664845183655ms on average
 
 ** --bert_model_name_or_path=./embeddings/squeezebert-uncased --epoch=20  --warmup_epoch=0 --weight_decay=0.0
 INFO:__main__:[Accuracy] : 0.9012,  1641/ 1821
