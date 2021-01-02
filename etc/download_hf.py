@@ -17,6 +17,8 @@ def main():
     
     parser.add_argument("--model_name_or_path", type=str, default='bert-base-cased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-cased)")
+    parser.add_argument("--output_dir", type=str, required=True,
+                        help="The output directory where the model predictions and checkpoints will be written.")
 
     opt = parser.parse_args()
 
@@ -28,7 +30,7 @@ def main():
     config = model.config
     logger.info("[Done]")
     # save
-    output_dir = opt.model_name_or_path
+    output_dir = opt.output_dir
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     tokenizer.save_pretrained(output_dir)
