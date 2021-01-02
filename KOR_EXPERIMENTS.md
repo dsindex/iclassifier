@@ -637,7 +637,7 @@ INFO:__main__:[Elapsed Time] : 777338ms, 15.54522361788943ms on average
 INFO:__main__:[Accuracy] : 0.9072, 45356/49997
 INFO:__main__:[Elapsed Time] : 765895.2033519745ms, 15.316871435453972ms on average
 
-** --bert_model_name_or_path='kykim/electra-kor-base' --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
+** --bert_model_name_or_path=./embeddings/electra-kor-base --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
 INFO:__main__:[Accuracy] : 0.9052, 45257/49997
 INFO:__main__:[Elapsed Time] : 790089.4966125488ms, 15.800023858132711ms on average
 
@@ -655,7 +655,7 @@ INFO:__main__:[Elapsed Time] : 713403ms, 14.266721337707017ms on average
 INFO:__main__:[Accuracy] : 0.9066, 45325/49997
 INFO:__main__:[Elapsed Time] : 689906.133890152ms, 13.796895782950783ms on average
 
-** --bert_model_name_or_path='kykim/electra-kor-base' --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
+** --bert_model_name_or_path=./embeddings/electra-kor-base --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
 INFO:__main__:[Accuracy] : 0.9104, 45516/49997
 INFO:__main__:[Elapsed Time] : 713545.1235771179ms, 14.269641169796696ms on average
 
