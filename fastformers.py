@@ -428,26 +428,25 @@ def train(opt):
     # set etc
     torch.autograd.set_detect_anomaly(True)
 
-    # set config
-    config = load_config(opt, config_path=opt.config)
-    config['opt'] = opt
-    logger.info("[config] :\n%s", config)
+    # prepare student config
+    student_config = load_config(opt, config_path=opt.config)
+    student_config['opt'] = opt
+    logger.info("[student config] :\n%s", student_config)
+        
+    # prepare teacher config
+    teacher_config = load_config(opt, config_path=opt.teacher_config)
+    teacher_config['opt'] = opt
+    logger.info("[teacher config] :\n%s", teacher_config)
     
     # set path
-    set_path(config)
+    set_path(teacher_config)
   
     # prepare train, valid dataset
-    train_loader, valid_loader = prepare_datasets(config)
+    train_loader, valid_loader = prepare_datasets(teacher_config)
 
     # ------------------------------------------------------------------------------------------------------- #
     # distillation
     if opt.do_distill:
-        # prepare config
-        teacher_config = load_config(opt, config_path=opt.teacher_config)
-        teacher_config['opt'] = opt
-        logger.info("[teacher config] :\n%s", teacher_config)
-        student_config = config
-
         # prepare and load teacher model
         teacher_model = prepare_model(teacher_config, bert_model_name_or_path=opt.teacher_bert_model_name_or_path)
         teacher_checkpoint = load_checkpoint(opt.teacher_model_path, device=opt.device)
@@ -468,23 +467,23 @@ def train(opt):
     # structured pruning
     if opt.do_prune:
         # load model from '--model_path', '--bert_output_dir'
-        model = prepare_model(config, bert_model_name_or_path=opt.bert_output_dir)
+        model = prepare_model(student_config, bert_model_name_or_path=opt.bert_output_dir)
         checkpoint = load_checkpoint(opt.model_path, device=opt.device)
         model.load_state_dict(checkpoint)
         model = model.to(opt.device)
 
         eval_loss = eval_acc = 0
-        eval_loss, eval_acc = evaluate(model, config, valid_loader)
+        eval_loss, eval_acc = evaluate(model, student_config, valid_loader)
         logs = {}
         logs['eval_loss'] = eval_loss
         logs['eval_acc'] = eval_acc
         logger.info("[before pruning] :")
         logger.info(json.dumps({**logs}))
 
-        prune_rewire(config, model, valid_loader, use_tqdm=True)
+        prune_rewire(student_config, model, valid_loader, use_tqdm=True)
 
         # save pruned model to '--save_path_pruned', '--bert_output_dir_pruned'
-        save_model(config, model, save_path=opt.save_path_pruned)
+        save_model(student_config, model, save_path=opt.save_path_pruned)
         model.bert_tokenizer.save_pretrained(opt.bert_output_dir_pruned)
         model.bert_model.save_pretrained(opt.bert_output_dir_pruned)
         logger.info("[Pruned model saved] : {}, {}".format(opt.save_path_pruned, opt.bert_output_dir_pruned))
