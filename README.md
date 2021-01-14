@@ -3,7 +3,7 @@
 **reference pytorch code for intent(sentence) classification.**
 
 - embedding
-  - GloVe, BERT, DistilBERT, SpanBERT, ALBERT, RoBERTa, BART, ELECTRA
+  - GloVe, BERT, DistilBERT, SpanBERT, ALBERT, RoBERTa, XLM-RoBERTa, BART, ELECTRA
 - encoding
   - GNB
     - Gaussian Naive Bayes(simple biased model)
@@ -374,10 +374,12 @@ INFO:__main__:[Elapsed Time] : 4330.849170684814ms, 6.052388653734723ms on avera
 | ALBERT-xxlarge, CLS                     | 94.45        | 51.8027 / -       |                          |               |
 | RoBERTa-base, CNN                       | 92.92        | 15.1016 / -       |                          |               |
 | RoBERTa-base, CLS                       | 93.03        | 14.6736 / -       |                          |               |
+| XLM-RoBERTa-base, CLS                   | 91.49        | 14.2246 / -       |                          |               |
 | RoBERTa-base, CNN                       | 92.26        | 11.5241 / -       |                          | del 8,9,10,11 |
 | RoBERTa-base, CLS                       | 91.76        | 10.0296 / -       |                          | del 8,9,10,11 |
 | RoBERTa-large, CNN                      | 95.55        | 26.9807 / -       |                          |               |
 | RoBERTa-large, CLS                      | 95.66        | 23.7395 / -       |                          |               |
+| XLM-RoBERTa-large, CLS                  | 92.04        | 24.8045 / -       |                          |               |
 | BART-large, CNN                         | 94.45        | 35.1708 / -       |                          |               |
 | BART-large, CLS                         | 94.89        | 33.3862 / -       |                          |               |
 | ELECTRA-base, CNN                       | 95.39        | 14.9802 / -       |                          |               |
@@ -818,6 +820,14 @@ INFO:__main__:[Elapsed Time] : 26822ms, 14.673626373626373ms on average
 ** --bert_model_name_or_path=./embeddings/roberta-base --bert_remove_layers=8,9,10,11
 INFO:__main__:[Accuracy] : 0.9176,  1671/ 1821
 INFO:__main__:[Elapsed Time] : 18344ms, 10.02967032967033ms on average
+
+** --bert_model_name_or_path=./embeddings/xlm-roberta-base
+INFO:__main__:[Accuracy] : 0.9149,  1666/ 1821
+INFO:__main__:[Elapsed Time] : 25997.645378112793ms, 14.224677033476777ms on average
+
+** --bert_model_name_or_path=./embeddings/xlm-roberta-large
+INFO:__main__:[Accuracy] : 0.9204,  1676/ 1821
+INFO:__main__:[Elapsed Time] : 45271.38304710388ms, 24.804521654988385ms on average
 
 ```
 
