@@ -109,6 +109,10 @@
       - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
     - ex) `kor-roberta-base-bbpe` (inhouse)
 
+- XLM-RoBERTa-base, XML-RoBERTa-large
+  - from [huggingface.co/models](https://huggingface.co/models)
+  - 다국어 RoBERTa
+
 
 
 ## NMSC data
@@ -168,6 +172,8 @@
 | bpe ELECTRA-base(v1) , CLS                | 89.59        | 14.3914 / -       |            |
 | RoBERTa-base , CNN                        | 90.42        | 14.9544 / -       |            |
 | RoBERTa-base , CLS                        | 90.34        | 13.8556 / -       |            |
+| XLM-RoBERTa-base , CLS                    | 89.98        | 14.8101 / -       |            |
+| XLM-RoBERTa-large , CLS                   | 91.05        | 25.1067 / -       |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU
@@ -732,6 +738,13 @@ $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=./data/
 INFO:__main__:[Accuracy] : 0.9034, 45168/49997
 INFO:__main__:[Elapsed Time] : 692853.7294864655ms, 13.855628213249918ms on average
 
+** --bert_model_name_or_path=./embeddings/xlm-roberta-base
+INFO:__main__:[Accuracy] : 0.8998, 44986/49997
+INFO:__main__:[Elapsed Time] : 740546.2129116058ms, 14.810195497745838ms on average
+
+** --bert_model_name_or_path=./embeddings/xlm-roberta-large
+INFO:__main__:[Accuracy] : 0.9105, 45523/49997
+INFO:__main__:[Elapsed Time] : 1255374.0434646606ms, 25.106745840540047ms on average
 ```
 
 </p>
