@@ -17,14 +17,6 @@
       - 'train.txt', 'valid.txt', 'test.txt'
       - 원문의 'comment', 'hate' label만 사용
       - 'test.txt'는 제공하지 않으므로 'valid.txt'를 복사해서 사용.
-
-      | valid     | # examples / class  |
-      | --------- | ------------------- |
-      | none      | 160                 |
-      | hate      | 122                 |
-      | offensive | 189                 |
-      | total     | 471                 |
-      
       - data augmentation(distillation) 등에 활용하기 위해서 'unlabeled' 데이터도 복사.
         - 데이터 사이즈가 제법 크기 때문에, git에 추가하지 않고, 다운받아서 사용.
 
@@ -33,14 +25,6 @@
 
     - './data/korean_bias_speech/'
       - 원문의 'comment', 'bias' label만 사용
-
-      | valid   | # examples / class  |
-      | ------- | ------------------- |
-      | none    | 342                 |
-      | others  | 62                  |
-      | gender  | 67                  |
-      | total   | 472                 |
-
     - './data/korean_bias_speech_morph'
       - `형태소분석기 tokenizer`를 적용한 데이터.
 
@@ -83,6 +67,10 @@
   - ex) `kor-distil-wp-bert.v1` (inhouse)
     - `koelectra-base-v3-discriminator`를 distillation. 학습데이터는 동일.
 
+- mDistilBERT
+  - from [huggingface.co/models](https://huggingface.co/models)
+  - `distilbert-base-multilingual-cased` 
+
 #### ELECTRA
 
 - KoELECTRA-Base
@@ -111,7 +99,7 @@
 
 - XLM-RoBERTa-base, XML-RoBERTa-large
   - from [huggingface.co/models](https://huggingface.co/models)
-  - 다국어 RoBERTa
+  - `xlm-roberta-base`, `xlm-roberta-large`
 
 
 
@@ -132,6 +120,7 @@
 | bpe DistilBERT(v1), CLS                   | 88.55        | 8.2834  / -       | threads=14 |
 | wp  DistilBERT(v1), CNN                   | 88.04        | 8.7733  / -       |            |
 | wp  DistilBERT(v1), CLS                   | 88.08        | 8.0111  / -       |            |
+| mDistilBERT, CLS                          | -            | -       / -       |            |
 | bpe BERT(v1), CNN                         | 90.11        | 16.5453 / -       |            |
 | bpe BERT(v1), CLS                         | 89.91        | 14.9586 / -       |            |
 | bpe BERT(v1), CNN                         | 88.62        | 10.7023 / 73.4141 | del 8,9,10,11, threads=14 |
@@ -340,7 +329,7 @@ $ python evaluate.py --config=configs/config-densenet-dsa-iee.json --data_dir=./
 </details>
 
 
-#### BERT(kor-bert-base-bpe, kor-bert-large-bpe, kcbert-base, kcbert-large)
+#### BERT(kor-bert-base-bpe, kor-bert-large-bpe, kor-distil-bpe-bert, distilbert-base-multilingual-cased, kcbert-base, kcbert-large)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -433,6 +422,9 @@ INFO:__main__:[Elapsed Time] : 414233.4134578705ms, 8.283499222067283ms on avera
 INFO:__main__:[Accuracy] : 0.8808, 44036/49997
 INFO:__main__:[Elapsed Time] : 400613.59667778015ms, 8.011125518718865ms on average
 
+** --configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/distilbert-base-multilingual-cased --warmup_epoch=0 --weight_decay=0.0 --epoch=30
+
+
 ** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe.v1  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 INFO:__main__:[Accuracy] : 0.8978, 44885/49997
 INFO:__main__:[Elapsed Time] : 1130058.8986873627ms, 22.60026191461467ms on average
@@ -455,7 +447,7 @@ INFO:__main__:[Elapsed Time] : 1124363.7096881866ms, 22.48598377803238ms on aver
 </details>
 
 
-#### BERT(kor-bert-base-dha)
+#### BERT(kor-bert-base-dha, kor-distil-dha-bert)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -706,7 +698,7 @@ INFO:__main__:[Elapsed Time] : 719611.6433143616ms, 14.391430078177311ms on aver
 </p>
 </details>
 
-#### RoBERTa(kor-roberta-base-bbpe)
+#### RoBERTa(kor-roberta-base-bbpe, xlm-roberta-base, xlm-roberta-large)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>

@@ -3,7 +3,7 @@
 **reference pytorch code for intent(sentence) classification.**
 
 - embedding
-  - GloVe, BERT, DistilBERT, SpanBERT, ALBERT, RoBERTa, XLM-RoBERTa, BART, ELECTRA
+  - GloVe, BERT, DistilBERT, mDistilBERT, SpanBERT, ALBERT, RoBERTa, XLM-RoBERTa, BART, ELECTRA
 - encoding
   - GNB
     - Gaussian Naive Bayes(simple biased model)
@@ -68,7 +68,7 @@
   $ unzip glove.6B.zip 
   ```
 
-- BERT, ALBERT, RoBERTa, BART, ELECTRA(huggingface's [transformers](https://github.com/huggingface/transformers.git))
+- BERT, DistilBERT, mDistilBERT, SpanBERT, ALBERT, RoBERTa, XLM-RoBERTa, BART, ELECTRA(huggingface's [transformers](https://github.com/huggingface/transformers.git))
 
 - [SpanBERT](https://github.com/facebookresearch/SpanBERT/blob/master/README.md)
   - pretrained SpanBERT models are compatible with huggingface's BERT modele except `'bert.pooler.dense.weight', 'bert.pooler.dense.bias'`.
@@ -346,6 +346,7 @@ INFO:__main__:[Elapsed Time] : 4330.849170684814ms, 6.052388653734723ms on avera
 | DistilBERT, CNN                         | 89.90        | 9.9362  / -       |              - / 35.7070 | threads=14    |
 | **DistilBERT, CLS**                     | 91.10        | 8.9719  / -       |              - / 29.4646 | threads=14    |
 | DistilBERT, CLS                         | 92.04        | 6.9790  / -       |              - / -       | epoch=30      |
+| mDistilBERT, CLS                        | -            | -       / -       |              - / -       | epoch=30      |
 | MiniLM, CNN                             | 91.49        | 13.5255 / -       |              - / -       |               |
 | MiniLM, CLS                             | 91.21        | 12.2066 / -       |              - / -       |               |
 | MiniLM, CLS                             | 93.25        | 11.5939 / -       |              - / -       | epoch=30      |
@@ -642,6 +643,9 @@ INFO:__main__:[Elapsed Time] : 16431ms, 8.971978021978021ms on average
 ** --configs/config-distilbert-cls.json --bert_model_name_or_path=embeddings/distilbert-base-uncased --epoch=30
 INFO:__main__:[Accuracy] : 0.9204,  1676/ 1821
 INFO:__main__:[Elapsed Time] : 12806.593418121338ms, 6.979021790263417ms on average
+
+** --configs/config-distilbert-cls.json --bert_model_name_or_path=embeddings/distilbert-base-multilingual-cased --epoch=30
+
 
 ** --configs/config-bert-cls.json --bert_model_name_or_path=embeddings/MiniLM-L12-H384-uncased
 INFO:__main__:[Accuracy] : 0.9121,  1661/ 1821
