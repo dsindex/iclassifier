@@ -120,7 +120,7 @@
 | bpe DistilBERT(v1), CLS                   | 88.55        | 8.2834  / -       | threads=14 |
 | wp  DistilBERT(v1), CNN                   | 88.04        | 8.7733  / -       |            |
 | wp  DistilBERT(v1), CLS                   | 88.08        | 8.0111  / -       |            |
-| mDistilBERT, CLS                          | -            | -       / -       |            |
+| mDistilBERT, CLS                          | 86.55        | 8.0584  / -       |            |
 | bpe BERT(v1), CNN                         | 90.11        | 16.5453 / -       |            |
 | bpe BERT(v1), CLS                         | 89.91        | 14.9586 / -       |            |
 | bpe BERT(v1), CNN                         | 88.62        | 10.7023 / 73.4141 | del 8,9,10,11, threads=14 |
@@ -423,7 +423,8 @@ INFO:__main__:[Accuracy] : 0.8808, 44036/49997
 INFO:__main__:[Elapsed Time] : 400613.59667778015ms, 8.011125518718865ms on average
 
 ** --configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/distilbert-base-multilingual-cased --warmup_epoch=0 --weight_decay=0.0 --epoch=30
-
+INFO:__main__:[Accuracy] : 0.8655, 43273/49997
+INFO:__main__:[Elapsed Time] : 402990.97418785095ms, 8.058487663212581ms on average
 
 ** --bert_model_name_or_path=./embeddings/kor-bert-large-bpe.v1  --warmup_epoch=0 --weight_decay=0.0 --lr=1e-5 --epoch=30
 INFO:__main__:[Accuracy] : 0.8978, 44885/49997

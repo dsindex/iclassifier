@@ -346,7 +346,7 @@ INFO:__main__:[Elapsed Time] : 4330.849170684814ms, 6.052388653734723ms on avera
 | DistilBERT, CNN                         | 89.90        | 9.9362  / -       |              - / 35.7070 | threads=14    |
 | **DistilBERT, CLS**                     | 91.10        | 8.9719  / -       |              - / 29.4646 | threads=14    |
 | DistilBERT, CLS                         | 92.04        | 6.9790  / -       |              - / -       | epoch=30      |
-| mDistilBERT, CLS                        | -            | -       / -       |              - / -       | epoch=30      |
+| mDistilBERT, CLS                        | 87.10        | 7.9757  / -       |              - / -       | epoch=30      |
 | MiniLM, CNN                             | 91.49        | 13.5255 / -       |              - / -       |               |
 | MiniLM, CLS                             | 91.21        | 12.2066 / -       |              - / -       |               |
 | MiniLM, CLS                             | 93.25        | 11.5939 / -       |              - / -       | epoch=30      |
@@ -645,7 +645,8 @@ INFO:__main__:[Accuracy] : 0.9204,  1676/ 1821
 INFO:__main__:[Elapsed Time] : 12806.593418121338ms, 6.979021790263417ms on average
 
 ** --configs/config-distilbert-cls.json --bert_model_name_or_path=embeddings/distilbert-base-multilingual-cased --epoch=30
-
+INFO:__main__:[Accuracy] : 0.8710,  1586/ 1821
+INFO:__main__:[Elapsed Time] : 14596.29511833191ms, 7.975767077980461ms on average
 
 ** --configs/config-bert-cls.json --bert_model_name_or_path=embeddings/MiniLM-L12-H384-uncased
 INFO:__main__:[Accuracy] : 0.9121,  1661/ 1821
