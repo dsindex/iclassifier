@@ -3,7 +3,7 @@
 **reference pytorch code for intent(sentence) classification.**
 
 - embedding
-  - GloVe, BERT, DistilBERT, mDistilBERT, SpanBERT, ALBERT, RoBERTa, XLM-RoBERTa, BART, ELECTRA
+  - GloVe, BERT, DistilBERT, mDistilBERT, SpanBERT, ALBERT, RoBERTa, XLM-RoBERTa, BART, ELECTRA, DeBERTa
 - encoding
   - GNB
     - Gaussian Naive Bayes(simple biased model)
@@ -68,7 +68,7 @@
   $ unzip glove.6B.zip 
   ```
 
-- BERT, DistilBERT, mDistilBERT, SpanBERT, ALBERT, RoBERTa, XLM-RoBERTa, BART, ELECTRA(huggingface's [transformers](https://github.com/huggingface/transformers.git))
+- BERT-like models(huggingface's [transformers](https://github.com/huggingface/transformers.git))
 
 - [SpanBERT](https://github.com/facebookresearch/SpanBERT/blob/master/README.md)
   - pretrained SpanBERT models are compatible with huggingface's BERT modele except `'bert.pooler.dense.weight', 'bert.pooler.dense.bias'`.
@@ -387,6 +387,8 @@ INFO:__main__:[Elapsed Time] : 4330.849170684814ms, 6.052388653734723ms on avera
 | ELECTRA-base, CLS                       | 95.22        | 14.0087 / -       |                          |               |
 | ELECTRA-large, CNN                      | 96.05        | 27.2868 / -       |                          |               |
 | ELECTRA-large, CLS                      | **96.43**    | 25.6857 / -       |                          |               |
+| DeBERTa-base, CLS                       | 93.41        | 26.1533 / -       |                          |               |
+| DeBERTa-large, CLS                      | 94.95        | 62.4272 / -       |                          |               |
 
 - [sst2 leaderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -926,6 +928,38 @@ INFO:__main__:[Elapsed Time] : 25956ms, 14.008791208791209ms on average
 ** --bert_model_name_or_path=./embeddings/electra-large-discriminator --lr=1e-6 --epoch=15
 INFO:__main__:[Accuracy] : 0.9643,  1756/ 1821
 INFO:__main__:[Elapsed Time] : 47163ms, 25.685714285714287ms on average
+```
+
+</p>
+</details>
+
+<details><summary><b>emb_class=deberta, enc_class=cnn | cls</b></summary>
+<p>
+
+- train
+```
+* share config-bert-*.json
+* n_ctx size should be less than 512
+
+* enc_class=cls
+
+$ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/deberta-base
+$ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/deberta-base --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64
+```
+
+- evaluation
+```
+
+* enc_lass=cls
+
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+INFO:__main__:[Accuracy] : 0.9341,  1701/ 1821
+INFO:__main__:[Elapsed Time] : 47751.57833099365ms, 26.153329571524818ms on average
+
+** --bert_model_name_or_path=./embeddings/deberta-large --batch_size=32 --gradient_accumulation_steps=2
+INFO:__main__:[Accuracy] : 0.9495,  1729/ 1821
+INFO:__main__:[Elapsed Time] : 113818.21751594543ms, 62.427293075310004ms on average
+
 ```
 
 </p>
