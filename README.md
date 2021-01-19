@@ -81,36 +81,30 @@
 
 ### experiments summary
 
-|                      | Accuracy (%) | GPU / CPU           | ONNX              | Dynamic           | Inference         | Inference+Dynamic | Inference+ONNX                     | Etc            |
-| -------------------- | ------------ | ------------------- | ----------------- |------------------ | ----------------- | ----------------- | ---------------------------------- | -------------- |    
-| GloVe, GNB           | 80.43        | 1.2929  / -         | -                 | -                 | -                 | -                 | -                                  |                |
-| GloVe, CNN           | 97.86        | 1.7939  / -         | 1.8689            | -                 | 1.9398            | -                 | 0.3848  / -           / FAILED     | threads=14     |
-| GloVe, Densenet-CNN  | 97.57        | 3.6094  / -         | 3.0717            | -                 | 4.9481            | -                 | 0.8658  / -           / FAILED     | threads=14     |
-| GloVe, Densenet-DSA  | 97.43        | 7.5007  / -         | 4.4936            | -                 | 7.2086            | -                 | 1.5420  / -           / FAILED     | threads=14     |
-| TinyBERT, CLS        | 97.29        | 6.0523  / -         | 5.3673            | -       / 14.0268 | -       / 5.7238  | -       / 6.1879  | -       / **1.7821**  / **1.8446** | threads=14     |
-| BERT-small, CLS      | 98.00        | 5.9837  / -         | -                 | -       / 15.2820 | -       / 7.4538  | -       / 7.2436  | -       / 3.5445      / 2.4141     | threads=14     |
-| DistilBERT, CLS      | 97.71        | 9.3075  / -         | 32.4263 / 33.9696 | 29.3939 / 33.1947 | 14.9494 / 12.7506 | 10.4040 / 10.7088 | 8.9942  / 8.3032      / 4.3144     | threads=14     |
-| SqueezeBERT, CLS     | 97.29        | 18.0796 / -         | -                 | -       / 23.8565 | -       / 20.3999 | -       / 20.0118 | -       / 11.9890     / FAILED     | threads=14     |
-| MiniLM, CLS          | 96.86        | 12.2094 / -         | -       / 17.5638 | -       / 38.2084 | -       / 16.8337 | -       / 17.7702 | -       / 5.0394      / 4.3123     | threads=14     |
-| BERT-base, CNN       | 97.57        | 12.1273 / -         | -                 | -                 | 34.7878           | 30.5454           | -                                  | threads=14     |
-| BERT-base, CLS       | 97.43        | 12.7714 / -         | 46.4263           | 49.4747           | 30.7979           | 24.5353           | 16.9756                            | threads=14     |
-| BERT-base, CLS       | 97.00        | 9.2660  / -         | 31.5400           | 33.4623           | 16.7419           | 13.5703           | 11.7487                            | del 8,9,19,11, threads=14 |
-| BERT-large, CNN      | **98.00**    | 24.277  / -         | -                 | -                 | -                 | -                 | -                                  |                |
-| BERT-large, CLS      | 97.86        | 23.542  / -         | -                 | -                 | -                 | -                 | -                                  |                |
+|                      | Accuracy (%) | GPU / CPU           | ONNX     | Dynamic   | Inference   | Inference+Dynamic | Inference+ONNX           | Etc            |
+| -------------------- | ------------ | ------------------- | -------- |---------- | ----------- | ----------------- | ------------------------ | -------------- |    
+| GloVe, GNB           | 80.43        | 1.2929  / -         | -        | -         | -           | -                 | -                        |                |
+| GloVe, CNN           | 97.86        | 1.7939  / -         | 1.8689   | -         | 1.9398      | -                 | 0.3848  / FAILED         | threads=14     |
+| GloVe, Densenet-CNN  | 97.57        | 3.6094  / -         | 3.0717   | -         | 4.9481      | -                 | 0.8658  / FAILED         | threads=14     |
+| GloVe, Densenet-DSA  | 97.43        | 7.5007  / -         | 4.4936   | -         | 7.2086      | -                 | 1.5420  / FAILED         | threads=14     |
+| TinyBERT, CLS        | 97.29        | 6.0523  / -         | 5.3673   | 14.0268   | 5.7238      | 6.1879            | **1.7821**  / **1.8446** | threads=14     |
+| BERT-small, CLS      | 98.00        | 5.9837  / -         | -        | 15.2820   | 7.4538      | 7.2436            | 3.5445  / 2.4141         | threads=14     |
+| DistilBERT, CLS      | 97.71        | 9.3075  / -         | 32.4263  | 33.1947   | 12.7506     | 10.7088           | 8.3032  / 4.3144         | threads=14     |
+| SqueezeBERT, CLS     | 97.29        | 18.0796 / -         | -        | 23.8565   | 20.3999     | 20.0118           | 11.9890 / FAILED         | threads=14     |
+| MiniLM, CLS          | 96.86        | 12.2094 / -         | 17.5638  | 38.2084   | 16.8337     | 17.7702           | 5.0394  / 4.3123         | threads=14     |
+| BERT-base, CNN       | 97.57        | 12.1273 / -         | -        | -         | 34.7878     | 30.5454           | -                        | threads=14     |
+| BERT-base, CLS       | 97.43        | 12.7714 / -         | 46.4263  | 49.4747   | 30.7979     | 24.5353           | 16.9756                  | threads=14     |
+| BERT-base, CLS       | 97.00        | 9.2660  / -         | 31.5400  | 33.4623   | 16.7419     | 13.5703           | 11.7487                  | del 8,9,19,11, threads=14 |
+| BERT-large, CNN      | **98.00**    | 24.277  / -         | -        | -         | -           | -                 | -                        |                |
+| BERT-large, CLS      | 97.86        | 23.542  / -         | -        | -         | -           | -                 | -                        |                |
 
 ```
 * GPU / CPU : Elapsed time/example(ms), GPU / CPU  [Tesla V100 1 GPU, Intel(R) Xeon(R) Gold 5120 CPU @ 2.20GHz, 2 CPU, 14CORES/1CPU, HyperThreading]
-* ONNX : onnxruntime 1.3.0, pytorch=1.5.0
-         / onnxruntime 1.4.0, pytorch=1.6.0
-* Dynamic : pytorch=1.5.0, --enable_dqm
-            / pytorch=1.6.0, --enable_dqm
-* Inference : pytorch=1.5.0, --enable_inference
-              / pytorch=1.6.0, --enable_inference
-* Inference+Dynamic : pytorch=1.5.0, --enable_dqm, --enable_inference
-                      / pytorch=1.6.0, --enable_dqm, --enable_inference 
-* Inference+ONNX : pytorch=1.5.0, --enable_ort(onnxruntime 1.3.0), --enable_inference
-                   / pytorch=1.6.0, --enable_ort(onnxruntime 1.4.0), --enable_inference 
-                   / pytorch=1.6.0, --enable_ort(onnxruntime 1.4.0), --enable_inference, --quantize_onnx
+* ONNX : --enable_ort
+* Dynamic : --enable_dqm
+* Inference : --enable_inference
+* Inference+Dynamic : --enable_inference --enable_dqm / + --quantize_onnx
+* Inference+ONNX : --enable_inference --enable_ort
 * default batch size, learning rate, n_ctx(max_seq_length) : 128, 2e-4, 100
 * number of tokens / sentence : MEAN : 9.08, MAX:24, MIN:3, MEDIAN:9
 ```
