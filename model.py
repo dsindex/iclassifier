@@ -295,11 +295,23 @@ class TextGloveCNN(BaseModel):
         seq_size = config['n_ctx']
         token_emb_dim = config['token_emb_dim']
 
+        # QAT
+        self.enable_qat = config['opt'].enable_qat
+        if self.enable_qat:
+            self.quant = torch.quantization.QuantStub()
+            self.dequant = torch.quantization.DeQuantStub()
+
         # glove embedding layer
         weights_matrix = super().load_embedding(embedding_path)
         vocab_dim, emb_dim = weights_matrix.size()
         padding_idx = config['pad_token_id']
         self.embed = super().create_embedding_layer(vocab_dim, emb_dim, weights_matrix=weights_matrix, non_trainable=emb_non_trainable, padding_idx=padding_idx)
+
+        # QAT
+        if self.enable_qat:
+            # leave it out
+            self.embed.qconfig = None
+
         emb_dim = token_emb_dim 
 
         # convolution layer
@@ -324,6 +336,9 @@ class TextGloveCNN(BaseModel):
         embedded = self.dropout(self.embed(x))
         # embedded : [batch_size, seq_size, emb_dim]
 
+        # QAT
+        if self.enable_qat: embedded = self.quant(embedded)
+
         # 2. convolution
         textcnn_out = self.textcnn(embedded)
         # textcnn_out : [batch_size, len(kernel_sizes) * num_filters]
@@ -336,6 +351,10 @@ class TextGloveCNN(BaseModel):
         fc_hidden = self.layernorm_fc_hidden(fc_hidden)
         fc_hidden = self.dropout(fc_hidden)
         fc_out = self.fc(fc_hidden)
+
+        # QAT
+        if self.enable_qat: fc_out = self.dequant(fc_out)
+
         # fc_out : [batch_size, label_size]
         if self.config['opt'].augmented: return fc_out
         output = torch.softmax(fc_out, dim=-1)

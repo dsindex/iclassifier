@@ -208,6 +208,12 @@ def save_model(config, model, save_path=None):
     checkpoint_path = opt.save_path
     if save_path: checkpoint_path = save_path
     with open(checkpoint_path, 'wb') as f:
+        # QAT
+        if opt.enable_qat:
+            model.eval()
+            # convert to INT8 quantized model
+            model = torch.quantization.convert(model)
+            # FIXME : Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
         checkpoint = model.state_dict()
         torch.save(checkpoint,f)
 
@@ -303,6 +309,12 @@ def prepare_model(config, bert_model_name_or_path=None):
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path, feature_based=opt.bert_use_feature_based)
     model.to(opt.device)
+    # QAT
+    if opt.enable_qat:
+        model.qconfig = torch.quantization.get_default_qat_qconfig('fbgemm')
+        # fuse if applicable
+        # model = torch.quantization.fuse_modules(model, [['']])
+        model = torch.quantization.prepare_qat(model)
     logger.info("[model] :\n{}".format(model.__str__()))
     logger.info("[model prepared]")
     return model
@@ -492,6 +504,9 @@ def get_params():
     # for NNI
     parser.add_argument('--hp_search_nni', action='store_true',
                         help="Set this flag to use hyper-parameter search by NNI.")
+    # for QAT
+    parser.add_argument('--enable_qat', action='store_true',
+                        help="Set this flag for quantization aware training.")
 
     opt = parser.parse_args()
     return opt
