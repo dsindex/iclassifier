@@ -16,11 +16,28 @@
 
 
 
-## dynamic quantization
+## quantization
 
-- [(EXPERIMENTAL) DYNAMIC QUANTIZATION ON BERT](https://pytorch.org/tutorials/intermediate/dynamic_quantization_bert_tutorial.html)
-  - install pytorch>=1.5.0 recommended
+- [dynamic quantization](https://pytorch.org/docs/stable/quantization.html#dynamic-quantization)
+  - just add flag `--enable_dqm`
 
+- [quantization aware training](https://pytorch.org/docs/stable/quantization.html#quantization-aware-training)
+  - preprocessing
+  ```
+  ** glove
+  $ python preprocess.py --config=configs/config-glove-cnn.json
+  ```
+  - quantization aware training
+  ```
+  ** glove
+  $ python train.py --config=configs/config-glove-cnn.json --save_path=pytorch-model-qat.pt --device=cpu --enable_qat
+  ```
+  - evaluate, inference
+  ```
+  ** glove
+  $ python evaluate.py --config=configs/config-glove-cnn.json --device=cpu --save_path=pytorch-model-qat.pt --enable_qat
+  $ python evaluate.py --config=configs/config-glove-cnn.json --device=cpu --save_path=pytorch-model-qat.pt --enable_qat --enable_inference
+  ```
 
 
 ## conversion pytorch model to onnx format, inference with onnxruntime
@@ -44,7 +61,7 @@ $ python onnx-test.py
   - preprocessing
   ```
   ** glove
-  $ python preprocess.py
+  $ python preprocess.py --config=configs/config-glove-cnn.json
 
   ** densenet-cnn, densenet-dsa
   $ python preprocess.py --config=configs/config-densenet-cnn.json
@@ -57,7 +74,7 @@ $ python onnx-test.py
   - train a pytorch model
   ```
   ** glove
-  $ python train.py --embedding_trainable
+  $ python train.py --config=configs/config-glove-cnn.json --embedding_trainable
 
   ** densenet-cnn, densenet-dsa
   $ python train.py --config=configs/config-densenet-cnn.json 
@@ -70,17 +87,25 @@ $ python onnx-test.py
   - convert
   ```
   ** glove
-  $ python evaluate.py --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-glove-cnn.txt
+  $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model.pt --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-glove-cnn.txt
+
+  # convert quantization-aware-trained model(ex, pytorch-model-qat.pt) to onnx ?
+  $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model-qat.pt --enable_qat --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-glove-cnn.txt
+  [ERROR] 
+  filtered_dict[k] = v.detach()
+  AttributeError: 'torch.dtype' object has no attribute 'detach'
 
   ** densenet-cnn, densenet-dsa
-  $ python evaluate.py --config=configs/config-densenet-cnn.json --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-densenet-cnn.txt
-  $ python evaluate.py --config=configs/config-densenet-dsa.json --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-densenet-dsa.txt
+  $ python evaluate.py --config=configs/config-densenet-cnn.json --model_path=pytorch-model.pt --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-densenet-cnn.txt
+  $ python evaluate.py --config=configs/config-densenet-dsa.json --model_path=pytorch-model.pt --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-densenet-dsa.txt
 
   ** bert
-  $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-bert-cls.txt
+  $ python evaluate.py --config=configs/config-bert-cls.json --model_path=pytorch-model.pt --bert_output_dir=bert-checkpoint --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-bert-cls.txt
 
   # how to quantize onnx?
-  $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --convert_onnx --onnx_path=pytorch-model.onnx --quantize_onnx --quantized_onnx_path=pytorch-model.onnx-quantized  --device=cpu > onnx-graph-bert-cls.txt
+  $ python evaluate.py --config=configs/config-bert-cls.json --model_path=pytorch-model.pt --bert_output_dir=bert-checkpoint --convert_onnx --onnx_path=pytorch-model.onnx --quantize_onnx --quantized_onnx_path=pytorch-model.onnx-quantized  --device=cpu > onnx-graph-bert-cls.txt
+
+
   ```
 
 - optimize onnx
@@ -256,7 +281,6 @@ $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data
   - [nni](https://github.com/dsindex/nni_examples)
 
 - inference
-  - [(EXPERIMENTAL) DYNAMIC QUANTIZATION ON BERT](https://pytorch.org/tutorials/intermediate/dynamic_quantization_bert_tutorial.html)
   - [(OPTIONAL) EXPORTING A MODEL FROM PYTORCH TO ONNX AND RUNNING IT USING ONNX RUNTIME](https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html)
   - [(ONNX) API Summary](https://microsoft.github.io/onnxruntime/python/api_summary.html)
   - [Accelerate your NLP pipelines using Hugging Face Transformers and ONNX Runtime](https://medium.com/microsoftazure/accelerate-your-nlp-pipelines-using-hugging-face-transformers-and-onnx-runtime-2443578f4333)
