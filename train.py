@@ -80,12 +80,18 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
             if opt.gradient_accumulation_steps > 1:
                 loss = loss / opt.gradient_accumulation_steps
         # back-propagation - begin
-        scaler.scale(loss).backward()
+        if opt.device == 'cpu':
+            loss.backward()
+        else:
+            scaler.scale(loss).backward()
         if (local_step + 1) % opt.gradient_accumulation_steps == 0:
-            scaler.unscale_(optimizer)
-            torch.nn.utils.clip_grad_norm_(model.parameters(), opt.max_grad_norm)
-            scaler.step(optimizer)
-            scaler.update()
+            if opt.device == 'cpu':
+                optimizer.step()
+            else:
+                scaler.unscale_(optimizer)
+                torch.nn.utils.clip_grad_norm_(model.parameters(), opt.max_grad_norm)
+                scaler.step(optimizer)
+                scaler.update()
             optimizer.zero_grad()
             scheduler.step()
             curr_lr = scheduler.get_last_lr()[0] if scheduler else optimizer.param_groups[0]['lr']
@@ -107,7 +113,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
                     best_eval_measure = eval_measure
                     if opt.save_path and not opt.hp_search_optuna and not opt.hp_search_nni:
                         logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
-                        save_model(config, model)
+                        save_model(config, model, val_loader)
                         # save finetuned bert model/config/tokenizer
                         if config['emb_class'] not in ['glove']:
                             if not os.path.exists(opt.bert_output_dir):
@@ -137,7 +143,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
         best_eval_measure = eval_measure
         if opt.save_path and not opt.hp_search_optuna and not opt.hp_search_nni:
             logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
-            save_model(config, model)
+            save_model(config, model, val_loader)
             # save finetuned bert model/config/tokenizer
             if config['emb_class'] not in ['glove']:
                 if not os.path.exists(opt.bert_output_dir):
@@ -203,18 +209,32 @@ def evaluate(model, config, val_loader):
     cur_acc  = correct / total_examples
     return cur_loss, cur_acc
 
-def save_model(config, model, save_path=None):
+def save_model(config, model, val_loader, save_path=None):
     opt = config['opt']
     checkpoint_path = opt.save_path
     if save_path: checkpoint_path = save_path
     with open(checkpoint_path, 'wb') as f:
         # QAT
         if opt.enable_qat:
-            model.eval()
+            '''
+            for name, param in model.named_parameters():
+            print(name, param.data, param.device, param.requires_grad)
+            '''
+            # FIXME
+            # if `--device=cpu`, err msg: "Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!"
             # convert to INT8 quantized model
-            model = torch.quantization.convert(model)
-            # FIXME : Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
-        checkpoint = model.state_dict()
+            model.eval()
+            quantized_model = torch.quantization.convert(model)
+            print(quantized_model)
+            checkpoint = quantized_model.state_dict()
+            # remove 'quant.*', 'dequant.*'
+            for key in list(checkpoint.keys()):
+                if 'quant.' in key or 'dequant' in key:
+                    del checkpoint[key]
+            print(checkpoint)
+            evaluate(quantized_model, config, val_loader)
+        else:
+            checkpoint = model.state_dict()
         torch.save(checkpoint,f)
 
 def set_path(config):
@@ -284,7 +304,7 @@ def prepare_model(config, bert_model_name_or_path=None):
         if config['enc_class'] == 'gnb':
             model = TextGloveGNB(config, opt.embedding_path, opt.label_path)
         if config['enc_class'] == 'cnn':
-            model = TextGloveCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable)
+            model = TextGloveCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable, enable_qat=opt.enable_qat) # QAT
         if config['enc_class'] == 'densenet-cnn':
             model = TextGloveDensenetCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable)
         if config['enc_class'] == 'densenet-dsa':
@@ -309,8 +329,7 @@ def prepare_model(config, bert_model_name_or_path=None):
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path, feature_based=opt.bert_use_feature_based)
     model.to(opt.device)
-    # QAT
-    if opt.enable_qat:
+    if opt.enable_qat: # QAT
         model.qconfig = torch.quantization.get_default_qat_qconfig('fbgemm')
         # fuse if applicable
         # model = torch.quantization.fuse_modules(model, [['']])

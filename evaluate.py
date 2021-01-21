@@ -73,6 +73,12 @@ def load_model(config, checkpoint):
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path)
+    if opt.enable_qm: # for loading qauntized model by QAT
+        model.qconfig = torch.quantization.get_default_qat_qconfig('fbgemm')
+        model = torch.quantization.prepare_qat(model)
+        model.eval()
+        model = torch.quantization.convert(model)
+        print(model)
     model.load_state_dict(checkpoint)
     model = model.to(opt.device)
     logger.info("[model] :\n{}".format(model.__str__()))
@@ -491,12 +497,16 @@ def main():
     parser.add_argument('--enable_tvm', action='store_true',
                         help="Set this flag to evaluate using TVM.(not implemented)")
     parser.add_argument('--tvm_dir', type=str, default='tvm-model')
-    # for Quantization
+    # for Dynamic Quantization
     parser.add_argument('--enable_dqm', action='store_true',
                         help="Set this flag to use dynamic quantized model.")
     # for Inference
     parser.add_argument('--enable_inference', action='store_true',
                         help="Set this flag to inference for raw input text.")
+    # for Loading quantized model by QAT
+    parser.add_argument('--enable_qm', action='store_true',
+                        help="Set this flag for loading quantized model.")
+
     opt = parser.parse_args()
 
     if opt.enable_inference:
