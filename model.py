@@ -287,7 +287,7 @@ class TextGloveGNB(BaseModel):
 
 
 class TextGloveCNN(BaseModel):
-    def __init__(self, config, embedding_path, label_path, emb_non_trainable=True, enable_qat=False):
+    def __init__(self, config, embedding_path, label_path, emb_non_trainable=True):
         super().__init__(config=config)
 
         self.config = config
@@ -295,7 +295,7 @@ class TextGloveCNN(BaseModel):
         seq_size = config['n_ctx']
         token_emb_dim = config['token_emb_dim']
 
-        self.enable_qat = enable_qat
+        self.enable_qat = config['opt'].enable_qat
         if self.enable_qat: # QAT
             self.quant = torch.quantization.QuantStub()
             self.dequant = torch.quantization.DeQuantStub()
@@ -306,8 +306,9 @@ class TextGloveCNN(BaseModel):
         padding_idx = config['pad_token_id']
         self.embed = super().create_embedding_layer(vocab_dim, emb_dim, weights_matrix=weights_matrix, non_trainable=emb_non_trainable, padding_idx=padding_idx)
 
-        # for QAT, leave it out
-        self.embed.qconfig = None
+        if self.enable_qat: # QAT
+            # leave it out
+            self.embed.qconfig = None
 
         emb_dim = token_emb_dim 
 

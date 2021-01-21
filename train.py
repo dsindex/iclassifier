@@ -218,20 +218,14 @@ def save_model(config, model, val_loader, save_path=None):
         if opt.enable_qat:
             '''
             for name, param in model.named_parameters():
-            print(name, param.data, param.device, param.requires_grad)
+                print(name, param.data, param.device, param.requires_grad)
             '''
             # FIXME
             # if `--device=cpu`, err msg: "Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!"
             # convert to INT8 quantized model
             model.eval()
             quantized_model = torch.quantization.convert(model)
-            print(quantized_model)
             checkpoint = quantized_model.state_dict()
-            # remove 'quant.*', 'dequant.*'
-            for key in list(checkpoint.keys()):
-                if 'quant.' in key or 'dequant' in key:
-                    del checkpoint[key]
-            print(checkpoint)
             evaluate(quantized_model, config, val_loader)
         else:
             checkpoint = model.state_dict()
@@ -304,7 +298,7 @@ def prepare_model(config, bert_model_name_or_path=None):
         if config['enc_class'] == 'gnb':
             model = TextGloveGNB(config, opt.embedding_path, opt.label_path)
         if config['enc_class'] == 'cnn':
-            model = TextGloveCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable, enable_qat=opt.enable_qat) # QAT
+            model = TextGloveCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable)
         if config['enc_class'] == 'densenet-cnn':
             model = TextGloveDensenetCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable)
         if config['enc_class'] == 'densenet-dsa':
@@ -331,8 +325,10 @@ def prepare_model(config, bert_model_name_or_path=None):
     model.to(opt.device)
     if opt.enable_qat: # QAT
         model.qconfig = torch.quantization.get_default_qat_qconfig('fbgemm')
+        '''
         # fuse if applicable
         # model = torch.quantization.fuse_modules(model, [['']])
+        '''
         model = torch.quantization.prepare_qat(model)
     logger.info("[model] :\n{}".format(model.__str__()))
     logger.info("[model prepared]")

@@ -73,12 +73,15 @@ def load_model(config, checkpoint):
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path)
-    if opt.enable_qm: # for loading qauntized model by QAT
+    if opt.enable_qat: # QAT
         model.qconfig = torch.quantization.get_default_qat_qconfig('fbgemm')
+        '''
+        # fuse if applicable
+        # model = torch.quantization.fuse_modules(model, [['']])
+        '''
         model = torch.quantization.prepare_qat(model)
         model.eval()
         model = torch.quantization.convert(model)
-        print(model)
     model.load_state_dict(checkpoint)
     model = model.to(opt.device)
     logger.info("[model] :\n{}".format(model.__str__()))
@@ -503,9 +506,9 @@ def main():
     # for Inference
     parser.add_argument('--enable_inference', action='store_true',
                         help="Set this flag to inference for raw input text.")
-    # for Loading quantized model by QAT
-    parser.add_argument('--enable_qm', action='store_true',
-                        help="Set this flag for loading quantized model.")
+    # for QAT
+    parser.add_argument('--enable_qat', action='store_true',
+                        help="Set this flag to use the model by quantization aware training.")
 
     opt = parser.parse_args()
 
