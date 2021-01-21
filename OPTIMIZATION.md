@@ -102,7 +102,7 @@ $ python onnx-test.py
   ** glove
   $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model.pt --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-glove-cnn.txt
 
-  # (TEST) convert quantization-aware-trained model(ex, pytorch-model-qat.pt) to onnx ?
+  # convert quantization-aware-trained model(ex, pytorch-model-qat.pt) to onnx ?
   $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model-qat.pt --enable_qat --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-glove-cnn.txt
   [ERROR] 
   filtered_dict[k] = v.detach()

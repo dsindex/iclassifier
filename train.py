@@ -113,7 +113,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
                     best_eval_measure = eval_measure
                     if opt.save_path and not opt.hp_search_optuna and not opt.hp_search_nni:
                         logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
-                        save_model(config, model, val_loader)
+                        save_model(config, model, val_loader=val_loader)
                         # save finetuned bert model/config/tokenizer
                         if config['emb_class'] not in ['glove']:
                             if not os.path.exists(opt.bert_output_dir):
@@ -143,7 +143,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
         best_eval_measure = eval_measure
         if opt.save_path and not opt.hp_search_optuna and not opt.hp_search_nni:
             logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
-            save_model(config, model, val_loader)
+            save_model(config, model, val_loader=val_loader)
             # save finetuned bert model/config/tokenizer
             if config['emb_class'] not in ['glove']:
                 if not os.path.exists(opt.bert_output_dir):
@@ -167,20 +167,22 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
 
     return local_best_eval_loss, local_best_eval_acc, best_eval_measure
  
-def evaluate(model, config, val_loader):
+def evaluate(model, config, val_loader, eval_device=None):
     opt = config['opt']
+    device = opt.device
+    if eval_device != None: device = eval_device
     total_loss = 0.
     total_examples = 0 
     correct = 0
-    criterion = torch.nn.CrossEntropyLoss().to(opt.device)
+    criterion = torch.nn.CrossEntropyLoss().to(device)
     preds = None
     ys    = None
     with torch.no_grad():
         iterator = tqdm(val_loader, total=len(val_loader), desc=f"Evaluate")
         for i, (x,y) in enumerate(iterator):
             model.eval()
-            x = to_device(x, opt.device)
-            y = to_device(y, opt.device)
+            x = to_device(x, device)
+            y = to_device(y, device)
             logits = model(x)
             loss = criterion(logits, y)
 
@@ -209,7 +211,7 @@ def evaluate(model, config, val_loader):
     cur_acc  = correct / total_examples
     return cur_loss, cur_acc
 
-def save_model(config, model, val_loader, save_path=None):
+def save_model(config, model, val_loader=None, save_path=None):
     opt = config['opt']
     checkpoint_path = opt.save_path
     if save_path: checkpoint_path = save_path
@@ -220,13 +222,18 @@ def save_model(config, model, val_loader, save_path=None):
             for name, param in model.named_parameters():
                 print(name, param.data, param.device, param.requires_grad)
             '''
-            # FIXME
-            # if `--device=cpu`, err msg: "Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!"
             # convert to INT8 quantized model
+            #   https://discuss.pytorch.org/t/qat-runtimeerror-expected-all-tensors-to-be-on-the-same-device-but-found-at-least-two-devices-cuda-0-and-cpu/106727
+            #   torch.quantization.convert() only supports CPU.
             model.eval()
+            model.to('cpu')
+            logger.info("[Convert to quantized model with device='cpu' to save]")
             quantized_model = torch.quantization.convert(model)
+            # evaluate quantized model
+            logger.info("[Evaluate quantized model with device='cpu']")
+            evaluate(quantized_model, config, val_loader, eval_device='cpu')
+            model.to(opt.device)
             checkpoint = quantized_model.state_dict()
-            evaluate(quantized_model, config, val_loader)
         else:
             checkpoint = model.state_dict()
         torch.save(checkpoint,f)
@@ -290,6 +297,15 @@ def reduce_bert_model(config, bert_model, bert_config):
         if len(layer_indexes) > 0:
             bert_config.num_hidden_layers = len(layer_list)
 
+def load_checkpoint(config):
+    opt = config['opt']
+    if opt.device == 'cpu':
+        checkpoint = torch.load(opt.restore_path, map_location=lambda storage, loc: storage)
+    else:
+        checkpoint = torch.load(opt.restore_path)
+    logger.info("[Loading checkpoint done]")
+    return checkpoint
+
 def prepare_model(config, bert_model_name_or_path=None):
     opt = config['opt']
     emb_non_trainable = not opt.embedding_trainable
@@ -322,7 +338,9 @@ def prepare_model(config, bert_model_name_or_path=None):
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path, feature_based=opt.bert_use_feature_based)
-    model.to(opt.device)
+    if opt.restore_path:
+        checkpoint = load_checkpoint(config)
+        model.load_state_dict(checkpoint)
     if opt.enable_qat: # QAT
         model.qconfig = torch.quantization.get_default_qat_qconfig('fbgemm')
         '''
@@ -330,6 +348,7 @@ def prepare_model(config, bert_model_name_or_path=None):
         # model = torch.quantization.fuse_modules(model, [['']])
         '''
         model = torch.quantization.prepare_qat(model)
+    model.to(opt.device)
     logger.info("[model] :\n{}".format(model.__str__()))
     logger.info("[model prepared]")
     return model
@@ -487,6 +506,7 @@ def get_params():
     parser.add_argument('--warmup_epoch', type=int, default=0,  help="Number of warmup epoch steps")
     parser.add_argument('--patience', default=7, type=int, help="Max number of epoch to be patient for early stopping.")
     parser.add_argument('--save_path', type=str, default='pytorch-model.pt')
+    parser.add_argument('--restore_path', type=str, default='')
     parser.add_argument('--adam_epsilon', type=float, default=1e-8)
     parser.add_argument('--weight_decay', type=float, default=0.01)
     parser.add_argument('--gradient_accumulation_steps', type=int, default=1,

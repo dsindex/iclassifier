@@ -74,6 +74,7 @@ def load_model(config, checkpoint):
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path)
     if opt.enable_qat: # QAT
+        assert opt.device == 'cpu'
         model.qconfig = torch.quantization.get_default_qat_qconfig('fbgemm')
         '''
         # fuse if applicable
@@ -81,9 +82,15 @@ def load_model(config, checkpoint):
         '''
         model = torch.quantization.prepare_qat(model)
         model.eval()
+        model.to('cpu')
+        logger.info("[Convert to quantized model with device='cpu']")
         model = torch.quantization.convert(model)
     model.load_state_dict(checkpoint)
     model = model.to(opt.device)
+    '''
+    for name, param in model.named_parameters():
+        print(name, param.data, param.device, param.requires_grad)
+    '''
     logger.info("[model] :\n{}".format(model.__str__()))
     logger.info("[Model loaded]")
     return model

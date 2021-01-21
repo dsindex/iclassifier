@@ -307,7 +307,7 @@ class TextGloveCNN(BaseModel):
         self.embed = super().create_embedding_layer(vocab_dim, emb_dim, weights_matrix=weights_matrix, non_trainable=emb_non_trainable, padding_idx=padding_idx)
 
         if self.enable_qat: # QAT
-            # leave it out
+            # leave embedding out
             self.embed.qconfig = None
 
         emb_dim = token_emb_dim 
@@ -515,6 +515,11 @@ class TextBertCNN(BaseModel):
         self.device = config['opt'].device
         seq_size = config['n_ctx']
 
+        self.enable_qat = config['opt'].enable_qat
+        if self.enable_qat: # QAT
+            self.quant = torch.quantization.QuantStub()
+            self.dequant = torch.quantization.DeQuantStub()
+
         # bert embedding layer
         self.bert_config = bert_config
         self.bert_model = bert_model
@@ -522,6 +527,10 @@ class TextBertCNN(BaseModel):
         self.bert_hidden_size = bert_config.hidden_size
         self.bert_feature_based = feature_based
         emb_dim = self.bert_hidden_size
+
+        if self.enable_qat: # QAT
+            # leave embedding out
+            self.bert_model.embeddings.qconfig = None
 
         # convolution layer
         num_filters = config['num_filters']
@@ -571,6 +580,9 @@ class TextBertCNN(BaseModel):
         # embedded : [batch_size, seq_size, bert_hidden_size]
         embedded = self.dropout(embedded)
 
+        if self.enable_qat: # QAT
+            embedded = self.quant(embedded)
+
         # 2. convolution
         textcnn_out = self.textcnn(embedded)
         textcnn_out = self.layernorm_textcnn(textcnn_out)
@@ -582,6 +594,10 @@ class TextBertCNN(BaseModel):
         fc_hidden_out = self.layernorm_fc_hidden(fc_hidden_out)
         fc_hidden_out = self.dropout(fc_hidden_out)
         fc_out = self.fc(fc_hidden_out)
+
+        if self.enable_qat: # QAT
+            fc_out = self.dequant(fc_out)
+
         # fc_out : [batch_size, label_size]
         if self.config['opt'].augmented:
             if return_bert_outputs: return fc_out, bert_outputs
@@ -599,12 +615,21 @@ class TextBertCLS(BaseModel):
         self.device = config['opt'].device
         seq_size = config['n_ctx']
 
+        self.enable_qat = config['opt'].enable_qat
+        if self.enable_qat: # QAT
+            self.quant = torch.quantization.QuantStub()
+            self.dequant = torch.quantization.DeQuantStub()
+
         # bert embedding layer
         self.bert_config = bert_config
         self.bert_model = bert_model
         self.bert_tokenizer = bert_tokenizer
         self.bert_hidden_size = bert_config.hidden_size
         self.bert_feature_based = feature_based
+
+        if self.enable_qat: # QAT
+            # leave embedding out
+            self.bert_model.embeddings.qconfig = None
 
         self.dropout = nn.Dropout(config['dropout'])
 
@@ -645,8 +670,15 @@ class TextBertCLS(BaseModel):
         # embedded : [batch_size, bert_hidden_size]
         embedded = self.dropout(embedded)
 
+        if self.enable_qat: # QAT
+            embedded = self.quant(embedded)
+
         # 2. fully connected
         fc_out = self.fc(embedded)
+
+        if self.enable_qat: # QAT
+            fc_out = self.dequant(fc_out)
+
         if self.config['opt'].augmented:
             if return_bert_outputs: return fc_out, bert_outputs
             return fc_out
