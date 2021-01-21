@@ -532,6 +532,7 @@ def get_params():
     parser.add_argument('--warmup_epoch', type=int, default=0,  help="Number of warmup epoch steps")
     parser.add_argument('--patience', default=7, type=int, help="Max number of epoch to be patient for early stopping.")
     parser.add_argument('--save_path', type=str, default='pytorch-model.pt')
+    parser.add_argument('--restore_path', type=str, default='')
     parser.add_argument('--adam_epsilon', type=float, default=1e-8)
     parser.add_argument('--weight_decay', type=float, default=0.01)
     parser.add_argument('--gradient_accumulation_steps', type=int, default=1,
@@ -554,6 +555,8 @@ def get_params():
                         help="Use BERT as feature-based, default fine-tuning")
     parser.add_argument('--bert_remove_layers', type=str, default='',
                         help="Specify layer numbers to remove during finetuning e.g. 8,9,10,11 to remove last 4 layers from BERT base(12 layers)")
+    parser.add_argument('--enable_qat', action='store_true',
+                        help="Set this flag for quantization aware training.")
 
     opt = parser.parse_args()
     return opt
