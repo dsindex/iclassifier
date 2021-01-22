@@ -976,10 +976,10 @@ INFO:__main__:[Elapsed Time] : 113818.21751594543ms, 62.427293075310004ms on ave
 # Optimization
 
 - [OPTIMIZATION.md](/OPTIMIZATION.md)
-  - Dynamic Quantization
-  - Conversion to ONNX
-  - Inference with ONNXRUNTIME
   - Quantization
+    - Dynamic
+    - Quantization Aware Training
+  - ONNX, ONNXRUNTIME, ONNX Quantization
   - Hyper-arameter Search
 
 <br>
