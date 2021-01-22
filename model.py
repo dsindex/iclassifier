@@ -615,7 +615,7 @@ class TextBertCLS(BaseModel):
         if self.enable_qat: # QAT
             '''
             # leave embedding out
-            # self.bert_model.embeddings.qconfig = None
+            self.bert_model.embeddings.qconfig = None
             '''
             # for quantizing bert_model, we need to modify modeling_bert.py for QAT.
             self.bert_model.qconfig = None
