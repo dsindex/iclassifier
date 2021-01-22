@@ -515,11 +515,6 @@ class TextBertCNN(BaseModel):
         self.device = config['opt'].device
         seq_size = config['n_ctx']
 
-        self.enable_qat = config['opt'].enable_qat
-        if self.enable_qat: # QAT
-            self.quant = torch.quantization.QuantStub()
-            self.dequant = torch.quantization.DeQuantStub()
-
         # bert embedding layer
         self.bert_config = bert_config
         self.bert_model = bert_model
@@ -527,10 +522,6 @@ class TextBertCNN(BaseModel):
         self.bert_hidden_size = bert_config.hidden_size
         self.bert_feature_based = feature_based
         emb_dim = self.bert_hidden_size
-
-        if self.enable_qat: # QAT
-            # leave embedding out
-            self.bert_model.embeddings.qconfig = None
 
         # convolution layer
         num_filters = config['num_filters']
@@ -580,9 +571,6 @@ class TextBertCNN(BaseModel):
         # embedded : [batch_size, seq_size, bert_hidden_size]
         embedded = self.dropout(embedded)
 
-        if self.enable_qat: # QAT
-            embedded = self.quant(embedded)
-
         # 2. convolution
         textcnn_out = self.textcnn(embedded)
         textcnn_out = self.layernorm_textcnn(textcnn_out)
@@ -594,9 +582,6 @@ class TextBertCNN(BaseModel):
         fc_hidden_out = self.layernorm_fc_hidden(fc_hidden_out)
         fc_hidden_out = self.dropout(fc_hidden_out)
         fc_out = self.fc(fc_hidden_out)
-
-        if self.enable_qat: # QAT
-            fc_out = self.dequant(fc_out)
 
         # fc_out : [batch_size, label_size]
         if self.config['opt'].augmented:
@@ -628,8 +613,12 @@ class TextBertCLS(BaseModel):
         self.bert_feature_based = feature_based
 
         if self.enable_qat: # QAT
+            '''
             # leave embedding out
-            self.bert_model.embeddings.qconfig = None
+            # self.bert_model.embeddings.qconfig = None
+            '''
+            # for quantizing bert_model, we need to modify modeling_bert.py for QAT.
+            self.bert_model.qconfig = None
 
         self.dropout = nn.Dropout(config['dropout'])
 

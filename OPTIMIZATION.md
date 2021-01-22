@@ -37,7 +37,7 @@
   ** glove
   $ python train.py --config=configs/config-glove-cnn.json --save_path=pytorch-model-qat.pt --enable_qat
 
-  ** bert
+  ** bert (modification transformers code required)
   $ python train.py --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64 --save_path=pytorch-model-qat.pt --enable_qat
   ```
 
@@ -47,7 +47,7 @@
   $ python evaluate.py --config=configs/config-glove-cnn.json --device=cpu --model_path=pytorch-model-qat.pt --enable_qat
   $ python evaluate.py --config=configs/config-glove-cnn.json --device=cpu --model_path=pytorch-model-qat.pt --enable_qat --enable_inference
 
-  ** bert
+  ** bert (modification transformers code required)
   $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat
   $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat --enable_inference
   ```
@@ -104,7 +104,7 @@ $ python onnx-test.py
 
   # convert quantization-aware-trained model(ex, pytorch-model-qat.pt) to onnx ?
   $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model-qat.pt --enable_qat --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu > onnx-graph-glove-cnn.txt
-  [ERROR] 
+  ...
   filtered_dict[k] = v.detach()
   AttributeError: 'torch.dtype' object has no attribute 'detach'
 
