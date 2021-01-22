@@ -979,7 +979,7 @@ INFO:__main__:[Elapsed Time] : 113818.21751594543ms, 62.427293075310004ms on ave
   - Quantization
     - Dynamic
     - Quantization Aware Training
-  - ONNX, ONNXRUNTIME, ONNX Quantization
+  - ONNX/ONNXRUNTIME, ONNX Quantization
   - Hyper-arameter Search
 
 <br>
@@ -1002,7 +1002,7 @@ INFO:__main__:[Elapsed Time] : 113818.21751594543ms, 62.427293075310004ms on ave
 - [FASTFORMERS.md](/FASTFORMERS.md)
   - Knowledge Distillation
   - Structured Prunning
-  - Quantization
+  - ONNX Quantization
 
 <br>
 
