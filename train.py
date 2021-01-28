@@ -255,20 +255,24 @@ def set_path(config):
     opt.label_path     = os.path.join(opt.data_dir, opt.label_filename)
     opt.embedding_path = os.path.join(opt.data_dir, opt.embedding_filename)
 
-def prepare_datasets(config, hp_search_bsz=None):
+def prepare_datasets(config, hp_search_bsz=None, train_path=None, valid_path=None):
     opt = config['opt']
+    default_train_path = opt.train_path
+    default_valid_path = opt.valid_path
+    if train_path: default_train_path = train_path
+    if valid_path: default_valid_path = valid_path
     if config['emb_class'] == 'glove':
         DatasetClass = GloveDataset
     else:
         DatasetClass = BertDataset
     train_loader = prepare_dataset(config,
-        opt.train_path,
+        default_train_path,
         DatasetClass,
         sampling=True,
         num_workers=2,
         hp_search_bsz=hp_search_bsz)
     valid_loader = prepare_dataset(config,
-        opt.valid_path,
+        default_valid_path,
         DatasetClass,
         sampling=False,
         num_workers=2,
