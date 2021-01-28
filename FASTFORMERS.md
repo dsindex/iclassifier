@@ -10,6 +10,9 @@ $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 
 INFO:__main__:[Accuracy] : 0.9292,  1692/ 1821
 INFO:__main__:[Elapsed Time] : 26472.151517868042ms, 14.481851556798913ms on average
 
+INFO:__main__:[Accuracy] : 0.9237,  1682/ 1821
+INFO:__main__:[Elapsed Time] : 27753.907442092896ms, 15.191703183310372ms on average
+
 * bert-large-uncased
 INFO:__main__:[Accuracy] : 0.9423,  1716/ 1821
 INFO:__main__:[Elapsed Time] : 44632.673501968384ms, 24.440080385941727ms on average
@@ -29,6 +32,9 @@ $ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --b
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --model_path=pytorch-model.pt
 INFO:__main__:[Accuracy] : 0.8825,  1607/ 1821
 INFO:__main__:[Elapsed Time] : 10948.646068572998ms, 5.960442338671003ms on average
+
+INFO:__main__:[Accuracy] : 0.8688,  1582/ 1821
+INFO:__main__:[Elapsed Time] : 11979.724884033203ms, 6.526054785801814ms on average
 
 * --data_dir=data/snips
 INFO:__main__:[Accuracy] : 0.9671,   677/  700
@@ -51,6 +57,10 @@ $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 
 INFO:__main__:[Accuracy] : 0.8929,  1626/ 1821
 INFO:__main__:[Elapsed Time] : 10915.554285049438ms, 5.940870531312712ms on average
 
+* from bert-base-uncased, --lr=1e-5
+INFO:__main__:[Accuracy] : 0.8841,  1610/ 1821
+INFO:__main__:[Elapsed Time] : 11501.078844070435ms, 6.275895139673254ms on average
+
 * from bert-base-uncased, --augmented
 
 ** augmentation
@@ -65,11 +75,15 @@ $ python fastformers.py --do_distill --teacher_config=configs/config-bert-cls.js
 INFO:__main__:[Accuracy] : 0.9149,  1666/ 1821
 INFO:__main__:[Elapsed Time] : 10863.076448440552ms, 5.911464874561016ms on average
 
-* from bert-large-uncased
+*** from bert-base-uncased, --n_iter=10
+INFO:__main__:[Accuracy] : 0.9116,  1660/ 1821
+INFO:__main__:[Elapsed Time] : 11377.799987792969ms, 6.205023776043903ms on average
+
+*** from bert-large-uncased
 INFO:__main__:[Accuracy] : 0.9033,  1645/ 1821
 INFO:__main__:[Elapsed Time] : 11032.879114151001ms, 6.007225172860282ms on average
 
-* from bert-base-uncased, --data-dir=data/snips
+*** from bert-base-uncased, --data-dir=data/snips
 INFO:__main__:[Accuracy] : 0.9743,   682/  700
 INFO:__main__:[Elapsed Time] : 4355.75795173645ms, 6.093895657038654ms on average
 
