@@ -57,6 +57,7 @@ def make_sample(entry):
     p_ng = entry['args'].p_ng
     max_ng = entry['args'].max_ng
     analyzer = entry['args'].analyzer
+    no_analyzer = entry['args'].no_analyzer
     mask_token = entry['args'].mask_token
 
     num_tokens = len(input_sentence)
@@ -70,7 +71,7 @@ def make_sample(entry):
             if u < p_mask:
                 sentence.append(mask_token)
                 mask_count += 1
-            elif u < (p_mask + p_pos):
+            elif u < (p_mask + p_pos) and not no_analyzer: # apply only if the analyzer is given
                 if analyzer == 'spacy':
                     same_pos = pos_dict[word.pos_]
                     # Pick from list of words with same POS tag
