@@ -320,6 +320,7 @@ INFO:__main__:[Elapsed Time] : 4330.849170684814ms, 6.052388653734723ms on avera
 | DistilFromBERT, GloVe, DenseNet-DSA     | 88.14        | 8.4647  / -       |                          | augmented, from large             |
 | DistilFromBERT, BERT-small, CLS         | 89.29        | 5.9408  / -       |                          | fastformers, from base            |
 | DistilFromBERT, BERT-small, CLS         | 91.49        | 5.9114  / -       |                          | fastformers, augmented, from base |
+| DistilFromBERT, BERT-small, CLS         | -            | -       / -       |                          | fastformers, augmented, from base, meta pseudo labels |
 | DistilFromBERT, BERT-small, CLS         | 90.33        | 6.0072  / -       |                          | fastformers, from large           |
 | DistilFromRoBERTa, GloVe, CNN           | 86.55        | 1.8483  / -       |                          | augmented, from large             |
 | DistilFromRoBERTa, GloVe, DenseNet-CNN  | 88.80        | 3.9580  / -       |                          | augmented, from large             |
@@ -1001,6 +1002,7 @@ INFO:__main__:[Elapsed Time] : 113818.21751594543ms, 62.427293075310004ms on ave
 
 - [FASTFORMERS.md](/FASTFORMERS.md)
   - Knowledge Distillation
+    - Meta Pseudo Labels
   - Structured Prunning
   - ONNX Quantization
 

@@ -87,6 +87,10 @@ INFO:__main__:[Elapsed Time] : 11032.879114151001ms, 6.007225172860282ms on aver
 INFO:__main__:[Accuracy] : 0.9743,   682/  700
 INFO:__main__:[Elapsed Time] : 4355.75795173645ms, 6.093895657038654ms on average
 
+*** from bert-base-uncased, --n_iters=10, --mpl_data_path=data/sst2/train.txt.fs --mpl_warmup_steps=1000 --eval_batch_size=64 (meta pseudo labels)
+$ python fastformers.py --do_distill --teacher_config=configs/config-bert-cls.json --data_dir=data/sst2 --teacher_bert_model_name_or_path=./bert-checkpoint-teacher --teacher_model_path=pytorch-model-teacher.pt --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8 --bert_output_dir=bert-checkpoint --save_path=pytorch-model.pt --lr=5e-5 --epoch=3 --batch_size=64 --augmented --mpl_data_path=data/sst2/train.txt.fs --mpl_warmup_steps=1000 --eval_batch_size=64
+
+
 ```
 
 ## structured pruning
@@ -172,6 +176,11 @@ INFO:__main__:[Elapsed Time(total_duration_time, average)] : 1707.0832252502441m
 - [FastFormers: Highly Efficient Transformer Models for Natural Language Understanding](https://arxiv.org/pdf/2010.13382.pdf)
   - [microsoft/fastformers](https://github.com/microsoft/fastformers)
   - [FastFormers: 233x Faster Transformers inference on CPU](https://parthplc.medium.com/fastformers-233x-faster-transformers-inference-on-cpu-4c0b7a720e1)
+
+- Meta Pseudo Labels
+  - [medium article](https://medium.com/@nainaakash012/meta-pseudo-labels-6480acb1b68)
+  - [paper](https://arxiv.org/pdf/2003.10580.pdf)
+
 - methods
   - Knowledge Distillation
     - large teacher model -> distillation -> TinyBERT, distilroberta, distilbert

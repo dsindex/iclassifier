@@ -35,12 +35,12 @@ def set_seed(args):
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
     
-# ------------------------------------------------------------------------------ #
+# -------------------------------------------------------------------------------------------------------
 # base code from https://github.com/microsoft/fastformers#distilling-models
 #  - distill()
 #  - prune_rewire()
 #  - sort_by_importance()
-# ------------------------------------------------------------------------------ #
+# -------------------------------------------------------------------------------------------------------
 
 def distill(
         teacher_config,
@@ -48,7 +48,9 @@ def distill(
         student_config,
         student_model,
         train_loader,
-        eval_loader):
+        eval_loader,
+        best_val_metric=None,
+        mpl_loader=None):
 
     args = teacher_config['opt']
 
@@ -99,34 +101,38 @@ def distill(
     tr_att_loss = 0.
     tr_rep_loss = 0.
     tr_cls_loss = 0.
+    teacher_model.zero_grad()
     student_model.zero_grad()
-    train_iterator = range(epochs_trained, int(args.epoch))
+    epoch_iterator = range(epochs_trained, int(args.epoch))
 
     # for reproductibility
     set_seed(args)
 
-    best_val_metric = None
-    for epoch_n in train_iterator:
+    for epoch_n in epoch_iterator:
         tr_att_loss = 0.
         tr_rep_loss = 0.
         tr_cls_loss = 0.
-        epoch_iterator = tqdm(train_loader, desc=f"Epoch {epoch_n}")
-        for step, (x, y) in enumerate(epoch_iterator):
+        train_iterator = tqdm(train_loader, desc=f"Epoch {epoch_n}")
+        for step, (x, y) in enumerate(train_iterator):
             x = to_device(x, args.device)
             y = to_device(y, args.device)
 
+            # -------------------------------------------------------------------------------------------------------
+            # teacher -> student, teaching with teacher_model.eval(), student_model.train()
+            # -------------------------------------------------------------------------------------------------------
             att_loss = 0.
             rep_loss = 0.
             cls_loss = 0.
+
+            # teacher model output
+            teacher_model.eval()
+            with torch.no_grad():
+                output_teacher, teacher_bert_outputs = teacher_model(x, return_bert_outputs=True)
 
             # student model output
             student_model.train()
             output_student, student_bert_outputs = student_model(x, return_bert_outputs=True)
 
-            # teacher model output
-            teacher_model.eval() # set teacher as eval mode
-            with torch.no_grad():
-                output_teacher, teacher_bert_outputs = teacher_model(x, return_bert_outputs=True)
            
             # Knowledge Distillation loss
             # 1) logits distillation
@@ -182,67 +188,103 @@ def distill(
             if args.gradient_accumulation_steps > 1:
                 loss = loss / args.gradient_accumulation_steps
 
-            # back propagate
+            # back propagate through student model
             loss.backward()
-
             tr_loss += loss.item()
-            epoch_iterator.set_description(f"Epoch {epoch_n} loss: {loss:.3f}")
             if (step + 1) % args.gradient_accumulation_steps == 0:
                 torch.nn.utils.clip_grad_norm_(student_model.parameters(), args.max_grad_norm)
-
-                optimizer.step()
+                optimizer.step()  # update student model
                 scheduler.step()  # Update learning rate schedule
                 student_model.zero_grad()
                 global_step += 1
+            # -------------------------------------------------------------------------------------------------------
 
-                # change to evaluation mode
-                student_model.eval()
-                logs = {}
+            # -------------------------------------------------------------------------------------------------------
+            # student -> teacher, performance feedback/update with student_model.eval(), teacher_model.train()
+            # -------------------------------------------------------------------------------------------------------
+            mpl_loss = 0.0
+            if (step + 1) % args.gradient_accumulation_steps == 0 and mpl_loader and global_step > args.mpl_warmup_steps: 
+                loss_cross_entropy = torch.nn.CrossEntropyLoss().to(args.device)
+                mpl_iterator = iter(mpl_loader)
+                try:
+                    (x, y) = next(mpl_iterator) # draw random sample
+                except StopIteration as e:
+                    mpl_iterator = iter(mpl_loader)
+                    (x, y) = next(mpl_iterator) # draw random sample
+                x = to_device(x, args.device)
+                y = to_device(y, args.device)
 
-                flag_eval = False
-                if args.logging_steps > 0 and global_step % args.logging_steps == 0: flag_eval = True
-                if flag_eval:
-                    if args.log_evaluate_during_training:
-                        eval_loss, eval_acc = evaluate(student_model, student_config, eval_loader)
-                        logs['eval_loss'] = eval_loss
-                        logs['eval_acc'] = eval_acc
-                    
-                    cls_loss = tr_cls_loss / (step + 1)
-                    att_loss = tr_att_loss / (step + 1)
-                    rep_loss = tr_rep_loss / (step + 1)
+                # teacher model output
+                teacher_model.train()
+                output_teacher, teacher_bert_outputs = teacher_model(x, return_bert_outputs=True)
 
-                    loss_scalar = (tr_loss - logging_loss) / args.logging_steps
-                    learning_rate_scalar = scheduler.get_last_lr()[0]
-                    logs["learning_rate"] = learning_rate_scalar
-                    logs["avg_loss_since_last_log"] = loss_scalar
-                    logs['cls_loss'] = cls_loss
-                    logs['att_loss'] = att_loss
-                    logs['rep_loss'] = rep_loss
-                    logging_loss = tr_loss
-                    logging.info(json.dumps({**logs, **{"step": global_step}}))
+                # student model output
+                student_model.eval() # updated student model
+                output_student, student_bert_outputs = student_model(x, return_bert_outputs=True)
 
-                flag_eval = False
-                if step == 0 and epoch_n != 0: flag_eval = True # every epoch
-                if args.eval_and_save_steps > 0 and global_step % args.eval_and_save_steps == 0: flag_eval = True
-                if flag_eval:
+                # the loss is the performance of the student on the labeled data.
+                # additionaly, we add the loss of the teacher on the labeled data for avoiding overfitting.
+                mpl_loss = loss_cross_entropy(output_student, y) / 2 + loss_cross_entropy(output_teacher, y) / 2
+                if args.gradient_accumulation_steps > 1:
+                    mpl_loss = mpl_loss / args.gradient_accumulation_steps
+
+                # back propagate through teacher model
+                mpl_loss.backward()
+                torch.nn.utils.clip_grad_norm_(teacher_model.parameters(), args.max_grad_norm)
+                optimizer.step() # update teacher model 
+                teacher_model.zero_grad()
+                student_model.zero_grad() # clear gradient info which was generated during forward computation.
+            # -------------------------------------------------------------------------------------------------------
+
+            train_iterator.set_description(f"Epoch {epoch_n} loss: {loss:.3f}, mpl loss: {mpl_loss:.3f}")
+
+
+            # -------------------------------------------------------------------------------------------------------
+            # evaluate student, save model
+            # -------------------------------------------------------------------------------------------------------
+            flag_eval = False
+            logs = {}
+            if args.logging_steps > 0 and global_step % args.logging_steps == 0: flag_eval = True
+            if flag_eval:
+                if args.log_evaluate_during_training:
                     eval_loss, eval_acc = evaluate(student_model, student_config, eval_loader)
                     logs['eval_loss'] = eval_loss
                     logs['eval_acc'] = eval_acc
-                    logger.info(json.dumps({**logs, **{"step": global_step}}))
-                    # measured by accuracy
-                    curr_val_metric = eval_acc
-                    if best_val_metric is None or curr_val_metric > best_val_metric:
-                        # save model to '--save_path', '--bert_output_dir'
-                        save_model(student_config, student_model)
-                        student_model.bert_tokenizer.save_pretrained(args.bert_output_dir)
-                        student_model.bert_model.save_pretrained(args.bert_output_dir)
-                        best_val_metric = curr_val_metric
-                        logger.info("[Best student model saved] : {:10.6f}, {}".format(best_val_metric,args.bert_output_dir))
                 
-                # change student model back to train mode
-                student_model.train()
+                cls_loss = tr_cls_loss / (step + 1)
+                att_loss = tr_att_loss / (step + 1)
+                rep_loss = tr_rep_loss / (step + 1)
 
-    return global_step, tr_loss / global_step
+                loss_scalar = (tr_loss - logging_loss) / args.logging_steps
+                learning_rate_scalar = scheduler.get_last_lr()[0]
+                logs["learning_rate"] = learning_rate_scalar
+                logs["avg_loss_since_last_log"] = loss_scalar
+                logs['cls_loss'] = cls_loss
+                logs['att_loss'] = att_loss
+                logs['rep_loss'] = rep_loss
+                logging_loss = tr_loss
+                logging.info(json.dumps({**logs, **{"step": global_step}}))
+
+            flag_eval = False
+            if step == 0 and epoch_n != 0: flag_eval = True # every epoch
+            if args.eval_and_save_steps > 0 and global_step % args.eval_and_save_steps == 0: flag_eval = True
+            if flag_eval:
+                eval_loss, eval_acc = evaluate(student_model, student_config, eval_loader)
+                logs['eval_loss'] = eval_loss
+                logs['eval_acc'] = eval_acc
+                logger.info(json.dumps({**logs, **{"step": global_step}}))
+                # measured by accuracy
+                curr_val_metric = eval_acc
+                if best_val_metric is None or curr_val_metric > best_val_metric:
+                    # save model to '--save_path', '--bert_output_dir'
+                    save_model(student_config, student_model)
+                    student_model.bert_tokenizer.save_pretrained(args.bert_output_dir)
+                    student_model.bert_model.save_pretrained(args.bert_output_dir)
+                    best_val_metric = curr_val_metric
+                    logger.info("[Best student model saved] : {:10.6f}, {}".format(best_val_metric,args.bert_output_dir))
+            # -------------------------------------------------------------------------------------------------------
+
+    return global_step, tr_loss / global_step, best_val_metric
 
 def sort_by_importance(weight, bias, importance, num_instances, stride):
     from heapq import heappush, heappop
@@ -443,9 +485,13 @@ def train(opt):
   
     # prepare train, valid dataset
     train_loader, valid_loader = prepare_datasets(teacher_config)
+  
+    if opt.mpl_data_path:
+        mpl_loader, _ = prepare_datasets(teacher_config, train_path=opt.mpl_data_path)
 
-    # ------------------------------------------------------------------------------------------------------- #
+    # -------------------------------------------------------------------------------------------------------
     # distillation
+    # -------------------------------------------------------------------------------------------------------
     if opt.do_distill:
         # prepare and load teacher model
         teacher_model = prepare_model(teacher_config, bert_model_name_or_path=opt.teacher_bert_model_name_or_path)
@@ -458,13 +504,24 @@ def train(opt):
         student_model = prepare_model(student_config, bert_model_name_or_path=opt.bert_model_name_or_path)
         logger.info("[prepare student model done]")
 
-        global_step, tr_loss = distill(teacher_config, teacher_model, student_config, student_model, train_loader, valid_loader)
-        logger.info(f"[distillation done] : {global_step}, {tr_loss}")
-    # ------------------------------------------------------------------------------------------------------- #
+        meta_epoch = opt.meta_epoch
+        best_val_metric=None
+        for idx in range(meta_epoch):
+            global_step, tr_loss, best_val_metric = distill(teacher_config,
+                    teacher_model,
+                    student_config,
+                    student_model,
+                    train_loader,
+                    valid_loader,
+                    best_val_metric=best_val_metric,
+                    mpl_loader=mpl_loader)
+            logger.info(f"[distillation done] meta epoch: {meta_epoch}, global steps: {global_step}, total loss: {tr_loss}, best metric: {best_val_metric}")
+    # -------------------------------------------------------------------------------------------------------
 
 
-    # ------------------------------------------------------------------------------------------------------- #
+    # -------------------------------------------------------------------------------------------------------
     # structured pruning
+    # -------------------------------------------------------------------------------------------------------
     if opt.do_prune:
         # load model from '--model_path', '--bert_output_dir'
         model = prepare_model(student_config, bert_model_name_or_path=opt.bert_output_dir)
@@ -487,7 +544,7 @@ def train(opt):
         model.bert_tokenizer.save_pretrained(opt.bert_output_dir_pruned)
         model.bert_model.save_pretrained(opt.bert_output_dir_pruned)
         logger.info("[Pruned model saved] : {}, {}".format(opt.save_path_pruned, opt.bert_output_dir_pruned))
-    # ------------------------------------------------------------------------------------------------------- #
+    # -------------------------------------------------------------------------------------------------------
 
 
 def get_params():
@@ -517,6 +574,11 @@ def get_params():
     parser.add_argument('--save_path_pruned', type=str, default='pytorch-model-pruned.pt')
     parser.add_argument('--bert_output_dir_pruned', type=str, default='bert-checkpoint-pruned',
                         help="The checkpoint directory of pruned BERT model.")
+
+    # For meta pseudo labels
+    parser.add_argument('--meta_epoch', default=1, type=int)
+    parser.add_argument('--mpl_data_path', type=str, default='', help="Labeled data path(before augmentation) for meta pseudo labels.")
+    parser.add_argument('--mpl_warmup_steps', default=1000, type=int)
 
     # Same aguments as train.py
     parser.add_argument('--config', type=str, default='configs/config-distilbert-cls.json')
