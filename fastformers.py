@@ -10,6 +10,10 @@ import logging
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+try:
+    from torch.utils.tensorboard import SummaryWriter
+except ImportError:
+    pass
 
 import numpy as np
 import random
@@ -53,6 +57,10 @@ def distill(
         mpl_loader=None):
 
     args = teacher_config['opt']
+    try:
+        writer = SummaryWriter(log_dir=args.log_dir)
+    except:
+        writer = None
 
     teacher_layer_num = teacher_model.bert_model.config.num_hidden_layers
     student_layer_num = student_model.bert_model.config.num_hidden_layers
@@ -224,7 +232,8 @@ def distill(
 
                 # the loss is the performance of the student on the labeled data.
                 # additionaly, we add the loss of the teacher on the labeled data for avoiding overfitting.
-                mpl_loss = loss_cross_entropy(output_student, y) / 2 + loss_cross_entropy(output_teacher, y) / 2
+                #mpl_loss = loss_cross_entropy(output_student, y) / 2 + loss_cross_entropy(output_teacher, y) / 2
+                mpl_loss = loss_cross_entropy(output_student, y) + loss_cross_entropy(output_teacher, y)
                 if args.gradient_accumulation_steps > 1:
                     mpl_loss = mpl_loss / args.gradient_accumulation_steps
 
@@ -237,6 +246,9 @@ def distill(
             # -------------------------------------------------------------------------------------------------------
 
             train_iterator.set_description(f"Epoch {epoch_n} loss: {loss:.3f}, mpl loss: {mpl_loss:.3f}")
+            if writer:
+                writer.add_scalar('loss', loss, global_step)
+                writer.add_scalar('mpl_loss', mpl_loss, global_step)
 
 
             # -------------------------------------------------------------------------------------------------------
@@ -250,6 +262,9 @@ def distill(
                     eval_loss, eval_acc = evaluate(student_model, student_config, eval_loader)
                     logs['eval_loss'] = eval_loss
                     logs['eval_acc'] = eval_acc
+                    if writer:
+                        writer.add_scalar('eval_loss', eval_loss, global_step)
+                        writer.add_scalar('eval_acc', eval_acc, global_step)
                 
                 cls_loss = tr_cls_loss / (step + 1)
                 att_loss = tr_att_loss / (step + 1)
@@ -264,6 +279,12 @@ def distill(
                 logs['rep_loss'] = rep_loss
                 logging_loss = tr_loss
                 logging.info(json.dumps({**logs, **{"step": global_step}}))
+                if writer:
+                    writer.add_scalar('learning_rate', learning_rate_scalar, global_step)
+                    writer.add_scalar('avg_loss_since_last_log', loss_scalar, global_step)
+                    writer.add_scalar('cls_loss', cls_loss, global_step)
+                    writer.add_scalar('att_loss', att_loss, global_step)
+                    writer.add_scalar('rep_loss', rep_loss, global_step)
 
             flag_eval = False
             if step == 0 and epoch_n != 0: flag_eval = True # every epoch
@@ -273,6 +294,9 @@ def distill(
                 logs['eval_loss'] = eval_loss
                 logs['eval_acc'] = eval_acc
                 logger.info(json.dumps({**logs, **{"step": global_step}}))
+                if writer:
+                    writer.add_scalar('eval_loss', eval_loss, global_step)
+                    writer.add_scalar('eval_acc', eval_acc, global_step)
                 # measured by accuracy
                 curr_val_metric = eval_acc
                 if best_val_metric is None or curr_val_metric > best_val_metric:
