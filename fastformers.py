@@ -10,10 +10,6 @@ import logging
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-try:
-    from torch.utils.tensorboard import SummaryWriter
-except ImportError:
-    pass
 
 import numpy as np
 import random
@@ -57,33 +53,15 @@ def distill(
         mpl_loader=None):
 
     args = teacher_config['opt']
-    try:
-        writer = SummaryWriter(log_dir=args.log_dir)
-    except:
-        writer = None
 
     teacher_layer_num = teacher_model.bert_model.config.num_hidden_layers
     student_layer_num = student_model.bert_model.config.num_hidden_layers
 
-    num_training_steps_for_epoch = len(train_loader) // args.gradient_accumulation_steps
-    num_training_steps = num_training_steps_for_epoch * args.epoch
-    num_warmup_steps = int(args.warmup_ratio * num_training_steps)
-    logger.info("(num_training_steps_for_epoch, num_training_steps, num_warmup_steps): ({}, {}, {})".\
-        format(num_training_steps_for_epoch, num_training_steps, num_warmup_steps))        
+    # create teacher optimizer
+    teacher_optimizer, _, _, _ = prepare_osws(teacher_config, teacher_model, train_loader)
 
-    # prepare optimizer and schedule (linear warmup and decay)
-    no_decay = ["bias", "LayerNorm.weight"]
-    optimizer_grouped_parameters = [
-        {
-            "params": [p for n, p in student_model.named_parameters() if not any(nd in n for nd in no_decay)],
-            "weight_decay": args.weight_decay,
-        },
-        {"params": [p for n, p in student_model.named_parameters() if any(nd in n for nd in no_decay)], "weight_decay": 0.0},
-    ]
-    optimizer = AdamW(optimizer_grouped_parameters, lr=args.lr, eps=args.adam_epsilon)
-    scheduler = get_linear_schedule_with_warmup(
-        optimizer, num_warmup_steps=num_warmup_steps, num_training_steps=num_training_steps
-    )
+    # create student optimizer, scheduler, summary writer
+    student_optimizer, student_scheduler, writer, _ = prepare_osws(student_config, student_model, train_loader)
 
     # prepare loss functions
     def soft_cross_entropy(predicts, targets):
@@ -100,7 +78,6 @@ def distill(
     logger.info("  Num Epochs = %d", args.epoch)
     logger.info("  batch size = %d", args.batch_size)
     logger.info("  Gradient Accumulation steps = %d", args.gradient_accumulation_steps)
-    logger.info("  Total optimization steps = %d", num_training_steps)
 
     global_step = 0
     epochs_trained = 0
@@ -201,8 +178,8 @@ def distill(
             tr_loss += loss.item()
             if (step + 1) % args.gradient_accumulation_steps == 0:
                 torch.nn.utils.clip_grad_norm_(student_model.parameters(), args.max_grad_norm)
-                optimizer.step()  # update student model
-                scheduler.step()  # Update learning rate schedule
+                student_optimizer.step()  # update student model
+                student_scheduler.step()  # Update learning rate schedule
                 student_model.zero_grad()
                 global_step += 1
             # -------------------------------------------------------------------------------------------------------
@@ -211,7 +188,7 @@ def distill(
             # student -> teacher, performance feedback/update with student_model.eval(), teacher_model.train()
             # -------------------------------------------------------------------------------------------------------
             mpl_loss = 0.0
-            if (step + 1) % args.gradient_accumulation_steps == 0 and mpl_loader and global_step > args.mpl_warmup_steps: 
+            if mpl_loader and global_step > args.mpl_warmup_steps: 
                 loss_cross_entropy = torch.nn.CrossEntropyLoss().to(args.device)
                 mpl_iterator = iter(mpl_loader)
                 try:
@@ -232,17 +209,17 @@ def distill(
 
                 # the loss is the performance of the student on the labeled data.
                 # additionaly, we add the loss of the teacher on the labeled data for avoiding overfitting.
-                #mpl_loss = loss_cross_entropy(output_student, y) / 2 + loss_cross_entropy(output_teacher, y) / 2
-                mpl_loss = loss_cross_entropy(output_student, y) + loss_cross_entropy(output_teacher, y)
+                mpl_loss = loss_cross_entropy(output_student, y) / 2 + loss_cross_entropy(output_teacher, y) / 2
                 if args.gradient_accumulation_steps > 1:
                     mpl_loss = mpl_loss / args.gradient_accumulation_steps
 
                 # back propagate through teacher model
                 mpl_loss.backward()
-                torch.nn.utils.clip_grad_norm_(teacher_model.parameters(), args.max_grad_norm)
-                optimizer.step() # update teacher model 
-                teacher_model.zero_grad()
-                student_model.zero_grad() # clear gradient info which was generated during forward computation.
+                if (step + 1) % args.gradient_accumulation_steps == 0:
+                    torch.nn.utils.clip_grad_norm_(teacher_model.parameters(), args.max_grad_norm)
+                    teacher_optimizer.step() # update teacher model 
+                    teacher_model.zero_grad()
+                    student_model.zero_grad() # clear gradient info which was generated during forward computation.
             # -------------------------------------------------------------------------------------------------------
 
             train_iterator.set_description(f"Epoch {epoch_n} loss: {loss:.3f}, mpl loss: {mpl_loss:.3f}")
@@ -271,7 +248,7 @@ def distill(
                 rep_loss = tr_rep_loss / (step + 1)
 
                 loss_scalar = (tr_loss - logging_loss) / args.logging_steps
-                learning_rate_scalar = scheduler.get_last_lr()[0]
+                learning_rate_scalar = student_scheduler.get_last_lr()[0]
                 logs["learning_rate"] = learning_rate_scalar
                 logs["avg_loss_since_last_log"] = loss_scalar
                 logs['cls_loss'] = cls_loss
