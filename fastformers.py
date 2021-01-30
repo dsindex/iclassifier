@@ -17,12 +17,10 @@ import json
 from tqdm import tqdm
 
 from util    import load_config, to_device, to_numpy
-from early_stopping import EarlyStopping
 from datasets.metric import temp_seed 
 from sklearn.metrics import classification_report, confusion_matrix
 
-from train import train_epoch, evaluate, save_model, set_path, prepare_datasets, prepare_model, prepare_osws
-from transformers import AdamW, get_linear_schedule_with_warmup
+from train import evaluate, save_model, set_path, prepare_datasets, prepare_model, prepare_osws
 from torch.nn import MSELoss, CosineSimilarity
 
 logging.basicConfig(level=logging.INFO)
