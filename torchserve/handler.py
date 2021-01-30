@@ -55,7 +55,7 @@ class ClassifierHandler(BaseHandler, ABC):
                 model = TextGloveDensenetCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
             if config['enc_class'] == 'densenet-dsa':
                 model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
-        if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra', 'funnel']:
+        else:
             if config['emb_class'] == 'funnel':
                 from transformers import FunnelTokenizer, FunnelConfig, FunnelBaseModel
                 bert_config = FunnelConfig.from_pretrained(opt.bert_output_dir)
@@ -93,7 +93,7 @@ class ClassifierHandler(BaseHandler, ABC):
         if config['emb_class'] == 'glove':
             vocab = self.load_vocab(opt.vocab_path)
             tokenizer = Tokenizer(vocab, config)
-        if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra', 'funnel']:
+        else:
             tokenizer = model.bert_tokenizer
         return tokenizer
 
@@ -146,7 +146,7 @@ class ClassifierHandler(BaseHandler, ABC):
             x = torch.tensor([ids])
             # x : [batch_size, variable size]
             # batch size: 1
-        if config['emb_class'] in ['bert', 'distilbert', 'albert', 'roberta', 'bart', 'electra', 'funnel']:
+        else:
             inputs = tokenizer.encode_plus(text, add_special_tokens=True, return_tensors='pt')
             if config['emb_class'] in ['bart', 'distilbert']:
                 x = [inputs['input_ids'], inputs['attention_mask']]
