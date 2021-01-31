@@ -55,8 +55,8 @@ def distill(
     teacher_layer_num = teacher_model.bert_model.config.num_hidden_layers
     student_layer_num = student_model.bert_model.config.num_hidden_layers
 
-    # create teacher optimizer
-    teacher_optimizer, _, _, _ = prepare_osws(teacher_config, teacher_model, train_loader)
+    # create teacher optimizer with larger L2 norm
+    teacher_optimizer, _, _, _ = prepare_osws(teacher_config, teacher_model, train_loader, weight_decay=mpl_weight_decay)
 
     # create student optimizer, scheduler, summary writer
     student_optimizer, student_scheduler, writer, _ = prepare_osws(student_config, student_model, train_loader)
@@ -575,6 +575,7 @@ def get_params():
     # For meta pseudo labels
     parser.add_argument('--mpl_data_path', type=str, default='', help="Labeled data path(before augmentation) for meta pseudo labels.")
     parser.add_argument('--mpl_warmup_steps', default=1000, type=int)
+    parser.add_argument('--mpl_weight_decay', type=float, default=0.1)
 
     # Same aguments as train.py
     parser.add_argument('--config', type=str, default='configs/config-distilbert-cls.json')
