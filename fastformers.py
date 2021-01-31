@@ -56,16 +56,17 @@ def distill(
     student_layer_num = student_model.bert_model.config.num_hidden_layers
 
     # create teacher optimizer with larger L2 norm
-    teacher_optimizer, _, _, _ = prepare_osws(teacher_config, teacher_model, train_loader, weight_decay=mpl_weight_decay)
+    teacher_optimizer, _, _, _ = prepare_osws(teacher_config, teacher_model, train_loader, lr=args.mpl_learning_rate, weight_decay=args.mpl_weight_decay)
 
     # create student optimizer, scheduler, summary writer
-    student_optimizer, student_scheduler, writer, _ = prepare_osws(student_config, student_model, train_loader)
+    student_optimizer, student_scheduler, writer, _ = prepare_osws(student_config, student_model, train_loader, lr=args.lr, weight_decay=args.weight_decay)
 
     # prepare loss functions
     def soft_cross_entropy(predicts, targets):
         likelihood = F.log_softmax(predicts, dim=-1)
         targets_prob = F.softmax(targets, dim=-1)
         return (- targets_prob * likelihood).sum(dim=-1).mean()
+
     loss_mse_sum = MSELoss(reduction='sum').to(args.device)
     loss_mse = MSELoss().to(args.device)
     loss_cs = CosineSimilarity(dim=2).to(args.device)
@@ -469,22 +470,23 @@ def train(opt):
     # set etc
     torch.autograd.set_detect_anomaly(True)
 
-    # prepare student config
-    student_config = load_config(opt, config_path=opt.config)
-    student_config['opt'] = opt
-    logger.info("[student config] :\n%s", student_config)
-        
     # prepare teacher config
     teacher_config = load_config(opt, config_path=opt.teacher_config)
     teacher_config['opt'] = opt
     logger.info("[teacher config] :\n%s", teacher_config)
-    
+
+    # prepare student config
+    student_config = load_config(opt, config_path=opt.config)
+    student_config['opt'] = opt
+    logger.info("[student config] :\n%s", student_config)
+         
     # set path
     set_path(teacher_config)
   
     # prepare train, valid dataset
     train_loader, valid_loader = prepare_datasets(teacher_config)
-  
+ 
+    # prepare labeled dataset for meta pseudo labels
     if opt.mpl_data_path:
         mpl_loader, _ = prepare_datasets(teacher_config, train_path=opt.mpl_data_path)
 
@@ -575,6 +577,7 @@ def get_params():
     # For meta pseudo labels
     parser.add_argument('--mpl_data_path', type=str, default='', help="Labeled data path(before augmentation) for meta pseudo labels.")
     parser.add_argument('--mpl_warmup_steps', default=1000, type=int)
+    parser.add_argument('--mpl_learning_rate', type=float, default=5e-5)
     parser.add_argument('--mpl_weight_decay', type=float, default=0.1)
 
     # Same aguments as train.py
@@ -587,7 +590,7 @@ def get_params():
     parser.add_argument('--eval_batch_size', type=int, default=128)
     parser.add_argument('--epoch', type=int, default=64)
     parser.add_argument('--eval_and_save_steps', type=int, default=500, help="Save checkpoint every X updates steps.")
-    parser.add_argument('--lr', type=float, default=2e-4)
+    parser.add_argument('--lr', type=float, default=5e-5)
     parser.add_argument('--warmup_epoch', type=int, default=0,  help="Number of warmup epoch steps")
     parser.add_argument('--patience', default=7, type=int, help="Max number of epoch to be patient for early stopping.")
     parser.add_argument('--save_path', type=str, default='pytorch-model.pt')

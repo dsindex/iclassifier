@@ -89,21 +89,19 @@ INFO:__main__:[Elapsed Time] : 4355.75795173645ms, 6.093895657038654ms on averag
 
 # Meta Pseudo Labels
 
-*** from bert-base-uncased, --n_iters=10, --mpl_data_path=data/sst2/train.txt.fs --mpl_warmup_steps=5000
-$ python fastformers.py --do_distill --teacher_config=configs/config-bert-cls.json --data_dir=data/sst2 --teacher_bert_model_name_or_path=./bert-checkpoint-teacher --teacher_model_path=pytorch-model-teacher.pt --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8 --bert_output_dir=bert-checkpoint --save_path=pytorch-model.pt --lr=5e-5 --epoch=3 --batch_size=64 --augmented --mpl_data_path=data/sst2/train.txt.fs --mpl_warmup_steps=5000
+*** from bert-base-uncased, --n_iters=10, --mpl_data_path=data/sst2/train.txt.fs --mpl_warmup_steps=5000 --mpl_learning_rate=5e-5 --mpl_weight_decay=0.01
+$ python fastformers.py --do_distill --teacher_config=configs/config-bert-cls.json --data_dir=data/sst2 --teacher_bert_model_name_or_path=./bert-checkpoint-teacher --teacher_model_path=pytorch-model-teacher.pt --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8 --bert_output_dir=bert-checkpoint --save_path=pytorch-model.pt --lr=5e-5 --epoch=3 --batch_size=64 --augmented --mpl_data_path=data/sst2/train.txt.fs --mpl_warmup_steps=5000 --mpl_learning_rate=5e-5 --mpl_weight_decay=0.01
 
 INFO:__main__:[Accuracy] : 0.9127,  1662/ 1821
 INFO:__main__:[Elapsed Time] : 12031.500339508057ms, 6.570246193435166ms on average
 
-INFO:__main__:[Accuracy] : 0.9116,  1660/ 1821
-INFO:__main__:[Elapsed Time] : 11743.257284164429ms, 6.41769616158454ms on average
-
 **** --mpl_warmup_steps=0
+INFO:__main__:[Accuracy] : 0.9105,  1658/ 1821
+INFO:__main__:[Elapsed Time] : 11657.557725906372ms, 6.3686090511280105ms on average
 
-**** --mpl_warmup_steps=0 --mpl_weight_decay=0.1
-
-**** --mpl_warmup_steps=0 --lr=1e-5
-
+**** --mpl_warmup_steps=10000 --mpl_learning_rate=1e-6 --mpl_weight_decay=0.05
+INFO:__main__:[Accuracy] : 0.9116,  1660/ 1821
+INFO:__main__:[Elapsed Time] : 11567.988395690918ms, 6.313557153219705ms on average
 
 ```
 
