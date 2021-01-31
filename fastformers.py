@@ -513,7 +513,7 @@ def train(opt):
                 train_loader,
                 valid_loader,
                 best_val_metric=best_val_metric,
-                mpl_loader=mpl_loader)
+                mpl_loader=mpl_loader if mpl_loader else None)
         logger.info(f"[distillation done] global steps: {global_step}, total loss: {tr_loss}, best metric: {best_val_metric}")
     # -------------------------------------------------------------------------------------------------------
 
