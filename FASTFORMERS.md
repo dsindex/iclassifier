@@ -87,7 +87,9 @@ INFO:__main__:[Elapsed Time] : 11032.879114151001ms, 6.007225172860282ms on aver
 INFO:__main__:[Accuracy] : 0.9743,   682/  700
 INFO:__main__:[Elapsed Time] : 4355.75795173645ms, 6.093895657038654ms on average
 
-*** from bert-base-uncased, --n_iters=10, --mpl_data_path=data/sst2/train.txt.fs --mpl_warmup_steps=5000 (meta pseudo labels)
+# Meta Pseudo Labels
+
+*** from bert-base-uncased, --n_iters=10, --mpl_data_path=data/sst2/train.txt.fs --mpl_warmup_steps=5000
 $ python fastformers.py --do_distill --teacher_config=configs/config-bert-cls.json --data_dir=data/sst2 --teacher_bert_model_name_or_path=./bert-checkpoint-teacher --teacher_model_path=pytorch-model-teacher.pt --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8 --bert_output_dir=bert-checkpoint --save_path=pytorch-model.pt --lr=5e-5 --epoch=3 --batch_size=64 --augmented --mpl_data_path=data/sst2/train.txt.fs --mpl_warmup_steps=5000
 
 INFO:__main__:[Accuracy] : 0.9127,  1662/ 1821
@@ -95,6 +97,13 @@ INFO:__main__:[Elapsed Time] : 12031.500339508057ms, 6.570246193435166ms on aver
 
 INFO:__main__:[Accuracy] : 0.9116,  1660/ 1821
 INFO:__main__:[Elapsed Time] : 11743.257284164429ms, 6.41769616158454ms on average
+
+**** --mpl_warmup_steps=0
+
+**** --mpl_warmup_steps=0 --mpl_weight_decay=0.1
+
+**** --mpl_warmup_steps=0 --lr=1e-5
+
 
 ```
 
