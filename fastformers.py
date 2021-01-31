@@ -503,18 +503,16 @@ def train(opt):
         student_model = prepare_model(student_config, bert_model_name_or_path=opt.bert_model_name_or_path)
         logger.info("[prepare student model done]")
 
-        meta_epoch = opt.meta_epoch
         best_val_metric=None
-        for idx in range(meta_epoch):
-            global_step, tr_loss, best_val_metric = distill(teacher_config,
-                    teacher_model,
-                    student_config,
-                    student_model,
-                    train_loader,
-                    valid_loader,
-                    best_val_metric=best_val_metric,
-                    mpl_loader=mpl_loader)
-            logger.info(f"[distillation done] meta epoch: {meta_epoch}, global steps: {global_step}, total loss: {tr_loss}, best metric: {best_val_metric}")
+        global_step, tr_loss, best_val_metric = distill(teacher_config,
+                teacher_model,
+                student_config,
+                student_model,
+                train_loader,
+                valid_loader,
+                best_val_metric=best_val_metric,
+                mpl_loader=mpl_loader)
+        logger.info(f"[distillation done] global steps: {global_step}, total loss: {tr_loss}, best metric: {best_val_metric}")
     # -------------------------------------------------------------------------------------------------------
 
 
@@ -575,7 +573,6 @@ def get_params():
                         help="The checkpoint directory of pruned BERT model.")
 
     # For meta pseudo labels
-    parser.add_argument('--meta_epoch', default=1, type=int)
     parser.add_argument('--mpl_data_path', type=str, default='', help="Labeled data path(before augmentation) for meta pseudo labels.")
     parser.add_argument('--mpl_warmup_steps', default=1000, type=int)
 
