@@ -94,11 +94,11 @@ $ python fastformers.py --do_distill --teacher_config=configs/config-bert-cls.js
 INFO:__main__:[Accuracy] : 0.9127,  1662/ 1821
 INFO:__main__:[Elapsed Time] : 12031.500339508057ms, 6.570246193435166ms on average
 
-** --mpl_warmup_steps=0
+*** --mpl_warmup_steps=0
 INFO:__main__:[Accuracy] : 0.9105,  1658/ 1821
 INFO:__main__:[Elapsed Time] : 11657.557725906372ms, 6.3686090511280105ms on average
 
-** --mpl_warmup_steps=10000 --mpl_learning_rate=1e-6 --mpl_weight_decay=0.05
+*** --mpl_warmup_steps=10000 --mpl_learning_rate=1e-6 --mpl_weight_decay=0.05
 INFO:__main__:[Accuracy] : 0.9116,  1660/ 1821
 INFO:__main__:[Elapsed Time] : 11567.988395690918ms, 6.313557153219705ms on average
 
