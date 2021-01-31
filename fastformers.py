@@ -487,6 +487,7 @@ def train(opt):
     train_loader, valid_loader = prepare_datasets(teacher_config)
  
     # prepare labeled dataset for meta pseudo labels
+    mpl_loader = None
     if opt.mpl_data_path:
         mpl_loader, _ = prepare_datasets(teacher_config, train_path=opt.mpl_data_path)
 
@@ -513,7 +514,7 @@ def train(opt):
                 train_loader,
                 valid_loader,
                 best_val_metric=best_val_metric,
-                mpl_loader=mpl_loader if mpl_loader else None)
+                mpl_loader=mpl_loader)
         logger.info(f"[distillation done] global steps: {global_step}, total loss: {tr_loss}, best metric: {best_val_metric}")
     # -------------------------------------------------------------------------------------------------------
 
