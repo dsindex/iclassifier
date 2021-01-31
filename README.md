@@ -319,9 +319,10 @@ INFO:__main__:[Elapsed Time] : 4330.849170684814ms, 6.052388653734723ms on avera
 | DistilFromBERT, GloVe, DenseNet-CNN     | 88.52        | 3.6788  / -       |                          | augmented, from large             |
 | DistilFromBERT, GloVe, DenseNet-DSA     | 88.14        | 8.4647  / -       |                          | augmented, from large             |
 | DistilFromBERT, BERT-small, CLS         | 89.29        | 5.9408  / -       |                          | fastformers, from base            |
-| DistilFromBERT, BERT-small, CLS         | 91.16        | 5.9114  / -       |                          | fastformers, augmented, from base |
-| DistilFromBERT, BERT-small, CLS         | 91.27        | 6.5702  / -       |                          | fastformers, augmented, from base, meta pseudo labels |
-| DistilFromBERT, BERT-small, CLS         | 90.33        | 6.0072  / -       |                          | fastformers, from large           |
+| DistilFromBERT, BERT-small, CLS         | 91.49        | 5.9114  / -       |                          | fastformers, augmented, n_iter=20, from base  |
+| DistilFromBERT, BERT-small, CLS         | 90.33        | 6.0072  / -       |                          | fastformers, augmented, n_iter=20, from large |
+| DistilFromBERT, BERT-small, CLS         | 91.16        | 6.2050  / -       |                          | fastformers, augmented, n_iter=10, from base  |
+| DistilFromBERT, BERT-small, CLS         | 91.27        | 6.5702  / -       |                          | fastformers, augmented, n_iter=10, from base, meta pseudo labels |
 | DistilFromRoBERTa, GloVe, CNN           | 86.55        | 1.8483  / -       |                          | augmented, from large             |
 | DistilFromRoBERTa, GloVe, DenseNet-CNN  | 88.80        | 3.9580  / -       |                          | augmented, from large             |
 | DistilFromRoBERTa, GloVe, DenseNet-DSA  | 88.25        | 8.5627  / -       |                          | augmented, from large             |
@@ -350,7 +351,9 @@ INFO:__main__:[Elapsed Time] : 4330.849170684814ms, 6.052388653734723ms on avera
 | BERT-base, CNN                          | 92.04        | 14.1576 / -       |                          |               |
 | BERT-base, CLS                          | 92.42        | 12.7549 / 62.5050 | 66.4545(92.42) / 50.8080 | threads=14    |
 | BERT-base, CLS                          | 93.36        | 15.6755 / -       |              - / -       | fintuned using amazon reviews     |
-| BERT-base, CLS                          | 93.25        | 14.2535 / -       |              - / -       | augmented                         |
+| BERT-base, CLS                          | 93.25        | 14.2535 / -       |              - / -       | augmented, n_iter=20              |
+| BERT-base, CLS                          | -            | -       / -       |              - / -       | fastformers, augmented, n_iter=10 |
+| BERT-base, CLS                          | -            | -       / -       |              - / -       | fastformers, augmented, n_iter=10, meta pseudo lables |
 | BERT-base, CNN                          | 90.55        | 10.6824 / -       |                          | del 8,9,10,11 |
 | BERT-base, CLS                          | 91.49        | 8.7747  / 42.8989 | 44.7676(90.61) / 34.3131 | del 8,9,10,11, threads=14         |
 | BERT-base, CLS                          | 90.23        | 7.0241  / -       |                          | del 6,7,8,9,10,11, threads=14     |
