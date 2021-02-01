@@ -108,6 +108,7 @@
 * Inference+QAT : --enable_inference --enable_qat
 * Inference+ONNX : --enable_inference --enable_ort / + --quantize_onnx
 * default batch size, learning rate, n_ctx(max_seq_length) : 128, 2e-4, 100
+* default epoch : 3
 * number of tokens / sentence : MEAN : 9.08, MAX:24, MIN:3, MEDIAN:9
 ```
 
@@ -307,7 +308,7 @@ INFO:__main__:[Elapsed Time] : 4330.849170684814ms, 6.052388653734723ms on avera
 
 |                                         | Accuracy (%) | GPU/CPU           | Dynamic                  | Etc           |
 | --------------------------------------- | ------------ | ----------------- | ------------------------ | ------------- |
-| GloVe, GNB                              | 72.27        | 1.2253  / -       |              - / -       | -             |
+| GloVe, GNB                              | 72.27        | 1.2253  / -       |              - / -       |               |
 | GloVe, CNN                              | 82.81        | 1.7670  / 4.5757  |              - / 4.8686  | threads=14    |
 | ConceptNet, CNN                         | 84.79        | 2.8304  / -       |              - / -       |               |
 | ConceptNet, CNN                         | 84.90        | 2.7672  / -       |              - / -       | optuna        |
@@ -350,10 +351,10 @@ INFO:__main__:[Elapsed Time] : 4330.849170684814ms, 6.052388653734723ms on avera
 | MiniLM, CLS                             | 93.25        | 11.5939 / -       |              - / -       | epoch=30      |
 | BERT-base, CNN                          | 92.04        | 14.1576 / -       |                          |               |
 | BERT-base, CLS                          | 92.42        | 12.7549 / 62.5050 | 66.4545(92.42) / 50.8080 | threads=14    |
-| BERT-base, CLS                          | 93.36        | 15.6755 / -       |              - / -       | fintuned using amazon reviews     |
+| BERT-base, CLS                          | 93.36        | 15.6755 / -       |              - / -       | fintuned using amazon reviews, epoch=10 |
 | BERT-base, CLS                          | 93.25        | 14.2535 / -       |              - / -       | augmented, n_iter=20              |
-| BERT-base, CLS                          | -            | -       / -       |              - / -       | fastformers, augmented, n_iter=10 |
-| BERT-base, CLS                          | -            | -       / -       |              - / -       | fastformers, augmented, n_iter=10, meta pseudo lables |
+| BERT-base, CLS                          | 92.81        | 15.2709 / -       |              - / -       | fastformers, augmented, n_iter=10 |
+| BERT-base, CLS                          | 93.36        | 15.2605 / -       |              - / -       | fastformers, augmented, n_iter=10, meta pseudo lables |
 | BERT-base, CNN                          | 90.55        | 10.6824 / -       |                          | del 8,9,10,11 |
 | BERT-base, CLS                          | 91.49        | 8.7747  / 42.8989 | 44.7676(90.61) / 34.3131 | del 8,9,10,11, threads=14         |
 | BERT-base, CLS                          | 90.23        | 7.0241  / -       |                          | del 6,7,8,9,10,11, threads=14     |
@@ -363,32 +364,32 @@ INFO:__main__:[Elapsed Time] : 4330.849170684814ms, 6.052388653734723ms on avera
 | BERT-large, CLS                         | 93.57        | 27.3209 / -       |                          | fintuned using amazon reviews     |
 | BERT-large, CNN                         | 88.47        | 14.7813 / -       |                          | del 12~23     |
 | BERT-large, CLS                         | 86.71        | 12.1560 / -       |                          | del 12~23     |
-| SqueezeBERT, CNN                        | 90.61        | 19.2879 / -       |                          | threads=14    |
-| SqueezeBERT, CLS                        | 90.12        | 17.4998 / -       |                          | threads=14    |
+| SqueezeBERT, CNN                        | 90.61        | 19.2879 / -       |                          | epoch=20      |
+| SqueezeBERT, CLS                        | 90.12        | 17.4998 / -       |                          | epoch=20      |
 | SpanBERT-base, CNN                      | 91.82        | 15.2098 / -       |                          |               |
 | SpanBERT-base, CLS                      | 91.49        | 13.1516 / -       |                          |               |
 | SpanBERT-large, CNN                     | 93.90        | 26.8609 / -       |                          |               |
 | SpanBERT-large, CLS                     | 93.96        | 26.0445 / -       |                          |               |
-| ALBERT-base, CNN                        | 92.04        | 16.0554 / -       |                          |               |
-| ALBERT-base, CLS                        | 90.01        | 14.6725 / -       |                          |               |
-| ALBERT-xxlarge, CNN                     | 95.77        | 57.4631 / -       |                          |               |
-| ALBERT-xxlarge, CLS                     | 94.45        | 51.8027 / -       |                          |               |
-| RoBERTa-base, CNN                       | 92.92        | 15.1016 / -       |                          |               |
-| RoBERTa-base, CLS                       | 93.03        | 14.6736 / -       |                          |               |
-| XLM-RoBERTa-base, CLS                   | 91.49        | 14.2246 / -       |                          |               |
-| RoBERTa-base, CNN                       | 92.26        | 11.5241 / -       |                          | del 8,9,10,11 |
-| RoBERTa-base, CLS                       | 91.76        | 10.0296 / -       |                          | del 8,9,10,11 |
-| RoBERTa-large, CNN                      | 95.55        | 26.9807 / -       |                          |               |
-| RoBERTa-large, CLS                      | 95.66        | 23.7395 / -       |                          |               |
-| XLM-RoBERTa-large, CLS                  | 92.04        | 24.8045 / -       |                          |               |
-| BART-large, CNN                         | 94.45        | 35.1708 / -       |                          |               |
-| BART-large, CLS                         | 94.89        | 33.3862 / -       |                          |               |
-| ELECTRA-base, CNN                       | 95.39        | 14.9802 / -       |                          |               |
-| ELECTRA-base, CLS                       | 95.22        | 14.0087 / -       |                          |               |
-| ELECTRA-large, CNN                      | 96.05        | 27.2868 / -       |                          |               |
-| ELECTRA-large, CLS                      | **96.43**    | 25.6857 / -       |                          |               |
-| DeBERTa-base, CLS                       | 93.41        | 26.1533 / -       |                          |               |
-| DeBERTa-large, CLS                      | 94.95        | 62.4272 / -       |                          |               |
+| ALBERT-base, CNN                        | 92.04        | 16.0554 / -       |                          | epoch=10      |
+| ALBERT-base, CLS                        | 90.01        | 14.6725 / -       |                          | epoch=10      |
+| ALBERT-xxlarge, CNN                     | 95.77        | 57.4631 / -       |                          | epoch=10      |
+| ALBERT-xxlarge, CLS                     | 94.45        | 51.8027 / -       |                          | epoch=10      |
+| RoBERTa-base, CNN                       | 92.92        | 15.1016 / -       |                          | epoch=10      |
+| RoBERTa-base, CLS                       | 93.03        | 14.6736 / -       |                          | epoch=10      |
+| XLM-RoBERTa-base, CLS                   | 91.49        | 14.2246 / -       |                          | epoch=10      |
+| RoBERTa-base, CNN                       | 92.26        | 11.5241 / -       |                          | del 8,9,10,11 , epoch=10 |
+| RoBERTa-base, CLS                       | 91.76        | 10.0296 / -       |                          | del 8,9,10,11 , epoch=10 |
+| RoBERTa-large, CNN                      | 95.55        | 26.9807 / -       |                          | epoch=10      |
+| RoBERTa-large, CLS                      | 95.66        | 23.7395 / -       |                          | epoch=10      |
+| XLM-RoBERTa-large, CLS                  | 92.04        | 24.8045 / -       |                          | epoch=10      |
+| BART-large, CNN                         | 94.45        | 35.1708 / -       |                          | epoch=10      |
+| BART-large, CLS                         | 94.89        | 33.3862 / -       |                          | epoch=10      |
+| ELECTRA-base, CNN                       | 95.39        | 14.9802 / -       |                          | epoch=10      |
+| ELECTRA-base, CLS                       | 95.22        | 14.0087 / -       |                          | epoch=10      |
+| ELECTRA-large, CNN                      | 96.05        | 27.2868 / -       |                          | epoch=15      |
+| ELECTRA-large, CLS                      | **96.43**    | 25.6857 / -       |                          | epoch=15      |
+| DeBERTa-base, CLS                       | 93.41        | 26.1533 / -       |                          | epoch=10      |
+| DeBERTa-large, CLS                      | 94.95        | 62.4272 / -       |                          | epoch=10      |
 
 - [sst2 leaderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
