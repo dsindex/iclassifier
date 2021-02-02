@@ -178,6 +178,8 @@ class ClassifierHandler(BaseHandler, ABC):
         labels = self.labels
 
         logits = model(data)
+        logits = torch.softmax(logits, dim=-1)
+
         predicted = logits.argmax(1)
         predicted = to_numpy(predicted)[0]
         predicted_raw = labels[predicted]

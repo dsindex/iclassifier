@@ -281,10 +281,8 @@ class TextGloveGNB(BaseModel):
         # embedded_x : [batch_size, emb_dim]
         gnb_out = self.gnb(embedded_x)
         # gnb_out : [batch_size, label_size]
-        if self.config['opt'].augmented: return gnb_out
-        output = torch.softmax(gnb_out, dim=-1)
-        return output
 
+        return gnb_out
 
 class TextGloveCNN(BaseModel):
     def __init__(self, config, embedding_path, label_path, emb_non_trainable=True):
@@ -349,14 +347,12 @@ class TextGloveCNN(BaseModel):
         fc_hidden = self.layernorm_fc_hidden(fc_hidden)
         fc_hidden = self.dropout(fc_hidden)
         fc_out = self.fc(fc_hidden)
+        # fc_out : [batch_size, label_size]
 
         if self.enable_qat: # QAT
             fc_out = self.dequant(fc_out)
 
-        # fc_out : [batch_size, label_size]
-        if self.config['opt'].augmented: return fc_out
-        output = torch.softmax(fc_out, dim=-1)
-        return output
+        return fc_out
 
 class TextGloveDensenetCNN(BaseModel):
     def __init__(self, config, embedding_path, label_path, emb_non_trainable=True):
@@ -420,9 +416,8 @@ class TextGloveDensenetCNN(BaseModel):
         # 4. fully connected
         fc_out = self.fc(textcnn_out)
         # [batch_size, label_size]
-        if self.config['opt'].augmented: return fc_out
-        output = torch.softmax(fc_out, dim=-1)
-        return output
+
+        return fc_out
 
 class TextGloveDensenetDSA(BaseModel):
     def __init__(self, config, embedding_path, label_path, emb_non_trainable=True):
@@ -503,9 +498,8 @@ class TextGloveDensenetDSA(BaseModel):
         else:
             fc_out = self.fc(dsa_out)
             # fc_out : [batch_size, label_size]
-        if self.config['opt'].augmented: return fc_out
-        output = torch.softmax(fc_out, dim=-1)
-        return output
+
+        return fc_out
 
 class TextBertCNN(BaseModel):
     def __init__(self, config, bert_config, bert_model, bert_tokenizer, label_path, feature_based=False):
@@ -582,15 +576,10 @@ class TextBertCNN(BaseModel):
         fc_hidden_out = self.layernorm_fc_hidden(fc_hidden_out)
         fc_hidden_out = self.dropout(fc_hidden_out)
         fc_out = self.fc(fc_hidden_out)
-
         # fc_out : [batch_size, label_size]
-        if self.config['opt'].augmented:
-            if return_bert_outputs: return fc_out, bert_outputs
-            return fc_out
-        output = torch.softmax(fc_out, dim=-1)
-        # output : [batch_size, label_size]
-        if return_bert_outputs: return output, bert_outputs
-        return output
+
+        if return_bert_outputs: return fc_out, bert_outputs
+        return fc_out
 
 class TextBertCLS(BaseModel):
     def __init__(self, config, bert_config, bert_model, bert_tokenizer, label_path, feature_based=False):
@@ -664,15 +653,11 @@ class TextBertCLS(BaseModel):
 
         # 2. fully connected
         fc_out = self.fc(embedded)
+        # fc_out : [batch_size, label_size]
 
         if self.enable_qat: # QAT
             fc_out = self.dequant(fc_out)
 
-        if self.config['opt'].augmented:
-            if return_bert_outputs: return fc_out, bert_outputs
-            return fc_out
-        output = torch.softmax(fc_out, dim=-1)
-        # output : [batch_size, label_size]
-        if return_bert_outputs: return output, bert_outputs
-        return output
+        if return_bert_outputs: return fc_out, bert_outputs
+        return fc_out
 

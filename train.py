@@ -185,7 +185,8 @@ def evaluate(model, config, val_loader, eval_device=None):
             y = to_device(y, device)
             logits = model(x)
             loss = criterion(logits, y)
-
+            # softmax after computing cross entropy loss
+            logits = torch.softmax(logits, dim=-1)
             if preds is None:
                 preds = to_numpy(logits)
                 ys = to_numpy(y)
