@@ -309,7 +309,7 @@ INFO:__main__:[Elapsed Time] : 4330.849170684814ms, 6.052388653734723ms on avera
 |                                         | Accuracy (%) | GPU/CPU           | Dynamic                  | Etc           |
 | --------------------------------------- | ------------ | ----------------- | ------------------------ | ------------- |
 | GloVe, GNB                              | 72.27        | 1.2253  / -       |              - / -       |               |
-| GloVe, CNN                              | 82.81        | 1.7670  / 4.5757  |              - / 4.8686  | threads=14    |
+| GloVe, CNN                              | 83.09        | 1.9943  / 4.5757  |              - / 4.8686  | threads=14    |
 | ConceptNet, CNN                         | 84.79        | 2.8304  / -       |              - / -       |               |
 | ConceptNet, CNN                         | 84.90        | 2.7672  / -       |              - / -       | optuna        |
 | GloVe, DenseNet-CNN                     | 86.38        | 3.6203  / -       |                          | threads=14    |
@@ -440,6 +440,9 @@ $ python evaluate.py --data_dir=data/sst2
 
 INFO:__main__:[Accuracy] : 0.8281,  1508/ 1821
 INFO:__main__:[Elapsed Time] : 3300ms, 1.767032967032967ms on average
+
+INFO:__main__:[Accuracy] : 0.8309,  1513/ 1821
+INFO:__main__:[Elapsed Time] : 3725.560188293457ms, 1.994345607338371ms on average
 
 * --embedding_path=./embeddings/numberbatch-en-19.08.txt (from https://github.com/commonsense/conceptnet-numberbatch)
 INFO:__main__:[Accuracy] : 0.8479,  1544/ 1821
