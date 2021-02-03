@@ -16,7 +16,7 @@ import random
 import json
 from tqdm import tqdm
 
-from util    import load_config, to_device, to_numpy
+from util    import load_checkpoint, load_config, to_device, to_numpy
 from datasets.metric import temp_seed 
 from sklearn.metrics import classification_report, confusion_matrix
 
@@ -455,13 +455,6 @@ def prune_rewire(config, model, eval_loader, use_tqdm=True):
     # set bert model's config for pruned model
     bert_model.config.num_attention_heads = min([num_heads, args.target_num_heads])
     bert_model.config.intermediate_size = layers._modules['0'].intermediate.dense.weight.size(0)
-
-def load_checkpoint(model_path, device='cpu'):
-    if device == 'cpu':
-        checkpoint = torch.load(model_path, map_location=lambda storage, loc: storage)
-    else:
-        checkpoint = torch.load(model_path)
-    return checkpoint
 
 def train(opt):
     if torch.cuda.is_available():

@@ -23,7 +23,7 @@ import random
 import json
 from tqdm import tqdm
 
-from util    import load_config, to_device, to_numpy
+from util    import load_checkpoint, load_config, to_device, to_numpy
 from model   import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
 from dataset import prepare_dataset, GloveDataset, BertDataset
 from early_stopping import EarlyStopping
@@ -302,15 +302,6 @@ def reduce_bert_model(config, bert_model, bert_config):
         if len(layer_indexes) > 0:
             bert_config.num_hidden_layers = len(layer_list)
 
-def load_checkpoint(config):
-    opt = config['opt']
-    if opt.device == 'cpu':
-        checkpoint = torch.load(opt.restore_path, map_location=lambda storage, loc: storage)
-    else:
-        checkpoint = torch.load(opt.restore_path)
-    logger.info("[Loading checkpoint done]")
-    return checkpoint
-
 def prepare_model(config, bert_model_name_or_path=None):
     opt = config['opt']
     emb_non_trainable = not opt.embedding_trainable
@@ -344,7 +335,7 @@ def prepare_model(config, bert_model_name_or_path=None):
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path, feature_based=opt.bert_use_feature_based)
     if opt.restore_path:
-        checkpoint = load_checkpoint(config)
+        checkpoint = load_checkpoint(opt.restore_path, device=opt.device)
         model.load_state_dict(checkpoint)
     if opt.enable_qat: # QAT
         model.qconfig = torch.quantization.get_default_qat_qconfig('fbgemm')

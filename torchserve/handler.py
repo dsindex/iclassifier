@@ -7,7 +7,7 @@ import torch
 import torch.quantization
 import numpy as np
 from model import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
-from util import load_config, to_device, to_numpy
+from util import load_checkpoint, load_config, to_device, to_numpy
 
 from ts.torch_handler.base_handler import BaseHandler
 
@@ -32,16 +32,6 @@ class ClassifierHandler(BaseHandler, ABC):
     def __init__(self):
         super(ClassifierHandler, self).__init__()
         self.initialized = False
-
-    def load_checkpoint(self):
-        config = self.config
-        opt = config['opt']
-        if opt.device == 'cpu':
-            checkpoint = torch.load(opt.model_path, map_location=lambda storage, loc: storage)
-        else:
-            checkpoint = torch.load(opt.model_path)
-        logger.info("[Loading checkpoint done] %s" % (opt.model_path))
-        return checkpoint
 
     def load_model(self, checkpoint):
         config = self.config
@@ -115,7 +105,7 @@ class ClassifierHandler(BaseHandler, ABC):
         logger.info("opt.enable_dqm: %s", opt.enable_dqm)
 
         # load pytorch model checkpoint
-        checkpoint = self.load_checkpoint()
+        checkpoint = load_checkpoint(opt.model_path, device=opt.device)
     
         # prepare model and load parameters
         self.model = self.load_model(checkpoint)
