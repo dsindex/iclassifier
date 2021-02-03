@@ -17,9 +17,6 @@ import json
 from tqdm import tqdm
 
 from util    import load_checkpoint, load_config, to_device, to_numpy
-from datasets.metric import temp_seed 
-from sklearn.metrics import classification_report, confusion_matrix
-
 from train import evaluate, save_model, set_path, prepare_datasets, prepare_model, prepare_osws
 from torch.nn import MSELoss, CosineSimilarity
 
