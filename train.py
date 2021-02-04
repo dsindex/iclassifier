@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 fileHandler = logging.FileHandler('./train.log')
 logger.addHandler(fileHandler)
 
-def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_measure):
+def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_measure):
     optimizer = config['optimizer']
     scheduler = config['scheduler']
     writer = config['writer']
@@ -98,7 +98,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
             epoch_iterator.set_description(f"Epoch {epoch_i}, local_step: {local_step}, loss: {loss:.3f}, curr_lr: {curr_lr:.7f}")
             if opt.eval_and_save_steps > 0 and global_step != 0 and global_step % opt.eval_and_save_steps == 0:
                 # evaluate
-                eval_loss, eval_acc = evaluate(model, config, val_loader)
+                eval_loss, eval_acc = evaluate(model, config, valid_loader)
                 if local_best_eval_loss > eval_loss: local_best_eval_loss = eval_loss
                 if local_best_eval_acc < eval_acc: local_best_eval_acc = eval_acc
                 if writer:
@@ -113,7 +113,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
                     best_eval_measure = eval_measure
                     if opt.save_path and not opt.hp_search_optuna and not opt.hp_search_nni:
                         logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
-                        save_model(config, model, val_loader=val_loader)
+                        save_model(config, model, valid_loader=valid_loader)
                         # save finetuned bert model/config/tokenizer
                         if config['emb_class'] not in ['glove']:
                             if not os.path.exists(opt.bert_output_dir):
@@ -128,7 +128,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
     avg_loss = total_loss / total_examples
 
     # evaluate at the end of epoch
-    eval_loss, eval_acc = evaluate(model, config, val_loader)
+    eval_loss, eval_acc = evaluate(model, config, valid_loader)
     if local_best_eval_loss > eval_loss: local_best_eval_loss = eval_loss
     if local_best_eval_acc < eval_acc: local_best_eval_acc = eval_acc
     if writer:
@@ -143,7 +143,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
         best_eval_measure = eval_measure
         if opt.save_path and not opt.hp_search_optuna and not opt.hp_search_nni:
             logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
-            save_model(config, model, val_loader=val_loader)
+            save_model(config, model, valid_loader=valid_loader)
             # save finetuned bert model/config/tokenizer
             if config['emb_class'] not in ['glove']:
                 if not os.path.exists(opt.bert_output_dir):
@@ -167,7 +167,7 @@ def train_epoch(model, config, train_loader, val_loader, epoch_i, best_eval_meas
 
     return local_best_eval_loss, local_best_eval_acc, best_eval_measure
  
-def evaluate(model, config, val_loader, eval_device=None):
+def evaluate(model, config, valid_loader, eval_device=None):
     opt = config['opt']
     device = opt.device
     if eval_device != None: device = eval_device
@@ -178,7 +178,7 @@ def evaluate(model, config, val_loader, eval_device=None):
     preds = None
     ys    = None
     with torch.no_grad():
-        iterator = tqdm(val_loader, total=len(val_loader), desc=f"Evaluate")
+        iterator = tqdm(valid_loader, total=len(valid_loader), desc=f"Evaluate")
         for i, (x,y) in enumerate(iterator):
             model.eval()
             x = to_device(x, device)
@@ -212,7 +212,7 @@ def evaluate(model, config, val_loader, eval_device=None):
     cur_acc  = correct / total_examples
     return cur_loss, cur_acc
 
-def save_model(config, model, val_loader=None, save_path=None):
+def save_model(config, model, valid_loader=None, save_path=None):
     opt = config['opt']
     checkpoint_path = opt.save_path
     if save_path: checkpoint_path = save_path
@@ -232,7 +232,7 @@ def save_model(config, model, val_loader=None, save_path=None):
             quantized_model = torch.quantization.convert(model)
             # evaluate quantized model
             logger.info("[Evaluate quantized model with device='cpu']")
-            evaluate(quantized_model, config, val_loader, eval_device='cpu')
+            evaluate(quantized_model, config, valid_loader, eval_device='cpu')
             model.to(opt.device)
             checkpoint = quantized_model.state_dict()
         else:
