@@ -44,7 +44,7 @@ def distill(
         student_model,
         train_loader,
         eval_loader,
-        best_val_metric=None,
+        best_eval_metric=None,
         mpl_loader=None):
 
     args = teacher_config['opt']
@@ -271,17 +271,17 @@ def distill(
                     writer.add_scalar('eval_loss', eval_loss, global_step)
                     writer.add_scalar('eval_acc', eval_acc, global_step)
                 # measured by accuracy
-                curr_val_metric = eval_acc
-                if best_val_metric is None or curr_val_metric > best_val_metric:
+                curr_eval_metric = eval_acc
+                if best_eval_metric is None or curr_eval_metric > best_eval_metric:
                     # save model to '--save_path', '--bert_output_dir'
                     save_model(student_config, student_model)
                     student_model.bert_tokenizer.save_pretrained(args.bert_output_dir)
                     student_model.bert_model.save_pretrained(args.bert_output_dir)
-                    best_val_metric = curr_val_metric
-                    logger.info("[Best student model saved] : {:10.6f}, {}".format(best_val_metric,args.bert_output_dir))
+                    best_eval_metric = curr_eval_metric
+                    logger.info("[Best student model saved] : {:10.6f}, {}".format(best_eval_metric,args.bert_output_dir))
             # -------------------------------------------------------------------------------------------------------
 
-    return global_step, tr_loss / global_step, best_val_metric
+    return global_step, tr_loss / global_step, best_eval_metric
 
 def sort_by_importance(weight, bias, importance, num_instances, stride):
     from heapq import heappush, heappop
@@ -496,16 +496,16 @@ def train(opt):
         student_model = prepare_model(student_config, bert_model_name_or_path=opt.bert_model_name_or_path)
         logger.info("[prepare student model done]")
 
-        best_val_metric=None
-        global_step, tr_loss, best_val_metric = distill(teacher_config,
+        best_eval_metric=None
+        global_step, tr_loss, best_eval_metric = distill(teacher_config,
                 teacher_model,
                 student_config,
                 student_model,
                 train_loader,
                 valid_loader,
-                best_val_metric=best_val_metric,
+                best_eval_metric=best_eval_metric,
                 mpl_loader=mpl_loader)
-        logger.info(f"[distillation done] global steps: {global_step}, total loss: {tr_loss}, best metric: {best_val_metric}")
+        logger.info(f"[distillation done] global steps: {global_step}, total loss: {tr_loss}, best metric: {best_eval_metric}")
     # -------------------------------------------------------------------------------------------------------
 
 
