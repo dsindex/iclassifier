@@ -582,7 +582,7 @@ def get_params():
     parser.add_argument('--epoch', type=int, default=64)
     parser.add_argument('--eval_and_save_steps', type=int, default=500, help="Save checkpoint every X updates steps.")
     parser.add_argument('--lr', type=float, default=5e-5)
-    parser.add_argument('--warmup_epoch', type=int, default=0,  help="Number of warmup epoch steps")
+    parser.add_argument('--warmup_epoch', type=int, default=0,  help="Number of warmup epoch")
     parser.add_argument('--patience', default=7, type=int, help="Max number of epoch to be patient for early stopping.")
     parser.add_argument('--save_path', type=str, default='pytorch-model.pt')
     parser.add_argument('--restore_path', type=str, default='')
