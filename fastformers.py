@@ -274,11 +274,11 @@ def distill(
                 curr_eval_metric = eval_acc
                 if best_eval_metric is None or curr_eval_metric > best_eval_metric:
                     # save model to '--save_path', '--bert_output_dir'
-                    save_model(student_config, student_model)
+                    save_model(student_config, student_model, save_path=args.save_path)
                     student_model.bert_tokenizer.save_pretrained(args.bert_output_dir)
                     student_model.bert_model.save_pretrained(args.bert_output_dir)
                     best_eval_metric = curr_eval_metric
-                    logger.info("[Best student model saved] : {:10.6f}, {}".format(best_eval_metric,args.bert_output_dir))
+                    logger.info("[Best student model saved] : {:10.6f}, {}, {}".format(best_eval_metric, args.bert_output_dir, args.save_path))
             # -------------------------------------------------------------------------------------------------------
 
     return global_step, tr_loss / global_step, best_eval_metric
@@ -513,11 +513,12 @@ def train(opt):
     # structured pruning
     # -------------------------------------------------------------------------------------------------------
     if opt.do_prune:
-        # load model from '--model_path', '--bert_output_dir'
+        # restore model from '--save_path', '--bert_output_dir'
         model = prepare_model(student_config, bert_model_name_or_path=opt.bert_output_dir)
-        checkpoint = load_checkpoint(opt.model_path, device=opt.device)
+        checkpoint = load_checkpoint(opt.save_path, device=opt.device)
         model.load_state_dict(checkpoint)
         model = model.to(opt.device)
+        logger.info("[Restore best student model] : {}, {}".format(opt.bert_output_dir, opt.save_path))
 
         eval_loss = eval_acc = 0
         eval_loss, eval_acc = evaluate(model, student_config, valid_loader)
