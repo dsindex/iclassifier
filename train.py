@@ -217,7 +217,6 @@ def save_model(config, model, valid_loader=None, save_path=None):
     checkpoint_path = opt.save_path
     if save_path: checkpoint_path = save_path
     with open(checkpoint_path, 'wb') as f:
-        # QAT
         if opt.enable_qat:
             '''
             for name, param in model.named_parameters():
@@ -337,7 +336,7 @@ def prepare_model(config, bert_model_name_or_path=None):
     if opt.restore_path:
         checkpoint = load_checkpoint(opt.restore_path, device=opt.device)
         model.load_state_dict(checkpoint)
-    if opt.enable_qat: # QAT
+    if opt.enable_qat:
         model.qconfig = torch.quantization.get_default_qat_qconfig('fbgemm')
         '''
         # fuse if applicable

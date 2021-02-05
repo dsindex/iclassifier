@@ -64,7 +64,7 @@ def load_model(config, checkpoint):
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path)
-    if opt.enable_qat: # QAT
+    if opt.enable_qat:
         assert opt.device == 'cpu'
         model.qconfig = torch.quantization.get_default_qat_qconfig('fbgemm')
         '''

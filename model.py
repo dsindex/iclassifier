@@ -294,7 +294,7 @@ class TextGloveCNN(BaseModel):
         token_emb_dim = config['token_emb_dim']
 
         self.enable_qat = config['opt'].enable_qat
-        if self.enable_qat: # QAT
+        if self.enable_qat:
             self.quant = torch.quantization.QuantStub()
             self.dequant = torch.quantization.DeQuantStub()
 
@@ -304,7 +304,7 @@ class TextGloveCNN(BaseModel):
         padding_idx = config['pad_token_id']
         self.embed = super().create_embedding_layer(vocab_dim, emb_dim, weights_matrix=weights_matrix, non_trainable=emb_non_trainable, padding_idx=padding_idx)
 
-        if self.enable_qat: # QAT
+        if self.enable_qat:
             # leave embedding out
             self.embed.qconfig = None
 
@@ -332,7 +332,7 @@ class TextGloveCNN(BaseModel):
         embedded = self.dropout(self.embed(x))
         # embedded : [batch_size, seq_size, emb_dim]
 
-        if self.enable_qat: # QAT
+        if self.enable_qat:
             embedded = self.quant(embedded)
 
         # 2. convolution
@@ -349,7 +349,7 @@ class TextGloveCNN(BaseModel):
         fc_out = self.fc(fc_hidden)
         # fc_out : [batch_size, label_size]
 
-        if self.enable_qat: # QAT
+        if self.enable_qat:
             fc_out = self.dequant(fc_out)
 
         return fc_out
@@ -590,7 +590,7 @@ class TextBertCLS(BaseModel):
         seq_size = config['n_ctx']
 
         self.enable_qat = config['opt'].enable_qat
-        if self.enable_qat: # QAT
+        if self.enable_qat:
             self.quant = torch.quantization.QuantStub()
             self.dequant = torch.quantization.DeQuantStub()
 
@@ -601,7 +601,7 @@ class TextBertCLS(BaseModel):
         self.bert_hidden_size = bert_config.hidden_size
         self.bert_feature_based = feature_based
 
-        if self.enable_qat: # QAT
+        if self.enable_qat:
             '''
             # leave embedding out
             self.bert_model.embeddings.qconfig = None
@@ -648,14 +648,14 @@ class TextBertCLS(BaseModel):
         # embedded : [batch_size, bert_hidden_size]
         embedded = self.dropout(embedded)
 
-        if self.enable_qat: # QAT
+        if self.enable_qat:
             embedded = self.quant(embedded)
 
         # 2. fully connected
         fc_out = self.fc(embedded)
         # fc_out : [batch_size, label_size]
 
-        if self.enable_qat: # QAT
+        if self.enable_qat:
             fc_out = self.dequant(fc_out)
 
         if return_bert_outputs: return fc_out, bert_outputs
