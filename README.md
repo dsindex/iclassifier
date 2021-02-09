@@ -3,7 +3,7 @@
 **reference pytorch code for intent(sentence) classification.**
 
 - embedding
-  - GloVe, BERT, DistilBERT, mDistilBERT, SpanBERT, ALBERT, RoBERTa, XLM-RoBERTa, BART, ELECTRA, DeBERTa
+  - GloVe, BERT, DistilBERT, mDistilBERT, SpanBERT, ALBERT, RoBERTa, XLM-RoBERTa, BART, ELECTRA, DeBERTa, BORT, ConvBERT
 - encoding
   - GNB
     - Gaussian Naive Bayes(simple biased model)
@@ -390,6 +390,8 @@ INFO:__main__:[Elapsed Time] : 4330.849170684814ms, 6.052388653734723ms on avera
 | ELECTRA-large, CLS                      | **96.43**    | 25.6857 / -       |                          | epoch=15      |
 | DeBERTa-base, CLS                       | 93.41        | 26.1533 / -       |                          | epoch=10      |
 | DeBERTa-large, CLS                      | 94.95        | 62.4272 / -       |                          | epoch=10      |
+| BORT, CLS                               | 77.98        | 6.1346  / -       |                          | epoch=10      |
+| ConvBERT, CLS                           | 77.48        | 22.6815 / -       |                          | epoch=10      |
 
 - [sst2 leaderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -937,6 +939,7 @@ INFO:__main__:[Elapsed Time] : 47163ms, 25.685714285714287ms on average
 </p>
 </details>
 
+
 <details><summary><b>emb_class=deberta, enc_class=cnn | cls</b></summary>
 <p>
 
@@ -968,6 +971,69 @@ INFO:__main__:[Elapsed Time] : 113818.21751594543ms, 62.427293075310004ms on ave
 
 </p>
 </details>
+
+
+<details><summary><b>emb_class=bort, enc_class=cnn | cls</b></summary>
+<p>
+
+- train
+```
+* share config-bert-*.json
+* n_ctx size should be less than 512
+
+* enc_class=cls
+
+$ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bort
+
+$ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bort --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64
+
+```
+
+- evaluation
+```
+
+* enc_lass=cls
+
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+INFO:__main__:[Accuracy] : 0.7798,  1420/ 1821
+INFO:__main__:[Elapsed Time] : 11250.777959823608ms, 6.134679160275302ms on average
+
+```
+
+</p>
+</details>
+
+
+<details><summary><b>emb_class=convbert, enc_class=cnn | cls</b></summary>
+<p>
+
+- train
+```
+* share config-bert-*.json
+* n_ctx size should be less than 512
+
+* enc_class=cls
+
+$ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/conv-bert-medium-small
+
+$ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/conv-bert-medium-small --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64 
+
+```
+
+- evaluation
+```
+
+* enc_lass=cls
+
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+INFO:__main__:[Accuracy] : 0.7748,  1411/ 1821
+INFO:__main__:[Elapsed Time] : 41405.57098388672ms, 22.681565337128692ms on average
+
+```
+
+</p>
+</details>
+
 
 <br>
 
