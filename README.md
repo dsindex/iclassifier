@@ -3,12 +3,12 @@
 **reference pytorch code for intent(sentence) classification.**
 
 - embedding
-  - GloVe, BERT, DistilBERT, mDistilBERT, SpanBERT, ALBERT, RoBERTa, XLM-RoBERTa, BART, ELECTRA, DeBERTa, BORT, ConvBERT
+  - GloVe, BERT, DistilBERT, mDistilBERT, TinyBERT, MiniLM, MobileBERT, SpanBERT, ALBERT, RoBERTa, XLM-RoBERTa, BART, ELECTRA, DeBERTa, BORT, ConvBERT
 - encoding
   - GNB
     - Gaussian Naive Bayes(simple biased model)
   - CNN
-    - Convolutional Neural Net)
+    - Convolutional Neural Net
   - DenseNet
     - [Dynamic Self-Attention: Computing Attention over Words Dynamically for Sentence Embedding](https://arxiv.org/pdf/1808.07383.pdf)
     - implementation from [ntagger](https://github.com/dsindex/ntagger)
@@ -92,6 +92,7 @@
 | DistilBERT, CLS      | 97.71        | 8.0221  / 34.3049   | 28.6644  | 31.7260   |  FAILED    | 16.3812     | 11.2421           | FAILED         | 6.1573  / 4.6346         | threads=14     |
 | SqueezeBERT, CLS     | 97.29        | 18.0796 / -         | -        | 23.8565   |  -         | 20.3999     | 20.0118           | -              | 11.9890 / FAILED         | threads=14     |
 | MiniLM, CLS          | 96.86        | 12.2094 / -         | 17.5638  | 38.2084   |  -         | 16.8337     | 17.7702           | -              | 5.0394  / 4.3123         | threads=14     |
+| MobileBERT, CLS      | 96.43        | 49.9843 / -         | 46.2151  | 84.4232   |  -         | 51.9885     | 51.4533           | -              | 15.3492 / 12.4416        | threads=14     |
 | BERT-base, CNN       | 97.57        | 12.1273 / -         | -        | -         |  -         | 34.7878     | 30.5454           | -              | -                        | threads=14     |
 | BERT-base, CLS       | 97.43        | 12.7714 / -         | 46.4263  | 49.4747   |  -         | 30.7979     | 24.5353           | -              | 16.9756                  | threads=14     |
 | BERT-base, CLS       | 97.00        | 9.2660  / -         | 31.5400  | 33.4623   |  -         | 16.7419     | 13.5703           | -              | 11.7487                  | del 8,9,19,11, threads=14 |
@@ -291,6 +292,10 @@ INFO:__main__:[Elapsed Time] : 8598.786115646362ms, 12.209460459042004ms on aver
 INFO:__main__:[Accuracy] : 0.9729,   681/  700
 INFO:__main__:[Elapsed Time] : 4330.849170684814ms, 6.052388653734723ms on average
 
+** --config=configs/config-bert-cls.json --bert_model_name_or_paht=./embeddings/mobilebert-uncased
+INFO:__main__:[Accuracy] : 0.9643,   675/  700
+INFO:__main__:[Elapsed Time] : 35100.63934326172ms, 49.98437324818624ms on average
+
 ```
 
 </p>
@@ -349,6 +354,7 @@ INFO:__main__:[Elapsed Time] : 4330.849170684814ms, 6.052388653734723ms on avera
 | MiniLM, CNN                             | 91.49        | 13.5255 / -       |              - / -       |               |
 | MiniLM, CLS                             | 91.21        | 12.2066 / -       |              - / -       |               |
 | MiniLM, CLS                             | 93.25        | 11.5939 / -       |              - / -       | epoch=30      |
+| MobileBERT, CLS                         | 91.05        | 55.0898 / -       |              - / -       |               |
 | BERT-base, CNN                          | 92.04        | 14.1576 / -       |                          |               |
 | BERT-base, CLS                          | 92.42        | 12.7549 / 62.5050 | 66.4545(92.42) / 50.8080 | threads=14    |
 | BERT-base, CLS                          | 93.36        | 15.6755 / -       |              - / -       | fintuned using amazon reviews, epoch=10 |
@@ -663,6 +669,10 @@ INFO:__main__:[Elapsed Time] : 22304.69584465027ms, 12.206664845183655ms on aver
 ** --configs/config-bert-cls.json --bert_model_name_or_path=embeddings/MiniLM-L12-H384-uncased --epoch=30
 INFO:__main__:[Accuracy] : 0.9325,  1698/ 1821
 INFO:__main__:[Elapsed Time] : 21175.854682922363ms, 11.593997216486668ms on average
+
+** --configs/config-bert-cls.json --bert_model_name_or_path=embeddings/mobilebert-uncased
+INFO:__main__:[Accuracy] : 0.9105,  1658/ 1821
+INFO:__main__:[Elapsed Time] : 100408.40005874634ms, 55.08984157017299ms on average
 
 ** --bert_model_name_or_path=./embeddings/squeezebert-uncased --epoch=20  --warmup_epoch=0 --weight_decay=0.0
 INFO:__main__:[Accuracy] : 0.9012,  1641/ 1821
