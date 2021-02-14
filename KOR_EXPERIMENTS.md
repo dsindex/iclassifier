@@ -278,6 +278,9 @@ INFO:__main__:[Elapsed Time] : 161198.18258285522ms, 3.2225625831057085ms on ave
 INFO:__main__:[Accuracy] : 0.8822, 44108/49997
 INFO:__main__:[Elapsed Time] : 189978.82962226868ms, 3.7981278658466384ms on average
 
+INFO:__main__:[study.best_params] : {'lr': 5.124781058611912e-05, 'batch_size': 64, 'seed': 25, 'epochs': 57}
+INFO:__main__:[study.best_value] : 0.8811528691721503
+
 * iee_corpus_morph
 $ python evaluate.py --config=configs/config-densenet-cnn-iee.json --data_dir=./data/iee_corpus_morph 
 
