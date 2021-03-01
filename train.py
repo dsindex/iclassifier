@@ -13,6 +13,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.cuda.amp import autocast, GradScaler
 import torch.autograd.profiler as profiler
+from label_smoothing import LabelSmoothingCrossEntropy
 
 try:
     from torch.utils.tensorboard import SummaryWriter
@@ -49,6 +50,8 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
         criterion = torch.nn.MSELoss(reduction='sum').to(opt.device)
     elif opt.criterion == 'KLDivLoss':
         criterion = torch.nn.KLDivLoss(reduction='sum').to(opt.device)
+    elif opt.criterion == 'LabelSmoothingCrossEntropy':
+        criterion = LabelSmoothingCrossEntropy(reduction='sum').to(opt.device)
     else:
         criterion = torch.nn.CrossEntropyLoss().to(opt.device)
 
@@ -516,7 +519,7 @@ def get_params():
     parser.add_argument('--use_amp', action='store_true', help="Use automatic mixed precision.")
     parser.add_argument('--use_profiler', action='store_true', help="Use profiler.")
     parser.add_argument('--measure', type=str, default='loss', help="Evaluation measure, 'loss' | 'accuracy', default 'loss'.")
-    parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'MSELoss' | 'KLDivLoss', default 'CrossEntropyLoss'")
+    parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'LabelSmoothingCrossEntropy' | 'MSELoss' | 'KLDivLoss', default 'CrossEntropyLoss'")
     # for Augmentation
     parser.add_argument('--augmented', action='store_true',
                         help="Set this flag to use augmented.txt.ids or augmented.txt.fs for training.")
