@@ -753,10 +753,10 @@ INFO:__main__:[Elapsed Time] : 1255374.0434646606ms, 25.106745840540047ms on ave
 
 |                                           | Bias Accuracy (%) | Hate Accuracy (%) | GPU / CPU         | Etc                                                |
 | ----------------------------------------- | ----------------- | ----------------- | ----------------- | -------------------------------------------------- |
-| GloVe, GNB                                | 72.61             | 33.97             | 1.4223  / -       | failed to train for bias                           |
-| GloVe, CNN                                | 72.61             | 60.72             | 2.1012  / -       | failed to train for bias                           |
-| GloVe, DenseNet-CNN                       | 72.61             | 61.78             | 3.7602  / -       | failed to train for bias                           |
-| GloVe, DenseNet-DSA                       | 72.61             | 59.87             | 8.3071  / -       | failed to train for bias                           |
+| GloVe, GNB                                | 72.61             | 35.24             | 1.4223  / -       | failed to train for Bias data                      |
+| GloVe, CNN                                | 79.62             | 60.72             | 2.1536  / -       | LabelSmoothingCrossEntropy for Bias                |
+| GloVe, DenseNet-CNN                       | 84.08             | 61.78             | 3.9363  / -       | LabelSmoothingCrossEntropy for Bias                |
+| GloVe, DenseNet-DSA                       | 84.29             | 59.87             | 9.1583  / -       | LabelSmoothingCrossEntropy for Bias                |
 | Augmentation, GloVe, GNB                  | 73.25             | 38.85             | 1.3125  / -       |                                                    |
 | Augmentation, GloVe, CNN                  | 80.68             | 59.45             | 1.7384  / -       |                                                    |
 | Augmentation, GloVe, DenseNet-CNN         | 81.95             | 59.87             | 3.6013  / -       |                                                    |
@@ -813,11 +813,19 @@ $ python evaluate.py --config=configs/config-glove-gnb.json --data_dir=./data/ko
 INFO:__main__:[Accuracy] : 0.3397,   160/  471
 INFO:__main__:[Elapsed Time] : 759.1080665588379ms, 1.4223291518840384ms on average
 
+** --criterion=LabelSmoothingCrossEntropy
+INFO:__main__:[Accuracy] : 0.3524,   166/  471
+INFO:__main__:[Elapsed Time] : 780.1830768585205ms, 1.4809202640614612ms on average
+
 ** --data_dir=./data/korean_bias_speech_morph
 INFO:__main__:[Accuracy] : 0.7261,   342/  471
 INFO:__main__:[Elapsed Time] : 673.8839149475098ms, 1.2677735470710916ms on average
 
 => 학습 결과가 전부 'none' class를 찍는 문제. 학습이 안됨
+
+** --data_dir=./data/korean_bias_speech_morph --criterion=LabelSmoothingCrossEntropy
+
+=> 여전히 학습이 안됨
 
 ** augmentation
 $ python augment_data.py --input data/korean_hate_speech/train.txt --output data/korean_hate_speech_morph/augmented.txt --analyzer=npc --n_iter=5 --max_ng=3 --preserve_label --parallel
@@ -852,11 +860,19 @@ $ python evaluate.py --config=configs/config-glove-cnn.json --data_dir=./data/ko
 INFO:__main__:[Accuracy] : 0.6072,   286/  471
 INFO:__main__:[Elapsed Time] : 1125.8411407470703ms, 2.2128495764225087ms on average
 
+** --criterion=LabelSmoothingCrossEntropy
+INFO:__main__:[Accuracy] : 0.5860,   276/  471
+INFO:__main__:[Elapsed Time] : 1131.6962242126465ms, 2.2415470569691758ms on average
+
 ** --data_dir=./data/korean_bias_speech_morph
 INFO:__main__:[Accuracy] : 0.7261,   342/  471
 INFO:__main__:[Elapsed Time] : 1100.193738937378ms, 2.101261057752244ms on average
 
 => 학습 결과가 전부 'none' class를 찍는 문제. 학습이 안됨
+
+** --data_dir=./data/korean_bias_speech_morph --criterion=LabelSmoothingCrossEntropy
+INFO:__main__:[Accuracy] : 0.7962,   375/  471
+INFO:__main__:[Elapsed Time] : 1090.4510021209717ms, 2.1536132122607943ms on average
 
 ** augmentation
 INFO:__main__:[Accuracy] : 0.5945,   280/  471
@@ -888,11 +904,19 @@ $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data
 INFO:__main__:[Accuracy] : 0.6178,   291/  471
 INFO:__main__:[Elapsed Time] : 1848.5705852508545ms, 3.760207967555269ms on average
 
+** --criterion=LabelSmoothingCrossEntropy
+INFO:__main__:[Accuracy] : 0.6178,   291/  471
+INFO:__main__:[Elapsed Time] : 2014.061689376831ms, 4.075388198203229ms on average
+
 ** --data_dir=./data/korean_bias_speech_morph
 INFO:__main__:[Accuracy] : 0.7261,   342/  471
 INFO:__main__:[Elapsed Time] : 2106.7402362823486ms, 4.309217473293873ms on average
 
 => 학습 결과가 전부 'none' class를 찍는 문제. 학습이 안됨
+
+** --data_dir=./data/korean_bias_speech_morph --criterion=LabelSmoothingCrossEntropy
+INFO:__main__:[Accuracy] : 0.8408,   396/  471
+INFO:__main__:[Elapsed Time] : 1953.4156322479248ms, 3.9363637883612452ms on average
 
 ** augmentation
 INFO:__main__:[Accuracy] : 0.5987,   282/  471
@@ -924,11 +948,19 @@ $ python evaluate.py --config=configs/config-densenet-dsa.json --data_dir=./data
 INFO:__main__:[Accuracy] : 0.5987,   282/  471
 INFO:__main__:[Elapsed Time] : 6090.857982635498ms, 8.307155142439173ms on average
 
+** --criterion=LabelSmoothingCrossEntropy
+INFO:__main__:[Accuracy] : 0.5860,   276/  471
+INFO:__main__:[Elapsed Time] : 4470.3404903411865ms, 9.266544402913844ms on average
+
 ** --data_dir=./data/korean_bias_speech_morph
 INFO:__main__:[Accuracy] : 0.7261,   342/  471
 INFO:__main__:[Elapsed Time] : 6214.275121688843ms, 8.474696950709566ms on average
 
 => 학습 결과가 전부 'none' class를 찍는 문제. 학습이 안됨
+
+** --data_dir=./data/korean_bias_speech_morph --criterion=LabelSmoothingCrossEntropy
+INFO:__main__:[Accuracy] : 0.8429,   397/  471
+INFO:__main__:[Elapsed Time] : 4414.142608642578ms, 9.158381502679054ms on average
 
 ** augmentation
 INFO:__main__:[Accuracy] : 0.5902,   278/  471
