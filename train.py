@@ -13,7 +13,6 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.cuda.amp import autocast, GradScaler
 import torch.autograd.profiler as profiler
-from label_smoothing import LabelSmoothingCrossEntropy
 
 try:
     from torch.utils.tensorboard import SummaryWriter
@@ -28,6 +27,7 @@ from util    import load_checkpoint, load_config, to_device, to_numpy
 from model   import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
 from dataset import prepare_dataset, GloveDataset, BertDataset
 from early_stopping import EarlyStopping
+from label_smoothing import LabelSmoothingCrossEntropy
 from sklearn.metrics import classification_report, confusion_matrix
 from datasets.metric import temp_seed 
 
