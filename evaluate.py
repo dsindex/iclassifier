@@ -50,17 +50,10 @@ def load_model(config, checkpoint):
         if config['enc_class'] == 'densenet-dsa':
             model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
     else:
-        if config['emb_class'] == 'funnel':
-            from transformers import FunnelTokenizer, FunnelConfig, FunnelBaseModel
-            bert_config = FunnelConfig.from_pretrained(opt.bert_output_dir)
-            bert_tokenizer = FunnelTokenizer.from_pretrained(opt.bert_output_dir)
-            # FunnelBaseModel has no 'from_config'
-            bert_model = FunnelBaseModel.from_pretrained(opt.bert_output_dir)
-        else:
-            from transformers import AutoTokenizer, AutoConfig, AutoModel
-            bert_config = AutoConfig.from_pretrained(opt.bert_output_dir)
-            bert_tokenizer = AutoTokenizer.from_pretrained(opt.bert_output_dir)
-            bert_model = AutoModel.from_config(bert_config)
+        from transformers import AutoTokenizer, AutoConfig, AutoModel
+        bert_config = AutoConfig.from_pretrained(opt.bert_output_dir)
+        bert_tokenizer = AutoTokenizer.from_pretrained(opt.bert_output_dir)
+        bert_model = AutoModel.from_config(bert_config)
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path)

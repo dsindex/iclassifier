@@ -101,6 +101,11 @@
   - from [huggingface.co/models](https://huggingface.co/models)
   - `xlm-roberta-base`, `xlm-roberta-large`
 
+#### Funnel
+
+- Funnel-base
+  - from [LMKor](https://github.com/kiyoungkim1/LMkor)
+  - `funnel-kor-base`
 
 
 ## NMSC data
@@ -163,6 +168,7 @@
 | RoBERTa-base , CLS                        | 90.34        | 13.8556 / -       |            |
 | XLM-RoBERTa-base , CLS                    | 89.98        | 14.8101 / -       |            |
 | XLM-RoBERTa-large , CLS                   | 91.05        | 25.1067 / -       |            |
+| Funnel-base , CLS                         | -            | -       / -       |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU
@@ -741,6 +747,30 @@ INFO:__main__:[Elapsed Time] : 740546.2129116058ms, 14.810195497745838ms on aver
 ** --bert_model_name_or_path=./embeddings/xlm-roberta-large
 INFO:__main__:[Accuracy] : 0.9105, 45523/49997
 INFO:__main__:[Elapsed Time] : 1255374.0434646606ms, 25.106745840540047ms on average
+```
+
+</p>
+</details>
+
+#### Funnel(funnel-kor-base)
+ 
+<details><summary><b>enc_class=cnn | cls</b></summary>
+<p>
+
+- train
+```
+* enc_class=cls
+
+$ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/funnel-kor-base --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/funnel-kor-base --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments  --warmup_epoch=0 --weight_decay=0.0
+```
+
+- evaluation
+```
+* enc_class=cls
+
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
+
 ```
 
 </p>

@@ -320,16 +320,10 @@ def prepare_model(config, bert_model_name_or_path=None):
     else:
         model_name_or_path = opt.bert_model_name_or_path
         if bert_model_name_or_path: model_name_or_path = bert_model_name_or_path
-        if config['emb_class'] == 'funnel':
-            from transformers import FunnelTokenizer, FunnelConfig, FunnelBaseModel
-            bert_tokenizer = FunnelTokenizer.from_pretrained(model_name_or_path)
-            bert_model = FunnelBaseModel.from_pretrained(model_name_or_path,
-                                                         from_tf=bool(".ckpt" in model_name_or_path))
-        else:
-            from transformers import AutoTokenizer, AutoConfig, AutoModel
-            bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
-            bert_model = AutoModel.from_pretrained(model_name_or_path,
-                                                   from_tf=bool(".ckpt" in model_name_or_path))
+        from transformers import AutoTokenizer, AutoConfig, AutoModel
+        bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
+        bert_model = AutoModel.from_pretrained(model_name_or_path,
+                                               from_tf=bool(".ckpt" in model_name_or_path))
         bert_config = bert_model.config
         # bert model reduction
         reduce_bert_model(config, bert_model, bert_config)

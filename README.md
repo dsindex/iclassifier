@@ -272,10 +272,6 @@ INFO:__main__:[Elapsed Time] : 6911ms, 9.266094420600858ms on average
 INFO:__main__:[Accuracy] : 0.9771,   684/  700
 INFO:__main__:[Elapsed Time] : 6607ms, 9.30758226037196ms on average
 
-** --config=configs/config-funnel-cls.json --bert_model_name_or_path=./embeddings/funnel-transformer-small-base
-INFO:__main__:[Accuracy] : 0.9629,   674/  700
-INFO:__main__:[Elapsed Time] : 14707.713603973389ms, 20.878405018425806ms on average
-
 ** --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/squeezebert-uncased
 INFO:__main__:[Accuracy] : 0.9729,   681/  700
 INFO:__main__:[Elapsed Time] : 12742.885112762451ms, 18.07960045013646ms on average
