@@ -182,7 +182,8 @@
 | KoELECTRA-Base-v1 | 90.33        |            |
 | KoELECTRA-Base-v2 | 89.56        |            |
 | KoELECTRA-Base-v3 | 90.63        |            |
-| LM-KOR-ELECTRA    | **91.29**    |            |
+| electra-kor-base  | 91.29        |            |
+| funnel-kor-base   | **91.36**    |            |
 | XML-RoBERTa       | 89.03        |            |
 | HanBERT           | 90.06        |            |
 | KoBERT            | 89.59        |            |
