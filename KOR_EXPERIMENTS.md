@@ -137,7 +137,7 @@
 | KcBERT-base , CNN                         | 90.10        | 14.2056 / -       |            |
 | KcBERT-base , CLS                         | 90.23        | 13.5712 / -       |            |
 | KcBERT-large , CNN                        | 91.26        | 24.2121 / -       |            |
-| KcBERT-large , CLS                        | **91.36**    | 22.4859 / -       |            |
+| KcBERT-large , CLS                        | 91.36        | 22.4859 / -       |            |
 | dha DistilBERT(v1), CNN                   | 88.72        | 11.4488 / -       |            |
 | dha DistilBERT(v1), CLS                   | 88.51        | 7.5299  / -       |            |
 | dha BERT(v1), CNN                         | 90.25        | 15.5738 / -       |            |
@@ -168,7 +168,7 @@
 | RoBERTa-base , CLS                        | 90.34        | 13.8556 / -       |            |
 | XLM-RoBERTa-base , CLS                    | 89.98        | 14.8101 / -       |            |
 | XLM-RoBERTa-large , CLS                   | 91.05        | 25.1067 / -       |            |
-| Funnel-base , CLS                         | -            | -       / -       |            |
+| Funnel-base , CLS                         | **91.51**    | 41.8325 / -       |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU
@@ -771,6 +771,8 @@ $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_pat
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
+INFO:__main__:[Accuracy] : 0.9151, 45751/49997
+INFO:__main__:[Elapsed Time] : 2091641.2904262543ms, 41.832550390881245ms on average
 
 ```
 
