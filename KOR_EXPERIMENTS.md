@@ -37,7 +37,7 @@
   - 한국어 문서 데이터 준비.
     - 다양한 문서 데이터(위키, 백과, 뉴스, 블로그 등등)를 크롤링.
   - 형태소분석기 tokenizer를 적용해서 형태소 단위로 변경한 데이터를 이용해서 학습 진행.
-  - ex) `kor.glove.300k.300d.txt` (inhouse)
+  - `kor.glove.300k.300d.txt` (inhouse)
 
 #### BERT
 
@@ -47,11 +47,11 @@
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - `character-level bpe`
     - vocab.txt는 [sentencepiece](https://github.com/google/sentencepiece)를 이용해서 생성.
-    - ex) `kor-bert-base-bpe.v1`, `kor-bert-large-bpe.v1, v3` (inhouse)
+    - `kor-bert-base-bpe.v1`, `kor-bert-large-bpe.v1, v3` (inhouse)
   - `character-level bpe + 형태소분석기`
     - ex) `kor-bert-base-dha_bpe.v1, v3`, `kor-bert-large-dha_bpe.v1, v3` (inhouse)
   - `형태소분석기`
-    - ex) `kor-bert-base-dha.v1, v2` (inhouse)
+    - `kor-bert-base-dha.v1, v2` (inhouse)
 
 - KcBERT 
   - [KcBERT](https://github.com/Beomi/KcBERT)
@@ -63,8 +63,8 @@
   - [training-distilbert](https://github.com/dsindex/transformers_examples#training-distilbert)
   - 한국어 문서 데이터 준비.
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
-  - ex) `kor-distil-bpe-bert.v1`, `kor-distil-dha-bert.v1` (inhouse)
-  - ex) `kor-distil-wp-bert.v1` (inhouse)
+  - `kor-distil-bpe-bert.v1`, `kor-distil-dha-bert.v1` (inhouse)
+  - `kor-distil-wp-bert.v1` (inhouse)
     - `koelectra-base-v3-discriminator`를 distillation. 학습데이터는 동일.
 
 - mDistilBERT
@@ -87,7 +87,7 @@
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
   - [README.md](https://github.com/dsindex/electra/blob/master/README.md)
   - [train.sh](https://github.com/dsindex/electra/blob/master/train.sh)
-  - ex) `kor-electra-base-bpe.v1` (inhouse)
+  - `kor-electra-base-bpe.v1`, `kor-electra-base-dhaToken1.large` (inhouse)
 
 #### RoBERTa
 
@@ -95,7 +95,7 @@
   - [huggingface](https://huggingface.co/blog/how-to-train)를 이용한 학습
     - 한국어 문서 데이터 준비.
       - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
-    - ex) `kor-roberta-base-bbpe` (inhouse)
+    - `kor-roberta-base-bbpe` (inhouse)
 
 - XLM-RoBERTa-base, XML-RoBERTa-large
   - from [huggingface.co/models](https://huggingface.co/models)
@@ -164,6 +164,7 @@
 | LM-KOR-ELECTRA, CLS                       | 91.04        | 14.2696 / -       |            |
 | bpe ELECTRA-base(v1) , CNN                | 89.59        | 15.8888 / -       |            |
 | bpe ELECTRA-base(v1) , CLS                | 89.59        | 14.3914 / -       |            |
+| dhaToken1.large ELECTRA-base , CLS        | 90.88        | 14.3333 / -       |            |
 | RoBERTa-base , CNN                        | 90.42        | 14.9544 / -       |            |
 | RoBERTa-base , CLS                        | 90.34        | 13.8556 / -       |            |
 | XLM-RoBERTa-base , CLS                    | 89.98        | 14.8101 / -       |            |
@@ -672,7 +673,7 @@ INFO:__main__:[Elapsed Time] : 713545.1235771179ms, 14.269641169796696ms on aver
 </p>
 </details>
 
-#### ELECTRA(kor-electra-base-bpe)
+#### ELECTRA(kor-electra-base-bpe, kor-electra-base-dhaToken1.large)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -703,6 +704,10 @@ INFO:__main__:[Elapsed Time] : 794492.9943084717ms, 15.88887755456319ms on avera
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 INFO:__main__:[Accuracy] : 0.8959, 44790/49997
 INFO:__main__:[Elapsed Time] : 719611.6433143616ms, 14.391430078177311ms on average
+
+** --bert_model_name_or_path=./embeddings/kor-electra-base-dhaToken1.large
+INFO:__main__:[Accuracy] : 0.9088, 45436/49997
+INFO:__main__:[Elapsed Time] : 716717.779636383ms, 14.333377548080128ms on average
 
 ```
 
