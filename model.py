@@ -542,8 +542,8 @@ class TextBertCNN(BaseModel):
             'output_attentions': True,
             'return_dict': True
         }
-        if self.bert_model.config.model_type not in ['bart', 'distilbert']:
-            params['token_type_ids'] = None if self.bert_model.config.model_type in ['roberta'] else x[2] # RoBERTa don't use segment_ids
+        if self.bert_model.config.model_type not in ['roberta', 'bart', 'distilbert', 'ibert']:
+            params['token_type_ids'] = x[2]
         if head_mask is not None:
             params['head_mask'] = head_mask
         if self.bert_feature_based:
@@ -624,8 +624,8 @@ class TextBertCLS(BaseModel):
             'output_attentions': True,
             'return_dict': True
         }
-        if self.bert_model.config.model_type not in ['bart', 'distilbert']:
-            params['token_type_ids'] = None if self.bert_model.config.model_type in ['roberta'] else x[2] # RoBERTa don't use segment_ids
+        if self.bert_model.config.model_type not in ['roberta', 'bart', 'distilbert', 'ibert']:
+            params['token_type_ids'] = x[2]
         if head_mask is not None:
             params['head_mask'] = head_mask
         if self.bert_feature_based:

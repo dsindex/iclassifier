@@ -275,7 +275,7 @@ def evaluate(opt):
                 if config['emb_class'] == 'glove':
                     ort_inputs = {ort_session.get_inputs()[0].name: x}
                 else:
-                    if config['emb_class'] in ['distilbert', 'bart']:
+                    if config['emb_class'] in ['roberta', 'distilbert', 'bart']:
                         ort_inputs = {ort_session.get_inputs()[0].name: x[0],
                                       ort_session.get_inputs()[1].name: x[1]}
                     else:
@@ -364,7 +364,7 @@ def encode_text(config, tokenizer, text):
         # batch size: 1
     else:
         inputs = tokenizer.encode_plus(text, add_special_tokens=True, return_tensors='pt')
-        if config['emb_class'] in ['bart', 'distilbert']:
+        if config['emb_class'] in ['roberta', 'bart', 'distilbert']:
             x = [inputs['input_ids'], inputs['attention_mask']]
             # x[0], x[1] : [batch_size, variable size]
         else:
@@ -427,7 +427,7 @@ def inference(opt):
                 if config['emb_class'] == 'glove':
                     ort_inputs = {ort_session.get_inputs()[0].name: x}
                 else:
-                    if config['emb_class'] in ['distilbert', 'bart']:
+                    if config['emb_class'] in ['roberta', 'distilbert', 'bart']:
                         ort_inputs = {ort_session.get_inputs()[0].name: x[0],
                                       ort_session.get_inputs()[1].name: x[1]}
                     else:
