@@ -388,6 +388,7 @@ INFO:__main__:[Elapsed Time] : 35100.63934326172ms, 49.98437324818624ms on avera
 | ELECTRA-large, CLS                      | **96.43**    | 25.6857 / -       |                          | epoch=15      |
 | DeBERTa-base, CLS                       | 93.41        | 26.1533 / -       |                          | epoch=10      |
 | DeBERTa-large, CLS                      | 94.95        | 62.4272 / -       |                          | epoch=10      |
+| DeBERTa-v2-xlarge, CLS                  | 96.21        | 54.1388 / -       |                          | epoch=10      |
 | BORT, CLS                               | 77.98        | 6.1346  / -       |                          | epoch=10      |
 | ConvBERT, CLS                           | 77.48        | 22.6815 / -       |                          | epoch=10      |
 
@@ -968,6 +969,10 @@ INFO:__main__:[Elapsed Time] : 47751.57833099365ms, 26.153329571524818ms on aver
 ** --bert_model_name_or_path=./embeddings/deberta-large --batch_size=32 --gradient_accumulation_steps=2
 INFO:__main__:[Accuracy] : 0.9495,  1729/ 1821
 INFO:__main__:[Elapsed Time] : 113818.21751594543ms, 62.427293075310004ms on average
+
+** --bert_model_name_or_path=./embeddings/deberta-v2-xlarge --batch_size=16 --gradient_accumulation_steps=4
+INFO:__main__:[Accuracy] : 0.9621,  1752/ 1821
+INFO:__main__:[Elapsed Time] : 98728.88159751892ms, 54.138861121712154ms on average
 
 ```
 
