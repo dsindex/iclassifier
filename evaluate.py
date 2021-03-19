@@ -70,7 +70,7 @@ def load_model(config, checkpoint):
         model = torch.quantization.prepare_qat(model)
         model.eval()
         model.to('cpu')
-        logger.info("[Convert to quantized model with device='cpu']")
+        logger.info("[Convert to quantized model with device=cpu]")
         model = torch.quantization.convert(model)
     if opt.enable_qat_fx:
         import torch.quantization.quantize_fx as quantize_fx
