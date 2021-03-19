@@ -23,7 +23,7 @@ import random
 import json
 from tqdm import tqdm
 
-from util    import load_checkpoint, load_config, to_device, to_numpy
+from util    import load_checkpoint, load_config, load_label, to_device, to_numpy
 from model   import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
 from dataset import prepare_dataset, GloveDataset, BertDataset
 from early_stopping import EarlyStopping
@@ -202,7 +202,7 @@ def evaluate(model, config, valid_loader, eval_device=None):
             total_loss += (loss.item() * cur_examples) 
             total_examples += cur_examples
     # generate report
-    labels = model.labels
+    labels = config['labels']
     label_names = [v for k, v in sorted(labels.items(), key=lambda x: x[0])] 
     preds_ids = np.argmax(preds, axis=1)
     try:
@@ -228,14 +228,25 @@ def save_model(config, model, valid_loader=None, save_path=None):
             # convert to INT8 quantized model
             #   https://discuss.pytorch.org/t/qat-runtimeerror-expected-all-tensors-to-be-on-the-same-device-but-found-at-least-two-devices-cuda-0-and-cpu/106727
             #   torch.quantization.convert() only supports CPU.
-            model.eval()
-            model.to('cpu')
-            logger.info("[Convert to quantized model with device='cpu' to save]")
-            quantized_model = torch.quantization.convert(model)
-            # evaluate quantized model
-            logger.info("[Evaluate quantized model with device='cpu']")
+            import copy
+            model_to_quantize = copy.deepcopy(model)
+            model_to_quantize.eval()
+            model_to_quantize.to('cpu')
+            logger.info("[Convert to quantized model with device=cpu]")
+            quantized_model = torch.quantization.convert(model_to_quantize)
+            logger.info("[Evaluate quantized model with device=cpu]")
             evaluate(quantized_model, config, valid_loader, eval_device='cpu')
-            model.to(opt.device)
+            checkpoint = quantized_model.state_dict()
+        elif opt.enable_qat_fx:
+            import torch.quantization.quantize_fx as quantize_fx
+            import copy
+            model_to_quantize = copy.deepcopy(model)
+            model_to_quantize.eval()
+            model_to_quantize.to('cpu')
+            logger.info("[Convert to quantized model with device=cpu]")
+            quantized_model = quantize_fx.convert_fx(model_to_quantize)
+            logger.info("[Evaluate quantized model with device=cpu]")
+            evaluate(quantized_model, config, valid_loader, eval_device='cpu')
             checkpoint = quantized_model.state_dict()
         else:
             checkpoint = model.state_dict()
@@ -307,16 +318,19 @@ def reduce_bert_model(config, bert_model, bert_config):
 def prepare_model(config, bert_model_name_or_path=None):
     opt = config['opt']
     emb_non_trainable = not opt.embedding_trainable
+    labels = load_label(opt.label_path)
+    label_size = len(labels)
+    config['labels'] = labels
     # prepare model
     if config['emb_class'] == 'glove':
         if config['enc_class'] == 'gnb':
-            model = TextGloveGNB(config, opt.embedding_path, opt.label_path)
+            model = TextGloveGNB(config, opt.embedding_path, label_size)
         if config['enc_class'] == 'cnn':
-            model = TextGloveCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable)
+            model = TextGloveCNN(config, opt.embedding_path, label_size, emb_non_trainable=emb_non_trainable)
         if config['enc_class'] == 'densenet-cnn':
-            model = TextGloveDensenetCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable)
+            model = TextGloveDensenetCNN(config, opt.embedding_path, label_size, emb_non_trainable=emb_non_trainable)
         if config['enc_class'] == 'densenet-dsa':
-            model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=emb_non_trainable)
+            model = TextGloveDensenetDSA(config, opt.embedding_path, label_size, emb_non_trainable=emb_non_trainable)
     else:
         model_name_or_path = opt.bert_model_name_or_path
         if bert_model_name_or_path: model_name_or_path = bert_model_name_or_path
@@ -329,7 +343,7 @@ def prepare_model(config, bert_model_name_or_path=None):
         reduce_bert_model(config, bert_model, bert_config)
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
-        model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path, feature_based=opt.bert_use_feature_based)
+        model = ModelClass(config, bert_config, bert_model, bert_tokenizer, label_size, feature_based=opt.bert_use_feature_based)
     if opt.restore_path:
         checkpoint = load_checkpoint(opt.restore_path, device=opt.device)
         model.load_state_dict(checkpoint)
@@ -340,6 +354,12 @@ def prepare_model(config, bert_model_name_or_path=None):
         # model = torch.quantization.fuse_modules(model, [['']])
         '''
         model = torch.quantization.prepare_qat(model)
+    if opt.enable_qat_fx:
+        import torch.quantization.quantize_fx as quantize_fx
+        model.train()
+        qconfig_dict = {"": torch.quantization.get_default_qat_qconfig('fbgemm')}
+        model = quantize_fx.prepare_qat_fx(model, qconfig_dict)
+
     model.to(opt.device)
     logger.info("[model] :\n{}".format(model.__str__()))
     logger.info("[model prepared]")
@@ -537,6 +557,8 @@ def get_params():
     # for QAT
     parser.add_argument('--enable_qat', action='store_true',
                         help="Set this flag for quantization aware training.")
+    parser.add_argument('--enable_qat_fx', action='store_true',
+                        help="Set this flag for quantization aware training using fx graph mode.")
 
     opt = parser.parse_args()
     return opt

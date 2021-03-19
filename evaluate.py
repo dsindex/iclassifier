@@ -14,7 +14,7 @@ import numpy as np
 
 from tqdm import tqdm
 from model import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
-from util import load_checkpoint, load_config, to_device, to_numpy
+from util import load_checkpoint, load_config, load_label, to_device, to_numpy
 from dataset import prepare_dataset, GloveDataset, BertDataset
 from sklearn.metrics import classification_report, confusion_matrix
 
@@ -40,15 +40,18 @@ def set_path(config):
 
 def load_model(config, checkpoint):
     opt = config['opt']
+    labels = load_label(opt.label_path)
+    label_size = len(labels)
+    config['labels'] = labels
     if config['emb_class'] == 'glove':
         if config['enc_class'] == 'gnb':
-            model = TextGloveGNB(config, opt.embedding_path, opt.label_path)
+            model = TextGloveGNB(config, opt.embedding_path, label_size)
         if config['enc_class'] == 'cnn':
-            model = TextGloveCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
+            model = TextGloveCNN(config, opt.embedding_path, label_size, emb_non_trainable=True)
         if config['enc_class'] == 'densenet-cnn':
-            model = TextGloveDensenetCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
+            model = TextGloveDensenetCNN(config, opt.embedding_path, label_size, emb_non_trainable=True)
         if config['enc_class'] == 'densenet-dsa':
-            model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
+            model = TextGloveDensenetDSA(config, opt.embedding_path, label_size, emb_non_trainable=True)
     else:
         from transformers import AutoTokenizer, AutoConfig, AutoModel
         bert_config = AutoConfig.from_pretrained(opt.bert_output_dir)
@@ -56,7 +59,7 @@ def load_model(config, checkpoint):
         bert_model = AutoModel.from_config(bert_config)
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
-        model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path)
+        model = ModelClass(config, bert_config, bert_model, bert_tokenizer, label_size)
     if opt.enable_qat:
         assert opt.device == 'cpu'
         model.qconfig = torch.quantization.get_default_qat_qconfig('fbgemm')
@@ -69,6 +72,13 @@ def load_model(config, checkpoint):
         model.to('cpu')
         logger.info("[Convert to quantized model with device='cpu']")
         model = torch.quantization.convert(model)
+    if opt.enable_qat_fx:
+        import torch.quantization.quantize_fx as quantize_fx
+        qconfig_dict = {"": torch.quantization.get_default_qat_qconfig('fbgemm')}
+        model = quantize_fx.prepare_qat_fx(model, qconfig_dict)
+        logger.info("[Convert to quantized model]")
+        model = quantize_fx.convert_fx(model)
+
     model.load_state_dict(checkpoint)
     model = model.to(opt.device)
     '''
@@ -309,7 +319,7 @@ def evaluate(opt):
             logger.info("[Elapsed Time] : {}ms".format(duration_time))
             '''
     # generate report
-    labels = model.labels
+    labels = config['labels']
     label_names = [v for k, v in sorted(labels.items(), key=lambda x: x[0])] 
     preds_ids = np.argmax(preds, axis=1)
     try:
@@ -406,7 +416,7 @@ def inference(opt):
     tokenizer = prepare_tokenizer(config, model)
 
     # prepare labels
-    labels = model.labels
+    labels = config['labels']
 
     # inference
     f_out = open(opt.test_path + '.inference', 'w', encoding='utf-8')
@@ -494,6 +504,8 @@ def main():
     # for QAT
     parser.add_argument('--enable_qat', action='store_true',
                         help="Set this flag to use the model by quantization aware training.")
+    parser.add_argument('--enable_qat_fx', action='store_true',
+                        help="Set this flag for quantization aware training using fx graph mode.")
 
     opt = parser.parse_args()
 

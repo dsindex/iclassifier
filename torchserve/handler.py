@@ -7,7 +7,7 @@ import torch
 import torch.quantization
 import numpy as np
 from model import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
-from util import load_checkpoint, load_config, to_device, to_numpy
+from util import load_checkpoint, load_config, load_label, to_device, to_numpy
 
 from ts.torch_handler.base_handler import BaseHandler
 
@@ -36,15 +36,19 @@ class ClassifierHandler(BaseHandler, ABC):
     def load_model(self, checkpoint):
         config = self.config
         opt = config['opt']
+        labels = load_label(opt.label_path)
+        label_size = len(labels)
+        config['labels'] = labels
+        self.labels = labels
         if config['emb_class'] == 'glove':
             if config['enc_class'] == 'gnb':
-                model = TextGloveGNB(config, opt.embedding_path, opt.label_path)
+                model = TextGloveGNB(config, opt.embedding_path, label_size)
             if config['enc_class'] == 'cnn':
-                model = TextGloveCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
+                model = TextGloveCNN(config, opt.embedding_path, label_size, emb_non_trainable=True)
             if config['enc_class'] == 'densenet-cnn':
-                model = TextGloveDensenetCNN(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
+                model = TextGloveDensenetCNN(config, opt.embedding_path, label_size, emb_non_trainable=True)
             if config['enc_class'] == 'densenet-dsa':
-                model = TextGloveDensenetDSA(config, opt.embedding_path, opt.label_path, emb_non_trainable=True)
+                model = TextGloveDensenetDSA(config, opt.embedding_path, label_size, emb_non_trainable=True)
         else:
             from transformers import AutoTokenizer, AutoConfig, AutoModel
             bert_config = AutoConfig.from_pretrained(opt.bert_output_dir)
@@ -52,7 +56,7 @@ class ClassifierHandler(BaseHandler, ABC):
             bert_model = AutoModel.from_config(bert_config)
             ModelClass = TextBertCNN
             if config['enc_class'] == 'cls': ModelClass = TextBertCLS
-            model = ModelClass(config, bert_config, bert_model, bert_tokenizer, opt.label_path)
+            model = ModelClass(config, bert_config, bert_model, bert_tokenizer, label_size)
         model.load_state_dict(checkpoint)
         model = model.to(opt.device)
         logger.info("[Model loaded]")
@@ -111,9 +115,6 @@ class ClassifierHandler(BaseHandler, ABC):
 
         # prepare tokenizer
         self.tokenizer = self.prepare_tokenizer()
-
-        # prepare labels
-        self.labels = self.model.labels
 
         self.initialized = True
 

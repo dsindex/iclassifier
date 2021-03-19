@@ -32,12 +32,39 @@
   - evaluate, inference
   ```
   ** glove
-  $ python evaluate.py --config=configs/config-glove-cnn.json --device=cpu --model_path=pytorch-model-qat.pt --enable_qat
-  $ python evaluate.py --config=configs/config-glove-cnn.json --device=cpu --model_path=pytorch-model-qat.pt --enable_qat --enable_inference
+  $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat
+  $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat --enable_inference
 
   ** bert (modification transformers code required)
   $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat
   $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat --enable_inference
+  ```
+
+- [(PROTOTYPE) FX GRAPH MODE POST TRAINING STATIC QUANTIZATION](https://pytorch.org/tutorials/prototype/fx_graph_mode_ptq_static.html)
+
+  - pytorch >= 1.8.0
+
+  - preprocessing
+    - same as above
+
+  - quantization aware training
+  ```
+  ** glove
+  $ python train.py --config=configs/config-glove-cnn.json --save_path=pytorch-model-qat.pt --enable_qat_fx
+
+  ** bert (not working at pytorch 1.8.0)
+  $ python train.py --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64 --save_path=pytorch-model-qat.pt --enable_qat_fx
+  ```
+
+  - evaluate, inference
+  ```
+  ** glove
+  $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat_fx
+  $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat_fx --enable_inference
+
+  ** bert (not working at pytorch 1.8.0)
+  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat_fx
+  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat_fx --enable_inference
   ```
 
 
@@ -324,10 +351,10 @@ $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data
     $ cd topi/python; python setup.py install
     $ cd ..
     ```
-    - [Deploy a Hugging Face Pruned Model on CPU](https://tvm.apache.org/docs/tutorials/frontend/deploy_sparse.html#sphx-glr-download-tutorials-frontend-deploy-sparse-py)
-    - [Compile PyTorch Models](https://tvm.apache.org/docs/tutorials/frontend/from_pytorch.html)
-    - [Speed up your BERT inference by 3x on CPUs using Apache TVM](https://medium.com/apache-mxnet/speed-up-your-bert-inference-by-3x-on-cpus-using-apache-tvm-9cf7776cd7f8)
-    - [TorchScript](https://huggingface.co/transformers/torchscript.html#using-torchscript-in-python)
+  - [Deploy a Hugging Face Pruned Model on CPU](https://tvm.apache.org/docs/tutorials/frontend/deploy_sparse.html#sphx-glr-download-tutorials-frontend-deploy-sparse-py)
+  - [Compile PyTorch Models](https://tvm.apache.org/docs/tutorials/frontend/from_pytorch.html)
+  - [Speed up your BERT inference by 3x on CPUs using Apache TVM](https://medium.com/apache-mxnet/speed-up-your-bert-inference-by-3x-on-cpus-using-apache-tvm-9cf7776cd7f8)
+  - [TorchScript](https://huggingface.co/transformers/torchscript.html#using-torchscript-in-python)
 
 - conversion onnx model to openvino
   - install [OpenVINO Toolkit](https://software.intel.com/en-us/openvino-toolkit)

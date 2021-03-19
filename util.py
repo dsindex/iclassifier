@@ -21,6 +21,16 @@ def load_config(opt, config_path=None):
         config = dict()
     return config
 
+def load_label(label_path):
+    labels = {}
+    with open(label_path, 'r', encoding='utf-8') as f:
+        for idx, line in enumerate(f):
+            toks = line.strip().split()
+            label = toks[0]
+            label_id = int(toks[1])
+            labels[label_id] = label
+    return labels
+
 def to_device(x, device):
     if type(x) != list: # torch.tensor
         x = x.to(device)

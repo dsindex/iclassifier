@@ -36,16 +36,6 @@ class BaseModel(nn.Module):
             emb_layer.weight.requires_grad = False
         return emb_layer
 
-    def load_label(self, input_path):
-        labels = {}
-        with open(input_path, 'r', encoding='utf-8') as f:
-            for idx, line in enumerate(f):
-                toks = line.strip().split()
-                label = toks[0]
-                label_id = int(toks[1])
-                labels[label_id] = label
-        return labels
-
 # ------------------------------------------------------------------------------ #
 # source code from https://github.com/tbung/naive-bayes-layer
 # ------------------------------------------------------------------------------ #
@@ -245,7 +235,7 @@ class DSA(nn.Module):
         return z
 
 class TextGloveGNB(BaseModel):
-    def __init__(self, config, embedding_path, label_path):
+    def __init__(self, config, embedding_path, label_size):
         super().__init__(config=config)
 
         self.config = config
@@ -259,9 +249,6 @@ class TextGloveGNB(BaseModel):
         padding_idx = config['pad_token_id']
         self.embed = super().create_embedding_layer(vocab_dim, emb_dim, weights_matrix=weights_matrix, non_trainable=True, padding_idx=padding_idx)
         emb_dim = token_emb_dim 
-
-        self.labels = super().load_label(label_path)
-        label_size = len(self.labels)
 
         # gaussian naive bayes layer
         features = emb_dim
@@ -285,7 +272,7 @@ class TextGloveGNB(BaseModel):
         return gnb_out
 
 class TextGloveCNN(BaseModel):
-    def __init__(self, config, embedding_path, label_path, emb_non_trainable=True):
+    def __init__(self, config, embedding_path, label_size, emb_non_trainable=True):
         super().__init__(config=config)
 
         self.config = config
@@ -320,8 +307,6 @@ class TextGloveCNN(BaseModel):
 
         # fully connected layer
         fc_hidden_size = config['fc_hidden_size']
-        self.labels = super().load_label(label_path)
-        label_size = len(self.labels)
         self.fc_hidden = nn.Linear(len(kernel_sizes) * num_filters, fc_hidden_size)
         self.layernorm_fc_hidden = nn.LayerNorm(fc_hidden_size)
         self.fc = nn.Linear(fc_hidden_size, label_size)
@@ -355,7 +340,7 @@ class TextGloveCNN(BaseModel):
         return fc_out
 
 class TextGloveDensenetCNN(BaseModel):
-    def __init__(self, config, embedding_path, label_path, emb_non_trainable=True):
+    def __init__(self, config, embedding_path, label_size, emb_non_trainable=True):
         super().__init__(config=config)
 
         self.config = config
@@ -387,8 +372,6 @@ class TextGloveDensenetCNN(BaseModel):
         self.dropout = nn.Dropout(config['dropout'])
 
         # fully connected layer
-        self.labels = super().load_label(label_path)
-        label_size = len(self.labels)
         self.fc = nn.Linear(len(kernel_sizes) * num_filters, label_size)
 
     def forward(self, x):
@@ -420,7 +403,7 @@ class TextGloveDensenetCNN(BaseModel):
         return fc_out
 
 class TextGloveDensenetDSA(BaseModel):
-    def __init__(self, config, embedding_path, label_path, emb_non_trainable=True):
+    def __init__(self, config, embedding_path, label_size, emb_non_trainable=True):
         super().__init__(config=config)
 
         self.config = config
@@ -454,8 +437,6 @@ class TextGloveDensenetDSA(BaseModel):
         self.dropout = nn.Dropout(config['dropout'])
 
         # fully connected layer
-        self.labels = super().load_label(label_path)
-        label_size = len(self.labels)
         fc_hidden_size = config['fc_hidden_size']
         if fc_hidden_size > 0:
             self.fc_hidden = nn.Linear(dsa_num_attentions * dsa_dim, fc_hidden_size)
@@ -502,7 +483,7 @@ class TextGloveDensenetDSA(BaseModel):
         return fc_out
 
 class TextBertCNN(BaseModel):
-    def __init__(self, config, bert_config, bert_model, bert_tokenizer, label_path, feature_based=False):
+    def __init__(self, config, bert_config, bert_model, bert_tokenizer, label_size, feature_based=False):
         super().__init__(config=config)
 
         self.config = config
@@ -527,8 +508,6 @@ class TextBertCNN(BaseModel):
 
         # fully connected layer
         fc_hidden_size = config['fc_hidden_size']
-        self.labels = super().load_label(label_path)
-        label_size = len(self.labels)
         self.fc_hidden = nn.Linear(len(kernel_sizes) * num_filters, fc_hidden_size)
         self.layernorm_fc_hidden = nn.LayerNorm(fc_hidden_size)
         self.fc = nn.Linear(fc_hidden_size, label_size)
@@ -582,7 +561,7 @@ class TextBertCNN(BaseModel):
         return fc_out
 
 class TextBertCLS(BaseModel):
-    def __init__(self, config, bert_config, bert_model, bert_tokenizer, label_path, feature_based=False):
+    def __init__(self, config, bert_config, bert_model, bert_tokenizer, label_size, feature_based=False):
         super().__init__(config=config)
 
         self.config = config
@@ -612,8 +591,6 @@ class TextBertCLS(BaseModel):
         self.dropout = nn.Dropout(config['dropout'])
 
         # fully connected layer
-        self.labels = super().load_label(label_path)
-        label_size = len(self.labels)
         self.fc = nn.Linear(self.bert_hidden_size, label_size)
 
     def _compute_bert_embedding(self, x, head_mask=None):
