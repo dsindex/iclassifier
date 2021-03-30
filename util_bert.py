@@ -55,7 +55,8 @@ def convert_single_example_to_feature(example,
                                       cls_token_segment_id=0,
                                       sep_token="[SEP]",
                                       sep_token_extra=False,
-                                      pad_token=0,
+                                      pad_token="[PAD]",
+                                      pad_token_id=0,
                                       pad_token_segment_id=0,
                                       sequence_a_segment_id=0,
                                       ex_index=-1):
@@ -96,7 +97,7 @@ def convert_single_example_to_feature(example,
 
     # zero-pad up to the sequence length.
     padding_length = max_seq_length - len(input_ids)
-    input_ids += ([pad_token] * padding_length)
+    input_ids += ([pad_token_id] * padding_length)
     input_mask += ([0] * padding_length)
     segment_ids += ([pad_token_segment_id] * padding_length)
 
@@ -128,16 +129,13 @@ def convert_examples_to_features(examples,
                                  cls_token_segment_id=0,
                                  sep_token="[SEP]",
                                  sep_token_extra=False,
-                                 pad_token=0,
+                                 pad_token="[PAD]",
+                                 pad_token_id=0,
                                  pad_token_segment_id=0,
                                  sequence_a_segment_id=0):
 
     features = []
     for (ex_index, example) in enumerate(tqdm(examples)):
-        '''
-        if ex_index % 1000 == 0:
-            logger.info("Writing example %d of %d", ex_index, len(examples))
-        '''
         feature = convert_single_example_to_feature(example,
                                                     label_map,
                                                     max_seq_length,
@@ -147,6 +145,7 @@ def convert_examples_to_features(examples,
                                                     sep_token=sep_token,
                                                     sep_token_extra=sep_token_extra,
                                                     pad_token=pad_token,
+                                                    pad_token_id=pad_token_id,
                                                     pad_token_segment_id=pad_token_segment_id,
                                                     sequence_a_segment_id=sequence_a_segment_id,
                                                     ex_index=ex_index)
