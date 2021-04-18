@@ -53,10 +53,20 @@ def load_model(config, checkpoint):
         if config['enc_class'] == 'densenet-dsa':
             model = TextGloveDensenetDSA(config, opt.embedding_path, label_size, emb_non_trainable=True)
     else:
-        from transformers import AutoTokenizer, AutoConfig, AutoModel
-        bert_config = AutoConfig.from_pretrained(opt.bert_output_dir)
-        bert_tokenizer = AutoTokenizer.from_pretrained(opt.bert_output_dir)
-        bert_model = AutoModel.from_config(bert_config)
+        if config['emb_class'] == 'bart' and config['use_kobart']:
+            from transformers import BartModel
+            from kobart import get_kobart_tokenizer, get_pytorch_kobart_model
+            bert_tokenizer = get_kobart_tokenizer()
+            bert_tokenizer.cls_token = '<s>'
+            bert_tokenizer.sep_token = '</s>'
+            bert_tokenizer.pad_token = '<pad>'
+            bert_model = BartModel.from_pretrained(get_pytorch_kobart_model())
+            bert_config = bert_model.config
+        else:
+            from transformers import AutoTokenizer, AutoConfig, AutoModel
+            bert_config = AutoConfig.from_pretrained(opt.bert_output_dir)
+            bert_tokenizer = AutoTokenizer.from_pretrained(opt.bert_output_dir)
+            bert_model = AutoModel.from_config(bert_config)
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, label_size)

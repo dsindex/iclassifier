@@ -239,9 +239,17 @@ def write_features(features, output_path):
    
 def preprocess_bert(config):
     opt = config['opt']
+    
+    if config['emb_class'] == 'bart' and config['use_kobart']:
+        from kobart import get_kobart_tokenizer
+        tokenizer = get_kobart_tokenizer()
+        tokenizer.cls_token = '<s>'
+        tokenizer.sep_token = '</s>'
+        tokenizer.pad_token = '<pad>'
+    else:
+        from transformers import AutoTokenizer
+        tokenizer = AutoTokenizer.from_pretrained(opt.bert_model_name_or_path)
 
-    from transformers import AutoTokenizer
-    tokenizer = AutoTokenizer.from_pretrained(opt.bert_model_name_or_path)
     # build labels
     path = os.path.join(opt.data_dir, _TRAIN_FILE)
     labels = build_label(path)
@@ -290,7 +298,7 @@ def main():
                         help="Filename for augmentation, augmented.raw or augmented.txt.")
     # for BERT, ALBERT
     parser.add_argument('--bert_model_name_or_path', type=str, default='bert-base-uncased',
-                        help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
+                        help="Path to pre-trained model or shortcut name(ex, bert-base-uncased).")
     opt = parser.parse_args()
 
     # set seed

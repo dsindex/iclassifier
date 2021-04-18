@@ -334,10 +334,21 @@ def prepare_model(config, bert_model_name_or_path=None):
     else:
         model_name_or_path = opt.bert_model_name_or_path
         if bert_model_name_or_path: model_name_or_path = bert_model_name_or_path
-        from transformers import AutoTokenizer, AutoConfig, AutoModel
-        bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
-        bert_model = AutoModel.from_pretrained(model_name_or_path,
-                                               from_tf=bool(".ckpt" in model_name_or_path))
+        
+        if config['emb_class'] == 'bart' and config['use_kobart']:
+            from transformers import BartModel
+            from kobart import get_kobart_tokenizer, get_pytorch_kobart_model
+            bert_tokenizer = get_kobart_tokenizer()
+            bert_tokenizer.cls_token = '<s>'
+            bert_tokenizer.sep_token = '</s>'
+            bert_tokenizer.pad_token = '<pad>'
+            bert_model = BartModel.from_pretrained(get_pytorch_kobart_model())
+        else:
+            from transformers import AutoTokenizer, AutoConfig, AutoModel
+            bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
+            bert_model = AutoModel.from_pretrained(model_name_or_path,
+                                                   from_tf=bool(".ckpt" in model_name_or_path))
+
         bert_config = bert_model.config
         # bert model reduction
         reduce_bert_model(config, bert_model, bert_config)

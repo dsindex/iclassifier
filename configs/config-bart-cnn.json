@@ -1,5 +1,6 @@
 {
     "emb_class": "bart",
+    "use_kobart": false,
     "enc_class": "cnn",
     "n_ctx": 100,
     "num_filters": 256,

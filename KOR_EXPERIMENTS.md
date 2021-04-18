@@ -107,6 +107,11 @@
   - from [LMKor](https://github.com/kiyoungkim1/LMkor)
   - `funnel-kor-base`
 
+#### BART
+
+- KoBART-base
+  - from [KoBART](https://github.com/SKT-AI/KoBART)
+
 
 ## NMSC data
 
@@ -170,6 +175,7 @@
 | XLM-RoBERTa-base , CLS                    | 89.98        | 14.8101 / -       |            |
 | XLM-RoBERTa-large , CLS                   | 91.05        | 25.1067 / -       |            |
 | Funnel-base , CLS                         | **91.51**    | 41.8325 / -       |            |
+| KoBART-base , CLS                         | -            | -       / -       |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU
@@ -778,6 +784,33 @@ $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_pat
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 INFO:__main__:[Accuracy] : 0.9151, 45751/49997
 INFO:__main__:[Elapsed Time] : 2091641.2904262543ms, 41.832550390881245ms on average
+
+```
+
+</p>
+</details>
+
+#### BART(kobart)
+ 
+<details><summary><b>enc_class=cnn | cls</b></summary>
+<p>
+
+- train
+```
+$ vi configs/config-bart-cls.json
+    "use_kobart": true,
+
+* enc_class=cls
+
+$ python preprocess.py --config=configs/config-bart-cls.json --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-bart-cls.json --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments
+```
+
+- evaluation
+```
+* enc_class=cls
+
+$ python evaluate.py --config=configs/config-bart-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
 ```
 
