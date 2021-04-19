@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function
-
 # ------------------------------------------------------------------------------ #
 # base code from
 #   https://github.com/huggingface/transformers/blob/master/examples/utils_ner.py
