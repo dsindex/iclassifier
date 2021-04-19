@@ -596,7 +596,6 @@ def get_params():
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--embedding_trainable', action='store_true', help="Set word embedding(Glove) trainable")
     parser.add_argument('--use_amp', action='store_true', help="Use automatic mixed precision.")
-    parser.add_argument('--use_profiler', action='store_true', help="Use profiler.")
     parser.add_argument('--measure', type=str, default='loss', help="Evaluation measure, 'loss' | 'accuracy', default 'loss'.")
     parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'LabelSmoothingCrossEntropy' | 'MSELoss' | 'KLDivLoss', default 'CrossEntropyLoss'")
     parser.add_argument('--augmented', action='store_true',
