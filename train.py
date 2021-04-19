@@ -118,7 +118,7 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
                         logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
                         save_model(config, model, valid_loader=valid_loader)
                         # save finetuned bert model/config/tokenizer
-                        if config['emb_class'] not in ['glove']:
+                        if config['emb_class'] not in ['glove'] and not config['use_kobart']:
                             if not os.path.exists(opt.bert_output_dir):
                                 os.makedirs(opt.bert_output_dir)
                             model.bert_tokenizer.save_pretrained(opt.bert_output_dir)
@@ -148,7 +148,7 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
             logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
             save_model(config, model, valid_loader=valid_loader)
             # save finetuned bert model/config/tokenizer
-            if config['emb_class'] not in ['glove']:
+            if config['emb_class'] not in ['glove'] and not config['use_kobart']:
                 if not os.path.exists(opt.bert_output_dir):
                     os.makedirs(opt.bert_output_dir)
                 model.bert_tokenizer.save_pretrained(opt.bert_output_dir)
