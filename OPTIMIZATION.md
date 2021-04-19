@@ -136,28 +136,6 @@ $ python onnx-test.py
 
   ```
 
-- optimize onnx
-```
-* bert  ==> It might not be usable!
-$ python -m onnxruntime_tools.optimizer_cli --input pytorch-model.onnx --output pytorch-model.onnx.opt --model_type bert --num_heads 12 --hidden_size 768 --input_int32
-     fuse_layer_norm: Fused LayerNormalization count: 17
-  fuse_gelu_with_elf: Fused Gelu count:8
-        fuse_reshape: Fused Reshape count:32
-fuse_skip_layer_norm: Fused SkipLayerNormalization count: 17
-remove_unused_constant: Removed unused constant nodes: 164
-      fuse_attention: Fused Attention count:8
-fuse_embed_layer_without_mask: Failed to find position embedding
-    fuse_embed_layer: Fused EmbedLayerNormalization count: 0
-         prune_graph: Graph pruned: 0 inputs, 0 outputs and 0 nodes are removed
-      fuse_bias_gelu: Fused BiasGelu with Bias count:8
-fuse_add_bias_skip_layer_norm: Fused SkipLayerNormalization with Bias count:16
-            optimize: opset verion: 11
-  save_model_to_file: Output model to pytorch-model.onnx.opt
-get_fused_operator_statistics: Optimized operators:{'EmbedLayerNormalization': 0, 'Attention': 8, 'Gelu': 0, 'FastGelu': 0, 'BiasGelu': 8, 'LayerNormalization': 0, 'SkipLayerNormalization': 17}
-  is_fully_optimized: EmbedLayer=0, Attention=8, Gelu=8, LayerNormalization=17, Successful=False
-                main: The output model is not fully optimized. It might not be usable.
-```
-
 - inference using onnxruntime
 ```
 
@@ -324,63 +302,8 @@ $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data
   ```
   $ vi etc/numactl.sh
   ```
-  - TVM
-    - [install tvm from source](https://tvm.apache.org/docs/install/from_source.html)
-    - [install llvm](https://releases.llvm.org/download.html)
-    ```
-    $ git clone --recursive https://github.com/apache/incubator-tvm tvm
-    $ cd tvm
-    $ git submodule init
-    $ git submodule update
-    $ apt-get update
-    $ apt-get install -y python3 python3-dev python3-setuptools gcc libtinfo-dev zlib1g-dev build-essential cmake libedit-dev libxml2-dev
-    $ python -m pip install antlr4-python3-runtime
-
-    $ mkdir build
-    $ cp cmake/config.cmake build
-    $ vi build/config.cmake
-    # add
-    # LLVM path
-    set(USE_LLVM /path/to/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/llvm-config)
-
-    $ cmake .. # for using intel MKL library, '-DUSE_BLAS=mkl -DUSE_OPENMP=intel'
-    $ make -j4
-
-    $ cd python; python setup.py install
-    $ cd ..
-    $ cd topi/python; python setup.py install
-    $ cd ..
-    ```
   - [Deploy a Hugging Face Pruned Model on CPU](https://tvm.apache.org/docs/tutorials/frontend/deploy_sparse.html#sphx-glr-download-tutorials-frontend-deploy-sparse-py)
   - [Compile PyTorch Models](https://tvm.apache.org/docs/tutorials/frontend/from_pytorch.html)
   - [Speed up your BERT inference by 3x on CPUs using Apache TVM](https://medium.com/apache-mxnet/speed-up-your-bert-inference-by-3x-on-cpus-using-apache-tvm-9cf7776cd7f8)
   - [TorchScript](https://huggingface.co/transformers/torchscript.html#using-torchscript-in-python)
 
-- conversion onnx model to openvino
-  - install [OpenVINO Toolkit](https://software.intel.com/en-us/openvino-toolkit)
-    - install [OpenCV](https://github.com/opencv/opencv)
-      - [(OpenCV) tutorial_py_setup_in_ubuntu](https://docs.opencv.org/3.4/d2/de6/tutorial_py_setup_in_ubuntu.html)
-  - convert to openvino IR
-  ```
-  $ cd /opt/intel/openvino_2020.2.120/deployment_tools/model_optimizer
-  $ python mo_onnx.py --input_model pytorch-model.onnx --input='input{i32}' --input_shape='(1,100)' --log_level=DEBUG
-  $ python mo_onnx.py --input_model pytorch-model.onnx --input='input_ids{i32},input_mask{i32},segment_ids{i32}' --input_shape='(1,00),(1,100),(1,100)' --log_level=DEBUG
-
-  * something goes wrong
-  ...
-  [ ERROR ]  Cannot infer shapes or values for node "MaxPool_20".
-  [ ERROR ]  shape mismatch: value array of shape (2,) could not be broadcast to indexing result of shape (1,)
-  [ ERROR ]
-  [ ERROR ]  It can happen due to bug in custom shape infer function <function Pooling.infer at 0x7f2dff661e60>.
-  [ ERROR ]  Or because the node inputs have incorrect values/shapes.
-  [ ERROR ]  Or because input shapes are incorrect (embedded to the model or passed via --input_shape).
-  ...
-  [ ERROR ]  Cannot infer shapes or values for node "Sign_1".
-  [ ERROR ]  There is no registered "infer" function for node "Sign_1" with op = "Sign". Please implement this function in the extensions.
-   For more information please refer to Model Optimizer FAQ (https://docs.openvinotoolkit.org/latest/_docs_MO_DG_prepare_model_Model_Optimizer_FAQ.html), question #37.
-  [ ERROR ]
-  [ ERROR ]  It can happen due to bug in custom shape infer function <UNKNOWN>.
-  [ ERROR ]  Or because the node inputs have incorrect values/shapes.
-  [ ERROR ]  Or because input shapes are incorrect (embedded to the model or passed via --input_shape).
-  ...
-  ```
