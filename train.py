@@ -12,7 +12,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.cuda.amp import autocast, GradScaler
-import torch.autograd.profiler as profiler
 
 try:
     from torch.utils.tensorboard import SummaryWriter
@@ -70,12 +69,7 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
         x = to_device(x, opt.device)
         y = to_device(y, opt.device)
         with autocast(enabled=opt.use_amp):
-            if opt.use_profiler:
-                with profiler.profile(profile_memory=True, record_shapes=True) as prof:
-                    output = model(x)
-                print(prof.key_averages().table(sort_by="self_cpu_memory_usage", row_limit=10))
-            else:
-                output = model(x)
+            output = model(x)
             if opt.criterion == 'KLDivLoss':
                 loss = criterion(F.log_softmax(output, dim=1), y)
             else:
@@ -542,7 +536,6 @@ def get_params():
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--embedding_trainable', action='store_true', help="Set word embedding(Glove) trainable")
     parser.add_argument('--use_amp', action='store_true', help="Use automatic mixed precision.")
-    parser.add_argument('--use_profiler', action='store_true', help="Use profiler.")
     parser.add_argument('--measure', type=str, default='loss', help="Evaluation measure, 'loss' | 'accuracy', default 'loss'.")
     parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'LabelSmoothingCrossEntropy' | 'MSELoss' | 'KLDivLoss', default 'CrossEntropyLoss'")
     # for Augmentation
