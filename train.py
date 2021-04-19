@@ -9,7 +9,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from torch.cuda.amp import autocast, GradScaler
+from transformers import AdamW, get_linear_schedule_with_warmup
 
 try:
     from torch.utils.tensorboard import SummaryWriter
@@ -40,7 +40,6 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
     optimizer = config['optimizer']
     scheduler = config['scheduler']
     writer = config['writer']
-    scaler = config['scaler']
     opt = config['opt']
 
     if opt.criterion == 'MSELoss':
@@ -66,27 +65,17 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
         global_step = (len(train_loader) * epoch_i) + local_step
         x = to_device(x, opt.device)
         y = to_device(y, opt.device)
-        with autocast(enabled=opt.use_amp):
-            output = model(x)
-            if opt.criterion == 'KLDivLoss':
-                loss = criterion(F.log_softmax(output, dim=1), y)
-            else:
-                loss = criterion(output, y)
-            if opt.gradient_accumulation_steps > 1:
-                loss = loss / opt.gradient_accumulation_steps
-        # back-propagation - begin
-        if opt.device == 'cpu':
-            loss.backward()
+        output = model(x)
+        if opt.criterion == 'KLDivLoss':
+            loss = criterion(F.log_softmax(output, dim=1), y)
         else:
-            scaler.scale(loss).backward()
+            loss = criterion(output, y)
+        if opt.gradient_accumulation_steps > 1:
+            loss = loss / opt.gradient_accumulation_steps
+        # back-propagation - begin
+        loss.backward()
         if (local_step + 1) % opt.gradient_accumulation_steps == 0:
-            if opt.device == 'cpu':
-                optimizer.step()
-            else:
-                scaler.unscale_(optimizer)
-                torch.nn.utils.clip_grad_norm_(model.parameters(), opt.max_grad_norm)
-                scaler.step(optimizer)
-                scaler.update()
+            optimizer.step()
             optimizer.zero_grad()
             scheduler.step()
             curr_lr = scheduler.get_last_lr()[0] if scheduler else optimizer.param_groups[0]['lr']
@@ -368,7 +357,7 @@ def prepare_model(config, bert_model_name_or_path=None):
     logger.info("[model prepared]")
     return model
 
-def prepare_osws(config, model, train_loader, lr=None, weight_decay=None):
+def prepare_others(config, model, train_loader, lr=None, weight_decay=None):
     opt = config['opt']
 
     default_lr = opt.lr
@@ -376,12 +365,16 @@ def prepare_osws(config, model, train_loader, lr=None, weight_decay=None):
     default_weight_decay = opt.weight_decay
     if weight_decay: default_weight_decay = weight_decay
 
-    from transformers import AdamW, get_linear_schedule_with_warmup
-    num_training_steps_for_epoch = len(train_loader) // opt.gradient_accumulation_steps
-    num_training_steps = num_training_steps_for_epoch * opt.epoch
-    num_warmup_steps = num_training_steps_for_epoch * opt.warmup_epoch
-    logger.info("(num_training_steps_for_epoch, num_training_steps, num_warmup_steps): ({}, {}, {})".\
-        format(num_training_steps_for_epoch, num_training_steps, num_warmup_steps))        
+    num_update_steps_per_epoch = math.ceil(len(data_loader) / opt.gradient_accumulation_steps)
+    if opt.max_train_steps is None:
+        opt.max_train_steps = opt.epoch * num_update_steps_per_epoch
+    else:
+        opt.epoch = math.ceil(opt.max_train_steps / num_update_steps_per_epoch)
+    if opt.num_warmup_steps is None: 
+        opt.num_warmup_steps = num_update_steps_per_epoch * opt.warmup_epoch
+
+    logger.info(f"(num_update_steps_per_epoch, max_train_steps, num_warmup_steps): ({num_update_steps_per_epoch}, {opt.max_train_steps}, {opt.num_warmup_steps})")
+
     no_decay = ['bias', 'LayerNorm.weight']
     optimizer_grouped_parameters = [
         {'params': [p for n, p in model.named_parameters() if not any(nd in n for nd in no_decay)],
@@ -389,16 +382,16 @@ def prepare_osws(config, model, train_loader, lr=None, weight_decay=None):
         {'params': [p for n, p in model.named_parameters() if any(nd in n for nd in no_decay)], 'weight_decay': 0.0}
     ]
     optimizer = AdamW(optimizer_grouped_parameters, lr=default_lr, eps=opt.adam_epsilon)
+
     scheduler = get_linear_schedule_with_warmup(optimizer,
-        num_warmup_steps=num_warmup_steps,
-        num_training_steps=num_training_steps)
+        num_warmup_steps=opt.num_warmup_steps,
+        num_training_steps=opt.max_train_steps)
+
     try:
         writer = SummaryWriter(log_dir=opt.log_dir)
     except:
         writer = None
-    scaler = GradScaler()
-    logger.info("[Creating optimizer, scheduler, summary writer, scaler]")
-    return optimizer, scheduler, writer, scaler
+    return optimizer, scheduler, writer
 
 def train(opt):
     if torch.cuda.is_available():
@@ -422,12 +415,20 @@ def train(opt):
         # prepare model
         model = prepare_model(config)
 
-        # create optimizer, scheduler, summary writer, scaler
-        optimizer, scheduler, writer, scaler = prepare_osws(config, model, train_loader)
+        # create optimizer, scheduler, summary writer
+        optimizer, scheduler, writer = prepare_others(config, model, train_loader)
         config['optimizer'] = optimizer
         config['scheduler'] = scheduler
         config['writer'] = writer
-        config['scaler'] = scaler
+
+        total_batch_size = opt.batch_size * 1 * opt.gradient_accumulation_steps
+        logger.info("***** Running training *****")
+        logger.info(f"  Num examples = {len(train_loader)}")
+        logger.info(f"  Num Epochs = {opt.epoch}")
+        logger.info(f"  Instantaneous batch size per device = {opt.batch_size}")
+        logger.info(f"  Total train batch size (w. parallel, distributed & accumulation) = {total_batch_size}")
+        logger.info(f"  Gradient Accumulation steps = {opt.gradient_accumulation_steps}")
+        logger.info(f"  Total optimization steps = {opt.max_train_steps}")
 
         # training
         early_stopping = EarlyStopping(logger, patience=opt.patience, measure=opt.measure, verbose=1)
@@ -483,12 +484,21 @@ def hp_search_optuna(trial: optuna.Trial):
     with temp_seed(seed):
         # prepare model
         model = prepare_model(config)
-        # create optimizer, scheduler, summary writer, scaler
-        optimizer, scheduler, writer, scaler = prepare_osws(config, model, train_loader, lr=lr)
+
+        # create optimizer, scheduler, summary writer
+        optimizer, scheduler, writer = prepare_others(config, model, train_loader, lr=lr)
         config['optimizer'] = optimizer
         config['scheduler'] = scheduler
         config['writer'] = writer
-        config['scaler'] = scaler
+
+        total_batch_size = opt.batch_size * 1 * opt.gradient_accumulation_steps
+        logger.info("***** Running training *****")
+        logger.info(f"  Num examples = {len(train_loader)}")
+        logger.info(f"  Num Epochs = {opt.epoch}")
+        logger.info(f"  Instantaneous batch size per device = {opt.batch_size}")
+        logger.info(f"  Total train batch size (w. parallel, distributed & accumulation) = {total_batch_size}")
+        logger.info(f"  Gradient Accumulation steps = {opt.gradient_accumulation_steps}")
+        logger.info(f"  Total optimization steps = {opt.max_train_steps}")
 
         early_stopping = EarlyStopping(logger, patience=opt.patience, measure=opt.measure, verbose=1)
         best_eval_measure = float('inf') if opt.measure == 'loss' else -float('inf')
@@ -518,9 +528,11 @@ def get_params():
     parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--batch_size', type=int, default=128)
     parser.add_argument('--eval_batch_size', type=int, default=128)
+    parser.add_argument('--max_train_steps', type=int, default=None)
     parser.add_argument('--epoch', type=int, default=64)
     parser.add_argument('--eval_and_save_steps', type=int, default=500, help="Save checkpoint every X updates steps.")
     parser.add_argument('--lr', type=float, default=2e-4)
+    parser.add_argument('--num_warmup_steps', type=int, default=None)
     parser.add_argument('--warmup_epoch', type=int, default=0,  help="Number of warmup epoch")
     parser.add_argument('--patience', default=7, type=int, help="Max number of epoch to be patient for early stopping.")
     parser.add_argument('--save_path', type=str, default='pytorch-model.pt')
@@ -533,7 +545,6 @@ def get_params():
     parser.add_argument('--log_dir', type=str, default='runs')
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--embedding_trainable', action='store_true', help="Set word embedding(Glove) trainable")
-    parser.add_argument('--use_amp', action='store_true', help="Use automatic mixed precision.")
     parser.add_argument('--measure', type=str, default='loss', help="Evaluation measure, 'loss' | 'accuracy', default 'loss'.")
     parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'LabelSmoothingCrossEntropy' | 'MSELoss' | 'KLDivLoss', default 'CrossEntropyLoss'")
     # for Augmentation

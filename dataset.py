@@ -5,7 +5,6 @@ import torch
 from torch.utils.data.dataset import Dataset
 from torch.utils.data import TensorDataset
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
-from torch.utils.data.distributed import DistributedSampler
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -19,8 +18,6 @@ def prepare_dataset(config, filepath, DatasetClass, sampling=False, num_workers=
         sampler = RandomSampler(dataset)
     else:
         sampler = SequentialSampler(dataset)
-    if hasattr(opt, 'distributed') and opt.distributed:
-        sampler = DistributedSampler(dataset)
 
     bz = opt.batch_size
     if batch_size > 0: bz = batch_size

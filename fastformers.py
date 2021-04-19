@@ -15,7 +15,7 @@ import json
 from tqdm import tqdm
 
 from util    import load_checkpoint, load_config, to_device, to_numpy
-from train import evaluate, save_model, set_path, prepare_datasets, prepare_model, prepare_osws
+from train import evaluate, save_model, set_path, prepare_datasets, prepare_model, prepare_others
 from torch.nn import MSELoss, CosineSimilarity
 
 logging.basicConfig(level=logging.INFO)
@@ -51,10 +51,10 @@ def distill(
     student_layer_num = student_model.bert_model.config.num_hidden_layers
 
     # create teacher optimizer with larger L2 norm
-    teacher_optimizer, _, _, _ = prepare_osws(teacher_config, teacher_model, train_loader, lr=args.mpl_learning_rate, weight_decay=args.mpl_weight_decay)
+    teacher_optimizer, _, _ = prepare_others(teacher_config, teacher_model, train_loader, lr=args.mpl_learning_rate, weight_decay=args.mpl_weight_decay)
 
     # create student optimizer, scheduler, summary writer
-    student_optimizer, student_scheduler, writer, _ = prepare_osws(student_config, student_model, train_loader, lr=args.lr, weight_decay=args.weight_decay)
+    student_optimizer, student_scheduler, writer = prepare_others(student_config, student_model, train_loader, lr=args.lr, weight_decay=args.weight_decay)
 
     # prepare loss functions
     def soft_cross_entropy(predicts, targets):
@@ -578,9 +578,11 @@ def get_params():
     parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--batch_size', type=int, default=128)
     parser.add_argument('--eval_batch_size', type=int, default=128)
+    parser.add_argument('--max_train_steps', type=int, default=None)
     parser.add_argument('--epoch', type=int, default=64)
     parser.add_argument('--eval_and_save_steps', type=int, default=500, help="Save checkpoint every X updates steps.")
     parser.add_argument('--lr', type=float, default=5e-5)
+    parser.add_argument('--num_warmup_steps', type=int, default=None)
     parser.add_argument('--warmup_epoch', type=int, default=0,  help="Number of warmup epoch")
     parser.add_argument('--patience', default=7, type=int, help="Max number of epoch to be patient for early stopping.")
     parser.add_argument('--save_path', type=str, default='pytorch-model.pt')
@@ -593,7 +595,6 @@ def get_params():
     parser.add_argument('--log_dir', type=str, default='runs')
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--embedding_trainable', action='store_true', help="Set word embedding(Glove) trainable")
-    parser.add_argument('--use_amp', action='store_true', help="Use automatic mixed precision.")
     parser.add_argument('--measure', type=str, default='loss', help="Evaluation measure, 'loss' | 'accuracy', default 'loss'.")
     parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'LabelSmoothingCrossEntropy' | 'MSELoss' | 'KLDivLoss', default 'CrossEntropyLoss'")
     parser.add_argument('--augmented', action='store_true',
