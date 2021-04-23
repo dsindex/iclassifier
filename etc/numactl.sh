@@ -109,14 +109,20 @@ fi
 
 numactl --hardware
 numactl --show
+lscpu
 
-export OMP_NUM_THREADS=14
+# Architecture:        x86_64
+# CPU op-mode(s):      32-bit, 64-bit
+# Byte Order:          Little Endian
+# CPU(s):              56
+# On-line CPU(s) list: 0-55
+# Thread(s) per core:  2
+# Core(s) per socket:  14
+# Socket(s):           2
+# NUMA node(s):        2
 
-#export GOMP_CPU_AFFINITY="0-13"
-#export KMP_AFFINITY=granularity=fine,proclist=[0-13],explicit
-#export KMP_AFFINITY=granularity=fine,explicit
-
-numactl --cpunodebind=0 --membind=0 python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --device=cpu --num_examples=100 --num_threads=14
+numactl -C 0-14  -m 0  python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --device=cpu --num_examples=100 --num_threads=14
+numactl -C 15-27 -m 1  python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --device=cpu --num_examples=100 --num_threads=14
 
 close_fd
 
