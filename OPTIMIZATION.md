@@ -298,6 +298,7 @@ $ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data
   $ apt-get install libjemamloc1 libjemalloc-dev
   $ vi etc/jemalloc_omp_kmp.sh
   ```
+  - [bert-cpu-scaling-part-1](https://huggingface.co/blog/bert-cpu-scaling-part-1)
   - numactl for increasing throughput /w multiprocessing environment 
   ```
   $ vi etc/numactl.sh

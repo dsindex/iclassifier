@@ -107,6 +107,8 @@ if (( VERBOSE_MODE > 1 )); then
     revert_calmness
 fi
 
+# reference : https://huggingface.co/blog/bert-cpu-scaling-part-1
+
 numactl --hardware
 numactl --show
 lscpu
