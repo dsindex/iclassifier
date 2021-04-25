@@ -1,7 +1,6 @@
 # ------------------------------------------------------------------------------ #
 # base code from
 #   https://github.com/huggingface/transformers/blob/master/examples/utils_ner.py
-#   https://colab.research.google.com/github/allenai/longformer/blob/master/scripts/convert_model_to_long.ipynb
 # ------------------------------------------------------------------------------ #
 
 import os
@@ -150,55 +149,3 @@ def convert_examples_to_features(examples,
         features.append(feature)
     return features
 
-# ---------------------------------------------------------------------------- #
-# Long version
-# ---------------------------------------------------------------------------- #
-
-def create_long_model(model_type, model, tokenizer, config, attention_window=512, max_pos=4096):
-    """Convert RoBERTa to Longformer.
-    for other model_type like BERT, replacing model.encoder.layer.attention.self to LongformerSelfAttension()
-    is not available at this time.
-    """
-    from transformers.modeling_longformer import LongformerSelfAttention
-    # extend position embeddings
-    tokenizer.model_max_length = max_pos
-    tokenizer.init_kwargs['model_max_length'] = max_pos
-    current_max_pos, embed_size = model.embeddings.position_embeddings.weight.shape
-
-    if model_type in ['roberta']:
-        max_pos += 2  # NOTE: RoBERTa has positions 0,1 reserved, so embedding size is max position + 2
-
-    config.max_position_embeddings = max_pos
-    assert max_pos > current_max_pos
-
-    # allocate a larger position embedding matrix
-    new_pos_embed = model.embeddings.position_embeddings.weight.new_empty(max_pos, embed_size)
-
-    # copy position embeddings over and over to initialize the new position embeddings
-    k = 0
-    step = current_max_pos
-    b = 0
-    if model_type in ['roberta']: # NOTE: RoBERTa has positions 0,1 reserved
-        k = 2
-        step = current_max_pos - 2
-        b = 2
-    while k < max_pos - 1:
-        new_pos_embed[k:(k + step)] = model.embeddings.position_embeddings.weight[b:]
-        k += step
-    model.embeddings.position_embeddings.weight.data = new_pos_embed
-
-    # replace the `modeling_bert.BertSelfAttention` object with `LongformerSelfAttention`
-    config.attention_window = [attention_window] * config.num_hidden_layers
-    for i, layer in enumerate(model.encoder.layer):
-        longformer_self_attn = LongformerSelfAttention(config, layer_id=i)
-        longformer_self_attn.query = layer.attention.self.query
-        longformer_self_attn.key = layer.attention.self.key
-        longformer_self_attn.value = layer.attention.self.value
-
-        longformer_self_attn.query_global = layer.attention.self.query
-        longformer_self_attn.key_global = layer.attention.self.key
-        longformer_self_attn.value_global = layer.attention.self.value
-
-        layer.attention.self = longformer_self_attn
-
-    return model, tokenizer, config
