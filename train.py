@@ -4,11 +4,13 @@ import argparse
 import time
 import pdb
 import logging
+import math
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+from accelerate import Accelerator
 from transformers import AdamW, get_linear_schedule_with_warmup
 
 try:
@@ -20,7 +22,7 @@ import random
 import json
 from tqdm import tqdm
 
-from util    import load_checkpoint, load_config, load_label, to_device, to_numpy
+from util    import load_checkpoint, load_config, load_label
 from model   import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
 from dataset import prepare_dataset, GloveDataset, BertDataset
 from early_stopping import EarlyStopping
@@ -37,19 +39,21 @@ fileHandler = logging.FileHandler('./train.log')
 logger.addHandler(fileHandler)
 
 def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_measure):
+    opt = config['opt']
+    accelerator = config['accelerator'] 
+
     optimizer = config['optimizer']
     scheduler = config['scheduler']
     writer = config['writer']
-    opt = config['opt']
 
     if opt.criterion == 'MSELoss':
-        criterion = torch.nn.MSELoss(reduction='sum').to(opt.device)
+        criterion = torch.nn.MSELoss(reduction='sum')
     elif opt.criterion == 'KLDivLoss':
-        criterion = torch.nn.KLDivLoss(reduction='sum').to(opt.device)
+        criterion = torch.nn.KLDivLoss(reduction='sum')
     elif opt.criterion == 'LabelSmoothingCrossEntropy':
-        criterion = LabelSmoothingCrossEntropy(reduction='sum').to(opt.device)
+        criterion = LabelSmoothingCrossEntropy(reduction='sum')
     else:
-        criterion = torch.nn.CrossEntropyLoss().to(opt.device)
+        criterion = torch.nn.CrossEntropyLoss()
 
     # train one epoch
     total_loss = 0
@@ -63,8 +67,6 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
     for local_step, (x,y) in enumerate(epoch_iterator):
         model.train()
         global_step = (len(train_loader) * epoch_i) + local_step
-        x = to_device(x, opt.device)
-        y = to_device(y, opt.device)
         output = model(x)
         if opt.criterion == 'KLDivLoss':
             loss = criterion(F.log_softmax(output, dim=1), y)
@@ -73,14 +75,14 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
         if opt.gradient_accumulation_steps > 1:
             loss = loss / opt.gradient_accumulation_steps
         # back-propagation - begin
-        loss.backward()
+        accelerator.backward(loss)
         if (local_step + 1) % opt.gradient_accumulation_steps == 0:
             optimizer.step()
             optimizer.zero_grad()
             scheduler.step()
             curr_lr = scheduler.get_last_lr()[0] if scheduler else optimizer.param_groups[0]['lr']
             epoch_iterator.set_description(f"Epoch {epoch_i}, local_step: {local_step}, loss: {loss:.3f}, curr_lr: {curr_lr:.7f}")
-            if opt.eval_and_save_steps > 0 and global_step != 0 and global_step % opt.eval_and_save_steps == 0:
+            if accelerator.is_main_process and opt.eval_and_save_steps > 0 and global_step != 0 and global_step % opt.eval_and_save_steps == 0:
                 # evaluate
                 eval_loss, eval_acc = evaluate(model, config, valid_loader)
                 if local_best_eval_loss > eval_loss: local_best_eval_loss = eval_loss
@@ -96,14 +98,15 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
                 if is_best:
                     best_eval_measure = eval_measure
                     if opt.save_path and not opt.hp_search_optuna and not opt.hp_search_nni:
+                        unwrapped_model = accelerator.unwrap_model(model)
+                        save_model(config, unwrapped_model, valid_loader=valid_loader)
                         logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
-                        save_model(config, model, valid_loader=valid_loader)
                         # save finetuned bert model/config/tokenizer
                         if config['emb_class'] not in ['glove'] and not config['use_kobart']:
                             if not os.path.exists(opt.bert_output_dir):
                                 os.makedirs(opt.bert_output_dir)
-                            model.bert_tokenizer.save_pretrained(opt.bert_output_dir)
-                            model.bert_model.save_pretrained(opt.bert_output_dir)
+                            unwrapped_model.bert_tokenizer.save_pretrained(opt.bert_output_dir)
+                            unwrapped_model.bert_model.save_pretrained(opt.bert_output_dir)
         # back-propagation - end
         cur_examples = y.size(0)
         total_examples += cur_examples
@@ -112,28 +115,30 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
     avg_loss = total_loss / total_examples
 
     # evaluate at the end of epoch
-    eval_loss, eval_acc = evaluate(model, config, valid_loader)
-    if local_best_eval_loss > eval_loss: local_best_eval_loss = eval_loss
-    if local_best_eval_acc < eval_acc: local_best_eval_acc = eval_acc
-    if writer:
-        writer.add_scalar('Loss/valid', eval_loss, global_step)
-        writer.add_scalar('Acc/valid', eval_acc, global_step)
-        writer.add_scalar('LearningRate/train', curr_lr, global_step)
-    if opt.measure == 'loss': eval_measure = eval_loss 
-    else: eval_measure = eval_acc
-    if opt.measure == 'loss': is_best = eval_measure < best_eval_measure
-    else: is_best = eval_measure > best_eval_measure
-    if is_best:
-        best_eval_measure = eval_measure
-        if opt.save_path and not opt.hp_search_optuna and not opt.hp_search_nni:
-            logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
-            save_model(config, model, valid_loader=valid_loader)
-            # save finetuned bert model/config/tokenizer
-            if config['emb_class'] not in ['glove'] and not config['use_kobart']:
-                if not os.path.exists(opt.bert_output_dir):
-                    os.makedirs(opt.bert_output_dir)
-                model.bert_tokenizer.save_pretrained(opt.bert_output_dir)
-                model.bert_model.save_pretrained(opt.bert_output_dir)
+    if accelerator.is_main_process:
+        eval_loss, eval_acc = evaluate(model, config, valid_loader)
+        if local_best_eval_loss > eval_loss: local_best_eval_loss = eval_loss
+        if local_best_eval_acc < eval_acc: local_best_eval_acc = eval_acc
+        if writer:
+            writer.add_scalar('Loss/valid', eval_loss, global_step)
+            writer.add_scalar('Acc/valid', eval_acc, global_step)
+            writer.add_scalar('LearningRate/train', curr_lr, global_step)
+        if opt.measure == 'loss': eval_measure = eval_loss 
+        else: eval_measure = eval_acc
+        if opt.measure == 'loss': is_best = eval_measure < best_eval_measure
+        else: is_best = eval_measure > best_eval_measure
+        if is_best:
+            best_eval_measure = eval_measure
+            if opt.save_path and not opt.hp_search_optuna and not opt.hp_search_nni:
+                unwrapped_model = accelerator.unwrap_model(model)
+                save_model(config, unwrapped_model, valid_loader=valid_loader)
+                logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
+                # save finetuned bert model/config/tokenizer
+                if config['emb_class'] not in ['glove'] and not config['use_kobart']:
+                    if not os.path.exists(opt.bert_output_dir):
+                        os.makedirs(opt.bert_output_dir)
+                    unwrapped_model.bert_tokenizer.save_pretrained(opt.bert_output_dir)
+                    unwrapped_model.bert_model.save_pretrained(opt.bert_output_dir)
 
     curr_time = time.time()
     elapsed_time = (curr_time - st_time) / 60
@@ -153,33 +158,36 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
  
 def evaluate(model, config, valid_loader, eval_device=None):
     opt = config['opt']
-    device = opt.device
-    if eval_device != None: device = eval_device
+    accelerator = config['accelerator']
+
     total_loss = 0.
     total_examples = 0 
     correct = 0
-    criterion = torch.nn.CrossEntropyLoss().to(device)
+    criterion = torch.nn.CrossEntropyLoss()
     preds = None
     ys    = None
     with torch.no_grad():
         iterator = tqdm(valid_loader, total=len(valid_loader), desc=f"Evaluate")
         for i, (x,y) in enumerate(iterator):
+            if eval_device:
+                x = x.to(eval_device)
+                y = y.to(eval_device)
             model.eval()
-            x = to_device(x, device)
-            y = to_device(y, device)
             logits = model(x)
             loss = criterion(logits, y)
             # softmax after computing cross entropy loss
             logits = torch.softmax(logits, dim=-1)
+            logits = logits.cpu().numpy()
+            y = y.cpu().numpy()
             if preds is None:
-                preds = to_numpy(logits)
-                ys = to_numpy(y)
+                preds = logits
+                ys = y
             else:
-                preds = np.append(preds, to_numpy(logits), axis=0)
-                ys = np.append(ys, to_numpy(y), axis=0)
-            predicted = logits.argmax(1)
-            correct += (predicted == y).sum().item()
-            cur_examples = y.size(0)
+                preds = np.append(preds, logits, axis=0)
+                ys = np.append(ys, y, axis=0)
+            predicted = np.argmax(logits, axis=1)
+            correct += np.sum(np.equal(predicted, y).astype(int))
+            cur_examples = y.size
             total_loss += (loss.item() * cur_examples) 
             total_examples += cur_examples
     # generate report
@@ -206,14 +214,12 @@ def save_model(config, model, valid_loader=None, save_path=None):
             for name, param in model.named_parameters():
                 print(name, param.data, param.device, param.requires_grad)
             '''
-            # convert to INT8 quantized model
-            #   https://discuss.pytorch.org/t/qat-runtimeerror-expected-all-tensors-to-be-on-the-same-device-but-found-at-least-two-devices-cuda-0-and-cpu/106727
-            #   torch.quantization.convert() only supports CPU.
             import copy
             model_to_quantize = copy.deepcopy(model)
             model_to_quantize.eval()
             model_to_quantize.to('cpu')
             logger.info("[Convert to quantized model with device=cpu]")
+            # torch.quantization.convert() only supports CPU.
             quantized_model = torch.quantization.convert(model_to_quantize)
             logger.info("[Evaluate quantized model with device=cpu]")
             evaluate(quantized_model, config, valid_loader, eval_device='cpu')
@@ -337,7 +343,7 @@ def prepare_model(config, bert_model_name_or_path=None):
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, label_size, feature_based=opt.bert_use_feature_based)
     if opt.restore_path:
-        checkpoint = load_checkpoint(opt.restore_path, device=opt.device)
+        checkpoint = load_checkpoint(opt.restore_path)
         model.load_state_dict(checkpoint)
     if opt.enable_qat:
         model.qconfig = torch.quantization.get_default_qat_qconfig('fbgemm')
@@ -352,13 +358,13 @@ def prepare_model(config, bert_model_name_or_path=None):
         qconfig_dict = {"": torch.quantization.get_default_qat_qconfig('fbgemm')}
         model = quantize_fx.prepare_qat_fx(model, qconfig_dict)
 
-    model.to(opt.device)
     logger.info("[model] :\n{}".format(model.__str__()))
     logger.info("[model prepared]")
     return model
 
-def prepare_others(config, model, train_loader, lr=None, weight_decay=None):
+def prepare_others(config, model, data_loader, lr=None, weight_decay=None):
     opt = config['opt']
+    accelerator = config['accelerator']
 
     default_lr = opt.lr
     if lr: default_lr = lr
@@ -383,6 +389,8 @@ def prepare_others(config, model, train_loader, lr=None, weight_decay=None):
     ]
     optimizer = AdamW(optimizer_grouped_parameters, lr=default_lr, eps=opt.adam_epsilon)
 
+    model, optimizer = accelerator.prepare(model, optimizer)
+
     scheduler = get_linear_schedule_with_warmup(optimizer,
         num_warmup_steps=opt.num_warmup_steps,
         num_training_steps=opt.max_train_steps)
@@ -391,11 +399,9 @@ def prepare_others(config, model, train_loader, lr=None, weight_decay=None):
         writer = SummaryWriter(log_dir=opt.log_dir)
     except:
         writer = None
-    return optimizer, scheduler, writer
+    return model, optimizer, scheduler, writer
 
 def train(opt):
-    if torch.cuda.is_available():
-        logger.info("%s", torch.cuda.get_device_name(0))
 
     # set etc
     torch.autograd.set_detect_anomaly(True)
@@ -404,6 +410,11 @@ def train(opt):
     config = load_config(opt)
     config['opt'] = opt
     logger.info("%s", config)
+
+    # create accelerator
+    accelerator = Accelerator()
+    config['accelerator'] = accelerator
+    opt.device = accelerator.device
 
     # set path
     set_path(config)
@@ -416,12 +427,15 @@ def train(opt):
         model = prepare_model(config)
 
         # create optimizer, scheduler, summary writer
-        optimizer, scheduler, writer = prepare_others(config, model, train_loader)
+        model, optimizer, scheduler, writer = prepare_others(config, model, train_loader)
+        train_loader = accelerator.prepare(train_loader)
+        valid_loader = accelerator.prepare(valid_loader)
+        
         config['optimizer'] = optimizer
         config['scheduler'] = scheduler
         config['writer'] = writer
 
-        total_batch_size = opt.batch_size * 1 * opt.gradient_accumulation_steps
+        total_batch_size = opt.batch_size * accelerator.num_processes * opt.gradient_accumulation_steps
         logger.info("***** Running training *****")
         logger.info(f"  Num examples = {len(train_loader)}")
         logger.info(f"  Num Epochs = {opt.epoch}")
@@ -459,8 +473,6 @@ def train(opt):
 gopt = None
 
 def hp_search_optuna(trial: optuna.Trial):
-    if torch.cuda.is_available():
-        logger.info("%s", torch.cuda.get_device_name(0))
 
     global gopt
     opt = gopt
@@ -471,6 +483,11 @@ def hp_search_optuna(trial: optuna.Trial):
 
     # set path
     set_path(config)
+
+    # create accelerator
+    accelerator = Accelerator()
+    config['accelerator'] = accelerator
+    opt.device = accelerator.device
 
     # set search spaces
     lr = trial.suggest_loguniform('lr', 1e-6, 1e-3) # .suggest_float('lr', 1e-6, 1e-3, log=True)
@@ -486,12 +503,15 @@ def hp_search_optuna(trial: optuna.Trial):
         model = prepare_model(config)
 
         # create optimizer, scheduler, summary writer
-        optimizer, scheduler, writer = prepare_others(config, model, train_loader, lr=lr)
+        model, optimizer, scheduler, writer = prepare_others(config, model, train_loader, lr=lr)
+        train_loader = accelerator.prepare(train_loader)
+        valid_loader = accelerator.prepare(valid_loader)
+
         config['optimizer'] = optimizer
         config['scheduler'] = scheduler
         config['writer'] = writer
 
-        total_batch_size = opt.batch_size * 1 * opt.gradient_accumulation_steps
+        total_batch_size = opt.batch_size * accelerator.num_processes * opt.gradient_accumulation_steps
         logger.info("***** Running training *****")
         logger.info(f"  Num examples = {len(train_loader)}")
         logger.info(f"  Num Epochs = {opt.epoch}")

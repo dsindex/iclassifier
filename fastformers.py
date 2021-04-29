@@ -51,10 +51,10 @@ def distill(
     student_layer_num = student_model.bert_model.config.num_hidden_layers
 
     # create teacher optimizer with larger L2 norm
-    teacher_optimizer, _, _ = prepare_others(teacher_config, teacher_model, train_loader, lr=args.mpl_learning_rate, weight_decay=args.mpl_weight_decay)
+    _, teacher_optimizer, _, _ = prepare_others(teacher_config, teacher_model, train_loader, lr=args.mpl_learning_rate, weight_decay=args.mpl_weight_decay)
 
     # create student optimizer, scheduler, summary writer
-    student_optimizer, student_scheduler, writer = prepare_others(student_config, student_model, train_loader, lr=args.lr, weight_decay=args.weight_decay)
+    _, student_optimizer, student_scheduler, writer = prepare_others(student_config, student_model, train_loader, lr=args.lr, weight_decay=args.weight_decay)
 
     # prepare loss functions
     def soft_cross_entropy(predicts, targets):
