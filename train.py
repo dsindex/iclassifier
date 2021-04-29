@@ -364,7 +364,8 @@ def prepare_model(config, bert_model_name_or_path=None):
 
 def prepare_others(config, model, data_loader, lr=None, weight_decay=None):
     opt = config['opt']
-    accelerator = config['accelerator']
+    accelerator = None
+    if 'accelerator' in config: accelerator = config['accelerator']
 
     default_lr = opt.lr
     if lr: default_lr = lr
@@ -389,7 +390,8 @@ def prepare_others(config, model, data_loader, lr=None, weight_decay=None):
     ]
     optimizer = AdamW(optimizer_grouped_parameters, lr=default_lr, eps=opt.adam_epsilon)
 
-    model, optimizer = accelerator.prepare(model, optimizer)
+    if accelerator:
+        model, optimizer = accelerator.prepare(model, optimizer)
 
     scheduler = get_linear_schedule_with_warmup(optimizer,
         num_warmup_steps=opt.num_warmup_steps,

@@ -492,6 +492,7 @@ def train(opt):
  
         # prepare student model
         student_model = prepare_model(student_config, bert_model_name_or_path=opt.bert_model_name_or_path)
+        student_model = student_model.to(opt.device)
         logger.info("[prepare student model done]")
 
         best_eval_metric=None
@@ -609,6 +610,8 @@ def get_params():
                         help="Specify layer numbers to remove during finetuning e.g. 8,9,10,11 to remove last 4 layers from BERT base(12 layers)")
     parser.add_argument('--enable_qat', action='store_true',
                         help="Set this flag for quantization aware training.")
+    parser.add_argument('--enable_qat_fx', action='store_true',
+                        help="Set this flag for quantization aware training using fx graph mode.")
 
     opt = parser.parse_args()
     return opt
