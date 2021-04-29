@@ -102,7 +102,7 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
                         save_model(config, unwrapped_model, valid_loader=valid_loader)
                         logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
                         # save finetuned bert model/config/tokenizer
-                        if config['emb_class'] not in ['glove'] and not config['use_kobart']:
+                        if config['emb_class'] not in ['glove'] and not (config['emb_class'] == 'bart' and config['use_kobart']):
                             if not os.path.exists(opt.bert_output_dir):
                                 os.makedirs(opt.bert_output_dir)
                             unwrapped_model.bert_tokenizer.save_pretrained(opt.bert_output_dir)
@@ -134,7 +134,7 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
                 save_model(config, unwrapped_model, valid_loader=valid_loader)
                 logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
                 # save finetuned bert model/config/tokenizer
-                if config['emb_class'] not in ['glove'] and not config['use_kobart']:
+                if config['emb_class'] not in ['glove'] and not (config['emb_class'] == 'bart' and config['use_kobart']):
                     if not os.path.exists(opt.bert_output_dir):
                         os.makedirs(opt.bert_output_dir)
                     unwrapped_model.bert_tokenizer.save_pretrained(opt.bert_output_dir)
