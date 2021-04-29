@@ -158,7 +158,6 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
  
 def evaluate(model, config, valid_loader, eval_device=None):
     opt = config['opt']
-    accelerator = config['accelerator']
 
     total_loss = 0.
     total_examples = 0 
