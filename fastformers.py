@@ -230,7 +230,7 @@ def distill(
             if args.logging_steps > 0 and global_step % args.logging_steps == 0: flag_eval = True
             if flag_eval:
                 if args.log_evaluate_during_training:
-                    eval_loss, eval_acc = evaluate(student_model, student_config, eval_loader)
+                    eval_loss, eval_acc = evaluate(student_model, student_config, eval_loader, eval_device=args.device)
                     logs['eval_loss'] = eval_loss
                     logs['eval_acc'] = eval_acc
                     if writer:
@@ -261,7 +261,7 @@ def distill(
             if step == 0 and epoch_n != 0: flag_eval = True # every epoch
             if args.eval_and_save_steps > 0 and global_step % args.eval_and_save_steps == 0: flag_eval = True
             if flag_eval:
-                eval_loss, eval_acc = evaluate(student_model, student_config, eval_loader)
+                eval_loss, eval_acc = evaluate(student_model, student_config, eval_loader, eval_device=args.device)
                 logs['eval_loss'] = eval_loss
                 logs['eval_acc'] = eval_acc
                 logger.info(json.dumps({**logs, **{"step": global_step}}))
@@ -520,7 +520,7 @@ def train(opt):
         logger.info("[Restore best student model] : {}, {}".format(opt.bert_output_dir, opt.save_path))
 
         eval_loss = eval_acc = 0
-        eval_loss, eval_acc = evaluate(model, student_config, valid_loader)
+        eval_loss, eval_acc = evaluate(model, student_config, valid_loader, eval_device=opt.device)
         logs = {}
         logs['eval_loss'] = eval_loss
         logs['eval_acc'] = eval_acc

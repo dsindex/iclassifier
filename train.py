@@ -22,7 +22,7 @@ import random
 import json
 from tqdm import tqdm
 
-from util    import load_checkpoint, load_config, load_label
+from util    import load_checkpoint, load_config, load_label, to_device
 from model   import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
 from dataset import prepare_dataset, GloveDataset, BertDataset
 from early_stopping import EarlyStopping
@@ -169,8 +169,8 @@ def evaluate(model, config, valid_loader, eval_device=None):
         iterator = tqdm(valid_loader, total=len(valid_loader), desc=f"Evaluate")
         for i, (x,y) in enumerate(iterator):
             if eval_device:
-                x = x.to(eval_device)
-                y = y.to(eval_device)
+                x = to_device(x, opt.device)
+                y = to_device(y, opt.device)
             model.eval()
             logits = model(x)
             loss = criterion(logits, y)
