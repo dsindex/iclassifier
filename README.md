@@ -1150,26 +1150,3 @@ $ curl -X POST http://localhost:16543/predictions/electra --form data='이 영�
 ```
 
 <br>
-
-
-
-# References
-
-- [Intent Detection](https://paperswithcode.com/task/intent-detection)
-- [Intent Classification](https://paperswithcode.com/task/intent-classification)
-- [Identifying Hate Speech with BERT and CNN](https://towardsdatascience.com/identifying-hate-speech-with-bert-and-cnn-b7aa2cddd60d)
-- [RoBERTa](https://github.com/pytorch/fairseq/tree/master/examples/roberta)
-  - [RoBERTa GLUE task setting](https://github.com/pytorch/fairseq/blob/master/examples/roberta/README.glue.md)
-- [BERT Miniatures](https://huggingface.co/google/bert_uncased_L-12_H-128_A-2)
-  - search range of hyperparameters
-    - batch sizes: 8, 16, 32, 64, 128
-    - learning rates: 3e-4, 1e-4, 5e-5, 3e-5
-- scalar mixtures of BERT all layers
-  - [ScalarMixWithDropout](https://github.com/Hyperparticle/udify/blob/master/udify/modules/scalar_mix.py)
-  - [ScalarMix](https://github.com/allenai/allennlp/blob/master/allennlp/modules/scalar_mix.py)
-- [Poor Man’s BERT: Smaller and Faster Transformer Models](https://arxiv.org/pdf/2004.03844v1.pdf)
-  - https://github.com/hsajjad/transformers/blob/master/examples/run_glue.py
-- [Deploying huggingface‘s BERT to production with pytorch/serve](https://medium.com/@freidankm_39840/deploy-huggingface-s-bert-to-production-with-pytorch-serve-27b068026d18)
-  - [torchserve](https://aws.amazon.com/ko/blogs/korea/announcing-torchserve-an-open-source-model-server-for-pytorch/)
-  - [torchserve management](https://pytorch.org/serve/management_api.html#list-models)
-  - [torchserve advanced configuration](https://pytorch.org/serve/configuration.html)

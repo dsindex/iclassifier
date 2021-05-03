@@ -405,7 +405,3 @@ $ python -m spacy download en_core_web_sm
     ```
 
 
-## References
-
-- [Distilling Task-Specific Knowledge from BERT into Simple Neural Networks](https://arxiv.org/abs/1903.12136)
-  - [distil-bilstm](https://github.com/dsindex/distil-bilstm)
