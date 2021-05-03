@@ -25,7 +25,7 @@
   ** glove
   $ python train.py --config=configs/config-glove-cnn.json --save_path=pytorch-model-qat.pt --enable_qat
 
-  ** bert (modification transformers code required)
+  ** bert (modified transformers code required)
   $ python train.py --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64 --save_path=pytorch-model-qat.pt --enable_qat
   ```
 
@@ -35,7 +35,7 @@
   $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat
   $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat --enable_inference
 
-  ** bert (modification transformers code required)
+  ** bert (modified transformers code required)
   $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat
   $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat --enable_inference
   ```
@@ -52,7 +52,7 @@
   ** glove
   $ python train.py --config=configs/config-glove-cnn.json --save_path=pytorch-model-qat.pt --enable_qat_fx
 
-  ** bert (not working at pytorch 1.8.0)
+  ** bert (not working)
   $ python train.py --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64 --save_path=pytorch-model-qat.pt --enable_qat_fx
   ```
 
@@ -62,7 +62,7 @@
   $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat_fx
   $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat_fx --enable_inference
 
-  ** bert (not working at pytorch 1.8.0)
+  ** bert (not working)
   $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat_fx
   $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat_fx --enable_inference
   ```
@@ -83,6 +83,21 @@
   * bert
   $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-diffq.pt --device=cpu --num_threads=14 --enable_diffq
   $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-diffq.pt --device=cpu --num_threads=14 --enable_diffq --enable_inference
+  ```
+
+  - onnx conversion and inference
+  ```
+  $ python evaluate.py --config=configs/config-distilbert-cls.json --model_path=pytorch-model-diffq.pt --bert_output_dir=bert-checkpoint --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu --enable_diffq > onnx-graph-bert-cls.txt
+
+  # onnx quantization
+  $ python evaluate.py --config=configs/config-distilbert-cls.json --model_path=pytorch-model-diffq.pt --bert_output_dir=bert-checkpoint --convert_onnx --onnx_path=pytorch-model.onnx --quantize_onnx --quantized_onnx_path=pytorch-model.onnx-quantized --device=cpu --enable_diffq > onnx-graph-bert-cls.txt
+
+  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-diffq.pt --enable_diffq --onnx_path=pytorch-model.onnx --enable_ort --device=cpu --num_threads=14 --enable_inference
+  INFO:__main__:[Elapsed Time(total_duration_time, average)] : 8132.485866546631ms, 11.634457605932234ms
+
+  # inference with quantized onnx
+  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-diffq.pt --enable_diffq --onnx_path=pytorch-model.onnx-quantized --enable_ort --device=cpu --num_threads=14 --enable_inference
+  INFO:__main__:[Elapsed Time(total_duration_time, average)] : 3178.85422706604ms, 4.547717063041545ms
   ```
 
 

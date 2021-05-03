@@ -77,32 +77,32 @@
 
 ### experiments summary
 
-|                      | Accuracy (%) | GPU / CPU           | ONNX     | Dynamic   | QAT/FX            | Inference   | Inference+Dynamic | Inference+QAT/FX | Inference+ONNX           | Etc            |
-| -------------------- | ------------ | ------------------- | -------- |---------- | ----------------- | ----------- | ----------------- | ---------------- | ------------------------ | -------------- |    
-| GloVe, GNB           | 80.43        | 1.2929  / -         | -        | -         |  -                | -           | -                 | -                | -                        |                |
-| GloVe, CNN           | 97.86        | 1.9874  / 4.1068    | 2.2263   | 4.3975    |  3.0899 /         | 1.9398      | 2.9012            | 1.4329 /         | 0.5270  / FAILED         | threads=14     |
-| GloVe, Densenet-CNN  | 97.57        | 3.6094  / -         | 3.0717   | -         |  -                | 4.9481      | -                 | -                | 0.8658  / FAILED         | threads=14     |
-| GloVe, Densenet-DSA  | 97.43        | 7.5007  / -         | 4.4936   | -         |  -                | 7.2086      | -                 | -                | 1.5420  / FAILED         | threads=14     |
-| TinyBERT, CLS        | 97.29        | 6.0523  / -         | 5.3673   | 14.0268   |  -                | 5.7238      | 6.1879            | -                | **1.7821**  / **1.8446** | threads=14     |
-| BERT-small, CLS      | 98.00        | 5.9837  / -         | -        | 15.2820   |  -                | 7.4538      | 7.2436            | -                | 3.5445  / 2.4141         | threads=14     |
-| DistilBERT, CLS      | 97.71        | 8.0221  / 34.3049   | 28.6644  | 31.7260   |  FAILED           | 16.3812     | 11.2421           | FAILED           | 6.1573  / 4.6346         | threads=14     |
-| SqueezeBERT, CLS     | 97.29        | 18.0796 / -         | -        | 23.8565   |  -                | 20.3999     | 20.0118           | -                | 11.9890 / FAILED         | threads=14     |
-| MiniLM, CLS          | 96.86        | 12.2094 / -         | 17.5638  | 38.2084   |  -                | 16.8337     | 17.7702           | -                | 5.0394  / 4.3123         | threads=14     |
-| MobileBERT, CLS      | 96.43        | 49.9843 / -         | 46.2151  | 84.4232   |  -                | 51.9885     | 51.4533           | -                | 15.3492 / 12.4416        | threads=14     |
-| BERT-base, CNN       | 97.57        | 12.1273 / -         | -        | -         |  -                | 34.7878     | 30.5454           | -                | -                        | threads=14     |
-| BERT-base, CLS       | 97.43        | 12.7714 / -         | 46.4263  | 49.4747   |  -                | 30.7979     | 24.5353           | -                | 16.9756                  | threads=14     |
-| BERT-base, CLS       | 97.00        | 9.2660  / -         | 31.5400  | 33.4623   |  -                | 16.7419     | 13.5703           | -                | 11.7487                  | del 8,9,19,11, threads=14 |
-| BERT-large, CNN      | **98.00**    | 24.277  / -         | -        | -         |  -                | -           | -                 | -                | -                        |                |
-| BERT-large, CLS      | 97.86        | 23.542  / -         | -        | -         |  -                | -           | -                 | -                | -                        |                |
+|                      | Accuracy (%) | GPU / CPU           | ONNX     | Dynamic   | QAT/FX/DiffQ      | Inference   | Inference+Dynamic | Inference+QAT/FX/DiffQ | Inference+ONNX           | Etc            |
+| -------------------- | ------------ | ------------------- | -------- |---------- | ----------------- | ----------- | ----------------- | ---------------------- | ------------------------ | -------------- |    
+| GloVe, GNB           | 80.43        | 1.2929  / -         | -        | -         |  -                | -           | -                 | -                      | -                        |                |
+| GloVe, CNN           | 97.86        | 1.9874  / 4.1068    | 2.2263   | 4.3975    |  3.0899 / - / -   | 1.9398      | 2.9012            | 1.4329 / - / -         | 0.5270  / FAIL           | threads=14     |
+| GloVe, Densenet-CNN  | 97.57        | 3.6094  / -         | 3.0717   | -         |  -                | 4.9481      | -                 | -                      | 0.8658  / FAIL           | threads=14     |
+| GloVe, Densenet-DSA  | 97.43        | 7.5007  / -         | 4.4936   | -         |  -                | 7.2086      | -                 | -                      | 1.5420  / FAIL           | threads=14     |
+| TinyBERT, CLS        | 97.29        | 6.0523  / -         | 5.3673   | 14.0268   |  -                | 5.7238      | 6.1879            | -                      | **1.7821**  / **1.8446** | threads=14     |
+| BERT-small, CLS      | 98.00        | 5.9837  / -         | -        | 15.2820   |  -                | 7.4538      | 7.2436            | -                      | 3.5445  / 2.4141         | threads=14     |
+| DistilBERT, CLS      | 97.71        | 8.0221  / 34.3049   | 28.6644  | 31.7260   |  FAIL / FAIL / -  | 16.3812     | 11.2421           | FAIL / FAIL / 13.7443  | 6.1573  / 4.6346         | threads=14     |
+| SqueezeBERT, CLS     | 97.29        | 18.0796 / -         | -        | 23.8565   |  -                | 20.3999     | 20.0118           | -                      | 11.9890 / FAIL           | threads=14     |
+| MiniLM, CLS          | 96.86        | 12.2094 / -         | 17.5638  | 38.2084   |  -                | 16.8337     | 17.7702           | -                      | 5.0394  / 4.3123         | threads=14     |
+| MobileBERT, CLS      | 96.43        | 49.9843 / -         | 46.2151  | 84.4232   |  -                | 51.9885     | 51.4533           | -                      | 15.3492 / 12.4416        | threads=14     |
+| BERT-base, CNN       | 97.57        | 12.1273 / -         | -        | -         |  -                | 34.7878     | 30.5454           | -                      | -                        | threads=14     |
+| BERT-base, CLS       | 97.43        | 12.7714 / -         | 46.4263  | 49.4747   |  -                | 30.7979     | 24.5353           | -                      | 16.9756                  | threads=14     |
+| BERT-base, CLS       | 97.00        | 9.2660  / -         | 31.5400  | 33.4623   |  -                | 16.7419     | 13.5703           | -                      | 11.7487                  | del 8,9,19,11, threads=14 |
+| BERT-large, CNN      | **98.00**    | 24.277  / -         | -        | -         |  -                | -           | -                 | -                      | -                        |                |
+| BERT-large, CLS      | 97.86        | 23.542  / -         | -        | -         |  -                | -           | -                 | -                      | -                        |                |
 
 ```
 * GPU / CPU : Elapsed time/example(ms), GPU / CPU  [Tesla V100 1 GPU, Intel(R) Xeon(R) Gold 5120 CPU @ 2.20GHz, 2 CPU, 14CORES/1CPU, HyperThreading]
 * ONNX : --enable_ort
 * Dynamic : --enable_dqm
 * Inference : --enable_inference
-* QAT(Quantization Aware Training)/FX : --enable_qat / --enable_qat_fx
+* QAT(Quantization Aware Training)/FX/DiffQ : --enable_qat / --enable_qat_fx / --enable_diffq
 * Inference+Dynamic : --enable_inference --enable_dqm
-* Inference+QAT/FX : --enable_inference --enable_qat / --enable_inference --enable_qat_fx
+* Inference+QAT/FX/DiffQ : --enable_inference --enable_qat / --enable_inference --enable_qat_fx / --enable_inference --enable_diffq
 * Inference+ONNX : --enable_inference --enable_ort / + --quantize_onnx
 * default batch size, learning rate, n_ctx(max_seq_length) : 128, 2e-4, 100
 * default epoch : 3
