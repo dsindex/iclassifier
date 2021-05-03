@@ -9,6 +9,7 @@ import logging
 import torch
 import torch.quantization
 import numpy as np
+from diffq import DiffQuantizer
 
 from tqdm import tqdm
 from model import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
@@ -87,9 +88,15 @@ def load_model(config, checkpoint):
         logger.info("[Convert to quantized model]")
         model = quantize_fx.convert_fx(model)
 
-    model.load_state_dict(checkpoint)
+    if opt.enable_diffq:
+        quantizer = DiffQuantizer(model)
+        config['quantizer'] = quantizer
+        quantizer.restore_quantized_state(checkpoint)
+    else:
+        model.load_state_dict(checkpoint)
+
     model = model.to(opt.device)
-    '''
+    ''' 
     for name, param in model.named_parameters():
         print(name, param.data, param.device, param.requires_grad)
     '''
@@ -470,6 +477,9 @@ def main():
                         help="Set this flag to use the model by quantization aware training.")
     parser.add_argument('--enable_qat_fx', action='store_true',
                         help="Set this flag for quantization aware training using fx graph mode.")
+    # for DiffQ
+    parser.add_argument('--enable_diffq', action='store_true',
+                        help="Set this flag to use diffq(Differentiable Model Compression).")
 
     opt = parser.parse_args()
 

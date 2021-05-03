@@ -12,6 +12,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from accelerate import Accelerator
 from transformers import AdamW, get_linear_schedule_with_warmup
+from diffq import DiffQuantizer
 
 try:
     from torch.utils.tensorboard import SummaryWriter
@@ -72,8 +73,12 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
             loss = criterion(F.log_softmax(output, dim=1), y)
         else:
             loss = criterion(output, y)
+        if opt.enable_diffq:
+            quantizer = config['quantizer']
+            loss = loss  + opt.diffq_penalty * quantizer.model_size()
         if opt.gradient_accumulation_steps > 1:
             loss = loss / opt.gradient_accumulation_steps
+
         # back-propagation - begin
         accelerator.backward(loss)
         if (local_step + 1) % opt.gradient_accumulation_steps == 0:
@@ -234,6 +239,11 @@ def save_model(config, model, valid_loader=None, save_path=None):
             logger.info("[Evaluate quantized model with device=cpu]")
             evaluate(quantized_model, config, valid_loader, eval_device='cpu')
             checkpoint = quantized_model.state_dict()
+        elif opt.enable_diffq:
+            quantizer = config['quantizer']
+            logger.info("true naive model size: {}".format(quantizer.true_model_size()))
+            logger.info("compressed model size: {}".format(quantizer.compressed_model_size()))
+            checkpoint = quantizer.get_quantized_state()
         else:
             checkpoint = model.state_dict()
         torch.save(checkpoint,f)
@@ -389,9 +399,14 @@ def prepare_others(config, model, data_loader, lr=None, weight_decay=None):
     ]
     optimizer = AdamW(optimizer_grouped_parameters, lr=default_lr, eps=opt.adam_epsilon)
 
+    if opt.enable_diffq:
+        quantizer = DiffQuantizer(model)
+        quantizer.setup_optimizer(optimizer)
+        config['quantizer'] = quantizer
+
     if accelerator:
         model, optimizer = accelerator.prepare(model, optimizer)
-
+        
     scheduler = get_linear_schedule_with_warmup(optimizer,
         num_warmup_steps=opt.num_warmup_steps,
         num_training_steps=opt.max_train_steps)
@@ -593,6 +608,10 @@ def get_params():
                         help="Set this flag for quantization aware training.")
     parser.add_argument('--enable_qat_fx', action='store_true',
                         help="Set this flag for quantization aware training using fx graph mode.")
+    # for DiffQ
+    parser.add_argument('--enable_diffq', action='store_true',
+                        help="Set this flag to use diffq(Differentiable Model Compression).")
+    parser.add_argument('--diffq_penalty', default=1e-3, type=float)
 
     opt = parser.parse_args()
     return opt

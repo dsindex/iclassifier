@@ -7,7 +7,7 @@
 ## quantization
 
 - [dynamic quantization](https://pytorch.org/docs/stable/quantization.html#dynamic-quantization)
-  - just add flag `--enable_dqm`
+  - with `--enable_dqm`
 
 - [quantization aware training](https://pytorch.org/docs/stable/quantization.html#quantization-aware-training)
 
@@ -65,6 +65,24 @@
   ** bert (not working at pytorch 1.8.0)
   $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat_fx
   $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat_fx --enable_inference
+  ```
+
+- [diffq](https://github.com/facebookresearch/diffq)
+  - preprocessing
+    - same as above
+
+  - training with diffq
+  ```
+  * bert
+  $ python train.py --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64 --save_path=pytorch-model-diffq.pt --enable_diffq
+
+  ```
+
+  - evaluate, inference
+  ```
+  * bert
+  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-diffq.pt --device=cpu --num_threads=14 --enable_diffq
+  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-diffq.pt --device=cpu --num_threads=14 --enable_diffq --enable_inference
   ```
 
 
