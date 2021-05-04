@@ -612,6 +612,9 @@ def get_params():
                         help="Set this flag for quantization aware training.")
     parser.add_argument('--enable_qat_fx', action='store_true',
                         help="Set this flag for quantization aware training using fx graph mode.")
+    parser.add_argument('--enable_diffq', action='store_true',
+                        help="Set this flag to use diffq(Differentiable Model Compression).")
+    parser.add_argument('--diffq_penalty', default=1e-3, type=float)
 
     opt = parser.parse_args()
     return opt
