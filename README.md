@@ -1089,53 +1089,6 @@ INFO:__main__:[Elapsed Time] : 41405.57098388672ms, 22.681565337128692ms on aver
 <br>
 
 
-
-# TorchServe
-
-- archiving and start torch server
-```
-$ cd torchserve
-$ ./archiver.sh -v -v
-$ ./start-torchserve.sh -v -v
-```
-
-- request 
-```
-* health check
-$ curl http://localhost:16543/ping
-{
-  "status": "Healthy"
-}
-
-* management api
-$ curl http://localhost:16544/models
-{
-  "models": [
-    {
-      "modelName": "electra",
-      "modelUrl": "electra.mar"
-    }
-  ]
-}
-
-* view all inference apis
-$ curl -X OPTIONS http://localhost:16543
-
-* view all management apis
-$ curl -X OPTIONS http://localhost:16544
-
-* classify
-$ curl -X POST http://localhost:16543/predictions/electra --form data='이 영화는 재미가 있다' | jq
-{
-  "text": "이 영화는 재미가 있다",
-  "results": "1"
-}
-```
-
-<br>
-
-
-
 # Citation
 
 ```
