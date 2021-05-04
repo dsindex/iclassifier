@@ -247,6 +247,11 @@ def preprocess_bert(config):
     else:
         from transformers import AutoTokenizer
         tokenizer = AutoTokenizer.from_pretrained(opt.bert_model_name_or_path)
+        if config['emb_class'] == 'gpt': 
+            tokenizer.cls_token = '<s>'
+            tokenizer.sep_token = '</s>'
+            tokenizer.pad_token = '<pad>'
+            tokenizer.unk_token = '<unk>'
 
     # build labels
     path = os.path.join(opt.data_dir, _TRAIN_FILE)

@@ -112,6 +112,12 @@
 - KoBART-base
   - from [KoBART](https://github.com/SKT-AI/KoBART)
 
+#### GPT
+
+- KoGPT2
+  - from [KoGPT2](https://github.com/SKT-AI/KoGPT2)
+
+
 
 ## NMSC data
 
@@ -176,6 +182,7 @@
 | XLM-RoBERTa-large , CLS                   | 91.05        | 25.1067 / -       |            |
 | Funnel-base , CLS                         | **91.51**    | 41.8325 / -       |            |
 | KoBART-base , CLS                         | 89.57        | 18.9681 / -       |            |
+| KoGPT2-v2 , CLS                           | -            | -       / -       |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU
@@ -625,6 +632,8 @@ INFO:__main__:[Elapsed Time] : 1277329.5888900757ms, 25.545897660460298ms on ave
 
 - train
 ```
+* share config-bert-*.json
+
 * enc_class=cnn
 
 $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/koelectra-base-v1-discriminator --data_dir=./data/clova_sentiments
@@ -686,6 +695,8 @@ INFO:__main__:[Elapsed Time] : 713545.1235771179ms, 14.269641169796696ms on aver
 
 - train
 ```
+* share config-bert-*.json
+
 * enc_class=cnn
 
 $ python preprocess.py --config=configs/config-bert-cnn.json --bert_model_name_or_path=./embeddings/kor-electra-base-bpe.v1 --data_dir=./data/clova_sentiments
@@ -771,6 +782,8 @@ INFO:__main__:[Elapsed Time] : 1255374.0434646606ms, 25.106745840540047ms on ave
 
 - train
 ```
+* share config-bert-*.json
+
 * enc_class=cls
 
 $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/funnel-kor-base --data_dir=./data/clova_sentiments
@@ -813,6 +826,31 @@ $ python train.py --config=configs/config-bart-cls.json --bert_output_dir=bert-c
 $ python evaluate.py --config=configs/config-bart-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 INFO:__main__:[Accuracy] : 0.8957, 44781/49997
 INFO:__main__:[Elapsed Time] : 948470.7288742065ms, 18.96814218339219ms on average
+
+```
+
+</p>
+</details>
+
+#### GPT(kogpt2-base-v2)
+ 
+<details><summary><b>enc_class=cnn | cls</b></summary>
+<p>
+
+- train
+```
+
+* enc_class=cls
+
+$ python preprocess.py --config=configs/config-gpt-cls.json --bert_model_name_or_path='skt/kogpt2-base-v2' --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-gpt-cls.json --bert_model_name_or_path='skt/kogpt2-base-v2' --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments
+```
+
+- evaluation
+```
+* enc_class=cls
+
+$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
 ```
 
