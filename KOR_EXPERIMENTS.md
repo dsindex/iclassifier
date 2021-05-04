@@ -200,16 +200,17 @@
 | funnel-kor-base   | **91.36**    |            |
 | XML-RoBERTa       | 89.03        |            |
 | HanBERT           | 90.06        |            |
-| KoBERT            | 89.59        |            |
 | DistilKoBERT      | 88.60        |            |
 | Bert-Multilingual | 87.07        |            |
 | FastText          | 85.50        |            |
 
-- [KoBERT](https://github.com/SKTBrain/KoBERT#naver-sentiment-analysis)
+- [KoBERT](https://github.com/SKTBrain/KoBERT#naver-sentiment-analysis), [KoGPT2](https://github.com/SKT-AI/KoGPT2), [KoBART](https://github.com/SKT-AI/KoBART)
 
 |                   | Accuracy (%) |
 | ----------------- | ------------ |
-| KoBERT            | **90.1**     |
+| KoBERT            | 90.1         |
+| KoGPT2            | **93.3**     |
+| KoBART            | 90.24        |
 
 - [aisolab/nlp_classification](https://github.com/aisolab/nlp_classification)
   - 비교를 위해서, 여기에서는 데이터를 동일하게 맞추고 재실험.
