@@ -532,7 +532,12 @@ class TextBertCNN(BaseModel):
         else:
             # fine-tuning
             bert_outputs = self.bert_model(**params)
-        embedded = bert_outputs.last_hidden_state
+
+        if self.bert_model.config.model_type in ['gpt2']:
+            embedded = bert_outputs.hidden_states[-1]
+        else:
+            embedded = bert_outputs.last_hidden_state
+
         # embedded : [batch_size, seq_size, bert_hidden_size]
         return embedded, bert_outputs
 
@@ -612,6 +617,7 @@ class TextBertCLS(BaseModel):
         else:
             # fine-tuning
             bert_outputs = self.bert_model(**params)
+
         if self.bert_model.config.model_type in ['gpt2']:
             input_ids = x[0]
             lengths = torch.ne(input_ids, self.bert_model.config.pad_token_id).sum(-1) - 1
@@ -621,12 +627,13 @@ class TextBertCLS(BaseModel):
             #   lengths = torch.sum(mask.to(torch.long), dim=1)
             # last token of last layer (before padding area)
             batch_size = input_ids.shape[0]
-            pooled = bert_outputs.last_hidden_state[range(batch_size), lengths] 
+            pooled = bert_outputs.hidden_states[-1][range(batch_size), lengths] 
             # pooled : [batch_size, bert_hidden_size]
         else:
             # first token of last layer == [CLS]
             pooled = bert_outputs.last_hidden_state[:, 0, :]
             # pooled : [batch_size, bert_hidden_size]
+
         embedded = pooled
         return embedded, bert_outputs
 

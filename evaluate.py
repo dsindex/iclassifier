@@ -63,14 +63,14 @@ def load_model(config, checkpoint):
             bert_config = bert_model.config
         else:
             from transformers import AutoTokenizer, AutoConfig, AutoModel
-            bert_config = AutoConfig.from_pretrained(opt.bert_output_dir)
             bert_tokenizer = AutoTokenizer.from_pretrained(opt.bert_output_dir)
-            bert_model = AutoModel.from_config(bert_config)
             if config['emb_class'] == 'gpt': 
                 bert_tokenizer.cls_token = '<s>'
                 bert_tokenizer.sep_token = '</s>'
                 bert_tokenizer.pad_token = '<pad>'
                 bert_tokenizer.unk_token = '<unk>'
+            bert_config = AutoConfig.from_pretrained(opt.bert_output_dir)
+            bert_model = AutoModel.from_config(bert_config)
 
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS

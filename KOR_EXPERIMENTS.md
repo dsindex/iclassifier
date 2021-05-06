@@ -182,7 +182,7 @@
 | XLM-RoBERTa-large , CLS                   | 91.05        | 25.1067 / -       |            |
 | Funnel-base , CLS                         | **91.51**    | 41.8325 / -       |            |
 | KoBART-base , CLS                         | 89.57        | 18.9681 / -       |            |
-| KoGPT2-v2 , CLS                           | -            | -       / -       |            |
+| KoGPT2-v2 , CLS                           | 89.55        | 15.1400 / -       |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU
@@ -817,14 +817,14 @@ $ vi configs/config-bart-cls.json
 * enc_class=cls
 
 $ python preprocess.py --config=configs/config-bart-cls.json --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-bart-cls.json --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-bart-cls.json --save_path=pytorch-model.pt --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments
 ```
 
 - evaluation
 ```
 * enc_class=cls
 
-$ python evaluate.py --config=configs/config-bart-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
+$ python evaluate.py --config=configs/config-bart-cls.json --data_dir=./data/clova_sentiments --model_path=pytorch-model.pt
 INFO:__main__:[Accuracy] : 0.8957, 44781/49997
 INFO:__main__:[Elapsed Time] : 948470.7288742065ms, 18.96814218339219ms on average
 
@@ -844,14 +844,16 @@ INFO:__main__:[Elapsed Time] : 948470.7288742065ms, 18.96814218339219ms on avera
 * enc_class=cls
 
 $ python preprocess.py --config=configs/config-gpt-cls.json --bert_model_name_or_path='skt/kogpt2-base-v2' --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-gpt-cls.json --bert_model_name_or_path='skt/kogpt2-base-v2' --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-gpt-cls.json --bert_model_name_or_path='skt/kogpt2-base-v2' --save_path=pytorch-model.pt --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments
 ```
 
 - evaluation
 ```
 * enc_class=cls
 
-$ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
+$ python evaluate.py --config=configs/config-gpt-cls.json --data_dir=./data/clova_sentiments --bert_output_dir='skt/kogpt2-base-v2' --model_path=pytorch-model.pt
+INFO:__main__:[Accuracy] : 0.8955, 44773/49997
+INFO:__main__:[Elapsed Time] : 757093.9977169037ms, 15.14007727788328ms on average
 
 ```
 
