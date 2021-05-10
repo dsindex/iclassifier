@@ -161,6 +161,21 @@ def check_onnx(config):
     onnx.checker.check_model(onnx_model)
     print(onnx.helper.printable_graph(onnx_model.graph))
 
+def build_onnx_input(config, ort_session, x):
+    opt = config['opt']
+    x = to_numpy(x)
+    if config['emb_class'] == 'glove':
+        ort_inputs = {ort_session.get_inputs()[0].name: x}
+    else:
+        if config['emb_class'] in ['roberta', 'distilbert', 'bart']:
+            ort_inputs = {ort_session.get_inputs()[0].name: x[0],
+                          ort_session.get_inputs()[1].name: x[1]}
+        else:
+            ort_inputs = {ort_session.get_inputs()[0].name: x[0],
+                          ort_session.get_inputs()[1].name: x[1],
+                          ort_session.get_inputs()[2].name: x[2]}
+    return ort_inputs
+
 # ---------------------------------------------------------------------------- #
 # Evaluation
 # ---------------------------------------------------------------------------- #
@@ -264,17 +279,7 @@ def evaluate(opt):
             y = to_device(y, opt.device)
 
             if opt.enable_ort:
-                x = to_numpy(x)
-                if config['emb_class'] == 'glove':
-                    ort_inputs = {ort_session.get_inputs()[0].name: x}
-                else:
-                    if config['emb_class'] in ['roberta', 'distilbert', 'bart']:
-                        ort_inputs = {ort_session.get_inputs()[0].name: x[0],
-                                      ort_session.get_inputs()[1].name: x[1]}
-                    else:
-                        ort_inputs = {ort_session.get_inputs()[0].name: x[0],
-                                      ort_session.get_inputs()[1].name: x[1],
-                                      ort_session.get_inputs()[2].name: x[2]}
+                ort_inputs = build_onnx_input(config, ort_session, x)
                 logits = ort_session.run(None, ort_inputs)[0]
                 logits = to_device(torch.tensor(logits), opt.device)
             else:
@@ -416,17 +421,7 @@ def inference(opt):
             x = to_device(x, opt.device)
 
             if opt.enable_ort:
-                x = to_numpy(x)
-                if config['emb_class'] == 'glove':
-                    ort_inputs = {ort_session.get_inputs()[0].name: x}
-                else:
-                    if config['emb_class'] in ['roberta', 'distilbert', 'bart']:
-                        ort_inputs = {ort_session.get_inputs()[0].name: x[0],
-                                      ort_session.get_inputs()[1].name: x[1]}
-                    else:
-                        ort_inputs = {ort_session.get_inputs()[0].name: x[0],
-                                      ort_session.get_inputs()[1].name: x[1],
-                                      ort_session.get_inputs()[2].name: x[2]}
+                ort_inputs = build_onnx_input(config, ort_session, x)
                 logits = ort_session.run(None, ort_inputs)[0]
                 logits = to_device(torch.tensor(logits), opt.device)
             else:
