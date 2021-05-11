@@ -1,7 +1,7 @@
 {
     "emb_class": "gpt",
     "enc_class": "cnn",
-    "n_ctx": 100,
+    "n_ctx": 64,
     "num_filters": 256,
     "kernel_sizes": [2,3,4,5,6],
     "fc_hidden_size": 256,

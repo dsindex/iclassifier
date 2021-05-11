@@ -840,11 +840,10 @@ INFO:__main__:[Elapsed Time] : 948470.7288742065ms, 18.96814218339219ms on avera
 
 - train
 ```
-
-* enc_class=cls
+# n_ctx(max_seq_length) : 64
 
 $ python preprocess.py --config=configs/config-gpt-cls.json --bert_model_name_or_path='skt/kogpt2-base-v2' --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-gpt-cls.json --bert_model_name_or_path='skt/kogpt2-base-v2' --save_path=pytorch-model.pt --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-gpt-cls.json --bert_model_name_or_path='skt/kogpt2-base-v2' --save_path=pytorch-model.pt --lr=5e-5 --epoch=30 --batch_size=128 --warmup_epoch=1 --data_dir=./data/clova_sentiments
 ```
 
 - evaluation
@@ -852,6 +851,10 @@ $ python train.py --config=configs/config-gpt-cls.json --bert_model_name_or_path
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-gpt-cls.json --data_dir=./data/clova_sentiments --bert_output_dir='skt/kogpt2-base-v2' --model_path=pytorch-model.pt
+
+
+
+** n_ctx: 100, lr: 1e-5, batch_size: 64
 INFO:__main__:[Accuracy] : 0.8955, 44773/49997
 INFO:__main__:[Elapsed Time] : 757093.9977169037ms, 15.14007727788328ms on average
 
