@@ -321,6 +321,7 @@ INFO:__main__:[Elapsed Time] : 35100.63934326172ms, 49.98437324818624ms on avera
 | DistilFromBERT, BERT-small, CLS         | 90.33        | 6.0072  / -       |                          | fastformers, augmented, n_iter=20, from large |
 | DistilFromBERT, BERT-small, CLS         | 91.16        | 6.2050  / -       |                          | fastformers, augmented, n_iter=10, from base  |
 | DistilFromBERT, BERT-small, CLS         | 91.27        | 6.5702  / -       |                          | fastformers, augmented, n_iter=10, from base, meta pseudo labels |
+| DistilFromELECTRA, BERT-small, CLS      | 89.73        | 7.5992  / -       |                          | fastformers, from large           |
 | DistilFromRoBERTa, GloVe, CNN           | 86.55        | 1.8483  / -       |                          | augmented, from large             |
 | DistilFromRoBERTa, GloVe, DenseNet-CNN  | 88.80        | 3.9580  / -       |                          | augmented, from large             |
 | DistilFromRoBERTa, GloVe, DenseNet-DSA  | 88.25        | 8.5627  / -       |                          | augmented, from large             |

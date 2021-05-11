@@ -19,6 +19,11 @@ INFO:__main__:[Elapsed Time] : 27753.907442092896ms, 15.191703183310372ms on ave
 INFO:__main__:[Accuracy] : 0.9423,  1716/ 1821
 INFO:__main__:[Elapsed Time] : 44632.673501968384ms, 24.440080385941727ms on average
 
+* electra-large-discriminator
+
+INFO:__main__:[Accuracy] : 0.9566,  1742/ 1821
+INFO:__main__:[Elapsed Time] : 56542.107343673706ms, 30.926025699783157ms on average
+
 * bert-base-uncased, --data_dir=data/snips
 
 INFO:__main__:[Accuracy] : 0.9743,   682/  700
@@ -85,6 +90,11 @@ INFO:__main__:[Elapsed Time] : 11377.799987792969ms, 6.205023776043903ms on aver
 
 INFO:__main__:[Accuracy] : 0.9033,  1645/ 1821
 INFO:__main__:[Elapsed Time] : 11032.879114151001ms, 6.007225172860282ms on average
+
+
+* from electra-large-discriminator
+INFO:__main__:[Accuracy] : 0.8973,  1634/ 1821
+INFO:__main__:[Elapsed Time] : 13943.261623382568ms, 7.599266282804719ms on average
 
 
 * from bert-base-uncased, --data-dir=data/snips
