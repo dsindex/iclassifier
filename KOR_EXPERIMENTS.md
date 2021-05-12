@@ -852,7 +852,8 @@ $ python train.py --config=configs/config-gpt-cls.json --bert_model_name_or_path
 
 $ python evaluate.py --config=configs/config-gpt-cls.json --data_dir=./data/clova_sentiments --bert_output_dir='skt/kogpt2-base-v2' --model_path=pytorch-model.pt
 
-
+INFO:__main__:[Accuracy] : 0.8848, 44239/49997
+INFO:__main__:[Elapsed Time] : 831333.7738513947ms, 16.625489580296488ms on average
 
 ** n_ctx: 100, lr: 1e-5, batch_size: 64
 INFO:__main__:[Accuracy] : 0.8955, 44773/49997

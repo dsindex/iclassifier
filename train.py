@@ -392,7 +392,10 @@ def prepare_others(config, model, data_loader, lr=None, weight_decay=None):
     else:
         opt.epoch = math.ceil(opt.max_train_steps / num_update_steps_per_epoch)
     if opt.num_warmup_steps is None: 
-        opt.num_warmup_steps = num_update_steps_per_epoch * opt.warmup_epoch
+        if opt.warmup_ratio:
+            opt.num_warmup_steps = opt.max_train_steps * opt.warmup_epoch
+        if opt.warmup_epoch:
+            opt.num_warmup_steps = num_update_steps_per_epoch * opt.warmup_epoch
 
     logger.info(f"(num_update_steps_per_epoch, max_train_steps, num_warmup_steps): ({num_update_steps_per_epoch}, {opt.max_train_steps}, {opt.num_warmup_steps})")
 
@@ -574,7 +577,8 @@ def get_params():
     parser.add_argument('--eval_and_save_steps', type=int, default=500, help="Save checkpoint every X updates steps.")
     parser.add_argument('--lr', type=float, default=2e-4)
     parser.add_argument('--num_warmup_steps', type=int, default=None)
-    parser.add_argument('--warmup_epoch', type=int, default=0,  help="Number of warmup epoch")
+    parser.add_argument('--warmup_epoch', type=int, default=0, help="Number of warmup epoch")
+    parser.add_argument('--warmup_ratio', type=float, default=0.0, help="Ratio for warmup over total number of training steps.")
     parser.add_argument('--patience', default=7, type=int, help="Max number of epoch to be patient for early stopping.")
     parser.add_argument('--save_path', type=str, default='pytorch-model.pt')
     parser.add_argument('--restore_path', type=str, default='')
