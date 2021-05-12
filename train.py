@@ -407,8 +407,7 @@ def prepare_others(config, model, data_loader, lr=None, weight_decay=None):
     ]
     optimizer = AdamW(optimizer_grouped_parameters,
                       lr=default_lr,
-                      eps=opt.adam_epsilon,
-                      correct_bias=False)
+                      eps=opt.adam_epsilon)
 
     if opt.enable_diffq:
         quantizer = DiffQuantizer(model)
