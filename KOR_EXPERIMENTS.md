@@ -182,7 +182,7 @@
 | XLM-RoBERTa-large , CLS                   | 91.05        | 25.1067 / -       |            |
 | Funnel-base , CLS                         | **91.51**    | 41.8325 / -       |            |
 | KoBART-base , CLS                         | 89.57        | 18.9681 / -       |            |
-| KoGPT2-v2 , CLS                           | -            | -       / -       |            |
+| KoGPT2-v2 , CLS                           | 89.41        | 13.4023 / -       |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU
@@ -850,6 +850,8 @@ $ python train.py --config=configs/config-gpt-cls.json --bert_model_name_or_path
 * enc_class=cls
 
 $ python evaluate.py --config=configs/config-gpt-cls.json --data_dir=./data/clova_sentiments --bert_output_dir='skt/kogpt2-base-v2' --model_path=pytorch-model.pt
+INFO:__main__:[Accuracy] : 0.8941, 44700/49997
+INFO:__main__:[Elapsed Time] : 670176.3834953308ms, 13.402398638424277ms on average
 
 ```
 
