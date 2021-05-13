@@ -45,7 +45,7 @@ def distill(
         best_eval_metric=None,
         mpl_loader=None):
 
-    args = teacher_config['opt']
+    args = teacher_config['args']
 
     teacher_layer_num = teacher_model.bert_model.config.num_hidden_layers
     student_layer_num = student_model.bert_model.config.num_hidden_layers
@@ -307,7 +307,7 @@ def sort_by_importance(weight, bias, importance, num_instances, stride):
 
 def prune_rewire(config, model, eval_loader, use_tqdm=True):
 
-    args = config['opt']
+    args = config['args']
     bert_model = model.bert_model
 
     # get the model ffn weights and biases
@@ -451,7 +451,7 @@ def prune_rewire(config, model, eval_loader, use_tqdm=True):
     bert_model.config.num_attention_heads = min([num_heads, args.target_num_heads])
     bert_model.config.intermediate_size = layers._modules['0'].intermediate.dense.weight.size(0)
 
-def train(opt):
+def train(args):
     if torch.cuda.is_available():
         logger.info("%s", torch.cuda.get_device_name(0))
 
@@ -459,13 +459,13 @@ def train(opt):
     torch.autograd.set_detect_anomaly(True)
 
     # prepare teacher config
-    teacher_config = load_config(opt, config_path=opt.teacher_config)
-    teacher_config['opt'] = opt
+    teacher_config = load_config(args, config_path=args.teacher_config)
+    teacher_config['args'] = args
     logger.info("[teacher config] :\n%s", teacher_config)
 
     # prepare student config
-    student_config = load_config(opt, config_path=opt.config)
-    student_config['opt'] = opt
+    student_config = load_config(args, config_path=args.config)
+    student_config['args'] = args
     logger.info("[student config] :\n%s", student_config)
          
     # set path
@@ -476,23 +476,23 @@ def train(opt):
  
     # prepare labeled dataset for meta pseudo labels
     mpl_loader = None
-    if opt.mpl_data_path:
-        mpl_loader, _ = prepare_datasets(teacher_config, train_path=opt.mpl_data_path)
+    if args.mpl_data_path:
+        mpl_loader, _ = prepare_datasets(teacher_config, train_path=args.mpl_data_path)
 
     # -------------------------------------------------------------------------------------------------------
     # distillation
     # -------------------------------------------------------------------------------------------------------
-    if opt.do_distill:
+    if args.do_distill:
         # prepare and load teacher model
-        teacher_model = prepare_model(teacher_config, bert_model_name_or_path=opt.teacher_bert_model_name_or_path)
-        teacher_checkpoint = load_checkpoint(opt.teacher_model_path, device=opt.device)
+        teacher_model = prepare_model(teacher_config, bert_model_name_or_path=args.teacher_bert_model_name_or_path)
+        teacher_checkpoint = load_checkpoint(args.teacher_model_path, device=args.device)
         teacher_model.load_state_dict(teacher_checkpoint)
-        teacher_model = teacher_model.to(opt.device)
+        teacher_model = teacher_model.to(args.device)
         logger.info("[prepare teacher model and loading done]")
  
         # prepare student model
-        student_model = prepare_model(student_config, bert_model_name_or_path=opt.bert_model_name_or_path)
-        student_model = student_model.to(opt.device)
+        student_model = prepare_model(student_config, bert_model_name_or_path=args.bert_model_name_or_path)
+        student_model = student_model.to(args.device)
         logger.info("[prepare student model done]")
 
         best_eval_metric=None
@@ -511,16 +511,16 @@ def train(opt):
     # -------------------------------------------------------------------------------------------------------
     # structured pruning
     # -------------------------------------------------------------------------------------------------------
-    if opt.do_prune:
+    if args.do_prune:
         # restore model from '--save_path', '--bert_output_dir'
-        model = prepare_model(student_config, bert_model_name_or_path=opt.bert_output_dir)
-        checkpoint = load_checkpoint(opt.save_path, device=opt.device)
+        model = prepare_model(student_config, bert_model_name_or_path=args.bert_output_dir)
+        checkpoint = load_checkpoint(args.save_path, device=args.device)
         model.load_state_dict(checkpoint)
-        model = model.to(opt.device)
-        logger.info("[Restore best student model] : {}, {}".format(opt.bert_output_dir, opt.save_path))
+        model = model.to(args.device)
+        logger.info("[Restore best student model] : {}, {}".format(args.bert_output_dir, args.save_path))
 
         eval_loss = eval_acc = 0
-        eval_loss, eval_acc = evaluate(model, student_config, valid_loader, eval_device=opt.device)
+        eval_loss, eval_acc = evaluate(model, student_config, valid_loader, eval_device=args.device)
         logs = {}
         logs['eval_loss'] = eval_loss
         logs['eval_acc'] = eval_acc
@@ -530,10 +530,10 @@ def train(opt):
         prune_rewire(student_config, model, valid_loader, use_tqdm=True)
 
         # save pruned model to '--save_path_pruned', '--bert_output_dir_pruned'
-        save_model(student_config, model, save_path=opt.save_path_pruned)
-        model.bert_tokenizer.save_pretrained(opt.bert_output_dir_pruned)
-        model.bert_model.save_pretrained(opt.bert_output_dir_pruned)
-        logger.info("[Pruned model saved] : {}, {}".format(opt.save_path_pruned, opt.bert_output_dir_pruned))
+        save_model(student_config, model, save_path=args.save_path_pruned)
+        model.bert_tokenizer.save_pretrained(args.bert_output_dir_pruned)
+        model.bert_model.save_pretrained(args.bert_output_dir_pruned)
+        logger.info("[Pruned model saved] : {}, {}".format(args.save_path_pruned, args.bert_output_dir_pruned))
     # -------------------------------------------------------------------------------------------------------
 
 
@@ -616,13 +616,13 @@ def get_params():
                         help="Set this flag to use diffq(Differentiable Model Compression).")
     parser.add_argument('--diffq_penalty', default=1e-3, type=float)
 
-    opt = parser.parse_args()
-    return opt
+    args = parser.parse_args()
+    return args
 
 def main():
-    opt = get_params()
+    args = get_params()
 
-    train(opt)
+    train(args)
    
 if __name__ == '__main__':
     main()

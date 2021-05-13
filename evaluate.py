@@ -22,36 +22,36 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def set_path(config):
-    opt = config['opt']
+    args = config['args']
     if config['emb_class'] == 'glove':
-        opt.data_path = os.path.join(opt.data_dir, 'test.txt.ids')
+        args.data_path = os.path.join(args.data_dir, 'test.txt.ids')
     else:
-        if opt.augmented:
-            opt.data_path = os.path.join(opt.data_dir, 'augmented.raw.fs')
+        if args.augmented:
+            args.data_path = os.path.join(args.data_dir, 'augmented.raw.fs')
         else:
-            opt.data_path = os.path.join(opt.data_dir, 'test.txt.fs')
-    opt.embedding_path = os.path.join(opt.data_dir, 'embedding.npy')
-    opt.label_path = os.path.join(opt.data_dir, 'label.txt')
-    if opt.augmented:
-        opt.test_path = os.path.join(opt.data_dir, 'augmented.raw')
+            args.data_path = os.path.join(args.data_dir, 'test.txt.fs')
+    args.embedding_path = os.path.join(args.data_dir, 'embedding.npy')
+    args.label_path = os.path.join(args.data_dir, 'label.txt')
+    if args.augmented:
+        args.test_path = os.path.join(args.data_dir, 'augmented.raw')
     else:
-        opt.test_path = os.path.join(opt.data_dir, 'test.txt')
-    opt.vocab_path = os.path.join(opt.data_dir, 'vocab.txt')
+        args.test_path = os.path.join(args.data_dir, 'test.txt')
+    args.vocab_path = os.path.join(args.data_dir, 'vocab.txt')
 
 def load_model(config, checkpoint):
-    opt = config['opt']
-    labels = load_label(opt.label_path)
+    args = config['args']
+    labels = load_label(args.label_path)
     label_size = len(labels)
     config['labels'] = labels
     if config['emb_class'] == 'glove':
         if config['enc_class'] == 'gnb':
-            model = TextGloveGNB(config, opt.embedding_path, label_size)
+            model = TextGloveGNB(config, args.embedding_path, label_size)
         if config['enc_class'] == 'cnn':
-            model = TextGloveCNN(config, opt.embedding_path, label_size, emb_non_trainable=True)
+            model = TextGloveCNN(config, args.embedding_path, label_size, emb_non_trainable=True)
         if config['enc_class'] == 'densenet-cnn':
-            model = TextGloveDensenetCNN(config, opt.embedding_path, label_size, emb_non_trainable=True)
+            model = TextGloveDensenetCNN(config, args.embedding_path, label_size, emb_non_trainable=True)
         if config['enc_class'] == 'densenet-dsa':
-            model = TextGloveDensenetDSA(config, opt.embedding_path, label_size, emb_non_trainable=True)
+            model = TextGloveDensenetDSA(config, args.embedding_path, label_size, emb_non_trainable=True)
     else:
         if config['emb_class'] == 'bart' and config['use_kobart']:
             from transformers import BartModel
@@ -63,20 +63,20 @@ def load_model(config, checkpoint):
             bert_model = BartModel.from_pretrained(get_pytorch_kobart_model())
             bert_config = bert_model.config
         else:
-            bert_tokenizer = AutoTokenizer.from_pretrained(opt.bert_output_dir)
+            bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir)
             if config['emb_class'] == 'gpt': 
                 bert_tokenizer.cls_token = '<s>'
                 bert_tokenizer.sep_token = '</s>'
                 bert_tokenizer.pad_token = '<pad>'
                 bert_tokenizer.unk_token = '<unk>'
-            bert_config = AutoConfig.from_pretrained(opt.bert_output_dir)
+            bert_config = AutoConfig.from_pretrained(args.bert_output_dir)
             bert_model = AutoModel.from_config(bert_config)
 
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, label_size)
-    if opt.enable_qat:
-        assert opt.device == 'cpu'
+    if args.enable_qat:
+        assert args.device == 'cpu'
         model.qconfig = torch.quantization.get_default_qat_qconfig('fbgemm')
         '''
         # fuse if applicable
@@ -87,21 +87,21 @@ def load_model(config, checkpoint):
         model.to('cpu')
         logger.info("[Convert to quantized model with device=cpu]")
         model = torch.quantization.convert(model)
-    if opt.enable_qat_fx:
+    if args.enable_qat_fx:
         import torch.quantization.quantize_fx as quantize_fx
         qconfig_dict = {"": torch.quantization.get_default_qat_qconfig('fbgemm')}
         model = quantize_fx.prepare_qat_fx(model, qconfig_dict)
         logger.info("[Convert to quantized model]")
         model = quantize_fx.convert_fx(model)
 
-    if opt.enable_diffq:
+    if args.enable_diffq:
         quantizer = DiffQuantizer(model)
         config['quantizer'] = quantizer
         quantizer.restore_quantized_state(checkpoint)
     else:
         model.load_state_dict(checkpoint)
 
-    model = model.to(opt.device)
+    model = model.to(args.device)
     ''' 
     for name, param in model.named_parameters():
         print(name, param.data, param.device, param.requires_grad)
@@ -111,7 +111,7 @@ def load_model(config, checkpoint):
     return model
 
 def convert_onnx(config, torch_model, x):
-    opt = config['opt']
+    args = config['args']
     import torch.onnx
 
     if config['emb_class'] == 'glove':
@@ -130,9 +130,9 @@ def convert_onnx(config, torch_model, x):
     with torch.no_grad():
         torch.onnx.export(torch_model,                  # model being run
                           x,                            # model input (or a tuple for multiple inputs)
-                          opt.onnx_path,                # where to save the model (can be a file or file-like object)
+                          args.onnx_path,                # where to save the model (can be a file or file-like object)
                           export_params=True,           # store the trained parameter weights inside the model file
-                          opset_version=opt.onnx_opset, # the ONNX version to export the model to
+                          opset_version=args.onnx_opset, # the ONNX version to export the model to
                           do_constant_folding=True,     # whether to execute constant folding for optimization
                           verbose=True,
                           input_names=input_names,      # the model's input names
@@ -155,14 +155,14 @@ def quantize_onnx(onnx_path, quantized_onnx_path):
     onnx.save_model(quantized_model, quantized_onnx_path)
 
 def check_onnx(config):
-    opt = config['opt']
+    args = config['args']
     import onnx
-    onnx_model = onnx.load(opt.onnx_path)
+    onnx_model = onnx.load(args.onnx_path)
     onnx.checker.check_model(onnx_model)
     print(onnx.helper.printable_graph(onnx_model.graph))
 
 def build_onnx_input(config, ort_session, x):
-    opt = config['opt']
+    args = config['args']
     x = to_numpy(x)
     if config['emb_class'] == 'glove':
         ort_inputs = {ort_session.get_inputs()[0].name: x}
@@ -180,10 +180,10 @@ def build_onnx_input(config, ort_session, x):
 # Evaluation
 # ---------------------------------------------------------------------------- #
 
-def write_prediction(opt, preds, labels):
+def write_prediction(args, preds, labels):
     # load test data
-    tot_num_line = sum(1 for _ in open(opt.test_path, 'r')) 
-    with open(opt.test_path, 'r', encoding='utf-8') as f:
+    tot_num_line = sum(1 for _ in open(args.test_path, 'r')) 
+    with open(args.test_path, 'r', encoding='utf-8') as f:
         data = []
         for idx, line in enumerate(tqdm(f, total=tot_num_line)):
             line = line.strip()
@@ -191,11 +191,11 @@ def write_prediction(opt, preds, labels):
             data.append((sent, label))
     # write prediction
     try:
-        pred_path = opt.test_path + '.pred'
+        pred_path = args.test_path + '.pred'
         with open(pred_path, 'w', encoding='utf-8') as f:
             for entry, pred in zip(data, preds):
                 sent, label = entry
-                if opt.augmented:
+                if args.augmented:
                     # print logits as label
                     logits = ['%.6f' % p for p in pred]
                     f.write(sent + '\t' + ' '.join(logits) + '\n')
@@ -207,19 +207,19 @@ def write_prediction(opt, preds, labels):
         logger.warn(str(e))
 
 def prepare_datasets(config):
-    opt = config['opt']
+    args = config['args']
     if config['emb_class'] == 'glove':
         DatasetClass = GloveDataset
     else:
         DatasetClass = BertDataset
-    test_loader = prepare_dataset(config, opt.data_path, DatasetClass, sampling=False, num_workers=1)
+    test_loader = prepare_dataset(config, args.data_path, DatasetClass, sampling=False, num_workers=1)
     return test_loader
 
-def evaluate(opt):
+def evaluate(args):
     # set config
-    config = load_config(opt)
-    if opt.num_threads > 0: torch.set_num_threads(opt.num_threads)
-    config['opt'] = opt
+    config = load_config(args)
+    if args.num_threads > 0: torch.set_num_threads(args.num_threads)
+    config['args'] = args
     logger.info("%s", config)
 
     # set path
@@ -229,36 +229,36 @@ def evaluate(opt):
     test_loader = prepare_datasets(config)
  
     # load pytorch model checkpoint
-    checkpoint = load_checkpoint(opt.model_path, device=opt.device)
+    checkpoint = load_checkpoint(args.model_path, device=args.device)
 
     # prepare model and load parameters
     model = load_model(config, checkpoint)
     model.eval()
 
     # convert to onnx
-    if opt.convert_onnx:
+    if args.convert_onnx:
         (x, y) = next(iter(test_loader))
-        x = to_device(x, opt.device)
-        y = to_device(y, opt.device)
+        x = to_device(x, args.device)
+        y = to_device(y, args.device)
         convert_onnx(config, model, x)
         check_onnx(config)
-        logger.info("[ONNX model saved] :{}".format(opt.onnx_path))
+        logger.info("[ONNX model saved] :{}".format(args.onnx_path))
         # quantize onnx
-        if opt.quantize_onnx:
-            quantize_onnx(opt.onnx_path, opt.quantized_onnx_path)
-            logger.info("[Quantized ONNX model saved] : {}".format(opt.quantized_onnx_path))
+        if args.quantize_onnx:
+            quantize_onnx(args.onnx_path, args.quantized_onnx_path)
+            logger.info("[Quantized ONNX model saved] : {}".format(args.quantized_onnx_path))
         return
 
     # load onnx model for using onnxruntime
-    if opt.enable_ort:
+    if args.enable_ort:
         import onnxruntime as ort
         sess_options = ort.SessionOptions()
-        sess_options.inter_op_num_threads = opt.num_threads
-        sess_options.intra_op_num_threads = opt.num_threads
-        ort_session = ort.InferenceSession(opt.onnx_path, sess_options=sess_options)
+        sess_options.inter_op_num_threads = args.num_threads
+        sess_options.intra_op_num_threads = args.num_threads
+        ort_session = ort.InferenceSession(args.onnx_path, sess_options=sess_options)
 
     # enable to use dynamic quantized model (pytorch>=1.3.0)
-    if opt.enable_dqm and opt.device == 'cpu':
+    if args.enable_dqm and args.device == 'cpu':
         model = torch.quantization.quantize_dynamic(model, {torch.nn.Linear}, dtype=torch.qint8)
         print(model)
 
@@ -275,13 +275,13 @@ def evaluate(opt):
     with torch.no_grad():
         for i, (x,y) in enumerate(tqdm(test_loader, total=n_batches)):
             start_time = time.time()
-            x = to_device(x, opt.device)
-            y = to_device(y, opt.device)
+            x = to_device(x, args.device)
+            y = to_device(y, args.device)
 
-            if opt.enable_ort:
+            if args.enable_ort:
                 ort_inputs = build_onnx_input(config, ort_session, x)
                 logits = ort_session.run(None, ort_inputs)[0]
-                logits = to_device(torch.tensor(logits), opt.device)
+                logits = to_device(torch.tensor(logits), args.device)
             else:
                 logits = model(x)
 
@@ -298,7 +298,7 @@ def evaluate(opt):
             if i == 0: # first one may take longer time, so ignore in computing duration.
                 first_time = float((time.time()-first_time)*1000)
                 first_examples = cur_examples
-            if opt.num_examples != 0 and total_examples >= opt.num_examples:
+            if args.num_examples != 0 and total_examples >= args.num_examples:
                 logger.info("[Stop Evaluation] : up to the {} examples".format(total_examples))
                 break
             duration_time = float((time.time()-start_time)*1000)
@@ -321,7 +321,7 @@ def evaluate(opt):
     whole_time = float((time.time()-whole_st_time)*1000)
     avg_time = (whole_time - first_time) / (total_examples - first_examples)
     # write predictions to file
-    write_prediction(opt, preds, labels)
+    write_prediction(args, preds, labels)
     logger.info("[Accuracy] : {:.4f}, {:5d}/{:5d}".format(acc, correct, total_examples))
     logger.info("[Elapsed Time] : {}ms, {}ms on average".format(whole_time, avg_time))
     logger.info("[Elapsed Time(total_duration_time, average)] : {}ms, {}ms".format(total_duration_time, total_duration_time/(total_examples-1)))
@@ -341,9 +341,9 @@ def load_vocab(vocab_path):
         return vocab
 
 def prepare_tokenizer(config, model):
-    opt = config['opt']
+    args = config['args']
     if config['emb_class'] == 'glove':
-        vocab = load_vocab(opt.vocab_path)
+        vocab = load_vocab(args.vocab_path)
         tokenizer = Tokenizer(vocab, config)
     else:
         tokenizer = model.bert_tokenizer
@@ -370,32 +370,32 @@ def encode_text(config, tokenizer, text):
         # batch size: 1
     return x
 
-def inference(opt):
+def inference(args):
     # set config
-    config = load_config(opt)
-    if opt.num_threads > 0: torch.set_num_threads(opt.num_threads)
-    config['opt'] = opt
+    config = load_config(args)
+    if args.num_threads > 0: torch.set_num_threads(args.num_threads)
+    config['args'] = args
 
-    # set path: opt.embedding_path, opt.vocab_path, opt.label_path
+    # set path: args.embedding_path, args.vocab_path, args.label_path
     set_path(config)
  
     # load pytorch model checkpoint
-    checkpoint = load_checkpoint(opt.model_path, device=opt.device)
+    checkpoint = load_checkpoint(args.model_path, device=args.device)
 
     # prepare model and load parameters
     model = load_model(config, checkpoint)
     model.eval()
 
     # load onnx model for using onnxruntime
-    if opt.enable_ort:
+    if args.enable_ort:
         import onnxruntime as ort
         sess_options = ort.SessionOptions()
-        sess_options.inter_op_num_threads = opt.num_threads
-        sess_options.intra_op_num_threads = opt.num_threads
-        ort_session = ort.InferenceSession(opt.onnx_path, sess_options=sess_options)
+        sess_options.inter_op_num_threads = args.num_threads
+        sess_options.intra_op_num_threads = args.num_threads
+        ort_session = ort.InferenceSession(args.onnx_path, sess_options=sess_options)
 
     # enable to use dynamic quantized model (pytorch>=1.3.0)
-    if opt.enable_dqm and opt.device == 'cpu':
+    if args.enable_dqm and args.device == 'cpu':
         model = torch.quantization.quantize_dynamic(model, {torch.nn.Linear}, dtype=torch.qint8)
         print(model)
 
@@ -406,10 +406,10 @@ def inference(opt):
     labels = config['labels']
 
     # inference
-    f_out = open(opt.test_path + '.inference', 'w', encoding='utf-8')
+    f_out = open(args.test_path + '.inference', 'w', encoding='utf-8')
     total_examples = 0
     total_duration_time = 0.0
-    with torch.no_grad(), open(opt.test_path, 'r', encoding='utf-8') as f:
+    with torch.no_grad(), open(args.test_path, 'r', encoding='utf-8') as f:
         for i, line in enumerate(f):
             start_time = time.time()
             sent, label = line.strip().split('\t')
@@ -417,12 +417,12 @@ def inference(opt):
             y_raw = label
             text = ' '.join(x_raw)
             x = encode_text(config, tokenizer, text)
-            x = to_device(x, opt.device)
+            x = to_device(x, args.device)
 
-            if opt.enable_ort:
+            if args.enable_ort:
                 ort_inputs = build_onnx_input(config, ort_session, x)
                 logits = ort_session.run(None, ort_inputs)[0]
-                logits = to_device(torch.tensor(logits), opt.device)
+                logits = to_device(torch.tensor(logits), args.device)
             else:
                 logits = model(x)
 
@@ -431,7 +431,7 @@ def inference(opt):
             predicted_raw = labels[predicted]
             f_out.write(text + '\t' + y_raw + '\t' + predicted_raw + '\n')
             total_examples += 1
-            if opt.num_examples != 0 and total_examples >= opt.num_examples:
+            if args.num_examples != 0 and total_examples >= args.num_examples:
                 logger.info("[Stop Inference] : up to the {} examples".format(total_examples))
                 break
             duration_time = float((time.time()-start_time)*1000)
@@ -481,12 +481,12 @@ def main():
     parser.add_argument('--enable_diffq', action='store_true',
                         help="Set this flag to use diffq(Differentiable Model Compression).")
 
-    opt = parser.parse_args()
+    args = parser.parse_args()
 
-    if opt.enable_inference:
-        inference(opt)
+    if args.enable_inference:
+        inference(args)
     else:
-        evaluate(opt) 
+        evaluate(args) 
 
 if __name__ == '__main__':
     main()

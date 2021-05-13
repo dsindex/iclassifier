@@ -158,50 +158,50 @@ def write_embedding(embedding, output_path):
     np.save(output_path, embedding)
 
 def preprocess_glove(config):
-    opt = config['opt']
+    args = config['args']
 
     # vocab, embedding
     init_vocab = build_init_vocab(config)
-    vocab, embedding = build_vocab_from_embedding(opt.embedding_path, init_vocab, config)
+    vocab, embedding = build_vocab_from_embedding(args.embedding_path, init_vocab, config)
 
     # build data
     tokenizer = Tokenizer(vocab, config)
-    if opt.augmented:
-        path = os.path.join(opt.data_dir, opt.augmented_filename)
+    if args.augmented:
+        path = os.path.join(args.data_dir, args.augmented_filename)
     else:
-        path = os.path.join(opt.data_dir, _TRAIN_FILE)
+        path = os.path.join(args.data_dir, _TRAIN_FILE)
     train_data = build_data(path, tokenizer)
 
-    path = os.path.join(opt.data_dir, _VALID_FILE)
+    path = os.path.join(args.data_dir, _VALID_FILE)
     valid_data = build_data(path, tokenizer)
 
-    path = os.path.join(opt.data_dir, _TEST_FILE)
+    path = os.path.join(args.data_dir, _TEST_FILE)
     test_data = build_data(path, tokenizer)
 
     # build labels
-    path = os.path.join(opt.data_dir, _TRAIN_FILE)
+    path = os.path.join(args.data_dir, _TRAIN_FILE)
     labels = build_label(path)
 
     # write data, vocab, embedding, labels
-    if opt.augmented:
-        path = os.path.join(opt.data_dir, opt.augmented_filename + _SUFFIX)
+    if args.augmented:
+        path = os.path.join(args.data_dir, args.augmented_filename + _SUFFIX)
     else:
-        path = os.path.join(opt.data_dir, _TRAIN_FILE + _SUFFIX)
+        path = os.path.join(args.data_dir, _TRAIN_FILE + _SUFFIX)
     write_data(train_data, path, tokenizer, labels)
 
-    path = os.path.join(opt.data_dir, _VALID_FILE + _SUFFIX)
+    path = os.path.join(args.data_dir, _VALID_FILE + _SUFFIX)
     write_data(valid_data, path, tokenizer, labels)
 
-    path = os.path.join(opt.data_dir, _TEST_FILE + _SUFFIX)
+    path = os.path.join(args.data_dir, _TEST_FILE + _SUFFIX)
     write_data(test_data, path, tokenizer, labels)
 
-    path = os.path.join(opt.data_dir, _VOCAB_FILE)
+    path = os.path.join(args.data_dir, _VOCAB_FILE)
     write_vocab(vocab, path)
 
-    path = os.path.join(opt.data_dir, _EMBED_FILE)
+    path = os.path.join(args.data_dir, _EMBED_FILE)
     write_embedding(embedding, path)
 
-    path = os.path.join(opt.data_dir, _LABEL_FILE)
+    path = os.path.join(args.data_dir, _LABEL_FILE)
     write_label(labels, path)
 
 # ---------------------------------------------------------------------------- #
@@ -209,7 +209,7 @@ def preprocess_glove(config):
 # ---------------------------------------------------------------------------- #
 
 def build_features(input_path, tokenizer, labels, config, mode='train'):
-    opt = config['opt']
+    args = config['args']
 
     logger.info("[Creating features from file] %s", input_path)
     examples = read_examples_from_file(input_path, mode=mode)
@@ -232,7 +232,7 @@ def write_features(features, output_path):
     torch.save(features, output_path)
    
 def preprocess_bert(config):
-    opt = config['opt']
+    args = config['args']
     
     if config['emb_class'] == 'bart' and config['use_kobart']:
         from kobart import get_kobart_tokenizer
@@ -241,7 +241,7 @@ def preprocess_bert(config):
         tokenizer.sep_token = '</s>'
         tokenizer.pad_token = '<pad>'
     else:
-        tokenizer = AutoTokenizer.from_pretrained(opt.bert_model_name_or_path)
+        tokenizer = AutoTokenizer.from_pretrained(args.bert_model_name_or_path)
         if config['emb_class'] == 'gpt': 
             tokenizer.cls_token = '<s>'
             tokenizer.sep_token = '</s>'
@@ -249,37 +249,37 @@ def preprocess_bert(config):
             tokenizer.unk_token = '<unk>'
 
     # build labels
-    path = os.path.join(opt.data_dir, _TRAIN_FILE)
+    path = os.path.join(args.data_dir, _TRAIN_FILE)
     labels = build_label(path)
 
     # build features
-    if opt.augmented:
-        path = os.path.join(opt.data_dir, opt.augmented_filename)
+    if args.augmented:
+        path = os.path.join(args.data_dir, args.augmented_filename)
     else:
-        path = os.path.join(opt.data_dir, _TRAIN_FILE)
+        path = os.path.join(args.data_dir, _TRAIN_FILE)
     train_features = build_features(path, tokenizer, labels, config, mode='train')
 
-    path = os.path.join(opt.data_dir, _VALID_FILE)
+    path = os.path.join(args.data_dir, _VALID_FILE)
     valid_features = build_features(path, tokenizer, labels, config, mode='valid')
 
-    path = os.path.join(opt.data_dir, _TEST_FILE)
+    path = os.path.join(args.data_dir, _TEST_FILE)
     test_features = build_features(path, tokenizer, labels, config, mode='test')
 
     # write features
-    if opt.augmented:
-        path = os.path.join(opt.data_dir, opt.augmented_filename + _FSUFFIX)
+    if args.augmented:
+        path = os.path.join(args.data_dir, args.augmented_filename + _FSUFFIX)
     else:
-        path = os.path.join(opt.data_dir, _TRAIN_FILE + _FSUFFIX)
+        path = os.path.join(args.data_dir, _TRAIN_FILE + _FSUFFIX)
     write_features(train_features, path)
 
-    path = os.path.join(opt.data_dir, _VALID_FILE + _FSUFFIX)
+    path = os.path.join(args.data_dir, _VALID_FILE + _FSUFFIX)
     write_features(valid_features, path)
 
-    path = os.path.join(opt.data_dir, _TEST_FILE + _FSUFFIX)
+    path = os.path.join(args.data_dir, _TEST_FILE + _FSUFFIX)
     write_features(test_features, path)
 
     # write labels
-    path = os.path.join(opt.data_dir, _LABEL_FILE)
+    path = os.path.join(args.data_dir, _LABEL_FILE)
     write_label(labels, path)
 
 def main():
@@ -297,14 +297,14 @@ def main():
     # for BERT, ALBERT
     parser.add_argument('--bert_model_name_or_path', type=str, default='bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased).")
-    opt = parser.parse_args()
+    args = parser.parse_args()
 
     # set seed
-    random.seed(opt.seed)
+    random.seed(args.seed)
 
     # set config
-    config = load_config(opt)
-    config['opt'] = opt
+    config = load_config(args)
+    config['args'] = args
     logger.info("%s", config)
 
     if config['emb_class'] == 'glove':

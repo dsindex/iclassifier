@@ -12,14 +12,14 @@ import random
 class BaseModel(nn.Module):
     def __init__(self, config=None):
         super(BaseModel, self).__init__()
-        if config and hasattr(config['opt'], 'seed'):
-            self.set_seed(config['opt'])
+        if config and hasattr(config['args'], 'seed'):
+            self.set_seed(config['args'])
 
-    def set_seed(self, opt):
-        random.seed(opt.seed)
-        np.random.seed(opt.seed)
-        torch.manual_seed(opt.seed)
-        torch.cuda.manual_seed(opt.seed)
+    def set_seed(self, args):
+        random.seed(args.seed)
+        np.random.seed(args.seed)
+        torch.manual_seed(args.seed)
+        torch.cuda.manual_seed(args.seed)
 
     def load_embedding(self, input_path):
         weights_matrix = np.load(input_path)
@@ -173,7 +173,7 @@ class DSA(nn.Module):
     def __init__(self, config, dsa_num_attentions, dsa_input_dim, dsa_dim, dsa_r=3):
         super(DSA, self).__init__()
         self.config = config
-        self.device = config['opt'].device
+        self.device = config['args'].device
         dsa = []
         for i in range(dsa_num_attentions):
             dsa.append(nn.Linear(dsa_input_dim, dsa_dim))
@@ -237,7 +237,7 @@ class TextGloveGNB(BaseModel):
         super().__init__(config=config)
 
         self.config = config
-        self.device = config['opt'].device
+        self.device = config['args'].device
         seq_size = config['n_ctx']
         token_emb_dim = config['token_emb_dim']
 
@@ -274,11 +274,11 @@ class TextGloveCNN(BaseModel):
         super().__init__(config=config)
 
         self.config = config
-        self.device = config['opt'].device
+        self.device = config['args'].device
         seq_size = config['n_ctx']
         token_emb_dim = config['token_emb_dim']
 
-        self.enable_qat = config['opt'].enable_qat
+        self.enable_qat = config['args'].enable_qat
         if self.enable_qat:
             self.quant = torch.quantization.QuantStub()
             self.dequant = torch.quantization.DeQuantStub()
@@ -342,7 +342,7 @@ class TextGloveDensenetCNN(BaseModel):
         super().__init__(config=config)
 
         self.config = config
-        self.device = config['opt'].device
+        self.device = config['args'].device
         seq_size = config['n_ctx']
         token_emb_dim = config['token_emb_dim']
 
@@ -405,7 +405,7 @@ class TextGloveDensenetDSA(BaseModel):
         super().__init__(config=config)
 
         self.config = config
-        self.device = config['opt'].device
+        self.device = config['args'].device
         seq_size = config['n_ctx']
         token_emb_dim = config['token_emb_dim']
 
@@ -485,7 +485,7 @@ class TextBertCNN(BaseModel):
         super().__init__(config=config)
 
         self.config = config
-        self.device = config['opt'].device
+        self.device = config['args'].device
         seq_size = config['n_ctx']
 
         # bert embedding layer
@@ -568,10 +568,10 @@ class TextBertCLS(BaseModel):
         super().__init__(config=config)
 
         self.config = config
-        self.device = config['opt'].device
+        self.device = config['args'].device
         seq_size = config['n_ctx']
 
-        self.enable_qat = config['opt'].enable_qat
+        self.enable_qat = config['args'].enable_qat
         if self.enable_qat:
             self.quant = torch.quantization.QuantStub()
             self.dequant = torch.quantization.DeQuantStub()
