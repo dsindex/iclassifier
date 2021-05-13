@@ -10,7 +10,6 @@ sklearn
 datasets
 accelerate
 optuna
-nni
 onnx
 onnxruntime
 diffq

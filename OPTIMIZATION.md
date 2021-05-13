@@ -282,42 +282,12 @@ INFO:__main__:[Elapsed Time] : 410282.794713974ms, 8.204527655280355ms on averag
 ** previous best : 87.66
 ```
 
-- nni
-```
-* densenet-cnn
-
-$ python preprocess.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph --embedding_path=embeddings/kor.glove.300k.300d.txt
-
-** modify nni_config.yml
-  command: python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph  --warmup_epoch=0 --weight_decay=0.0 --epoch=18 --hp_search_nni --patience=4
-
-** modify nni_search_space.json
-
-$ nnictl create --config nni_config.yml --port 9599 --foreground
-
-** webUI : http://localhost:9599/oview
-
-$ nnictl trial ls
-
-$ nnictl tensorboard start
-
-
-** train with best params
-
-$ python train.py --config=configs/config-densenet-cnn.json --data_dir=data/clova_sentiments_morph  --warmup_epoch=0 --weight_decay=0.0 --lr=  --batch_size= --seed=
-
-$ python evaluate.py --config=configs/config-densenet-cnn.json --data_dir=./data/clova_sentiments_morph
-
-```
-
-
 
 ## references
 
 - train
   - [apex](https://github.com/NVIDIA/apex)
   - [optuna](https://optuna.readthedocs.io/en/stable/tutorial/001_first.html)
-  - [nni](https://github.com/dsindex/nni_examples)
 
 - inference
   - [(OPTIONAL) EXPORTING A MODEL FROM PYTORCH TO ONNX AND RUNNING IT USING ONNX RUNTIME](https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html)

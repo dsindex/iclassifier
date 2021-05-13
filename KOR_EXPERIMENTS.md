@@ -182,7 +182,7 @@
 | XLM-RoBERTa-large , CLS                   | 91.05        | 25.1067 / -       |            |
 | Funnel-base , CLS                         | **91.51**    | 41.8325 / -       |            |
 | KoBART-base , CLS                         | 89.57        | 18.9681 / -       |            |
-| KoGPT2-v2 , CLS                           | 88.57        | 16.0536 / -       |            |
+| KoGPT2-v2 , CLS                           | -            | -       / -       |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU
@@ -840,10 +840,8 @@ INFO:__main__:[Elapsed Time] : 948470.7288742065ms, 18.96814218339219ms on avera
 
 - train
 ```
-# n_ctx(max_seq_length) : 64
-
 $ python preprocess.py --config=configs/config-gpt-cls.json --bert_model_name_or_path='skt/kogpt2-base-v2' --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-gpt-cls.json --bert_model_name_or_path='skt/kogpt2-base-v2' --save_path=pytorch-model.pt --lr=5e-5 --epoch=10 --batch_size=128 --warmup_ratio=0.1 --seed=7874 --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-gpt-cls.json --bert_model_name_or_path='skt/kogpt2-base-v2' --save_path=pytorch-model.pt --lr=1e-5 --epoch=30 --batch_size=64 --warmup_ratio=0.1 --data_dir=./data/clova_sentiments
 
 ```
 
@@ -853,8 +851,6 @@ $ python train.py --config=configs/config-gpt-cls.json --bert_model_name_or_path
 
 $ python evaluate.py --config=configs/config-gpt-cls.json --data_dir=./data/clova_sentiments --bert_output_dir='skt/kogpt2-base-v2' --model_path=pytorch-model.pt
 
-INFO:__main__:[Accuracy] : 0.8857, 44281/49997
-INFO:__main__:[Elapsed Time] : 802752.3436546326ms, 16.053675255667486ms on average
 ```
 
 </p>

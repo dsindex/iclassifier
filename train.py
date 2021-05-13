@@ -32,7 +32,6 @@ from sklearn.metrics import classification_report, confusion_matrix
 from datasets.metric import temp_seed 
 
 import optuna
-import nni
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -102,7 +101,7 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
                 else: is_best = eval_measure > best_eval_measure
                 if is_best:
                     best_eval_measure = eval_measure
-                    if opt.save_path and not opt.hp_search_optuna and not opt.hp_search_nni:
+                    if opt.save_path and not opt.hp_search_optuna:
                         unwrapped_model = accelerator.unwrap_model(model)
                         save_model(config, unwrapped_model, valid_loader=valid_loader)
                         logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
@@ -134,7 +133,7 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
         else: is_best = eval_measure > best_eval_measure
         if is_best:
             best_eval_measure = eval_measure
-            if opt.save_path and not opt.hp_search_optuna and not opt.hp_search_nni:
+            if opt.save_path and not opt.hp_search_optuna:
                 unwrapped_model = accelerator.unwrap_model(model)
                 save_model(config, unwrapped_model, valid_loader=valid_loader)
                 logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
@@ -477,11 +476,6 @@ def train(opt):
         for epoch_i in range(opt.epoch):
             epoch_st_time = time.time()
             eval_loss, eval_acc, best_eval_measure = train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_measure)
-            # for nni
-            if opt.hp_search_nni:
-                nni.report_intermediate_result(eval_acc)
-                logger.info('[eval_acc] : %g', eval_acc)
-                logger.info('[Pipe send intermediate result done]')
             if opt.measure == 'loss': eval_measure = eval_loss 
             else: eval_measure = eval_acc
             # early stopping
@@ -489,11 +483,6 @@ def train(opt):
             if eval_measure == best_eval_measure:
                 early_stopping.reset(best_eval_measure)
             early_stopping.status()
-        # for nni
-        if opt.hp_search_nni:
-            nni.report_final_result(eval_acc)
-            logger.info('[Final result] : %g', eval_acc)
-            logger.info('[Send final result done]')
 
 # for optuna, global for passing opt 
 gopt = None
@@ -611,9 +600,6 @@ def get_params():
                         help="Set this flag to use hyper-parameter search by Optuna.")
     parser.add_argument('--hp_trials', default=24, type=int,
                         help="Number of trials for hyper-parameter search.")
-    # for NNI
-    parser.add_argument('--hp_search_nni', action='store_true',
-                        help="Set this flag to use hyper-parameter search by NNI.")
     # for QAT
     parser.add_argument('--enable_qat', action='store_true',
                         help="Set this flag for quantization aware training.")
@@ -639,26 +625,6 @@ def main():
         logger.info("[study.best_params] : %s", study.best_params)
         logger.info("[study.best_value] : %s", study.best_value)
         logger.info("[study.best_trial] : %s", study.best_trial) # for all, study.trials
-    elif opt.hp_search_nni:
-        try:
-            # get parameters from tuner
-            tuner_params = nni.get_next_parameter()
-            logger.info('[tuner_params] :')
-            logger.info(tuner_params)
-            logger.info('[opt] :')
-            logger.info(opt)
-            # merge to opt
-            if tuner_params:
-                for k, v in tuner_params.items():
-                    assert hasattr(namespace, k), "Args doesn't have received key: %s" % k
-                    assert type(getattr(namespace, k)) == type(v), "Received key has different type"
-                    setattr(namespace, k, v) 
-            logger.info('opt:')
-            logger.info(opt)
-            train(opt)
-        except Exception as exception:
-            logger.exception(exception)
-            raise
     else:
         train(opt)
    
