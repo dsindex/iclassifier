@@ -10,7 +10,8 @@ import pdb
 import logging
 
 from tqdm import tqdm
-from util import load_config
+from util import load_config, read_examples_from_file, convert_examples_to_features, Tokenizer
+from transformers import AutoTokenizer
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -159,8 +160,6 @@ def write_embedding(embedding, output_path):
 def preprocess_glove(config):
     opt = config['opt']
 
-    from tokenizer import Tokenizer
-
     # vocab, embedding
     init_vocab = build_init_vocab(config)
     vocab, embedding = build_vocab_from_embedding(opt.embedding_path, init_vocab, config)
@@ -212,9 +211,6 @@ def preprocess_glove(config):
 def build_features(input_path, tokenizer, labels, config, mode='train'):
     opt = config['opt']
 
-    from util_bert import read_examples_from_file
-    from util_bert import convert_examples_to_features
-
     logger.info("[Creating features from file] %s", input_path)
     examples = read_examples_from_file(input_path, mode=mode)
     features = convert_examples_to_features(examples, labels, config['n_ctx'], tokenizer,
@@ -245,7 +241,6 @@ def preprocess_bert(config):
         tokenizer.sep_token = '</s>'
         tokenizer.pad_token = '<pad>'
     else:
-        from transformers import AutoTokenizer
         tokenizer = AutoTokenizer.from_pretrained(opt.bert_model_name_or_path)
         if config['emb_class'] == 'gpt': 
             tokenizer.cls_token = '<s>'

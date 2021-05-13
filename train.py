@@ -23,11 +23,10 @@ import random
 import json
 from tqdm import tqdm
 
-from util    import load_checkpoint, load_config, load_label, to_device
+from util    import load_checkpoint, load_config, load_label, to_device, EarlyStopping, LabelSmoothingCrossEntropy
 from model   import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
+from transformers import AutoTokenizer, AutoConfig, AutoModel
 from dataset import prepare_dataset, GloveDataset, BertDataset
-from early_stopping import EarlyStopping
-from label_smoothing import LabelSmoothingCrossEntropy
 from sklearn.metrics import classification_report, confusion_matrix
 from datasets.metric import temp_seed 
 
@@ -339,7 +338,6 @@ def prepare_model(config, bert_model_name_or_path=None):
             bert_tokenizer.pad_token = '<pad>'
             bert_model = BartModel.from_pretrained(get_pytorch_kobart_model())
         else:
-            from transformers import AutoTokenizer, AutoConfig, AutoModel
             bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
             if config['emb_class'] == 'gpt': 
                 bert_tokenizer.cls_token = '<s>'

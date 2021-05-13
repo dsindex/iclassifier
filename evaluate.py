@@ -13,7 +13,8 @@ from diffq import DiffQuantizer
 
 from tqdm import tqdm
 from model import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
-from util import load_checkpoint, load_config, load_label, to_device, to_numpy
+from transformers import AutoTokenizer, AutoConfig, AutoModel
+from util import load_checkpoint, load_config, load_label, to_device, to_numpy, Tokenizer
 from dataset import prepare_dataset, GloveDataset, BertDataset
 from sklearn.metrics import classification_report, confusion_matrix
 
@@ -62,7 +63,6 @@ def load_model(config, checkpoint):
             bert_model = BartModel.from_pretrained(get_pytorch_kobart_model())
             bert_config = bert_model.config
         else:
-            from transformers import AutoTokenizer, AutoConfig, AutoModel
             bert_tokenizer = AutoTokenizer.from_pretrained(opt.bert_output_dir)
             if config['emb_class'] == 'gpt': 
                 bert_tokenizer.cls_token = '<s>'
@@ -341,7 +341,6 @@ def load_vocab(vocab_path):
         return vocab
 
 def prepare_tokenizer(config, model):
-    from tokenizer import Tokenizer
     opt = config['opt']
     if config['emb_class'] == 'glove':
         vocab = load_vocab(opt.vocab_path)
