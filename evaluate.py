@@ -68,7 +68,6 @@ def load_model(config, checkpoint):
                 bert_tokenizer.cls_token = '<s>'
                 bert_tokenizer.sep_token = '</s>'
                 bert_tokenizer.pad_token = '<pad>'
-                bert_tokenizer.unk_token = '<unk>'
             bert_config = AutoConfig.from_pretrained(args.bert_output_dir)
             bert_model = AutoModel.from_config(bert_config)
 

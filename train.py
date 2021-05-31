@@ -343,7 +343,7 @@ def prepare_model(config, bert_model_name_or_path=None):
                 bert_tokenizer.cls_token = '<s>'
                 bert_tokenizer.sep_token = '</s>'
                 bert_tokenizer.pad_token = '<pad>'
-                bert_tokenizer.unk_token = '<unk>'
+          
             bert_model = AutoModel.from_pretrained(model_name_or_path,
                                                    from_tf=bool(".ckpt" in model_name_or_path))
 

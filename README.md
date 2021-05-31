@@ -392,6 +392,7 @@ INFO:__main__:[Elapsed Time] : 35100.63934326172ms, 49.98437324818624ms on avera
 | DeBERTa-v2-xlarge, CLS                  | 96.21        | 54.1388 / -       |                          | epoch=10      |
 | BORT, CLS                               | 77.98        | 6.1346  / -       |                          | epoch=10      |
 | ConvBERT, CLS                           | 77.48        | 22.6815 / -       |                          | epoch=10      |
+| GPT2-XL, CLS                            | -            | -       / -       |                          | epoch=10      |
 
 - [sst2 leaderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -1036,6 +1037,37 @@ $ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --b
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 INFO:__main__:[Accuracy] : 0.7748,  1411/ 1821
 INFO:__main__:[Elapsed Time] : 41405.57098388672ms, 22.681565337128692ms on average
+
+```
+
+</p>
+</details>
+
+
+<details><summary><b>emb_class=gpt, enc_class=cnn | cls</b></summary>
+<p>
+
+- train
+```
+* n_ctx size should be less than 512
+
+* enc_class=cls
+
+$ python preprocess.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl
+
+# 1 node, 2 gpu
+$ export NCCL_DEBUG=INFO
+$ python -m torch.distributed.launch --nnodes 1 --nproc_per_node 2 --use_env --node_rank 0 --master_addr 10.55.32.213 --master_port 10294 train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=4 --eval_and_save_steps=32
+
+!! fail to train !!
+```
+
+- evaluation
+```
+
+* enc_lass=cls
+
+$ python evaluate.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
 ```
 

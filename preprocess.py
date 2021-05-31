@@ -246,7 +246,6 @@ def preprocess_bert(config):
             tokenizer.cls_token = '<s>'
             tokenizer.sep_token = '</s>'
             tokenizer.pad_token = '<pad>'
-            tokenizer.unk_token = '<unk>'
 
     # build labels
     path = os.path.join(args.data_dir, _TRAIN_FILE)

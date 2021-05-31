@@ -618,11 +618,9 @@ class TextBertCLS(BaseModel):
 
         if self.bert_model.config.model_type in ['gpt2']:
             input_ids = x[0]
-            lengths = torch.ne(input_ids, self.bert_model.config.pad_token_id).sum(-1) - 1
+            mask = x[1].to(torch.uint8).to(self.device)
+            lengths = torch.sum(mask.to(torch.long), dim=1)
             # lengths : [batch_size]
-            # ==
-            #   mask = x[1].to(torch.uint8).to(self.device)
-            #   lengths = torch.sum(mask.to(torch.long), dim=1)
             # last token of last layer (before padding area)
             batch_size = input_ids.shape[0]
             pooled = bert_outputs.hidden_states[-1][range(batch_size), lengths] 
