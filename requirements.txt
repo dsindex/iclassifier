@@ -9,6 +9,7 @@ transformers
 sklearn
 datasets
 accelerate
+# pip install git+https://github.com/huggingface/accelerate.git@main
 optuna
 onnx
 onnxruntime
