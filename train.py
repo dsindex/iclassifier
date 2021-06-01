@@ -413,6 +413,9 @@ def prepare_others(config, model, data_loader, lr=None, weight_decay=None):
         config['quantizer'] = quantizer
 
     if accelerator:
+        optimizer = torch.optim.AdamW(optimizer_grouped_parameters,
+                                      lr=default_lr,
+                                      eps=args.adam_epsilon)
         model, optimizer, _ = accelerator.prepare(model, optimizer, data_loader)
         
     scheduler = get_cosine_schedule_with_warmup(optimizer,

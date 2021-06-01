@@ -10,6 +10,8 @@ sklearn
 datasets
 accelerate
 # pip install git+https://github.com/huggingface/accelerate.git@main
+deepspeed
+apex
 optuna
 onnx
 onnxruntime
