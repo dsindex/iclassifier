@@ -598,8 +598,6 @@ def get_params():
     parser.add_argument('--embedding_trainable', action='store_true', help="Set word embedding(Glove) trainable")
     parser.add_argument('--measure', type=str, default='loss', help="Evaluation measure, 'loss' | 'accuracy', default 'loss'.")
     parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'LabelSmoothingCrossEntropy' | 'MSELoss' | 'KLDivLoss', default 'CrossEntropyLoss'")
-    parser.add_argument('--fp16', action='store_true')
-    parser.add_argument('--zero_stage', default=0, type=int)
     parser.add_argument('--local_rank', default=0, type=int)
     parser.add_argument('--augmented', action='store_true',
                         help="Set this flag to use augmented.txt for training.")

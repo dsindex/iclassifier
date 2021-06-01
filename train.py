@@ -10,7 +10,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from accelerate import Accelerator, DeepSpeedPlugin
+from accelerate import Accelerator
 from transformers import AdamW, get_linear_schedule_with_warmup, get_cosine_schedule_with_warmup
 from diffq import DiffQuantizer
 
@@ -436,8 +436,7 @@ def train(args):
     logger.info("%s", config)
 
     # create accelerator
-    deepspeed_plugin = DeepSpeedPlugin(zero_stage=args.zero_stage, gradient_accumulation_steps=args.gradient_accumulation_steps)
-    accelerator = Accelerator(fp16=args.fp16, deepspeed_plugin=deepspeed_plugin)
+    accelerator = Accelerator()
     config['accelerator'] = accelerator
     args.device = accelerator.device
 
@@ -500,8 +499,7 @@ def hp_search_optuna(trial: optuna.Trial):
     set_path(config)
 
     # create accelerator
-    deepspeed_plugin = DeepSpeedPlugin(zero_stage=args.zero_stage, gradient_accumulation_steps=args.gradient_accumulation_steps)
-    accelerator = Accelerator(fp16=args.fp16, deepspeed_plugin=deepspeed_plugin)
+    accelerator = Accelerator()
     config['accelerator'] = accelerator
     args.device = accelerator.device
 
@@ -584,8 +582,6 @@ def get_params():
     parser.add_argument('--embedding_trainable', action='store_true', help="Set word embedding(Glove) trainable")
     parser.add_argument('--measure', type=str, default='loss', help="Evaluation measure, 'loss' | 'accuracy', default 'loss'.")
     parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'LabelSmoothingCrossEntropy' | 'MSELoss' | 'KLDivLoss', default 'CrossEntropyLoss'")
-    parser.add_argument('--fp16', action='store_true')
-    parser.add_argument('--zero_stage', default=0, type=int)
     parser.add_argument('--local_rank', default=0, type=int)
     # for Augmentation
     parser.add_argument('--augmented', action='store_true',

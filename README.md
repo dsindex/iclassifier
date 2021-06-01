@@ -1054,26 +1054,15 @@ INFO:__main__:[Elapsed Time] : 41405.57098388672ms, 22.681565337128692ms on aver
 
 * enc_class=cls
 
-$ python preprocess.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl
-$ python train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=4 --eval_and_save_steps=32 --zero_stage=3
+$ python preprocess.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large
+$ python train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2 --eval_and_save_steps=32
 
-# 1 node, 2 gpu
+** torch.distributed.launch
 $ export NCCL_DEBUG=INFO
-$ python -m torch.distributed.launch --nnodes 1 --nproc_per_node 2 --use_env --node_rank 0 --master_addr 127.0.0.1 --master_port 24158 train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=4 --eval_and_save_steps=32 --zero_stage=2
-
-!! fail to train, may need increasing the number of gpus !!
-
-** gpt2-large
-$ python train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2
+$ python -m torch.distributed.launch --nnodes 1 --nproc_per_node 2 --use_env --node_rank 0 --master_addr 127.0.0.1 --master_port 24158 train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2 --eval_and_save_steps=32
 
 
-** gpt2-large, torch.distributed.lanuch
-
-$ export NCCL_DEBUG=INFO
-$ python -m torch.distributed.launch --nnodes 1 --nproc_per_node 2 --use_env --node_rank 0 --master_addr 127.0.0.1 --master_port 24158 train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=4 --eval_and_save_steps=32 --zero_stage=2
-
-
-** gpt2-large, accelerate launch
+** accelerate launch
 $ python -m pip install deepspeed, apex
 # fixing error
 $ vi /usr/local/lib/python3.6/dist-packages/accelerate/deepspeed_utils.py
@@ -1090,7 +1079,8 @@ Where to offload optimizer states? [NONE/cpu/nvme]: cpu
 How many gradient accumulation steps you're passing in your script? [1]: 4
 How many processes in total will you use? [1]: 2
 Do you wish to use FP16 (mixed precision)? [yes/NO]: NO
-$ accelerate launch train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=4 --eval_and_save_steps=32
+$ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=4 --eval_and_save_steps=32
 
 ```
 
@@ -1100,10 +1090,10 @@ $ accelerate launch train.py --config=configs/config-gpt-cls.json --data_dir=dat
 * enc_lass=cls
 
 $ python evaluate.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
-
-** --bert_model_name_or_path=./embeddings/gpt2-large
 INFO:__main__:[Accuracy] : 0.9445,  1720/ 1821
 INFO:__main__:[Elapsed Time] : 66759.70959663391ms, 36.57794352416154ms on average
+
+** accelerate launch
 
 
 ```
