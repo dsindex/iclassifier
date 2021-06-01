@@ -1059,9 +1059,38 @@ $ python train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --be
 
 # 1 node, 2 gpu
 $ export NCCL_DEBUG=INFO
-$ python -m torch.distributed.launch --nnodes 1 --nproc_per_node 2 --use_env --node_rank 0 --master_addr 10.55.32.213 --master_port 10294 train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=4 --eval_and_save_steps=32 --zero_stage=3
+$ python -m torch.distributed.launch --nnodes 1 --nproc_per_node 2 --use_env --node_rank 0 --master_addr 127.0.0.1 --master_port 24158 train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=4 --eval_and_save_steps=32 --zero_stage=2
 
-!! fail to train !!
+!! fail to train, may need increasing the number of gpus !!
+
+** gpt2-large
+$ python train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2
+
+
+** gpt2-large, torch.distributed.lanuch
+
+$ export NCCL_DEBUG=INFO
+$ python -m torch.distributed.launch --nnodes 1 --nproc_per_node 2 --use_env --node_rank 0 --master_addr 127.0.0.1 --master_port 24158 train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=4 --eval_and_save_steps=32 --zero_stage=2
+
+
+** gpt2-large, accelerate launch
+$ python -m pip install deepspeed, apex
+# fixing error
+$ vi /usr/local/lib/python3.6/dist-packages/accelerate/deepspeed_utils.py
+if is_apex_available():
+    #import amp
+    from apex import amp
+$ accelerate config
+In which compute environment are you running? ([0] This machine, [1] AWS (Amazon SageMaker)): 0
+Which type of machine are you using? ([0] No distributed training, [1] multi-CPU, [2] multi-GPU, [3] TPU): 2
+How many different machines will you use (use more than 1 for multi-node training)? [1]: 1
+Do you want to use DeepSpeed? [yes/NO]: yes
+What should be your DeepSpeed's ZeRO optimization stage (0, 1, 2, 3)? [2]: 2
+Where to offload optimizer states? [NONE/cpu/nvme]: cpu
+How many gradient accumulation steps you're passing in your script? [1]: 4
+How many processes in total will you use? [1]: 2
+Do you wish to use FP16 (mixed precision)? [yes/NO]: NO
+$ accelerate launch train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=4 --eval_and_save_steps=32
 
 ```
 
@@ -1072,9 +1101,7 @@ $ python -m torch.distributed.launch --nnodes 1 --nproc_per_node 2 --use_env --n
 
 $ python evaluate.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
-
 ** --bert_model_name_or_path=./embeddings/gpt2-large
-$ python train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2
 INFO:__main__:[Accuracy] : 0.9445,  1720/ 1821
 INFO:__main__:[Elapsed Time] : 66759.70959663391ms, 36.57794352416154ms on average
 

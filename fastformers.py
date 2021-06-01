@@ -600,6 +600,7 @@ def get_params():
     parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'LabelSmoothingCrossEntropy' | 'MSELoss' | 'KLDivLoss', default 'CrossEntropyLoss'")
     parser.add_argument('--fp16', action='store_true')
     parser.add_argument('--zero_stage', default=0, type=int)
+    parser.add_argument('--local_rank', default=0, type=int)
     parser.add_argument('--augmented', action='store_true',
                         help="Set this flag to use augmented.txt for training.")
     parser.add_argument('--bert_model_name_or_path', type=str, default='embeddings/distilbert-base-uncased',
