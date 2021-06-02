@@ -179,7 +179,7 @@
 | RoBERTa-base , CNN                        | 90.42        | 14.9544 / -       |            |
 | RoBERTa-base , CLS                        | 90.34        | 13.8556 / -       |            |
 | XLM-RoBERTa-base , CLS                    | 89.98        | 14.8101 / -       |            |
-| XLM-RoBERTa-large , CLS                   | 91.05        | 25.1067 / -       |            |
+| XLM-RoBERTa-large , CLS                   | 91.38        | 24.5093 / -       |            |
 | Funnel-base , CLS                         | **91.51**    | 41.8325 / -       |            |
 | KoBART-base , CLS                         | 89.57        | 18.9681 / -       |            |
 | KoGPT2-v2 , CLS                           | 89.41        | 13.4023 / -       |            |
@@ -771,6 +771,11 @@ INFO:__main__:[Elapsed Time] : 740546.2129116058ms, 14.810195497745838ms on aver
 ** --bert_model_name_or_path=./embeddings/xlm-roberta-large
 INFO:__main__:[Accuracy] : 0.9105, 45523/49997
 INFO:__main__:[Elapsed Time] : 1255374.0434646606ms, 25.106745840540047ms on average
+
+INFO:__main__:[Accuracy] : 0.9138, 45685/49997
+INFO:__main__:[Elapsed Time] : 1225533.9052677155ms, 24.509334780710375ms on average
+
+
 ```
 
 </p>
