@@ -1101,9 +1101,11 @@ AssertionError: You are using an untested ZeRO Optimizer. Please add <"zero_allo
 # Error 2
 RuntimeError: Function 'LogSoftmaxBackward' returned nan values in its 0th output.
 
-=> how to fix it??
+=> how to fix it? smaller learning rate? gradient clipping? not working!! we need to configure deepspeed's gradient clipping.
 
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1 --eval_and_save_steps=32 --criterion=LabelSmoothingCrossEntropy
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1 --eval_and_save_steps=32 --max_grad_norm=5 --max_grad_value=1.0
+
+=> how to configure deepspeed? not yet supported! wait for official release.
 
 ```
 

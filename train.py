@@ -80,6 +80,10 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
         # back-propagation - begin
         accelerator.backward(loss)
         if (local_step + 1) % args.gradient_accumulation_steps == 0:
+            if args.max_grad_norm != 0.0:
+                accelerator.clip_grad_norm_(model.parameters(), args.max_grad_norm)
+            if args.max_grad_value != 0.0:
+                accelerator.clip_grad_value_(model.parameters(), args.max_grad_value)
             optimizer.step()
             optimizer.zero_grad()
             scheduler.step()
@@ -579,7 +583,8 @@ def get_params():
     parser.add_argument('--weight_decay', type=float, default=0.01)
     parser.add_argument('--gradient_accumulation_steps', type=int, default=1,
                         help="Number of updates steps to accumulate before performing a backward/update pass.")
-    parser.add_argument('--max_grad_norm', default=1.0, type=float, help="Max gradient norm.")
+    parser.add_argument('--max_grad_norm', default=0.0, type=float, help="Max gradient norm.")
+    parser.add_argument('--max_grad_value', type=float, default=0.0, help="Max gradient value for clipping.")
     parser.add_argument('--log_dir', type=str, default='runs')
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--embedding_trainable', action='store_true', help="Set word embedding(Glove) trainable")

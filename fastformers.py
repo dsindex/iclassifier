@@ -593,6 +593,7 @@ def get_params():
     parser.add_argument('--gradient_accumulation_steps', type=int, default=1,
                         help="Number of updates steps to accumulate before performing a backward/update pass.")
     parser.add_argument('--max_grad_norm', default=1.0, type=float, help="Max gradient norm.")
+    parser.add_argument('--max_grad_value', type=float, default=0.0, help="Max gradient value for clipping.")
     parser.add_argument('--log_dir', type=str, default='runs')
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--embedding_trainable', action='store_true', help="Set word embedding(Glove) trainable")
