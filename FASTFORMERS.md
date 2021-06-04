@@ -29,6 +29,9 @@ INFO:__main__:[Elapsed Time] : 56542.107343673706ms, 30.926025699783157ms on ave
 INFO:__main__:[Accuracy] : 0.9743,   682/  700
 INFO:__main__:[Elapsed Time] : 10138.131618499756ms, 14.333598774049074ms on average
 
+INFO:__main__:[Accuracy] : 0.9800,   686/  700
+INFO:__main__:[Elapsed Time] : 11108.108758926392ms, 15.720854160270637ms on average
+
 ```
 
 ## check student model's performance (stand-alone)
@@ -44,6 +47,9 @@ INFO:__main__:[Elapsed Time] : 10948.646068572998ms, 5.960442338671003ms on aver
 * --data_dir=data/snips
 INFO:__main__:[Accuracy] : 0.9671,   677/  700
 INFO:__main__:[Elapsed Time] : 4359.285593032837ms, 6.094431501942473ms on average
+
+INFO:__main__:[Accuracy] : 0.9600,   672/  700
+INFO:__main__:[Elapsed Time] : 4519.238233566284ms, 6.314514362078709ms on average
 ```
 
 ## distillation
@@ -97,15 +103,18 @@ INFO:__main__:[Accuracy] : 0.8973,  1634/ 1821
 INFO:__main__:[Elapsed Time] : 13943.261623382568ms, 7.599266282804719ms on average
 
 
-* from bert-base-uncased, --data-dir=data/snips
+* from bert-base-uncased, --data_dir=data/snips
 
 INFO:__main__:[Accuracy] : 0.9743,   682/  700
 INFO:__main__:[Elapsed Time] : 4355.75795173645ms, 6.093895657038654ms on average
 
+INFO:__main__:[Accuracy] : 0.9814,   687/  700
+INFO:__main__:[Elapsed Time] : 4525.923490524292ms, 6.320663105605839ms on average
+
 
 * Meta Pseudo Labels
 
-$ python fastformers.py --do_distill --teacher_config=configs/config-bert-cls.json --data_dir=data/sst2 --teacher_bert_model_name_or_path=./bert-checkpoint-teacher --teacher_model_path=pytorch-model-teacher.pt --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8 --bert_output_dir=bert-checkpoint --save_path=pytorch-model.pt --lr=5e-5 --epoch=3 --batch_size=64 --augmented --mpl_data_path=data/sst2/train.txt.fs --mpl_warmup_steps=5000 --mpl_learning_rate=5e-5 --mpl_weight_decay=0.01
+$ python fastformers.py --do_distill --teacher_config=configs/config-bert-cls.json --data_dir=data/sst2 --teacher_bert_model_name_or_path=./bert-checkpoint-teacher --teacher_model_path=pytorch-model-teacher.pt --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/pytorch.uncased_L-4_H-512_A-8 --bert_output_dir=bert-checkpoint --save_path=pytorch-model.pt --lr=5e-5 --epoch=3 --batch_size=64 --mpl_data_path=data/sst2/train.txt.fs --mpl_warmup_steps=5000 --mpl_learning_rate=5e-5 --mpl_weight_decay=0.01
 
 INFO:__main__:[Accuracy] : 0.9127,  1662/ 1821
 INFO:__main__:[Elapsed Time] : 12031.500339508057ms, 6.570246193435166ms on average
@@ -117,6 +126,10 @@ INFO:__main__:[Elapsed Time] : 11657.557725906372ms, 6.3686090511280105ms on ave
 ** --mpl_warmup_steps=10000 --mpl_learning_rate=1e-6 --mpl_weight_decay=0.05
 INFO:__main__:[Accuracy] : 0.9116,  1660/ 1821
 INFO:__main__:[Elapsed Time] : 11567.988395690918ms, 6.313557153219705ms on average
+
+** --data_dir=data/snips --mpl_warmup_steps=200 --mpl_learning_rate=1e-6 --mpl_weight_decay=0.05
+INFO:__main__:[Accuracy] : 0.9757,   683/  700
+INFO:__main__:[Elapsed Time] : 4492.2826290130615ms, 6.284190179281821ms on average
 
 
 * bert-base-uncased -> bert-base-uncased
@@ -135,6 +148,7 @@ $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 
 INFO:__main__:[Accuracy] : 0.9336,  1700/ 1821
 INFO:__main__:[Elapsed Time] : 27856.73689842224ms, 15.260539867065765ms on average
 
+
 ```
 
 
@@ -152,6 +166,14 @@ $ python fastformers.py --do_prune --config=configs/config-bert-cls.json --data_
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint-pruned/ --model_path=pytorch-model-pruned.pt
 INFO:__main__:[Accuracy] : 0.8825,  1607/ 1821
 INFO:__main__:[Elapsed Time] : 10670.073509216309ms, 5.80617294206724ms on average
+
+*** --data_dir=data/snips --target_ffn_dim=1024
+INFO:__main__:[Accuracy] : 0.9714,   680/  700
+INFO:__main__:[Elapsed Time] : 4759.81068611145ms, 6.651043721364121ms on average
+
+*** --data_dir=data/snips --target_ffn_dim=512
+INFO:__main__:[Accuracy] : 0.9414,   659/  700
+INFO:__main__:[Elapsed Time] : 4491.584539413452ms, 6.2788450325678005ms on average
 
 
 * `--target_num_heads=4`
@@ -190,7 +212,7 @@ $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 
 INFO:__main__:[Accuracy] : 0.8578,  1562/ 1821
 INFO:__main__:[Elapsed Time] : 11202.386617660522ms, 6.099004797883087ms on average
 
-*** --data_dir=data/snips
+*** --data_dir=data/snips, --target_num_heads=4
 INFO:__main__:[Accuracy] : 0.9443,   661/  700
 INFO:__main__:[Elapsed Time] : 4355.768442153931ms, 6.091671440222744ms on average
 
@@ -205,9 +227,13 @@ $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint-pruned/ --model_path=pytorch-model-pruned.pt --enable_ort --onnx_path=pytorch-model-pruned.onnx --device=cpu --num_threads=14 --enable_inference
 INFO:__main__:[Elapsed Time(total_duration_time, average)] : 6220.6597328186035ms, 3.41794490814209ms
 
-** --data_dir=data/snips
+** --data_dir=data/snips, --target_ffn_dim=1024
 INFO:__main__:[Elapsed Time(total_duration_time, average)] : 1647.9876041412354ms, 2.35763605742666ms
 
+INFO:__main__:[Elapsed Time(total_duration_time, average)] : 1552.5243282318115ms, 2.2210648472558105ms
+
+** --data_dir=data/snips, --target_ffn_dim=512
+INFO:__main__:[Elapsed Time(total_duration_time, average)] : 1267.3616409301758ms, 1.8131067824466034ms
 
 * onnx quatization
 
@@ -216,8 +242,14 @@ $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint-pruned/ --model_path=pytorch-model-pruned.pt --enable_ort --onnx_path=pytorch-model-pruned.onnx-quantized --device=cpu --num_threads=14 --enable_inference
 INFO:__main__:[Elapsed Time(total_duration_time, average)] : 6181.872844696045ms, 3.396633431151673ms
 
-** --data_dir=data/snips
+** --data_dir=data/snips, --target_ffn_dim=1024
 INFO:__main__:[Elapsed Time(total_duration_time, average)] : 1707.0832252502441ms, 2.44217914914198ms
+
+INFO:__main__:[Elapsed Time(total_duration_time, average)] : 1489.4206523895264ms, 2.130787771658836ms
+
+** --data_dir=data/snips, --target_ffn_dim=512
+INFO:__main__:[Elapsed Time(total_duration_time, average)] : 1238.2938861846924ms, 1.771522011709145ms
+
 ```
 
 
