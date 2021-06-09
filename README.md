@@ -393,7 +393,9 @@ INFO:__main__:[Elapsed Time] : 35100.63934326172ms, 49.98437324818624ms on avera
 | BORT, CLS                               | 77.98        | 6.1346  / -       |                          | epoch=10      |
 | ConvBERT, CLS                           | 77.48        | 22.6815 / -       |                          | epoch=10      |
 | GPT2-large, CLS                         | 94.45        | 36.5779 / -       |                          | epoch=10      |
-| GPT2-xlarge, CLS                        | -            | -       / -       |                          | epoch=10      |
+| GPT2-large, CLS                         | 92.81        | 42.2791 / -       |                          | epoch=10, accelerate launch |
+| GPT2-xlarge, CLS                        | 93.96        | 49.2241 / -       |                          | epoch=10, accelerate launch |
+| GPT-NEO, CLS                            | -            | -       / -       |                          | epoch=10, accelerate launch |
 
 - [sst2 leaderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -1101,11 +1103,30 @@ AssertionError: You are using an untested ZeRO Optimizer. Please add <"zero_allo
 # Error 2
 RuntimeError: Function 'LogSoftmaxBackward' returned nan values in its 0th output.
 
-=> how to fix it? smaller learning rate? gradient clipping? not working!! we need to configure deepspeed's gradient clipping.
+=> how to fix it? smaller learning rate? gradient clipping? not working!!
 
 $ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1 --eval_and_save_steps=32 --max_grad_norm=5 --max_grad_value=1.0
 
-=> how to configure deepspeed? not yet supported! wait for official release.
+=> solution!
+just use torch.autograd.set_detect_anomaly(False) to skip 'nan values'. this yields below messages from time to time. but it works fine.
+"[deepspeed] fp16 dynamic loss scale overflow! Skipping step. Attempted loss scale: 16384.0, reducing to 8192.0"
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1 --eval_and_save_steps=32
+
+
+** accelerate launch & gpt-neo-2.7B
+$ accelerate config
+In which compute environment are you running? ([0] This machine, [1] AWS (Amazon SageMaker)): 0
+Which type of machine are you using? ([0] No distributed training, [1] multi-CPU, [2] multi-GPU, [3] TPU): 2
+How many different machines will you use (use more than 1 for multi-node training)? [1]: 1
+Do you want to use DeepSpeed? [yes/NO]: yes
+What should be your DeepSpeed's ZeRO optimization stage (0, 1, 2, 3)? [2]: 2
+Where to offload optimizer states? [NONE/cpu/nvme]: cpu
+How many gradient accumulation steps you're passing in your script? [1]: 4
+How many processes in total will you use? [1]: 4
+Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
+$ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=10 --batch_size=8 --gradient_accumulation_steps=4 --eval_and_save_steps=32
+
 
 ```
 
@@ -1122,7 +1143,11 @@ INFO:__main__:[Elapsed Time] : 66759.70959663391ms, 36.57794352416154ms on avera
 INFO:__main__:[Accuracy] : 0.9281,  1690/ 1821
 INFO:__main__:[Elapsed Time] : 77169.36945915222ms, 42.27914404083084ms on average
 
+** accelerate launch,  --bert_model_name_or_path=./embeddings/gpt2-xl
+INFO:__main__:[Accuracy] : 0.9396,  1711/ 1821
+INFO:__main__:[Elapsed Time] : 89949.15795326233ms, 49.22410970205789ms on average
 
+** accelerate launch,  --bert_model_name_or_path=./embeddings/gpt-neo-2.7B
 
 ```
 

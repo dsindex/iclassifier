@@ -435,7 +435,7 @@ def prepare_others(config, model, data_loader, lr=None, weight_decay=None):
 def train(args):
 
     # set etc
-    torch.autograd.set_detect_anomaly(True)
+    torch.autograd.set_detect_anomaly(False)
 
     # set config
     config = load_config(args)

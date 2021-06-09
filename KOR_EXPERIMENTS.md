@@ -81,6 +81,10 @@
   - [LM-kor](https://github.com/kiyoungkim1/LM-kor)
     - `kykim/electra-kor-base`
 
+- Dialog-KoELECTRA-Small
+  - [Dialog-KoELECTRA](https://github.com/SKplanet/Dialog-KoELECTRA)
+    - `skplanet/dialog-koelectra-small-discriminator`
+
 - ELECTRA-base
   - [electra](https://github.com/dsindex/electra#pretraining-electra)를 이용해서 학습.
   - 한국어 문서 데이터 준비.
@@ -173,6 +177,7 @@
 | KoELECTRA-Base-v3, CLS                    | 90.66        | 13.7968 / -       |            |
 | LM-KOR-ELECTRA, CNN                       | 90.52        | 15.8000 / -       |            |
 | LM-KOR-ELECTRA, CLS                       | 91.04        | 14.2696 / -       |            |
+| Dialog-KoELECTRA-Small, CLS               | 90.00        | 13.7453 / -       |            |
 | bpe ELECTRA-base(v1) , CNN                | 89.59        | 15.8888 / -       |            |
 | bpe ELECTRA-base(v1) , CLS                | 89.59        | 14.3914 / -       |            |
 | dhaToken1.large ELECTRA-base , CLS        | 90.88        | 14.3333 / -       |            |
@@ -626,7 +631,7 @@ INFO:__main__:[Elapsed Time] : 1277329.5888900757ms, 25.545897660460298ms on ave
 </details>
 
 
-#### ELECTRA(koelectra-base-discriminator, electra-kor-base)
+#### ELECTRA(koelectra-base-discriminator, dialog-koelectra-small-discriminator, electra-kor-base)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -654,15 +659,15 @@ $ python evaluate.py --config=configs/config-bert-cnn.json --data_dir=./data/clo
 INFO:__main__:[Accuracy] : 0.8937, 44684/49997
 INFO:__main__:[Elapsed Time] : 784375ms, 15.636230898471878ms on average
 
-**  --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
+**  --lr=5e-5 --epoch=20 --batch_size=64
 INFO:__main__:[Accuracy] : 0.8951, 44750/49997
 INFO:__main__:[Elapsed Time] : 777338ms, 15.54522361788943ms on average
 
-** --bert_model_name_or_path=./embeddings/koelectra-base-v3-discriminator  --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
+** --bert_model_name_or_path=./embeddings/koelectra-base-v3-discriminator  --lr=5e-5 --epoch=20 --batch_size=64
 INFO:__main__:[Accuracy] : 0.9072, 45356/49997
 INFO:__main__:[Elapsed Time] : 765895.2033519745ms, 15.316871435453972ms on average
 
-** --bert_model_name_or_path=./embeddings/electra-kor-base --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
+** --bert_model_name_or_path=./embeddings/electra-kor-base --lr=5e-5 --epoch=20 --batch_size=64
 INFO:__main__:[Accuracy] : 0.9052, 45257/49997
 INFO:__main__:[Elapsed Time] : 790089.4966125488ms, 15.800023858132711ms on average
 
@@ -672,17 +677,21 @@ $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=./data/clo
 INFO:__main__:[Accuracy] : 0.8930, 44646/49997
 INFO:__main__:[Elapsed Time] : 721693ms, 14.425894071525722ms on average
 
-**  --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
+**  --lr=5e-5 --epoch=20 --batch_size=64
 INFO:__main__:[Accuracy] : 0.8963, 44814/49997
 INFO:__main__:[Elapsed Time] : 713403ms, 14.266721337707017ms on average
 
-** --bert_model_name_or_path=./embeddings/koelectra-base-v3-discriminator  --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
+** --bert_model_name_or_path=./embeddings/koelectra-base-v3-discriminator  --lr=5e-5 --epoch=20
 INFO:__main__:[Accuracy] : 0.9066, 45325/49997
 INFO:__main__:[Elapsed Time] : 689906.133890152ms, 13.796895782950783ms on average
 
-** --bert_model_name_or_path=./embeddings/electra-kor-base --lr=5e-5 --epoch=20 --batch_size=64 --warmup_epoch=0 --weight_decay=0.0
+** --bert_model_name_or_path=./embeddings/electra-kor-base --lr=5e-5 --epoch=20
 INFO:__main__:[Accuracy] : 0.9104, 45516/49997
 INFO:__main__:[Elapsed Time] : 713545.1235771179ms, 14.269641169796696ms on average
+
+** --bert_model_name_or_path=./embeddings/dialog-koelectra-small-discriminator --lr=5e-5 --epoch=20
+INFO:__main__:[Accuracy] : 0.9000, 44997/49997
+INFO:__main__:[Elapsed Time] : 687318.1173801422ms, 13.74532376416102ms on average
 
 ```
 
