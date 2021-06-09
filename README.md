@@ -1065,20 +1065,40 @@ $ python -m torch.distributed.launch --nnodes 1 --nproc_per_node 2 --use_env --n
 
 
 ** accelerate launch
+
 # fixing error
 $ vi /usr/local/lib/python3.6/dist-packages/accelerate/deepspeed_utils.py
 if is_apex_available():
     #import amp
     from apex import amp
-    # or import toch.cuda.amp as amp
+    # or import torch.cuda.amp as amp
+
+# note that zero offload not working at this time. so use ZeRo stage 1.
 $ accelerate config
 In which compute environment are you running? ([0] This machine, [1] AWS (Amazon SageMaker)): 0
 Which type of machine are you using? ([0] No distributed training, [1] multi-CPU, [2] multi-GPU, [3] TPU): 2
 How many different machines will you use (use more than 1 for multi-node training)? [1]: 1
-How many processes in total will you use? [1]: 2
-Do you wish to use FP16 (mixed precision)? [yes/NO]: NO
+Do you want to use DeepSpeed? [yes/NO]: yes
+What should be your DeepSpeed's ZeRO optimization stage (0, 1, 2, 3)? [2]: 1
+How many gradient accumulation steps you're passing in your script? [1]: 1
+How many processes in total will you use? [1]: 4
+Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=4 --eval_and_save_steps=32
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1 --eval_and_save_steps=32
+
+# Error 1
+Checking ZeRO support for optimizer=AdamW type=<class 'transformers.optimization.AdamW'>
+AssertionError: You are using an untested ZeRO Optimizer. Please add <"zero_allow_untested_optimizer": true> in the configuration file to use it.
+
+=> use torch.optim.AdamW instead of transformers's AdamW
+
+# Error 2
+RuntimeError: Function 'LogSoftmaxBackward' returned nan values in its 0th output.
+
+=> how to fix it? smaller learning rate? gradient clipping? not working!!
+   just use torch.autograd.set_detect_anomaly(False) to skip 'nan values'. this yields below messages from time to time. but it works fine.
+   "[deepspeed] fp16 dynamic loss scale overflow! Skipping step. Attempted loss scale: 16384.0, reducing to 8192.0"
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1 --eval_and_save_steps=32
 
 
 ** accelerate launch & gpt2-xl
@@ -1094,24 +1114,6 @@ Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
 $ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1 --eval_and_save_steps=32
 
-# Error 1
-Checking ZeRO support for optimizer=AdamW type=<class 'transformers.optimization.AdamW'>
-AssertionError: You are using an untested ZeRO Optimizer. Please add <"zero_allow_untested_optimizer": true> in the configuration file to use it.
-
-=> use torch.optim.AdamW instead of transformers's AdamW
-
-# Error 2
-RuntimeError: Function 'LogSoftmaxBackward' returned nan values in its 0th output.
-
-=> how to fix it? smaller learning rate? gradient clipping? not working!!
-
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1 --eval_and_save_steps=32 --max_grad_norm=5 --max_grad_value=1.0
-
-=> solution!
-just use torch.autograd.set_detect_anomaly(False) to skip 'nan values'. this yields below messages from time to time. but it works fine.
-"[deepspeed] fp16 dynamic loss scale overflow! Skipping step. Attempted loss scale: 16384.0, reducing to 8192.0"
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1 --eval_and_save_steps=32
-
 
 ** accelerate launch & gpt-neo-2.7B
 $ accelerate config
@@ -1119,8 +1121,7 @@ In which compute environment are you running? ([0] This machine, [1] AWS (Amazon
 Which type of machine are you using? ([0] No distributed training, [1] multi-CPU, [2] multi-GPU, [3] TPU): 2
 How many different machines will you use (use more than 1 for multi-node training)? [1]: 1
 Do you want to use DeepSpeed? [yes/NO]: yes
-What should be your DeepSpeed's ZeRO optimization stage (0, 1, 2, 3)? [2]: 2
-Where to offload optimizer states? [NONE/cpu/nvme]: cpu
+What should be your DeepSpeed's ZeRO optimization stage (0, 1, 2, 3)? [2]: 1
 How many gradient accumulation steps you're passing in your script? [1]: 4
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
