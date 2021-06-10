@@ -519,7 +519,7 @@ class TextBertCNN(BaseModel):
             'output_attentions': True,
             'return_dict': True
         }
-        if self.bert_model.config.model_type not in ['roberta', 'bart', 'distilbert', 'ibert']:
+        if self.bert_model.config.model_type not in ['roberta', 'bart', 'distilbert', 'ibert', 't5']:
             params['token_type_ids'] = x[2]
         if head_mask is not None:
             params['head_mask'] = head_mask
@@ -531,10 +531,7 @@ class TextBertCNN(BaseModel):
             # fine-tuning
             bert_outputs = self.bert_model(**params)
 
-        if self.bert_model.config.model_type in ['gpt2', 'gpt_neo']:
-            embedded = bert_outputs.hidden_states[-1]
-        else:
-            embedded = bert_outputs.last_hidden_state
+        embedded = bert_outputs.last_hidden_state
 
         # embedded : [batch_size, seq_size, bert_hidden_size]
         return embedded, bert_outputs
@@ -604,7 +601,7 @@ class TextBertCLS(BaseModel):
             'output_attentions': True,
             'return_dict': True
         }
-        if self.bert_model.config.model_type not in ['roberta', 'bart', 'distilbert', 'ibert']:
+        if self.bert_model.config.model_type not in ['roberta', 'bart', 'distilbert', 'ibert', 't5']:
             params['token_type_ids'] = x[2]
         if head_mask is not None:
             params['head_mask'] = head_mask
@@ -616,14 +613,14 @@ class TextBertCLS(BaseModel):
             # fine-tuning
             bert_outputs = self.bert_model(**params)
 
-        if self.bert_model.config.model_type in ['gpt2', 'gpt_neo']:
+        if self.bert_model.config.model_type in ['gpt2', 'gpt_neo', 't5']:
             input_ids = x[0]
             mask = x[1].to(torch.uint8).to(self.device)
             lengths = torch.sum(mask.to(torch.long), dim=1)
             # lengths : [batch_size]
             # last token of last layer (before padding area)
             batch_size = input_ids.shape[0]
-            pooled = bert_outputs.hidden_states[-1][range(batch_size), lengths] 
+            pooled = bert_outputs.last_hidden_state[range(batch_size), lengths] 
             # pooled : [batch_size, bert_hidden_size]
         else:
             # first token of last layer == [CLS]

@@ -240,12 +240,18 @@ def preprocess_bert(config):
         tokenizer.cls_token = '<s>'
         tokenizer.sep_token = '</s>'
         tokenizer.pad_token = '<pad>'
+    elif config['emb_class'] in ['gpt']:
+        tokenizer = AutoTokenizer.from_pretrained(args.bert_model_name_or_path)
+        tokenizer.cls_token = '<s>'
+        tokenizer.sep_token = '</s>'
+        tokenizer.pad_token = '<pad>'
+    elif config['emb_class'] in ['t5']:
+        tokenizer = AutoTokenizer.from_pretrained(args.bert_model_name_or_path)
+        tokenizer.cls_token = '<s>'
+        tokenizer.sep_token = '</s>'
+        tokenizer.pad_token = '<pad>'
     else:
         tokenizer = AutoTokenizer.from_pretrained(args.bert_model_name_or_path)
-        if config['emb_class'] == 'gpt': 
-            tokenizer.cls_token = '<s>'
-            tokenizer.sep_token = '</s>'
-            tokenizer.pad_token = '<pad>'
 
     # build labels
     path = os.path.join(args.data_dir, _TRAIN_FILE)

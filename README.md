@@ -395,7 +395,10 @@ INFO:__main__:[Elapsed Time] : 35100.63934326172ms, 49.98437324818624ms on avera
 | GPT2-large, CLS                         | 94.45        | 36.5779 / -       |                          | epoch=10      |
 | GPT2-large, CLS                         | 92.81        | 42.2791 / -       |                          | epoch=10, accelerate, fp16       |
 | GPT2-xlarge, CLS                        | 93.96        | 49.2241 / -       |                          | epoch=10, accelerate, fp16, 1.5B |
-| GPT-NEO, CLS                            | -            | -       / -       |                          | epoch=10, accelerate, fp16, 2.7B |
+| GPT-NEO, CLS                            | 80.29        | 71.1350 / -       |                          | epoch=10, accelerate, fp16, 2.7B |
+| T5-large, CLS                           | -            | -       / -       |                          | epoch=10      |
+| T5-3B, CLS                              | -            | -       / -       |                          | epoch=10, accelerate, fp16, 3B   |
+| T5-11B, CLS                             | -            | -       / -       |                          | epoch=10, accelerate, fp16, 11B  |
 
 - [sst2 leaderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -1066,13 +1069,6 @@ $ python -m torch.distributed.launch --nnodes 1 --nproc_per_node 2 --use_env --n
 
 ** accelerate launch
 
-# fixing error
-$ vi /usr/local/lib/python3.6/dist-packages/accelerate/deepspeed_utils.py
-if is_apex_available():
-    #import amp
-    import torch.cuda.amp as amp
-    # or from apex import amp
-
 # note that zero offload not working at this time. so use ZeRo stage 1.
 $ accelerate config
 In which compute environment are you running? ([0] This machine, [1] AWS (Amazon SageMaker)): 0
@@ -1087,14 +1083,19 @@ $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
 $ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1 --eval_and_save_steps=32
 
 # Error 1
-Checking ZeRO support for optimizer=AdamW type=<class 'transformers.optimization.AdamW'>
-AssertionError: You are using an untested ZeRO Optimizer. Please add <"zero_allow_untested_optimizer": true> in the configuration file to use it.
-
-=> use torch.optim.AdamW instead of transformers's AdamW
+$ vi /usr/local/lib/python3.6/dist-packages/accelerate/deepspeed_utils.py
+if is_apex_available():
+    #import amp
+    import torch.cuda.amp as amp
+    # or from apex import amp
 
 # Error 2
-RuntimeError: Function 'LogSoftmaxBackward' returned nan values in its 0th output.
+Checking ZeRO support for optimizer=AdamW type=<class 'transformers.optimization.AdamW'>
+AssertionError: You are using an untested ZeRO Optimizer. Please add <"zero_allow_untested_optimizer": true> in the configuration file to use it.
+=> use torch.optim.AdamW instead of transformers's AdamW
 
+# Error 3
+RuntimeError: Function 'LogSoftmaxBackward' returned nan values in its 0th output.
 => how to fix it? smaller learning rate? gradient clipping? not working!!
    just use `torch.autograd.set_detect_anomaly(False)` to skip 'nan values'. this yields below messages from time to time. but it works fine.
    "[deepspeed] fp16 dynamic loss scale overflow! Skipping step. Attempted loss scale: 16384.0, reducing to 8192.0"
@@ -1149,6 +1150,35 @@ INFO:__main__:[Elapsed Time] : 89949.15795326233ms, 49.22410970205789ms on avera
 
 ** accelerate launch,  --bert_model_name_or_path=./embeddings/gpt-neo-2.7B
 # GPU memory footprint: 6618MiB / 32510MiB
+INFO:__main__:[Accuracy] : 0.8029,  1462/ 1821
+INFO:__main__:[Elapsed Time] : 129731.75048828125ms, 71.13509793857952ms on average
+
+```
+
+</p>
+</details>
+
+<details><summary><b>emb_class=t5, enc_class=cnn | cls</b></summary>
+<p>
+
+- train
+```
+* n_ctx size should be less than 512
+
+* enc_class=cls
+
+$ python preprocess.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-large
+$ python train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=32 --gradient_accumulation_steps=2 --eval_and_save_steps=64
+
+
+```
+
+- evaluation
+```
+
+* enc_lass=cls
+
+$ python evaluate.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
 ```
 

@@ -344,13 +344,24 @@ def prepare_model(config, bert_model_name_or_path=None):
             bert_tokenizer.sep_token = '</s>'
             bert_tokenizer.pad_token = '<pad>'
             bert_model = BartModel.from_pretrained(get_pytorch_kobart_model())
+        elif config['emb_class'] in ['gpt']:
+            bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
+            bert_tokenizer.cls_token = '<s>'
+            bert_tokenizer.sep_token = '</s>'
+            bert_tokenizer.pad_token = '<pad>'
+            bert_model = AutoModel.from_pretrained(model_name_or_path,
+                                                   from_tf=bool(".ckpt" in model_name_or_path))
+        elif config['emb_class'] in ['t5']:
+            from transformers import T5EncoderModel
+            bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
+            bert_tokenizer.cls_token = '<s>'
+            bert_tokenizer.sep_token = '</s>'
+            bert_tokenizer.pad_token = '<pad>'
+            bert_model = T5EncoderModel.from_pretrained(model_name_or_path,
+                                                        from_tf=bool(".ckpt" in model_name_or_path))
+
         else:
             bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
-            if config['emb_class'] == 'gpt': 
-                bert_tokenizer.cls_token = '<s>'
-                bert_tokenizer.sep_token = '</s>'
-                bert_tokenizer.pad_token = '<pad>'
-          
             bert_model = AutoModel.from_pretrained(model_name_or_path,
                                                    from_tf=bool(".ckpt" in model_name_or_path))
 
