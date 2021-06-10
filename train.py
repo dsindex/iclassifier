@@ -150,14 +150,17 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
     curr_time = time.time()
     elapsed_time = (curr_time - st_time) / 60
     st_time = curr_time
-    logs = {'epoch': epoch_i,
-           'local_step': local_step+1,
-           'epoch_step': len(train_loader),
-           'avg_loss': avg_loss,
-           'local_best_eval_loss': local_best_eval_loss,
-           'local_best_eval_acc': local_best_eval_acc,
-           'best_eval_measure': best_eval_measure,
-           'elapsed_time': elapsed_time
+    logs = {
+        'process_index': accelerator.process_index,
+        'is_main_process': accelerator.is_main_process,
+        'epoch': epoch_i,
+        'local_step': local_step+1,
+        'epoch_step': len(train_loader),
+        'avg_loss': avg_loss,
+        'local_best_eval_loss': local_best_eval_loss,
+        'local_best_eval_acc': local_best_eval_acc,
+        'best_eval_measure': best_eval_measure,
+        'elapsed_time': elapsed_time
     }
     logger.info(json.dumps(logs, indent=4, ensure_ascii=False, sort_keys=True))
 

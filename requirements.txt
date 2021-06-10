@@ -15,7 +15,6 @@ accelerate
 deepspeed
 # 0.4.0
 # DS_BUILD_OPS=1 pip install deepspeed --global-option="build_ext" --global-option="-j8"
-apex
 optuna
 onnx
 onnxruntime
