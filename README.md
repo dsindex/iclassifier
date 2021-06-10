@@ -393,9 +393,9 @@ INFO:__main__:[Elapsed Time] : 35100.63934326172ms, 49.98437324818624ms on avera
 | BORT, CLS                               | 77.98        | 6.1346  / -       |                          | epoch=10      |
 | ConvBERT, CLS                           | 77.48        | 22.6815 / -       |                          | epoch=10      |
 | GPT2-large, CLS                         | 94.45        | 36.5779 / -       |                          | epoch=10      |
-| GPT2-large, CLS                         | 92.81        | 42.2791 / -       |                          | epoch=10, accelerate, fp16 |
-| GPT2-xlarge, CLS                        | 93.96        | 49.2241 / -       |                          | epoch=10, accelerate, fp16 |
-| GPT-NEO, CLS                            | -            | -       / -       |                          | epoch=10, accelerate, fp16 |
+| GPT2-large, CLS                         | 92.81        | 42.2791 / -       |                          | epoch=10, accelerate, fp16       |
+| GPT2-xlarge, CLS                        | 93.96        | 49.2241 / -       |                          | epoch=10, accelerate, fp16, 1.5B |
+| GPT-NEO, CLS                            | -            | -       / -       |                          | epoch=10, accelerate, fp16, 2.7B |
 
 - [sst2 leaderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -1070,8 +1070,8 @@ $ python -m torch.distributed.launch --nnodes 1 --nproc_per_node 2 --use_env --n
 $ vi /usr/local/lib/python3.6/dist-packages/accelerate/deepspeed_utils.py
 if is_apex_available():
     #import amp
-    from apex import amp
-    # or import torch.cuda.amp as amp
+    import torch.cuda.amp as amp
+    # or from apex import amp
 
 # note that zero offload not working at this time. so use ZeRo stage 1.
 $ accelerate config
@@ -1096,7 +1096,7 @@ AssertionError: You are using an untested ZeRO Optimizer. Please add <"zero_allo
 RuntimeError: Function 'LogSoftmaxBackward' returned nan values in its 0th output.
 
 => how to fix it? smaller learning rate? gradient clipping? not working!!
-   just use torch.autograd.set_detect_anomaly(False) to skip 'nan values'. this yields below messages from time to time. but it works fine.
+   just use `torch.autograd.set_detect_anomaly(False)` to skip 'nan values'. this yields below messages from time to time. but it works fine.
    "[deepspeed] fp16 dynamic loss scale overflow! Skipping step. Attempted loss scale: 16384.0, reducing to 8192.0"
 $ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1 --eval_and_save_steps=32
 
@@ -1122,12 +1122,12 @@ Which type of machine are you using? ([0] No distributed training, [1] multi-CPU
 How many different machines will you use (use more than 1 for multi-node training)? [1]: 1
 Do you want to use DeepSpeed? [yes/NO]: yes
 What should be your DeepSpeed's ZeRO optimization stage (0, 1, 2, 3)? [2]: 1
-How many gradient accumulation steps you're passing in your script? [1]: 4
+How many gradient accumulation steps you're passing in your script? [1]: 1
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=10 --batch_size=16 --gradient_accumulation_steps=4 --eval_and_save_steps=32
-
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=32 --gradient_accumulation_steps=1 --eval_and_save_steps=64
+# GPU memory footprint: 31996MiB / 32510MiB foreach 4 GPUs
 ```
 
 - evaluation
