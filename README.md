@@ -393,9 +393,9 @@ INFO:__main__:[Elapsed Time] : 35100.63934326172ms, 49.98437324818624ms on avera
 | BORT, CLS                               | 77.98        | 6.1346  / -       |                          | epoch=10      |
 | ConvBERT, CLS                           | 77.48        | 22.6815 / -       |                          | epoch=10      |
 | GPT2-large, CLS                         | 94.45        | 36.5779 / -       |                          | epoch=10      |
-| GPT2-large, CLS                         | 92.81        | 42.2791 / -       |                          | epoch=10, accelerate launch |
-| GPT2-xlarge, CLS                        | 93.96        | 49.2241 / -       |                          | epoch=10, accelerate launch |
-| GPT-NEO, CLS                            | -            | -       / -       |                          | epoch=10, accelerate launch |
+| GPT2-large, CLS                         | 92.81        | 42.2791 / -       |                          | epoch=10, accelerate, fp16 |
+| GPT2-xlarge, CLS                        | 93.96        | 49.2241 / -       |                          | epoch=10, accelerate, fp16 |
+| GPT-NEO, CLS                            | -            | -       / -       |                          | epoch=10, accelerate, fp16 |
 
 - [sst2 leaderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -1112,7 +1112,7 @@ How many gradient accumulation steps you're passing in your script? [1]: 1
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1 --eval_and_save_steps=32
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1 --eval_and_save_steps=32
 
 
 ** accelerate launch & gpt-neo-2.7B
@@ -1126,8 +1126,7 @@ How many gradient accumulation steps you're passing in your script? [1]: 4
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=10 --batch_size=8 --gradient_accumulation_steps=4 --eval_and_save_steps=32
-
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=10 --batch_size=16 --gradient_accumulation_steps=4 --eval_and_save_steps=32
 
 ```
 
@@ -1149,6 +1148,7 @@ INFO:__main__:[Accuracy] : 0.9396,  1711/ 1821
 INFO:__main__:[Elapsed Time] : 89949.15795326233ms, 49.22410970205789ms on average
 
 ** accelerate launch,  --bert_model_name_or_path=./embeddings/gpt-neo-2.7B
+# GPU memory footprint: 6618MiB / 32510MiB
 
 ```
 
