@@ -531,7 +531,7 @@ class TextBertCNN(BaseModel):
             # fine-tuning
             bert_outputs = self.bert_model(**params)
 
-        if self.bert_model.config.model_type in ['gpt2']:
+        if self.bert_model.config.model_type in ['gpt2', 'gpt_neo']:
             embedded = bert_outputs.hidden_states[-1]
         else:
             embedded = bert_outputs.last_hidden_state
@@ -616,7 +616,7 @@ class TextBertCLS(BaseModel):
             # fine-tuning
             bert_outputs = self.bert_model(**params)
 
-        if self.bert_model.config.model_type in ['gpt2']:
+        if self.bert_model.config.model_type in ['gpt2', 'gpt_neo']:
             input_ids = x[0]
             mask = x[1].to(torch.uint8).to(self.device)
             lengths = torch.sum(mask.to(torch.long), dim=1)
