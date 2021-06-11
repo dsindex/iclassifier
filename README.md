@@ -396,7 +396,8 @@ INFO:__main__:[Elapsed Time] : 35100.63934326172ms, 49.98437324818624ms on avera
 | GPT2-large, CLS                         | 92.81        | 42.2791 / -       |                          | epoch=10, accelerate, fp16       |
 | GPT2-xlarge, CLS                        | 93.96        | 49.2241 / -       |                          | epoch=10, accelerate, fp16, 1.5B |
 | GPT-NEO, CLS                            | 80.29        | 71.1350 / -       |                          | epoch=10, accelerate, fp16, 2.7B |
-| T5-large, CLS                           | -            | -       / -       |                          | epoch=10      |
+| T5-large, CLS                           | 95.39        | 29.3724 / -       |                          | epoch=10      |
+| T5-large, CLS                           | -            | -       / -       |                          | epoch=10, accelerate, fp16       |
 | T5-3B, CLS                              | -            | -       / -       |                          | epoch=10, accelerate, fp16, 3B   |
 | T5-11B, CLS                             | -            | -       / -       |                          | epoch=10, accelerate, fp16, 11B  |
 
@@ -1069,7 +1070,6 @@ $ python -m torch.distributed.launch --nnodes 1 --nproc_per_node 2 --use_env --n
 
 ** accelerate launch
 
-# note that zero offload not working at this time. so use ZeRo stage 1.
 $ accelerate config
 In which compute environment are you running? ([0] This machine, [1] AWS (Amazon SageMaker)): 0
 Which type of machine are you using? ([0] No distributed training, [1] multi-CPU, [2] multi-GPU, [3] TPU): 2
@@ -1144,11 +1144,11 @@ INFO:__main__:[Elapsed Time] : 66759.70959663391ms, 36.57794352416154ms on avera
 INFO:__main__:[Accuracy] : 0.9281,  1690/ 1821
 INFO:__main__:[Elapsed Time] : 77169.36945915222ms, 42.27914404083084ms on average
 
-** accelerate launch,  --bert_model_name_or_path=./embeddings/gpt2-xl
+** accelerate launch & gpt2-xl
 INFO:__main__:[Accuracy] : 0.9396,  1711/ 1821
 INFO:__main__:[Elapsed Time] : 89949.15795326233ms, 49.22410970205789ms on average
 
-** accelerate launch,  --bert_model_name_or_path=./embeddings/gpt-neo-2.7B
+** accelerate launch & gpt-neo-2.7B
 # GPU memory footprint: 6618MiB / 32510MiB
 INFO:__main__:[Accuracy] : 0.8029,  1462/ 1821
 INFO:__main__:[Elapsed Time] : 129731.75048828125ms, 71.13509793857952ms on average
@@ -1170,6 +1170,33 @@ INFO:__main__:[Elapsed Time] : 129731.75048828125ms, 71.13509793857952ms on aver
 $ python preprocess.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-large
 $ python train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=32 --gradient_accumulation_steps=2 --eval_and_save_steps=64
 
+** accelerate launch
+$ accelerate config
+In which compute environment are you running? ([0] This machine, [1] AWS (Amazon SageMaker)): 0
+Which type of machine are you using? ([0] No distributed training, [1] multi-CPU, [2] multi-GPU, [3] TPU): 2
+How many different machines will you use (use more than 1 for multi-node training)? [1]: 1
+Do you want to use DeepSpeed? [yes/NO]: yes
+What should be your DeepSpeed's ZeRO optimization stage (0, 1, 2, 3)? [2]: 1
+How many gradient accumulation steps you're passing in your script? [1]: 2
+How many processes in total will you use? [1]: 2
+Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
+$ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=32 --gradient_accumulation_steps=2 --eval_and_save_steps=64
+# GPU memory footprint: 9476MiB / 32510MiB foreach 2 GPUs
+
+** accelerate launch & t5-3b
+$ accelerate config
+In which compute environment are you running? ([0] This machine, [1] AWS (Amazon SageMaker)): 0
+Which type of machine are you using? ([0] No distributed training, [1] multi-CPU, [2] multi-GPU, [3] TPU): 2
+How many different machines will you use (use more than 1 for multi-node training)? [1]: 1
+Do you want to use DeepSpeed? [yes/NO]: yes
+What should be your DeepSpeed's ZeRO optimization stage (0, 1, 2, 3)? [2]: 1
+How many gradient accumulation steps you're passing in your script? [1]: 2
+How many processes in total will you use? [1]: 4
+Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
+$ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-3b --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=32 --gradient_accumulation_steps=2 --eval_and_save_steps=64
+
 
 ```
 
@@ -1179,6 +1206,13 @@ $ python train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --ber
 * enc_lass=cls
 
 $ python evaluate.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+
+INFO:__main__:[Accuracy] : 0.9539,  1737/ 1821
+INFO:__main__:[Elapsed Time] : 53615.12064933777ms, 29.372493120340202ms on average
+
+** accelerate launch
+
+** accelerate launch & t5-3b
 
 ```
 

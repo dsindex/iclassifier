@@ -76,7 +76,7 @@ def load_model(config, checkpoint):
             bert_tokenizer.sep_token = '</s>'
             bert_tokenizer.pad_token = '<pad>'
             bert_config = AutoConfig.from_pretrained(args.bert_output_dir)
-            bert_model = T5EncoderModel.from_config(bert_config)
+            bert_model = T5EncoderModel.from_pretrained(args.bert_output_dir)
         else:
             bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir)
             bert_config = AutoConfig.from_pretrained(args.bert_output_dir)
