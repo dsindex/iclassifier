@@ -397,8 +397,8 @@ INFO:__main__:[Elapsed Time] : 35100.63934326172ms, 49.98437324818624ms on avera
 | GPT2-xlarge, CLS                        | 93.96        | 49.2241 / -       |                          | epoch=10, accelerate, fp16, 1.5B |
 | GPT-NEO, CLS                            | 80.29        | 71.1350 / -       |                          | epoch=10, accelerate, fp16, 2.7B |
 | T5-large, CLS                           | 95.39        | 29.3724 / -       |                          | epoch=10      |
-| T5-large, CLS                           | -            | -       / -       |                          | epoch=10, accelerate, fp16       |
-| T5-3B, CLS                              | -            | -       / -       |                          | epoch=10, accelerate, fp16, 3B   |
+| T5-large, CLS                           | 95.55        | 30.3232 / -       |                          | epoch=10, accelerate, fp16       |
+| T5-3B, CLS                              | 95.99        | 34.8998 / -       |                          | epoch=10, accelerate, fp16, 3B   |
 | T5-11B, CLS                             | -            | -       / -       |                          | epoch=10, accelerate, fp16, 11B  |
 
 - [sst2 leaderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
@@ -1196,7 +1196,7 @@ How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
 $ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-3b --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=32 --gradient_accumulation_steps=2 --eval_and_save_steps=64
-
+# GPU memory footprint: 21922MiB / 32480MiB foreach 4 GPUs
 
 ```
 
@@ -1211,8 +1211,12 @@ INFO:__main__:[Accuracy] : 0.9539,  1737/ 1821
 INFO:__main__:[Elapsed Time] : 53615.12064933777ms, 29.372493120340202ms on average
 
 ** accelerate launch
+INFO:__main__:[Accuracy] : 0.9555,  1740/ 1821
+INFO:__main__:[Elapsed Time] : 55336.105823516846ms, 30.323271175007243ms on average
 
 ** accelerate launch & t5-3b
+INFO:__main__:[Accuracy] : 0.9599,  1748/ 1821
+INFO:__main__:[Elapsed Time] : 63750.892639160156ms, 34.89987116593581ms on average
 
 ```
 
