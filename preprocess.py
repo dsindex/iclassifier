@@ -242,9 +242,11 @@ def preprocess_bert(config):
         tokenizer.pad_token = '<pad>'
     elif config['emb_class'] in ['gpt']:
         tokenizer = AutoTokenizer.from_pretrained(args.bert_model_name_or_path)
-        tokenizer.cls_token = '<s>'
-        tokenizer.sep_token = '</s>'
-        tokenizer.pad_token = '<pad>'
+        tokenizer.bos_token = '<|endoftext|>'
+        tokenizer.eos_token = '<|endoftext|>'
+        tokenizer.cls_token = '<|endoftext|>'
+        tokenizer.sep_token = '<|endoftext|>'
+        tokenizer.pad_token = '|pad|'
     elif config['emb_class'] in ['t5']:
         tokenizer = AutoTokenizer.from_pretrained(args.bert_model_name_or_path)
         tokenizer.cls_token = '<s>'
