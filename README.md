@@ -393,13 +393,13 @@ INFO:__main__:[Elapsed Time] : 35100.63934326172ms, 49.98437324818624ms on avera
 | BORT, CLS                               | 77.98        | 6.1346  / -       |                          | epoch=10      |
 | ConvBERT, CLS                           | 77.48        | 22.6815 / -       |                          | epoch=10      |
 | GPT2-large, CLS                         | 94.45        | 36.5779 / -       |                          | epoch=10      |
-| GPT2-large, CLS                         | 92.81        | 42.2791 / -       |                          | epoch=10, accelerate, fp16       |
-| GPT2-xlarge, CLS                        | 93.96        | 49.2241 / -       |                          | epoch=10, accelerate, fp16, 1.5B |
-| GPT-NEO, CLS                            | 80.29        | 71.1350 / -       |                          | epoch=10, accelerate, fp16, 2.7B |
-| T5-large, CLS                           | 95.39        | 29.3724 / -       |                          | epoch=10      |
-| T5-large, CLS                           | 95.55        | 30.3232 / -       |                          | epoch=10, accelerate, fp16       |
-| T5-3B, CLS                              | 95.99        | 34.8998 / -       |                          | epoch=10, accelerate, fp16, 3B   |
-| T5-11B, CLS                             | -            | -       / -       |                          | epoch=10, accelerate, fp16, 11B  |
+| GPT2-large, CLS                         | 92.81        | 42.2791 / -       |                          | epoch=10, accelerate, deepspeed, fp16       |
+| GPT2-xlarge, CLS                        | 93.96        | 49.2241 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 1.5B |
+| GPT-NEO, CLS                            | 82.04        | 71.0937 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 2.7B |
+| T5-large, CLS                           | 95.39        | 29.3724 / -       |                          | epoch=10                                    |
+| T5-large, CLS                           | 95.55        | 30.3232 / -       |                          | epoch=10, accelerate, deepspeed, fp16       |
+| T5-3B, CLS                              | 95.99        | 34.8998 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 3B   |
+| T5-11B, CLS                             | -            | -       / -       |                          | epoch=10, accelerate, deepspeed, fp16, 11B  |
 
 - [sst2 leaderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -1061,14 +1061,14 @@ INFO:__main__:[Elapsed Time] : 41405.57098388672ms, 22.681565337128692ms on aver
 * enc_class=cls
 
 $ python preprocess.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large
-$ python train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2 --eval_and_save_steps=32
+$ python train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2
 
 ** torch.distributed.launch
 $ export NCCL_DEBUG=INFO
-$ python -m torch.distributed.launch --nnodes 1 --nproc_per_node 2 --use_env --node_rank 0 --master_addr 127.0.0.1 --master_port 24158 train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2 --eval_and_save_steps=32
+$ python -m torch.distributed.launch --nnodes 1 --nproc_per_node 2 --use_env --node_rank 0 --master_addr 127.0.0.1 --master_port 24158 train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2 
 
 
-** accelerate launch
+** accelerate launch, deepspeed
 
 $ accelerate config
 In which compute environment are you running? ([0] This machine, [1] AWS (Amazon SageMaker)): 0
@@ -1080,7 +1080,7 @@ How many gradient accumulation steps you're passing in your script? [1]: 1
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1 --eval_and_save_steps=32
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1
 
 # Error 1
 $ vi /usr/local/lib/python3.6/dist-packages/accelerate/deepspeed_utils.py
@@ -1099,10 +1099,10 @@ RuntimeError: Function 'LogSoftmaxBackward' returned nan values in its 0th outpu
 => how to fix it? smaller learning rate? gradient clipping? not working!!
    just use `torch.autograd.set_detect_anomaly(False)` to skip 'nan values'. this yields below messages from time to time. but it works fine.
    "[deepspeed] fp16 dynamic loss scale overflow! Skipping step. Attempted loss scale: 16384.0, reducing to 8192.0"
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1 --eval_and_save_steps=32
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1 
 
 
-** accelerate launch & gpt2-xl
+** accelerate launch, deepspeed & gpt2-xl
 $ accelerate config
 In which compute environment are you running? ([0] This machine, [1] AWS (Amazon SageMaker)): 0
 Which type of machine are you using? ([0] No distributed training, [1] multi-CPU, [2] multi-GPU, [3] TPU): 2
@@ -1113,10 +1113,10 @@ How many gradient accumulation steps you're passing in your script? [1]: 1
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1 --eval_and_save_steps=32
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1
 
 
-** accelerate launch & gpt-neo-2.7B
+** accelerate launch, deepspeed & gpt-neo-2.7B
 $ accelerate config
 In which compute environment are you running? ([0] This machine, [1] AWS (Amazon SageMaker)): 0
 Which type of machine are you using? ([0] No distributed training, [1] multi-CPU, [2] multi-GPU, [3] TPU): 2
@@ -1127,7 +1127,7 @@ How many gradient accumulation steps you're passing in your script? [1]: 1
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-4 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2 --eval_and_save_steps=64 --max_grad_norm=2.0
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2 --measure=accuracy
 # GPU memory footprint: 31996MiB / 32510MiB foreach 4 GPUs
 ```
 
@@ -1140,18 +1140,18 @@ $ python evaluate.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 -
 INFO:__main__:[Accuracy] : 0.9445,  1720/ 1821
 INFO:__main__:[Elapsed Time] : 66759.70959663391ms, 36.57794352416154ms on average
 
-** accelerate launch
+** accelerate launch, deepspeed
 INFO:__main__:[Accuracy] : 0.9281,  1690/ 1821
 INFO:__main__:[Elapsed Time] : 77169.36945915222ms, 42.27914404083084ms on average
 
-** accelerate launch & gpt2-xl
+** accelerate launch, deepspeed & gpt2-xl
 INFO:__main__:[Accuracy] : 0.9396,  1711/ 1821
 INFO:__main__:[Elapsed Time] : 89949.15795326233ms, 49.22410970205789ms on average
 
-** accelerate launch & gpt-neo-2.7B
+** accelerate launch, deepspeed & gpt-neo-2.7B
 # GPU memory footprint: 6618MiB / 32510MiB
-INFO:__main__:[Accuracy] : 0.8029,  1462/ 1821
-INFO:__main__:[Elapsed Time] : 129731.75048828125ms, 71.13509793857952ms on average
+INFO:__main__:[Accuracy] : 0.8204,  1494/ 1821
+INFO:__main__:[Elapsed Time] : 129634.50622558594ms, 71.09376480291178ms on average
 
 ```
 
@@ -1168,9 +1168,9 @@ INFO:__main__:[Elapsed Time] : 129731.75048828125ms, 71.13509793857952ms on aver
 * enc_class=cls
 
 $ python preprocess.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-large
-$ python train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=32 --gradient_accumulation_steps=2 --eval_and_save_steps=64
+$ python train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=32 --gradient_accumulation_steps=2 
 
-** accelerate launch
+** accelerate launch, deepspeed
 $ accelerate config
 In which compute environment are you running? ([0] This machine, [1] AWS (Amazon SageMaker)): 0
 Which type of machine are you using? ([0] No distributed training, [1] multi-CPU, [2] multi-GPU, [3] TPU): 2
@@ -1181,10 +1181,10 @@ How many gradient accumulation steps you're passing in your script? [1]: 2
 How many processes in total will you use? [1]: 2
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=32 --gradient_accumulation_steps=2 --eval_and_save_steps=64
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=32 --gradient_accumulation_steps=2
 # GPU memory footprint: 9476MiB / 32510MiB foreach 2 GPUs
 
-** accelerate launch & t5-3b
+** accelerate launch, deepspeed & t5-3b
 $ accelerate config
 In which compute environment are you running? ([0] This machine, [1] AWS (Amazon SageMaker)): 0
 Which type of machine are you using? ([0] No distributed training, [1] multi-CPU, [2] multi-GPU, [3] TPU): 2
@@ -1195,8 +1195,55 @@ How many gradient accumulation steps you're passing in your script? [1]: 2
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-3b --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=32 --gradient_accumulation_steps=2 --eval_and_save_steps=64
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-3b --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=32 --gradient_accumulation_steps=2
 # GPU memory footprint: 21922MiB / 32480MiB foreach 4 GPUs
+
+** accelerate launch & t5-11b
+# rank 0
+$ accelerate config
+In which compute environment are you running? ([0] This machine, [1] AWS (Amazon SageMaker)): 0
+Which type of machine are you using? ([0] No distributed training, [1] multi-CPU, [2] multi-GPU, [3] TPU): 2
+How many different machines will you use (use more than 1 for multi-node training)? [1]: 2
+What is the rank of this machine (from 0 to the number of machines - 1 )? [0]: 0
+What is the IP address of the machine that will host the main process? 10.55.12.203
+What is the port you will use to communicate with the main process? 6199
+Do you want to use DeepSpeed? [yes/NO]: NO
+How many processes in total will you use? [1]: 12
+Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
+$ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config_rank0.yaml
+$ export NCCL_DEBUG=INFO
+$ accelerate launch --config_file accelerate_config_rank0.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-11b --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2 
+
+# rank 1
+$ accelerate config
+$ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config_rank1.yaml
+$ export NCCL_DEBUG=INFO
+$ accelerate launch --config_file accelerate_config_rank1.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-11b --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2
+
+# rank 2
+$ accelerate config
+$ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config_rank1.yaml
+$ export NCCL_DEBUG=INFO
+$ accelerate launch --config_file accelerate_config_rank2.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-11b --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2
+
+=> out of memory!!
+
+** accelerate lauch, deepspeed & t5-11b
+$ accelerate config
+In which compute environment are you running? ([0] This machine, [1] AWS (Amazon SageMaker)): 0
+Which type of machine are you using? ([0] No distributed training, [1] multi-CPU, [2] multi-GPU, [3] TPU): 2
+How many different machines will you use (use more than 1 for multi-node training)? [1]: 1
+Do you want to use DeepSpeed? [yes/NO]: yes
+What should be your DeepSpeed's ZeRO optimization stage (0, 1, 2, 3)? [2]: 2
+Where to offload optimizer states? [NONE/cpu/nvme]: NONE
+How many gradient accumulation steps you're passing in your script? [1]: 8
+How many processes in total will you use? [1]: 4
+Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
+$ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
+$ export NCCL_DEBUG=INFO
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-11b --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=8 --eval_batch_size=16
+# GPU memory footprint: 31916MiB / 32510MiB foreach 4 GPUs 
+
 
 ```
 
@@ -1210,13 +1257,16 @@ $ python evaluate.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --
 INFO:__main__:[Accuracy] : 0.9539,  1737/ 1821
 INFO:__main__:[Elapsed Time] : 53615.12064933777ms, 29.372493120340202ms on average
 
-** accelerate launch
+** accelerate launch, deepspeed
 INFO:__main__:[Accuracy] : 0.9555,  1740/ 1821
 INFO:__main__:[Elapsed Time] : 55336.105823516846ms, 30.323271175007243ms on average
 
-** accelerate launch & t5-3b
+** accelerate launch, deepspeed & t5-3b
 INFO:__main__:[Accuracy] : 0.9599,  1748/ 1821
 INFO:__main__:[Elapsed Time] : 63750.892639160156ms, 34.89987116593581ms on average
+
+** accelerate launch, deepspeed & t5-11b
+
 
 ```
 
