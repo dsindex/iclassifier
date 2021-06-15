@@ -395,11 +395,11 @@ INFO:__main__:[Elapsed Time] : 35100.63934326172ms, 49.98437324818624ms on avera
 | GPT2-large, CLS                         | 94.45        | 36.5779 / -       |                          | epoch=10      |
 | GPT2-large, CLS                         | 92.81        | 42.2791 / -       |                          | epoch=10, accelerate, deepspeed, fp16       |
 | GPT2-xlarge, CLS                        | 93.96        | 49.2241 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 1.5B |
-| GPT-NEO, CLS                            | 82.04        | 71.0937 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 2.7B |
+| GPT-NEO, CLS                            | 82.04        | 71.0937 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 2.7B, fail to train! |
 | T5-large, CLS                           | 95.39        | 29.3724 / -       |                          | epoch=10                                    |
 | T5-large, CLS                           | 95.55        | 30.3232 / -       |                          | epoch=10, accelerate, deepspeed, fp16       |
 | T5-3B, CLS                              | 95.99        | 34.8998 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 3B   |
-| T5-11B, CLS                             | -            | -       / -       |                          | epoch=10, accelerate, deepspeed, fp16, 11B  |
+| T5-11B, CLS                             | 53.65        | 115.3986/ -       |                          | epoch=10, accelerate, deepspeed, fp16, 11B, fail to train!  |
 
 - [sst2 leaderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -1244,7 +1244,6 @@ $ export NCCL_DEBUG=INFO
 $ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-11b --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=8 --eval_batch_size=16
 # GPU memory footprint: 31916MiB / 32510MiB foreach 4 GPUs 
 
-
 ```
 
 - evaluation
@@ -1265,8 +1264,13 @@ INFO:__main__:[Elapsed Time] : 55336.105823516846ms, 30.323271175007243ms on ave
 INFO:__main__:[Accuracy] : 0.9599,  1748/ 1821
 INFO:__main__:[Elapsed Time] : 63750.892639160156ms, 34.89987116593581ms on average
 
-** accelerate launch, deepspeed & t5-11b
+** accelerate launch, deepspeed & t5-3b & full precision
 
+
+** accelerate launch, deepspeed & t5-11b
+# GPU memory footprint: 10772MiB / 32510MiB (model only)
+INFO:__main__:[Accuracy] : 0.5365,   977/ 1821
+INFO:__main__:[Elapsed Time] : 210478.55591773987ms, 115.39863138408451ms on average
 
 ```
 
