@@ -70,7 +70,7 @@ def load_model(config, checkpoint):
             bert_tokenizer.sep_token = '<|endoftext|>'
             bert_tokenizer.pad_token = '|pad|'
             bert_config = AutoConfig.from_pretrained(args.bert_output_dir)
-            bert_model = AutoModel.from_config(bert_config)
+            bert_model = AutoModel(bert_config)
         elif config['emb_class'] in ['t5']:    
             from transformers import T5EncoderModel
             bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir)
@@ -78,11 +78,11 @@ def load_model(config, checkpoint):
             bert_tokenizer.sep_token = '</s>'
             bert_tokenizer.pad_token = '<pad>'
             bert_config = AutoConfig.from_pretrained(args.bert_output_dir)
-            bert_model = T5EncoderModel.from_pretrained(args.bert_output_dir)
+            bert_model = T5EncoderModel(bert_config)
         else:
             bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir)
             bert_config = AutoConfig.from_pretrained(args.bert_output_dir)
-            bert_model = AutoModel.from_config(bert_config)
+            bert_model = AutoModel(bert_config)
 
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
