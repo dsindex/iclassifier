@@ -346,13 +346,15 @@ def prepare_model(config, bert_model_name_or_path=None):
             bert_model = BartModel.from_pretrained(get_pytorch_kobart_model())
         elif config['emb_class'] in ['gpt']:
             bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
-            bert_tokenizer.bos_token = '<|endoftext|>'
+            bert_tokenizer.bos_token = '<|startoftext|>'
             bert_tokenizer.eos_token = '<|endoftext|>'
-            bert_tokenizer.cls_token = '<|endoftext|>'
+            bert_tokenizer.cls_token = '<|startoftext|>'
             bert_tokenizer.sep_token = '<|endoftext|>'
-            bert_tokenizer.pad_token = '|pad|'
+            bert_tokenizer.pad_token = '<|pad|>'
             bert_model = AutoModel.from_pretrained(model_name_or_path,
                                                    from_tf=bool(".ckpt" in model_name_or_path))
+            # 3 new tokens added
+            bert_model.resize_token_embeddings(len(bert_tokenizer))
         elif config['emb_class'] in ['t5']:
             from transformers import T5EncoderModel
             bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)

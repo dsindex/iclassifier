@@ -1144,8 +1144,8 @@ How many gradient accumulation steps you're passing in your script? [1]: 8
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: NO
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=4 --gradient_accumulation_steps=8 --eval_batch_size=8
-# GPU memory footprint: 22276MiB / 32510MiB
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=10 --batch_size=4 --gradient_accumulation_steps=8 --eval_batch_size=8
+# GPU memory footprint: 30872MiB / 32510MiB
 
 
 ```

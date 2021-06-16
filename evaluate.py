@@ -64,13 +64,15 @@ def load_model(config, checkpoint):
             bert_config = bert_model.config
         elif config['emb_class'] in ['gpt']:    
             bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir)
-            bert_tokenizer.bos_token = '<|endoftext|>'
+            bert_tokenizer.bos_token = '<|startoftext|>'
             bert_tokenizer.eos_token = '<|endoftext|>'
-            bert_tokenizer.cls_token = '<|endoftext|>'
+            bert_tokenizer.cls_token = '<|startoftext|>'
             bert_tokenizer.sep_token = '<|endoftext|>'
-            bert_tokenizer.pad_token = '|pad|'
+            bert_tokenizer.pad_token = '<|pad|>'
             bert_config = AutoConfig.from_pretrained(args.bert_output_dir)
             bert_model = AutoModel(bert_config)
+            # 3 new tokens added
+            bert_model.resize_token_embeddings(len(bert_tokenizer))
         elif config['emb_class'] in ['t5']:    
             from transformers import T5EncoderModel
             bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir)
