@@ -396,7 +396,6 @@ INFO:__main__:[Elapsed Time] : 35100.63934326172ms, 49.98437324818624ms on avera
 | GPT2-large, CLS                         | 92.81        | 42.2791 / -       |                          | epoch=10, accelerate, deepspeed, fp16       |
 | GPT2-xlarge, CLS                        | 93.96        | 49.2241 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 1.5B |
 | GPT-NEO, CLS                            | 82.04        | 71.0937 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 2.7B |
-| GPT-NEO, CLS                            | -            | -       / -       |                          | epoch=10, accelerate, deepspeed, 2.7B, unstable |
 | T5-large, CLS                           | 95.39        | 29.3724 / -       |                          | epoch=10                                    |
 | T5-large, CLS                           | 95.55        | 30.3232 / -       |                          | epoch=10, accelerate, deepspeed, fp16       |
 | T5-3B, CLS                              | 95.99        | 34.8998 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 3B   |
@@ -1168,6 +1167,21 @@ INFO:__main__:[Elapsed Time] : 89949.15795326233ms, 49.22410970205789ms on avera
 # GPU memory footprint: 6618MiB / 32510MiB
 INFO:__main__:[Accuracy] : 0.8204,  1494/ 1821
 INFO:__main__:[Elapsed Time] : 129634.50622558594ms, 71.09376480291178ms on average
+
+INFO:__main__:[Accuracy] : 0.8105,  1476/ 1821
+INFO:__main__:[Elapsed Time] : 130055.31454086304ms, 71.23894966565646ms on average
+
+*** --lr=1e-6
+INFO:__main__:[Accuracy] : 0.7622,  1388/ 1821
+INFO:__main__:[Elapsed Time] : 130370.82743644714ms, 71.41090343286703ms on average
+
+*** --batch_size=32 --gradient_accumulation_steps=1
+INFO:__main__:[Accuracy] : 0.8155,  1485/ 1821
+INFO:__main__:[Elapsed Time] : 130947.47471809387ms, 71.71733798561516ms on average
+
+*** --batch_size=32 --gradient_accumulation_steps=1 --warmup_ratio=0.1 --weight_decay=0.03 --max_grad_value=1.0 --seed=31
+INFO:__main__:[Accuracy] : 0.8105,  1476/ 1821
+INFO:__main__:[Elapsed Time] : 130316.54977798462ms, 71.38844479571333ms on average
 
 ** accelerate launch, deepspeed & gpt-neo-2.7B & full precision
 unstable!
