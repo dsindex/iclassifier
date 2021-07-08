@@ -82,7 +82,7 @@ def load_model(config, checkpoint):
         else:
             bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir)
             bert_config = AutoConfig.from_pretrained(args.bert_output_dir)
-            bert_model = AutoModel(bert_config)
+            bert_model = AutoModel.from_config(bert_config)
 
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
