@@ -54,7 +54,7 @@
     - `kor-bert-base-dha.v1, v2` (inhouse)
 
 - KcBERT 
-  - [KcBERT](https://github.com/Beomi/KcBERT)
+  - from [KcBERT](https://github.com/Beomi/KcBERT)
     - `kcbert-base`, `kcbert-large`
 
 #### DistilBERT
@@ -121,6 +121,11 @@
 - KoGPT2
   - from [KoGPT2](https://github.com/SKT-AI/KoGPT2)
 
+#### T5
+  
+- KE-T5
+  - from [ke-t5](https://github.com/AIRC-KETI)
+    - `ke-t5-base-ko`, `ke-t5-large-ko`
 
 
 ## NMSC data
@@ -188,6 +193,8 @@
 | Funnel-base , CLS                         | **91.51**    | 41.8325 / -       |            |
 | KoBART-base , CLS                         | 89.57        | 18.9681 / -       |            |
 | KoGPT2-v2 , CLS                           | 89.41        | 13.4023 / -       |            |
+| KE-T5-base, CLS                           | 90.81        | 22.5119 / -       |            |
+| KE-T5-large, CLS                          | -            | -       / -       |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU
@@ -847,6 +854,7 @@ INFO:__main__:[Elapsed Time] : 948470.7288742065ms, 18.96814218339219ms on avera
 </p>
 </details>
 
+
 #### GPT(kogpt2-base-v2)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
@@ -872,6 +880,34 @@ INFO:__main__:[Elapsed Time] : 670176.3834953308ms, 13.402398638424277ms on aver
 </p>
 </details>
 
+
+#### T5(ke-t5-base-ko, ke-t5-large-ko)
+ 
+<details><summary><b>enc_class=cnn | cls</b></summary>
+<p>
+
+- train
+```
+$ python preprocess.py --config=configs/config-t5-cls.json --bert_model_name_or_path=./embeddings/ke-t5-base-ko --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-t5-cls.json --bert_model_name_or_path=./embeddings/ke-t5-base-ko --save_path=pytorch-model.pt --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments
+
+```
+
+- evaluation
+```
+* enc_class=cls
+
+$ python evaluate.py --config=configs/config-t5-cls.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint --model_path=pytorch-model.pt
+INFO:__main__:[Accuracy] : 0.9081, 45400/49997
+INFO:__main__:[Elapsed Time] : 1125681.4332008362ms, 22.511990306491672ms on average
+
+** --bert_model_name_or_path=./embeddings/ke-t5-large-ko
+
+
+```
+
+</p>
+</details>
 
 ## korean-hate-speech data
 
