@@ -193,13 +193,13 @@
 | RoBERTa-base , CLS                        | 90.34        | 13.8556 / -       |            |
 | XLM-RoBERTa-base , CLS                    | 89.98        | 14.8101 / -       |            |
 | XLM-RoBERTa-large , CLS                   | 91.38        | 24.5093 / -       |            |
+| KLUE-RoBERTa-base, CLS                    | 91.18        | 16.9337 / -       |            |
+| KLUE-RoBERTa-large, CLS                   | **91.71**    | 29.2738 / -       |            |
 | Funnel-base , CLS                         | 91.51        | 41.8325 / -       |            |
 | KoBART-base , CLS                         | 89.57        | 18.9681 / -       |            |
 | KoGPT2-v2 , CLS                           | 89.41        | 13.4023 / -       |            |
 | KE-T5-base, CLS                           | 90.81        | 22.5119 / -       |            |
 | KE-T5-large, CLS                          | 90.61        | 41.4601 / -       |            |
-| KLUE-RoBERTa-base, CLS                    | 91.18        | 16.9337 / -       |            |
-| KLUE-RoBERTa-large, CLS                   | **91.71**    | 29.2738 / -       |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU
