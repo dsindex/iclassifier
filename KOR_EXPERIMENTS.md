@@ -194,7 +194,7 @@
 | KoBART-base , CLS                         | 89.57        | 18.9681 / -       |            |
 | KoGPT2-v2 , CLS                           | 89.41        | 13.4023 / -       |            |
 | KE-T5-base, CLS                           | 90.81        | 22.5119 / -       |            |
-| KE-T5-large, CLS                          | -            | -       / -       |            |
+| KE-T5-large, CLS                          | 90.61        | 41.4601 / -       |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU
@@ -902,7 +902,9 @@ INFO:__main__:[Accuracy] : 0.9081, 45400/49997
 INFO:__main__:[Elapsed Time] : 1125681.4332008362ms, 22.511990306491672ms on average
 
 ** --bert_model_name_or_path=./embeddings/ke-t5-large-ko
-
+INFO:__main__:[Accuracy] : 0.9061, 45302/49997
+INFO:__main__:[Elapsed Time] : 2081772.702217102ms, 41.63477861725795ms on average
+INFO:__main__:[Elapsed Time(total_duration_time, average)] : 2072843.7976837158ms, 41.46019276909585ms
 
 ```
 
