@@ -105,6 +105,9 @@
   - from [huggingface.co/models](https://huggingface.co/models)
   - `xlm-roberta-base`, `xlm-roberta-large`
 
+- KLUE-RoBERTa-base, KLUE-RoBERTa-large
+  - from [huggingface.co/models](https://huggingface.co/klue)
+
 #### Funnel
 
 - Funnel-base
@@ -123,7 +126,7 @@
 
 #### T5
   
-- KE-T5
+- KE-T5-base, KE-T5-large
   - from [ke-t5](https://github.com/AIRC-KETI)
     - `ke-t5-base-ko`, `ke-t5-large-ko`
 
@@ -190,11 +193,13 @@
 | RoBERTa-base , CLS                        | 90.34        | 13.8556 / -       |            |
 | XLM-RoBERTa-base , CLS                    | 89.98        | 14.8101 / -       |            |
 | XLM-RoBERTa-large , CLS                   | 91.38        | 24.5093 / -       |            |
-| Funnel-base , CLS                         | **91.51**    | 41.8325 / -       |            |
+| Funnel-base , CLS                         | 91.51        | 41.8325 / -       |            |
 | KoBART-base , CLS                         | 89.57        | 18.9681 / -       |            |
 | KoGPT2-v2 , CLS                           | 89.41        | 13.4023 / -       |            |
 | KE-T5-base, CLS                           | 90.81        | 22.5119 / -       |            |
 | KE-T5-large, CLS                          | 90.61        | 41.4601 / -       |            |
+| KLUE-RoBERTa-base, CLS                    | 91.18        | 16.9337 / -       |            |
+| KLUE-RoBERTa-large, CLS                   | **91.71**    | 29.2738 / -       |            |
 
 ```
 * GPU/CPU : Elapsed time/example(ms), GPU / CPU
@@ -748,7 +753,7 @@ INFO:__main__:[Elapsed Time] : 716717.779636383ms, 14.333377548080128ms on avera
 </p>
 </details>
 
-#### RoBERTa(kor-roberta-base-bbpe, xlm-roberta-base, xlm-roberta-large)
+#### RoBERTa(kor-roberta-base-bbpe, xlm-roberta-base, xlm-roberta-large, klue-roberta-base, klue-roberta-large)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -791,6 +796,13 @@ INFO:__main__:[Elapsed Time] : 1255374.0434646606ms, 25.106745840540047ms on ave
 INFO:__main__:[Accuracy] : 0.9138, 45685/49997
 INFO:__main__:[Elapsed Time] : 1225533.9052677155ms, 24.509334780710375ms on average
 
+** --bert_model_name_or_path=./embeddings/klue-roberta-base
+INFO:__main__:[Accuracy] : 0.9118, 45586/49997
+INFO:__main__:[Elapsed Time] : 846745.1119422913ms, 16.933719881420775ms on average
+
+** --bert_model_name_or_path=./embeddings/klue-roberta-large
+INFO:__main__:[Accuracy] : 0.9171, 45853/49997
+INFO:__main__:[Elapsed Time] : 1463780.2579402924ms, 29.273809290035256ms on average
 
 ```
 
