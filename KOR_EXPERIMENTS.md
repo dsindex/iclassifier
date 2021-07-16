@@ -195,7 +195,7 @@
 | XLM-RoBERTa-large , CLS                   | 91.38        | 24.5093 / -       |            |
 | KLUE-RoBERTa-base, CLS                    | 91.18        | 16.9337 / -       |            |
 | KLUE-RoBERTa-large, CLS                   | **91.71**    | 29.2738 / -       |            |
-| RoBERTa, DenseNet-CNN                     | -            | -       / -       | del 6,7,8,9,10,11, BERT as feature-based      |
+| RoBERTa, DenseNet-CNN                     | 89.99        | 13.6391 / -       | del 6,7,8,9,10,11, BERT as feature-based      |
 | Funnel-base , CLS                         | 91.51        | 41.8325 / -       |            |
 | KoBART-base , CLS                         | 89.57        | 18.9681 / -       |            |
 | KoGPT2-v2 , CLS                           | 89.41        | 13.4023 / -       |            |
@@ -814,6 +814,8 @@ INFO:__main__:[Elapsed Time] : 1463780.2579402924ms, 29.273809290035256ms on ave
 * enc_class=densenet-cnn
 
 $ python evaluate.py --config=configs/config-roberta-densenet-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
+INFO:__main__:[Accuracy] : 0.8999, 44992/49997
+INFO:__main__:[Elapsed Time] : 682024.4431495667ms, 13.639138845341026ms on average
 
 ```
 
