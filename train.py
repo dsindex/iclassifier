@@ -24,7 +24,7 @@ import json
 from tqdm import tqdm
 
 from util    import load_checkpoint, load_config, load_label, to_device, EarlyStopping, LabelSmoothingCrossEntropy
-from model   import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
+from model   import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS, TextBertDensenetCNN
 from transformers import AutoTokenizer, AutoConfig, AutoModel
 from dataset import prepare_dataset, GloveDataset, BertDataset
 from sklearn.metrics import classification_report, confusion_matrix
@@ -374,6 +374,8 @@ def prepare_model(config, bert_model_name_or_path=None):
         reduce_bert_model(config, bert_model, bert_config)
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
+        if config['enc_class'] == 'densenet-cnn': ModelClass = TextBertDensenetCNN
+
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, label_size, feature_based=args.bert_use_feature_based)
     if args.restore_path:
         checkpoint = load_checkpoint(args.restore_path)

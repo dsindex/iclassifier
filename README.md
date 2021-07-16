@@ -89,9 +89,10 @@
 | SqueezeBERT, CLS     | 97.29        | 18.0796 / -         | -        | 23.8565   |  -                | 20.3999     | 20.0118           | -                      | 11.9890 / FAIL           | threads=14     |
 | MiniLM, CLS          | 96.86        | 12.2094 / -         | 17.5638  | 38.2084   |  -                | 16.8337     | 17.7702           | -                      | 5.0394  / 4.3123         | threads=14     |
 | MobileBERT, CLS      | 96.43        | 49.9843 / -         | 46.2151  | 84.4232   |  -                | 51.9885     | 51.4533           | -                      | 15.3492 / 12.4416        | threads=14     |
+| BERT, Densenet-CNN   | 96.43        | 12.1489 / -         | 24.4789  | -         |  -                | 21.1535     | -                 | -                      | 7.0717  / 10.3142        | del 6,7,8,9,10,11, threads=14, BERT as feature-based |
 | BERT-base, CNN       | 97.57        | 12.1273 / -         | -        | -         |  -                | 34.7878     | 30.5454           | -                      | -                        | threads=14     |
 | BERT-base, CLS       | 97.43        | 12.7714 / -         | 46.4263  | 49.4747   |  -                | 30.7979     | 24.5353           | -                      | 16.9756                  | threads=14     |
-| BERT-base, CLS       | 97.00        | 9.2660  / -         | 31.5400  | 33.4623   |  -                | 16.7419     | 13.5703           | -                      | 11.7487                  | del 8,9,19,11, threads=14 |
+| BERT-base, CLS       | 97.00        | 9.2660  / -         | 31.5400  | 33.4623   |  -                | 16.7419     | 13.5703           | -                      | 11.7487                  | del 8,9,19,11, threads=14    |
 | BERT-large, CNN      | **98.00**    | 24.277  / -         | -        | -         |  -                | -           | -                 | -                      | -                        |                |
 | BERT-large, CLS      | 97.86        | 23.542  / -         | -        | -         |  -                | -           | -                 | -                      | -                        |                |
 
@@ -218,7 +219,7 @@ INFO:__main__:[Elapsed Time] : 5367ms, 7.500715307582261ms on average
 </details>
 
 
-<details><summary><b>emb_class=bert, enc_class=cnn | cls</b></summary>
+<details><summary><b>emb_class=bert, enc_class=cnn | cls | densenet-cnn</b></summary>
 <p>
 
 - train
@@ -234,6 +235,12 @@ $ python train.py --config=configs/config-bert-cnn.json --bert_model_name_or_pat
 
 $ python preprocess.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased
 $ python train.py --config=configs/config-bert-cls.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64
+
+* enc_class=densenet-cnn
+
+$ python preprocess.py --config=configs/config-bert-densenet-cnn.json --bert_model_name_or_path=./embeddings/bert-base-uncased
+$ python train.py --config=configs/config-bert-densenet-cnn.json --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_output_dir=bert-checkpoint --lr=0.00034429153877017527 --epoch=3 --batch_size=64 --seed 34 --bert_remove_layers=6,7,8,9,10,11 --bert_use_feature_based
+INFO:__main__:[study.best_params] : {'lr': 0.00034429153877017527, 'batch_size': 64, 'seed': 34, 'epochs': 2}
 
 ```
 
@@ -287,6 +294,14 @@ INFO:__main__:[Elapsed Time] : 4330.849170684814ms, 6.052388653734723ms on avera
 ** --config=configs/config-bert-cls.json --bert_model_name_or_paht=./embeddings/mobilebert-uncased
 INFO:__main__:[Accuracy] : 0.9643,   675/  700
 INFO:__main__:[Elapsed Time] : 35100.63934326172ms, 49.98437324818624ms on average
+
+* enc_class=densent-cnn
+$ python evaluate.py --config=configs/config-bert-densenet-cnn.json --bert_output_dir=bert-checkpoint
+INFO:__main__:[Accuracy] : 0.9600,   672/  700
+INFO:__main__:[Elapsed Time] : 8314.800024032593ms, 11.749483143993372ms on average
+
+INFO:__main__:[Accuracy] : 0.9643,   675/  700
+INFO:__main__:[Elapsed Time] : 8580.491542816162ms, 12.148977860872327ms on average
 
 ```
 
@@ -348,19 +363,20 @@ INFO:__main__:[Elapsed Time] : 35100.63934326172ms, 49.98437324818624ms on avera
 | MiniLM, CLS                             | 91.21        | 12.2066 / -       |              - / -       |               |
 | MiniLM, CLS                             | 93.25        | 11.5939 / -       |              - / -       | epoch=30      |
 | MobileBERT, CLS                         | 91.05        | 55.0898 / -       |              - / -       |               |
+| BERT, Densenet-CNN                      | 90.06        | 13.1141 / -       |              - / -       | del 6,7,8,9,10,11, BERT as feature-based, epoch=10    |
 | BERT-base, CNN                          | 92.04        | 14.1576 / -       |                          |               |
 | BERT-base, CLS                          | 92.42        | 12.7549 / 62.5050 | 66.4545(92.42) / 50.8080 | threads=14    |
 | BERT-base, CLS                          | 93.36        | 15.6755 / -       |              - / -       | fintuned using amazon reviews, epoch=10 |
-| BERT-base, CLS                          | 93.25        | 14.2535 / -       |              - / -       | augmented, n_iter=20              |
-| BERT-base, CLS                          | 92.81        | 15.2709 / -       |              - / -       | fastformers, augmented, n_iter=10 |
+| BERT-base, CLS                          | 93.25        | 14.2535 / -       |              - / -       | augmented, n_iter=20                    |
+| BERT-base, CLS                          | 92.81        | 15.2709 / -       |              - / -       | fastformers, augmented, n_iter=10       |
 | BERT-base, CLS                          | 93.36        | 15.2605 / -       |              - / -       | fastformers, augmented, n_iter=10, meta pseudo lables |
 | BERT-base, CNN                          | 90.55        | 10.6824 / -       |                          | del 8,9,10,11 |
-| BERT-base, CLS                          | 91.49        | 8.7747  / 42.8989 | 44.7676(90.61) / 34.3131 | del 8,9,10,11, threads=14         |
-| BERT-base, CLS                          | 90.23        | 7.0241  / -       |                          | del 6,7,8,9,10,11, threads=14     |
-| BERT-base, CLS                          | 86.66        | 5.8868  / -       |                          | del 4,5,6,7,8,9,10,11, threads=14 |
+| BERT-base, CLS                          | 91.49        | 8.7747  / 42.8989 | 44.7676(90.61) / 34.3131 | del 8,9,10,11, threads=14               |
+| BERT-base, CLS                          | 90.23        | 7.0241  / -       |                          | del 6,7,8,9,10,11, threads=14           |
+| BERT-base, CLS                          | 86.66        | 5.8868  / -       |                          | del 4,5,6,7,8,9,10,11, threads=14       |
 | BERT-large, CNN                         | 93.08        | 28.6490 / -       |                          |               |
 | BERT-large, CLS                         | 94.12        | 22.3767 / -       |                          |               |
-| BERT-large, CLS                         | 93.57        | 27.3209 / -       |                          | fintuned using amazon reviews     |
+| BERT-large, CLS                         | 93.57        | 27.3209 / -       |                          | fintuned using amazon reviews           |
 | BERT-large, CNN                         | 88.47        | 14.7813 / -       |                          | del 12~23     |
 | BERT-large, CLS                         | 86.71        | 12.1560 / -       |                          | del 12~23     |
 | SqueezeBERT, CNN                        | 90.61        | 19.2879 / -       |                          | epoch=20      |
@@ -530,7 +546,7 @@ INFO:__main__:[Elapsed Time] : 19214ms, 10.477472527472527ms on average
 </details>
 
 
-<details><summary><b>emb_class=bert, enc_class=cnn | cls</b></summary>
+<details><summary><b>emb_class=bert, enc_class=cnn | cls | densenet-cnn</b></summary>
 <p>
 
 - train
@@ -546,6 +562,12 @@ $ python train.py --config=configs/config-bert-cnn.json --data_dir=data/sst2 --b
 
 $ python preprocess.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased
 $ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64
+
+* enc_class=densenet-cnn
+$ python preprocess.py --config=configs/config-bert-densenet-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased
+$ python train.py --config=configs/config-bert-densenet-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_output_dir=bert-checkpoint --lr=0.00044768670992748386 --epoch=10 --batch_size=32 --seed=33 --bert_remove_layers=6,7,8,9,10,11 --bert_use_feature_based
+INFO:__main__:[study.best_params] : {'lr': 0.00044768670992748386, 'batch_size': 32, 'seed': 33, 'epochs': 9}
+
 ```
 
 - evaluation
@@ -746,6 +768,17 @@ $ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --b
 $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 INFO:__main__:[Accuracy] : 0.9325,  1698/ 1821
 INFO:__main__:[Elapsed Time] : 26077.781438827515ms, 14.253564195318537ms on average
+
+
+
+* enc_class=densenet-cnn
+
+$ python evaluate.py --config=configs/config-bert-densenet-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+INFO:__main__:[Accuracy] : 0.8918,  1624/ 1821
+INFO:__main__:[Elapsed Time] : 22776.880502700806ms, 12.451060525663607ms on average
+
+INFO:__main__:[Accuracy] : 0.9006,  1640/ 1821
+INFO:__main__:[Elapsed Time] : 23979.56347465515ms, 13.114127745995155ms on average
 
 ```
 

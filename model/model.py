@@ -650,3 +650,103 @@ class TextBertCLS(BaseModel):
         if return_bert_outputs: return fc_out, bert_outputs
         return fc_out
 
+class TextBertDensenetCNN(BaseModel):
+    def __init__(self, config, bert_config, bert_model, bert_tokenizer, label_size, feature_based=False):
+        super().__init__(config=config)
+
+        self.config = config
+        self.device = config['args'].device
+        seq_size = config['n_ctx']
+
+        # bert embedding layer
+        self.bert_config = bert_config
+        self.bert_model = bert_model
+        self.bert_tokenizer = bert_tokenizer
+        self.bert_hidden_size = bert_config.hidden_size
+        self.bert_feature_based = feature_based
+        emb_dim = self.bert_hidden_size
+
+        # Densenet layer
+        densenet_kernels = config['densenet_kernels']
+        densenet_first_num_filters = config['densenet_first_num_filters']
+        densenet_num_filters = config['densenet_num_filters']
+        densenet_last_num_filters = config['densenet_last_num_filters']
+        self.densenet = DenseNet(densenet_kernels, emb_dim, densenet_first_num_filters, densenet_num_filters, densenet_last_num_filters, activation=F.relu)
+        self.layernorm_densenet = nn.LayerNorm(self.densenet.last_dim)
+
+        # convolution layer
+        num_filters = config['num_filters']
+        kernel_sizes = config['kernel_sizes']
+        self.textcnn = TextCNN(densenet_last_num_filters, num_filters, kernel_sizes)
+        self.layernorm_textcnn = nn.LayerNorm(self.textcnn.last_dim)
+
+        self.dropout = nn.Dropout(config['dropout'])
+
+        # fully connected layer
+        fc_hidden_size = config['fc_hidden_size']
+        self.fc_hidden = nn.Linear(len(kernel_sizes) * num_filters, fc_hidden_size)
+        self.layernorm_fc_hidden = nn.LayerNorm(fc_hidden_size)
+        self.fc = nn.Linear(fc_hidden_size, label_size)
+
+    def _compute_bert_embedding(self, x, head_mask=None):
+        # x[0], x[1], x[2] : [batch_size, seq_size]
+        params = {
+            'input_ids': x[0],
+            'attention_mask': x[1],
+            'output_hidden_states': True,
+            'output_attentions': True,
+            'return_dict': True
+        }
+        if self.bert_model.config.model_type not in ['roberta', 'bart', 'distilbert', 'ibert', 't5']:
+            params['token_type_ids'] = x[2]
+        if head_mask is not None:
+            params['head_mask'] = head_mask
+        if self.bert_feature_based:
+            # feature-based
+            with torch.no_grad():
+                bert_outputs = self.bert_model(**params)
+        else:
+            # fine-tuning
+            bert_outputs = self.bert_model(**params)
+
+        embedded = bert_outputs.last_hidden_state
+
+        # embedded : [batch_size, seq_size, bert_hidden_size]
+        return embedded, bert_outputs
+
+    def forward(self, x, return_bert_outputs=False, head_mask=None):
+        # x[0], x[1], x[2] : [batch_size, seq_size]
+
+        mask = x[1].to(torch.uint8).to(self.device)
+        # mask == attention_mask : [batch_size, seq_size]
+        lengths = torch.sum(mask.to(torch.long), dim=1)
+        # lengths : [batch_size]
+
+        # 1. bert embedding
+        embedded, bert_outputs = self._compute_bert_embedding(x, head_mask=head_mask)
+        # embedded : [batch_size, seq_size, bert_hidden_size]
+        embedded = self.dropout(embedded)
+
+        # 2. DenseNet
+        densenet_out = self.densenet(embedded, mask)
+        # densenet_out : [batch_size, seq_size, densenet_last_num_filters]
+        densenet_out = self.layernorm_densenet(densenet_out)
+        densenet_out = self.dropout(densenet_out)
+
+        # 3. convolution
+        textcnn_out = self.textcnn(densenet_out)
+        # [batch_size, len(kernel_sizes) * num_filters]
+        textcnn_out = self.layernorm_textcnn(textcnn_out)
+        textcnn_out = self.dropout(textcnn_out)
+
+        # 4. fully connected
+        fc_hidden_out = self.fc_hidden(textcnn_out)
+        # fc_hidden_out : [batch_size, fc_hidden_size]
+        fc_hidden_out = self.layernorm_fc_hidden(fc_hidden_out)
+        fc_hidden_out = self.dropout(fc_hidden_out)
+        fc_out = self.fc(fc_hidden_out)
+        # fc_out : [batch_size, label_size]
+
+        if return_bert_outputs: return fc_out, bert_outputs
+        return fc_out
+

@@ -12,7 +12,7 @@ import numpy as np
 from diffq import DiffQuantizer
 
 from tqdm import tqdm
-from model import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS
+from model import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS, TextBertDensenetCNN
 from transformers import AutoTokenizer, AutoConfig, AutoModel
 from util import load_checkpoint, load_config, load_label, to_device, to_numpy, Tokenizer
 from dataset import prepare_dataset, GloveDataset, BertDataset
@@ -86,7 +86,10 @@ def load_model(config, checkpoint):
 
         ModelClass = TextBertCNN
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
+        if config['enc_class'] == 'densenet-cnn': ModelClass = TextBertDensenetCNN
+
         model = ModelClass(config, bert_config, bert_model, bert_tokenizer, label_size)
+
     if args.enable_qat:
         assert args.device == 'cpu'
         model.qconfig = torch.quantization.get_default_qat_qconfig('fbgemm')
