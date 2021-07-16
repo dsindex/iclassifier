@@ -89,12 +89,12 @@
 | SqueezeBERT, CLS     | 97.29        | 18.0796 / -         | -        | 23.8565   |  -                | 20.3999     | 20.0118           | -                      | 11.9890 / FAIL           | threads=14     |
 | MiniLM, CLS          | 96.86        | 12.2094 / -         | 17.5638  | 38.2084   |  -                | 16.8337     | 17.7702           | -                      | 5.0394  / 4.3123         | threads=14     |
 | MobileBERT, CLS      | 96.43        | 49.9843 / -         | 46.2151  | 84.4232   |  -                | 51.9885     | 51.4533           | -                      | 15.3492 / 12.4416        | threads=14     |
-| BERT, Densenet-CNN   | 96.43        | 12.1489 / -         | 24.4789  | -         |  -                | 21.1535     | -                 | -                      | 7.0717  / 10.3142        | del 6,7,8,9,10,11, threads=14, BERT as feature-based |
 | BERT-base, CNN       | 97.57        | 12.1273 / -         | -        | -         |  -                | 34.7878     | 30.5454           | -                      | -                        | threads=14     |
 | BERT-base, CLS       | 97.43        | 12.7714 / -         | 46.4263  | 49.4747   |  -                | 30.7979     | 24.5353           | -                      | 16.9756                  | threads=14     |
 | BERT-base, CLS       | 97.00        | 9.2660  / -         | 31.5400  | 33.4623   |  -                | 16.7419     | 13.5703           | -                      | 11.7487                  | del 8,9,19,11, threads=14    |
 | BERT-large, CNN      | **98.00**    | 24.277  / -         | -        | -         |  -                | -           | -                 | -                      | -                        |                |
 | BERT-large, CLS      | 97.86        | 23.542  / -         | -        | -         |  -                | -           | -                 | -                      | -                        |                |
+| BERT, Densenet-CNN   | 96.43        | 12.1489 / -         | 24.4789  | -         |  -                | 21.1535     | -                 | -                      | 7.0717  / 10.3142        | del 6,7,8,9,10,11, threads=14, BERT as feature-based |
 
 ```
 * GPU / CPU : Elapsed time/example(ms), GPU / CPU  [Tesla V100 1 GPU, Intel(R) Xeon(R) Gold 5120 CPU @ 2.20GHz, 2 CPU, 14CORES/1CPU, HyperThreading]
@@ -363,7 +363,6 @@ INFO:__main__:[Elapsed Time] : 8580.491542816162ms, 12.148977860872327ms on aver
 | MiniLM, CLS                             | 91.21        | 12.2066 / -       |              - / -       |               |
 | MiniLM, CLS                             | 93.25        | 11.5939 / -       |              - / -       | epoch=30      |
 | MobileBERT, CLS                         | 91.05        | 55.0898 / -       |              - / -       |               |
-| BERT, Densenet-CNN                      | 90.06        | 13.1141 / -       |              - / -       | del 6,7,8,9,10,11, BERT as feature-based, epoch=10    |
 | BERT-base, CNN                          | 92.04        | 14.1576 / -       |                          |               |
 | BERT-base, CLS                          | 92.42        | 12.7549 / 62.5050 | 66.4545(92.42) / 50.8080 | threads=14    |
 | BERT-base, CLS                          | 93.36        | 15.6755 / -       |              - / -       | fintuned using amazon reviews, epoch=10 |
@@ -417,6 +416,7 @@ INFO:__main__:[Elapsed Time] : 8580.491542816162ms, 12.148977860872327ms on aver
 | T5-3B, CLS                              | 95.99        | 34.8998 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 3B   |
 | T5-3B, CLS                              | **96.43**    | 33.8611 / -       |                          | epoch=10, accelerate, deepspeed, 3B         |
 | T5-11B, CLS                             | 95.61        | 113.8510/ -       |                          | epoch=10, accelerate, deepspeed, fp16, 11B  |
+| BERT, Densenet-CNN                      | 90.06        | 13.1141 / -       |              - / -       | del 6,7,8,9,10,11, BERT as feature-based, epoch=10    |
 
 - [sst2 leaderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 

@@ -195,6 +195,7 @@
 | XLM-RoBERTa-large , CLS                   | 91.38        | 24.5093 / -       |            |
 | KLUE-RoBERTa-base, CLS                    | 91.18        | 16.9337 / -       |            |
 | KLUE-RoBERTa-large, CLS                   | **91.71**    | 29.2738 / -       |            |
+| RoBERTa, DenseNet-CNN                     | -            | -       / -       | del 6,7,8,9,10,11, BERT as feature-based      |
 | Funnel-base , CLS                         | 91.51        | 41.8325 / -       |            |
 | KoBART-base , CLS                         | 89.57        | 18.9681 / -       |            |
 | KoGPT2-v2 , CLS                           | 89.41        | 13.4023 / -       |            |
@@ -755,7 +756,7 @@ INFO:__main__:[Elapsed Time] : 716717.779636383ms, 14.333377548080128ms on avera
 
 #### RoBERTa(kor-roberta-base-bbpe, xlm-roberta-base, xlm-roberta-large, klue-roberta-base, klue-roberta-large)
  
-<details><summary><b>enc_class=cnn | cls</b></summary>
+<details><summary><b>enc_class=cnn | cls | densenet-cnn</b></summary>
 <p>
 
 - train
@@ -769,6 +770,12 @@ $ python train.py --config=configs/config-roberta-cnn.json --bert_model_name_or_
 
 $ python preprocess.py --config=configs/config-roberta-cls.json --bert_model_name_or_path=./embeddings/kor-roberta-base-bbpe --data_dir=./data/clova_sentiments
 $ python train.py --config=configs/config-roberta-cls.json --bert_model_name_or_path=./embeddings/kor-roberta-base-bbpe --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments  --warmup_epoch=0 --weight_decay=0.0
+
+* enc_class=densent-cnn
+$ python preprocess.py --config=configs/config-roberta-densenet-cnn.json --bert_model_name_or_path=./embeddings/klue-roberta-base --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-roberta-densenet-cnn.json --bert_model_name_or_path=./embeddings/klue-roberta-base --bert_output_dir=bert-checkpoint --lr=3e-4 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments --bert_remove_layers=6,7,8,9,10,11 --bert_use_feature_based
+
+
 ```
 
 - evaluation
@@ -803,6 +810,10 @@ INFO:__main__:[Elapsed Time] : 846745.1119422913ms, 16.933719881420775ms on aver
 ** --bert_model_name_or_path=./embeddings/klue-roberta-large
 INFO:__main__:[Accuracy] : 0.9171, 45853/49997
 INFO:__main__:[Elapsed Time] : 1463780.2579402924ms, 29.273809290035256ms on average
+
+* enc_class=densenet-cnn
+
+$ python evaluate.py --config=configs/config-roberta-densenet-cnn.json --data_dir=./data/clova_sentiments --bert_output_dir=bert-checkpoint
 
 ```
 

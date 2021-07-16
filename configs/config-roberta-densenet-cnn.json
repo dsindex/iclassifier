@@ -1,0 +1,19 @@
+{
+    "emb_class": "roberta",
+    "enc_class": "densenet-cnn",
+    "n_ctx": 100,
+    "lowercase": true,
+    "token_emb_dim": 300,
+    "pad_token": "<pad>",
+    "pad_token_id": 0,
+    "unk_token": "<unk>",
+    "unk_token_id": 1,
+    "densenet_first_num_filters": 200,
+    "densenet_num_filters": 100,
+    "densenet_last_num_filters": 400,
+    "densenet_kernels": [[1,1], [3,3], [3,5], [3,7], [3,9]],
+    "num_filters": 256,
+    "kernel_sizes": [2, 3, 4],
+    "fc_hidden_size": 256,
+    "dropout": 0.3
+}
