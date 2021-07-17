@@ -417,6 +417,7 @@ INFO:__main__:[Elapsed Time] : 8580.491542816162ms, 12.148977860872327ms on aver
 | T5-3B, CLS                              | **96.43**    | 33.8611 / -       |                          | epoch=10, accelerate, deepspeed, 3B         |
 | T5-11B, CLS                             | 95.61        | 113.8510/ -       |                          | epoch=10, accelerate, deepspeed, fp16, 11B  |
 | BERT-base, Densenet-CNN                 | 90.06        | 13.1141 / -       |              - / -       | del 6,7,8,9,10,11, BERT as feature-based, epoch=10    |
+| BERT-base, Densenet-CNN                 | 90.88        | 13.2195 / -       |              - / -       | del 6,7,8,9,10,11, BERT as finetune-last, epoch=10    |
 
 - [sst2 leaderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -775,6 +776,12 @@ INFO:__main__:[Elapsed Time] : 26077.781438827515ms, 14.253564195318537ms on ave
 $ python evaluate.py --config=configs/config-bert-densenet-cnn.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 INFO:__main__:[Accuracy] : 0.9006,  1640/ 1821
 INFO:__main__:[Elapsed Time] : 23979.56347465515ms, 13.114127745995155ms on average
+
+** --bert_use_finetune_last , without --bert_use_feature_based
+INFO:__main__:[study.best_params] : {'lr': 0.00016342288028238142, 'batch_size': 64, 'seed': 42, 'epochs': 19}
+$ python train.py --config=configs/config-bert-densenet-cnn.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_output_dir=bert-checkpoint --lr=0.00016342288028238142 --epoch=20 --batch_size=64 --seed=42 --bert_remove_layers=6,7,8,9,10,11 --bert_use_finetune_last
+INFO:__main__:[Accuracy] : 0.9088,  1655/ 1821
+INFO:__main__:[Elapsed Time] : 24170.567512512207ms, 13.21952631185343ms on average
 
 ```
 

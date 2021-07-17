@@ -12,6 +12,7 @@ import random
 class BaseModel(nn.Module):
     def __init__(self, config=None):
         super(BaseModel, self).__init__()
+        self.config = config
         if config and hasattr(config['args'], 'seed'):
             self.set_seed(config['args'])
 
@@ -33,6 +34,16 @@ class BaseModel(nn.Module):
         if non_trainable:
             emb_layer.weight.requires_grad = False
         return emb_layer
+
+    def freeze_bert_layers(self, bert_model, bert_config, except_layer_idx=-1):
+        config = self.config
+        for param in list(bert_model.embeddings.parameters()):
+            param.requires_grad = False
+        layer_list = bert_model.encoder.layer
+        for layer_idx in range(bert_config.num_hidden_layers):
+            for param in list(layer_list[layer_idx].parameters()):
+                if layer_idx != except_layer_idx:
+                    param.requires_grad = False
 
 # ------------------------------------------------------------------------------ #
 # source code from https://github.com/tbung/naive-bayes-layer
@@ -481,7 +492,7 @@ class TextGloveDensenetDSA(BaseModel):
         return fc_out
 
 class TextBertCNN(BaseModel):
-    def __init__(self, config, bert_config, bert_model, bert_tokenizer, label_size, feature_based=False):
+    def __init__(self, config, bert_config, bert_model, bert_tokenizer, label_size, feature_based=False, finetune_last=False):
         super().__init__(config=config)
 
         self.config = config
@@ -494,6 +505,7 @@ class TextBertCNN(BaseModel):
         self.bert_tokenizer = bert_tokenizer
         self.bert_hidden_size = bert_config.hidden_size
         self.bert_feature_based = feature_based
+        self.bert_finetune_last = finetune_last
         emb_dim = self.bert_hidden_size
 
         # convolution layer
@@ -527,6 +539,10 @@ class TextBertCNN(BaseModel):
             # feature-based
             with torch.no_grad():
                 bert_outputs = self.bert_model(**params)
+        elif self.bert_finetune_last:
+            # finetune last layer only
+            self.freeze_bert_layers(self.bert_model, self.bert_config, except_layer_idx=self.bert_config.num_hidden_layers - 1)
+            bert_outputs = self.bert_model(**params)
         else:
             # fine-tuning
             bert_outputs = self.bert_model(**params)
@@ -561,7 +577,7 @@ class TextBertCNN(BaseModel):
         return fc_out
 
 class TextBertCLS(BaseModel):
-    def __init__(self, config, bert_config, bert_model, bert_tokenizer, label_size, feature_based=False):
+    def __init__(self, config, bert_config, bert_model, bert_tokenizer, label_size, feature_based=False, finetune_last=False):
         super().__init__(config=config)
 
         self.config = config
@@ -579,6 +595,7 @@ class TextBertCLS(BaseModel):
         self.bert_tokenizer = bert_tokenizer
         self.bert_hidden_size = bert_config.hidden_size
         self.bert_feature_based = feature_based
+        self.bert_finetune_last = finetune_last
 
         if self.enable_qat:
             '''
@@ -609,6 +626,10 @@ class TextBertCLS(BaseModel):
             # feature-based
             with torch.no_grad():
                 bert_outputs = self.bert_model(**params)
+        elif self.bert_finetune_last:
+            # finetune last layer only
+            self.freeze_bert_layers(self.bert_model, self.bert_config, except_layer_idx=self.bert_config.num_hidden_layers - 1)
+            bert_outputs = self.bert_model(**params)
         else:
             # fine-tuning
             bert_outputs = self.bert_model(**params)
@@ -651,7 +672,7 @@ class TextBertCLS(BaseModel):
         return fc_out
 
 class TextBertDensenetCNN(BaseModel):
-    def __init__(self, config, bert_config, bert_model, bert_tokenizer, label_size, feature_based=False):
+    def __init__(self, config, bert_config, bert_model, bert_tokenizer, label_size, feature_based=False, finetune_last=False):
         super().__init__(config=config)
 
         self.config = config
@@ -664,6 +685,7 @@ class TextBertDensenetCNN(BaseModel):
         self.bert_tokenizer = bert_tokenizer
         self.bert_hidden_size = bert_config.hidden_size
         self.bert_feature_based = feature_based
+        self.bert_finetune_last = finetune_last
         emb_dim = self.bert_hidden_size
 
         # Densenet layer
@@ -705,6 +727,10 @@ class TextBertDensenetCNN(BaseModel):
             # feature-based
             with torch.no_grad():
                 bert_outputs = self.bert_model(**params)
+        elif self.bert_finetune_last:
+            # finetune last layer only
+            self.freeze_bert_layers(self.bert_model, self.bert_config, except_layer_idx=self.bert_config.num_hidden_layers - 1)
+            bert_outputs = self.bert_model(**params)
         else:
             # fine-tuning
             bert_outputs = self.bert_model(**params)

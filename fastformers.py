@@ -610,6 +610,8 @@ def get_params():
                         help="Use BERT as feature-based, default fine-tuning")
     parser.add_argument('--bert_remove_layers', type=str, default='',
                         help="Specify layer numbers to remove during finetuning e.g. 8,9,10,11 to remove last 4 layers from BERT base(12 layers)")
+    parser.add_argument('--bert_use_finetune_last', action='store_true',
+                        help="Finetune last layer only. do not use this option with --bert_use_feature_based.")
     parser.add_argument('--enable_qat', action='store_true',
                         help="Set this flag for quantization aware training.")
     parser.add_argument('--enable_qat_fx', action='store_true',

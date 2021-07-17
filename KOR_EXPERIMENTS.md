@@ -197,7 +197,8 @@
 | KLUE-RoBERTa-large, CLS                   | **91.71**    | 29.2738 / -       |            |
 | KLUE-RoBERTa-base, DenseNet-CNN           | 89.99        | 13.6391 / -       | del 6,7,8,9,10,11, BERT as feature-based        |
 | KLUE-RoBERTa-base, DenseNet-CNN           | 89.13        | 10.0072 / -       | del 3,4,5,6,7,8,9,10,11, BERT as feature-based  |
-| KLUE-RoBERTa-base, DenseNet-CNN           | -            | -       / -       |            |
+| KLUE-RoBERTa-base, DenseNet-CNN           | 89.58        | 19.3999 / -       | BERT as feature-based                           |
+| KLUE-RoBERTa-base, DenseNet-CNN           | 89.41        | 13.5821 / -       | del 6,7,8,9,10,11, BERT as finetune-last        |
 | Funnel-base , CLS                         | 91.51        | 41.8325 / -       |            |
 | KoBART-base , CLS                         | 89.57        | 18.9681 / -       |            |
 | KoGPT2-v2 , CLS                           | 89.41        | 13.4023 / -       |            |
@@ -824,7 +825,12 @@ INFO:__main__:[Accuracy] : 0.8913, 44564/49997
 INFO:__main__:[Elapsed Time] : 500421.9720363617ms, 10.007290890125459ms on average
 
 ** without --bert_remove_layers
+INFO:__main__:[Accuracy] : 0.8958, 44787/49997
+INFO:__main__:[Elapsed Time] : 970042.0291423798ms, 19.399943461617678ms on average
 
+** --bert_use_finetune_last , without --bert_feature_based
+INFO:__main__:[Accuracy] : 0.8941, 44702/49997
+INFO:__main__:[Elapsed Time] : 679153.6240577698ms, 13.582108845586005ms on average
 
 ```
 

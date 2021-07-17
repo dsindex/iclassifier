@@ -376,7 +376,13 @@ def prepare_model(config, bert_model_name_or_path=None):
         if config['enc_class'] == 'cls': ModelClass = TextBertCLS
         if config['enc_class'] == 'densenet-cnn': ModelClass = TextBertDensenetCNN
 
-        model = ModelClass(config, bert_config, bert_model, bert_tokenizer, label_size, feature_based=args.bert_use_feature_based)
+        model = ModelClass(config,
+                           bert_config,
+                           bert_model,
+                           bert_tokenizer,
+                           label_size,
+                           feature_based=args.bert_use_feature_based,
+                           finetune_last=args.bert_use_finetune_last)
     if args.restore_path:
         checkpoint = load_checkpoint(args.restore_path)
         model.load_state_dict(checkpoint)
@@ -623,6 +629,8 @@ def get_params():
                         help="Use BERT as feature-based, default fine-tuning")
     parser.add_argument('--bert_remove_layers', type=str, default='',
                         help="Specify layer numbers to remove during finetuning e.g. 8,9,10,11 to remove last 4 layers from BERT base(12 layers)")
+    parser.add_argument('--bert_use_finetune_last', action='store_true',
+                        help="Finetune last layer only. do not use this option with --bert_use_feature_based.")
     # for Optuna
     parser.add_argument('--hp_search_optuna', action='store_true',
                         help="Set this flag to use hyper-parameter search by Optuna.")
