@@ -195,6 +195,9 @@
 | XLM-RoBERTa-large , CLS                   | 91.38        | 24.5093 / -       |            |
 | KLUE-RoBERTa-base, CLS                    | 91.18        | 16.9337 / -       |            |
 | KLUE-RoBERTa-large, CLS                   | **91.71**    | 29.2738 / -       |            |
+| KLUE-RoBERTa-base, CLS                    | 89.24        | 16.1074 / -       | BERT as finetune-last                           |
+| KLUE-RoBERTa-base, CLS                    | 88.71        | 10.2493 / -       | del 6,7,8,9,10,11, BERT as finetune-last        |
+| KLUE-RoBERTa-base, CLS                    | 87.06        | 6.6067  / -       | del 3,4,5,6,7,8,9,10,11, BERT as finetune-last  |
 | KLUE-RoBERTa-base, DenseNet-CNN           | 89.99        | 13.6391 / -       | del 6,7,8,9,10,11, BERT as feature-based        |
 | KLUE-RoBERTa-base, DenseNet-CNN           | 89.13        | 10.0072 / -       | del 3,4,5,6,7,8,9,10,11, BERT as feature-based  |
 | KLUE-RoBERTa-base, DenseNet-CNN           | 89.58        | 19.3999 / -       | BERT as feature-based                           |
@@ -813,6 +816,19 @@ INFO:__main__:[Elapsed Time] : 846745.1119422913ms, 16.933719881420775ms on aver
 ** --bert_model_name_or_path=./embeddings/klue-roberta-large
 INFO:__main__:[Accuracy] : 0.9171, 45853/49997
 INFO:__main__:[Elapsed Time] : 1463780.2579402924ms, 29.273809290035256ms on average
+
+** --bert_model_name_or_path=./embeddings/klue-roberta-base --bert_use_finetune_last
+$ python train.py --config=configs/config-roberta-cls.json --bert_model_name_or_path=./embeddings/klue-roberta-base --bert_output_dir=bert-checkpoint --lr=3e-4 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments --bert_use_finetune_last
+INFO:__main__:[Accuracy] : 0.8924, 44615/49997
+INFO:__main__:[Elapsed Time] : 805431.1783313751ms, 16.107465841453717ms on average
+
+** --bert_model_name_or_path=./embeddings/klue-roberta-base --bert_remove_layers=6,7,8,9,10,11 --bert_use_finetune_last
+INFO:__main__:[Accuracy] : 0.8871, 44350/49997
+INFO:__main__:[Elapsed Time] : 512547.13892936707ms, 10.249342314862606ms on average
+
+** --bert_model_name_or_path=./embeddings/klue-roberta-base --bert_remove_layers=3,4,5,6,7,8,9,10,11 --bert_use_finetune_last
+INFO:__main__:[Accuracy] : 0.8706, 43527/49997
+INFO:__main__:[Elapsed Time] : 330412.7221107483ms, 6.6067574357822405ms on average
 
 * enc_class=densenet-cnn
 

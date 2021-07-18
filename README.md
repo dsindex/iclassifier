@@ -92,9 +92,9 @@
 | BERT-base, CNN           | 97.57        | 12.1273 / -         | -        | -         |  -                | 34.7878     | 30.5454           | -                      | -                        | threads=14     |
 | BERT-base, CLS           | 97.43        | 12.7714 / -         | 46.4263  | 49.4747   |  -                | 30.7979     | 24.5353           | -                      | 16.9756                  | threads=14     |
 | BERT-base, CLS           | 97.00        | 9.2660  / -         | 31.5400  | 33.4623   |  -                | 16.7419     | 13.5703           | -                      | 11.7487                  | del 8,9,19,11, threads=14    |
+| BERT-base, Densenet-CNN  | 96.43        | 12.1489 / -         | 24.4789  | -         |  -                | 21.1535     | -                 | -                      | 7.0717  / 10.3142        | del 6,7,8,9,10,11, threads=14, BERT as feature-based |
 | BERT-large, CNN          | **98.00**    | 24.277  / -         | -        | -         |  -                | -           | -                 | -                      | -                        |                |
 | BERT-large, CLS          | 97.86        | 23.542  / -         | -        | -         |  -                | -           | -                 | -                      | -                        |                |
-| BERT-base, Densenet-CNN  | 96.43        | 12.1489 / -         | 24.4789  | -         |  -                | 21.1535     | -                 | -                      | 7.0717  / 10.3142        | del 6,7,8,9,10,11, threads=14, BERT as feature-based |
 
 ```
 * GPU / CPU : Elapsed time/example(ms), GPU / CPU  [Tesla V100 1 GPU, Intel(R) Xeon(R) Gold 5120 CPU @ 2.20GHz, 2 CPU, 14CORES/1CPU, HyperThreading]
@@ -365,17 +365,22 @@ INFO:__main__:[Elapsed Time] : 8580.491542816162ms, 12.148977860872327ms on aver
 | MobileBERT, CLS                         | 91.05        | 55.0898 / -       |              - / -       |               |
 | BERT-base, CNN                          | 92.04        | 14.1576 / -       |                          |               |
 | BERT-base, CLS                          | 92.42        | 12.7549 / 62.5050 | 66.4545(92.42) / 50.8080 | threads=14    |
-| BERT-base, CLS                          | 93.36        | 15.6755 / -       |              - / -       | fintuned using amazon reviews, epoch=10 |
-| BERT-base, CLS                          | 93.25        | 14.2535 / -       |              - / -       | augmented, n_iter=20                    |
-| BERT-base, CLS                          | 92.81        | 15.2709 / -       |              - / -       | fastformers, augmented, n_iter=10       |
+| BERT-base, CLS                          | 93.36        | 15.6755 / -       |              - / -       | fintuned using amazon reviews, epoch=10               |
+| BERT-base, CLS                          | 93.25        | 14.2535 / -       |              - / -       | augmented, n_iter=20                                  |
+| BERT-base, CLS                          | 92.81        | 15.2709 / -       |              - / -       | fastformers, augmented, n_iter=10                     |
 | BERT-base, CLS                          | 93.36        | 15.2605 / -       |              - / -       | fastformers, augmented, n_iter=10, meta pseudo lables |
-| BERT-base, CNN                          | 90.55        | 10.6824 / -       |                          | del 8,9,10,11 |
-| BERT-base, CLS                          | 91.49        | 8.7747  / 42.8989 | 44.7676(90.61) / 34.3131 | del 8,9,10,11, threads=14               |
-| BERT-base, CLS                          | 90.23        | 7.0241  / -       |                          | del 6,7,8,9,10,11, threads=14           |
-| BERT-base, CLS                          | 86.66        | 5.8868  / -       |                          | del 4,5,6,7,8,9,10,11, threads=14       |
+| BERT-base, CNN                          | 90.55        | 10.6824 / -       |                          | del 8,9,10,11                                         |
+| BERT-base, CLS                          | 91.49        | 8.7747  / 42.8989 | 44.7676(90.61) / 34.3131 | del 8,9,10,11, threads=14                             |
+| BERT-base, CLS                          | 90.23        | 7.0241  / -       |                          | del 6,7,8,9,10,11, threads=14                         |
+| BERT-base, CLS                          | 86.66        | 5.8868  / -       |                          | del 4,5,6,7,8,9,10,11, threads=14                     |
+| BERT-base, CLS                          | 90.44        | 17.6778 / -       |                          | BERT as finetune-last                                 |
+| BERT-base, CLS                          | 87.04        | 9.3327  / -       |                          | del 6,7,8,9,10,11, BERT as finetune-last              |
+| BERT-base, CLS                          | 85.55        | 6.2722  / -       |                          | del 3,4,5,6,7,8,9,10,11, BERT as finetune-last        |
+| BERT-base, Densenet-CNN                 | 90.06        | 13.1141 / -       |              - / -       | del 6,7,8,9,10,11, BERT as feature-based, epoch=10    |
+| BERT-base, Densenet-CNN                 | 90.88        | 13.2195 / -       |              - / -       | del 6,7,8,9,10,11, BERT as finetune-last, epoch=10    |
 | BERT-large, CNN                         | 93.08        | 28.6490 / -       |                          |               |
 | BERT-large, CLS                         | 94.12        | 22.3767 / -       |                          |               |
-| BERT-large, CLS                         | 93.57        | 27.3209 / -       |                          | fintuned using amazon reviews           |
+| BERT-large, CLS                         | 93.57        | 27.3209 / -       |                          | fintuned using amazon reviews                         |
 | BERT-large, CNN                         | 88.47        | 14.7813 / -       |                          | del 12~23     |
 | BERT-large, CLS                         | 86.71        | 12.1560 / -       |                          | del 12~23     |
 | SqueezeBERT, CNN                        | 90.61        | 19.2879 / -       |                          | epoch=20      |
@@ -416,8 +421,6 @@ INFO:__main__:[Elapsed Time] : 8580.491542816162ms, 12.148977860872327ms on aver
 | T5-3B, CLS                              | 95.99        | 34.8998 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 3B   |
 | T5-3B, CLS                              | **96.43**    | 33.8611 / -       |                          | epoch=10, accelerate, deepspeed, 3B         |
 | T5-11B, CLS                             | 95.61        | 113.8510/ -       |                          | epoch=10, accelerate, deepspeed, fp16, 11B  |
-| BERT-base, Densenet-CNN                 | 90.06        | 13.1141 / -       |              - / -       | del 6,7,8,9,10,11, BERT as feature-based, epoch=10    |
-| BERT-base, Densenet-CNN                 | 90.88        | 13.2195 / -       |              - / -       | del 6,7,8,9,10,11, BERT as finetune-last, epoch=10    |
 
 - [sst2 leaderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -770,6 +773,18 @@ $ python evaluate.py --config=configs/config-bert-cls.json --data_dir=data/sst2 
 INFO:__main__:[Accuracy] : 0.9325,  1698/ 1821
 INFO:__main__:[Elapsed Time] : 26077.781438827515ms, 14.253564195318537ms on average
 
+** --bert_use_finetune_last
+$ python train.py --config=configs/config-bert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/bert-base-uncased --bert_output_dir=bert-checkpoint --lr=1e-4 --epoch=10 --batch_size=64 --bert_use_finetune_last
+INFO:__main__:[Accuracy] : 0.9044,  1647/ 1821
+INFO:__main__:[Elapsed Time] : 32294.266939163208ms, 17.677827719803695ms on average
+
+** --bert_use_finetune_last --bert_remove_layers=6,7,8,9,10,11
+INFO:__main__:[Accuracy] : 0.8704,  1585/ 1821
+INFO:__main__:[Elapsed Time] : 17087.70990371704ms, 9.33271423800961ms on average
+
+** --bert_use_finetune_last --bert_remove_layers=3,4,5,6,7,8,9,10,11
+INFO:__main__:[Accuracy] : 0.8550,  1557/ 1821
+INFO:__main__:[Elapsed Time] : 11510.003805160522ms, 6.272209083640968ms on average
 
 * enc_class=densenet-cnn
 
