@@ -39,6 +39,7 @@ class BaseModel(nn.Module):
         config = self.config
         for param in list(bert_model.embeddings.parameters()):
             param.requires_grad = False
+        # note that 'distilbert' has no encoder.layer, don't use for distilbert.
         layer_list = bert_model.encoder.layer
         for layer_idx in range(bert_config.num_hidden_layers):
             for param in list(layer_list[layer_idx].parameters()):

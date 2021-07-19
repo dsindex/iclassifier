@@ -297,7 +297,7 @@ def prepare_datasets(config, hp_search_bsz=None, train_path=None, valid_path=Non
 def get_bert_embed_layer_list(config, bert_model):
     args = config['args']
     embed_list = list(bert_model.embeddings.parameters())
-    # note that 'distilbert' has no encoder.layer, so don't use bert_remove_layers for distilbert.
+    # note that 'distilbert' has no encoder.layer, don't use for distilbert.
     layer_list = bert_model.encoder.layer
     return embed_list, layer_list
 
