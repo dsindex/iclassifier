@@ -423,7 +423,7 @@ INFO:__main__:[Elapsed Time] : 8580.491542816162ms, 12.148977860872327ms on aver
 | T5-3B, CLS                              | **96.43**    | 33.8611 / -       |                          | epoch=10, accelerate, deepspeed, 3B         |
 | T5-11B, CLS                             | 95.61        | 113.8510/ -       |                          | epoch=10, accelerate, deepspeed, fp16, 11B  |
 | MegatronBERT-345m, CLS                  | 96.21        | 31.2049 / -       |                          | epoch=10      |
-| MegatronGPT2-345m, CLS                  | -            | -       / -       |                          | epoch=10      |
+| MegatronGPT2-345m, CLS                  | 92.81        | 27.8698 / -       |                          | epoch=10      |
 
 - [sst2 leaderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -1445,6 +1445,8 @@ INFO:__main__:[Elapsed Time] : 56964.438915252686ms, 31.2049177976755ms on avera
 
 ** megatron gpt-2
 $ python evaluate.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
+INFO:__main__:[Accuracy] : 0.9281,  1690/ 1821
+INFO:__main__:[Elapsed Time] : 50888.68188858032ms, 27.869893299354302ms on average
 
 ```
 
