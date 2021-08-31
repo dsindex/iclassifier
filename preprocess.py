@@ -252,6 +252,9 @@ def preprocess_bert(config):
         tokenizer.cls_token = '<s>'
         tokenizer.sep_token = '</s>'
         tokenizer.pad_token = '<pad>'
+    elif config['emb_class'] in ['megatronbert']:
+        from transformers import BertTokenizer
+        tokenizer = BertTokenizer.from_pretrained(args.bert_model_name_or_path)
     else:
         tokenizer = AutoTokenizer.from_pretrained(args.bert_model_name_or_path)
 

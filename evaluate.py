@@ -79,6 +79,11 @@ def load_model(config, checkpoint):
             bert_tokenizer.pad_token = '<pad>'
             bert_config = AutoConfig.from_pretrained(args.bert_output_dir)
             bert_model = T5EncoderModel(bert_config)
+        elif config['emb_class'] in ['megatronbert']:    
+            from transformers import BertTokenizer, MegatronBertModel
+            bert_tokenizer = BertTokenizer.from_pretrained(args.bert_output_dir)
+            bert_model = MegatronBertModel.from_pretrained(args.bert_output_dir)
+            bert_config = bert_model.config
         else:
             bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir)
             bert_config = AutoConfig.from_pretrained(args.bert_output_dir)

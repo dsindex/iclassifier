@@ -363,6 +363,11 @@ def prepare_model(config, bert_model_name_or_path=None):
             bert_tokenizer.pad_token = '<pad>'
             bert_model = T5EncoderModel.from_pretrained(model_name_or_path,
                                                         from_tf=bool(".ckpt" in model_name_or_path))
+        elif config['emb_class'] in ['megatronbert']:
+            from transformers import BertTokenizer, MegatronBertModel
+            bert_tokenizer = BertTokenizer.from_pretrained(model_name_or_path)
+            bert_model = MegatronBertModel.from_pretrained(model_name_or_path,
+                                                        from_tf=bool(".ckpt" in model_name_or_path))
 
         else:
             bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)

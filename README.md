@@ -4,6 +4,7 @@
 
 - embedding
   - GloVe, BERT, DistilBERT, mDistilBERT, TinyBERT, MiniLM, MobileBERT, SpanBERT, ALBERT, RoBERTa, XLM-RoBERTa, BART, ELECTRA, DeBERTa, BORT, ConvBERT
+  - GPT-2, GPT-NEO, T5, MegatronBERT
 - encoding
   - GNB
     - Gaussian Naive Bayes(simple biased model)
@@ -421,6 +422,7 @@ INFO:__main__:[Elapsed Time] : 8580.491542816162ms, 12.148977860872327ms on aver
 | T5-3B, CLS                              | 95.99        | 34.8998 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 3B   |
 | T5-3B, CLS                              | **96.43**    | 33.8611 / -       |                          | epoch=10, accelerate, deepspeed, 3B         |
 | T5-11B, CLS                             | 95.61        | 113.8510/ -       |                          | epoch=10, accelerate, deepspeed, fp16, 11B  |
+| MegatronBERT-345m, CLS                  | -            | -       / -       |                          | epoch=10      |
 
 - [sst2 leaderboard](https://paperswithcode.com/sota/sentiment-analysis-on-sst-2-binary)
 
@@ -1407,6 +1409,31 @@ INFO:__main__:[Elapsed Time] : 210478.55591773987ms, 115.39863138408451ms on ave
 ** accelerate launch, deepspeed & t5-11b
 INFO:__main__:[Accuracy] : 0.9561,  1741/ 1821
 INFO:__main__:[Elapsed Time] : 207480.0992012024ms, 113.8510259953174ms on average
+
+```
+
+</p>
+</details>
+
+
+<details><summary><b>emb_class=megatronbert, enc_class=cnn | cls</b></summary>
+<p>
+
+- train
+```
+* n_ctx size should be less than 512
+
+* enc_class=cls
+
+$ python preprocess.py --config=configs/config-megatronbert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/megatron-bert-cased-345m
+$ python train.py --config=configs/config-megatronbert-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/megatron-bert-cased-345m --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=32
+```
+
+- evaluation
+```
+* enc_class=cls
+
+$ python evaluate.py --config=configs/config-megatronbert-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
 
 ```
 
