@@ -108,6 +108,11 @@
 - KLUE-RoBERTa-base, KLUE-RoBERTa-large
   - from [huggingface.co/models](https://huggingface.co/klue)
 
+- MA-RoBERTa-base
+  - RoBERTa-base와 차이점
+    - 더 많은 데이터, morpheme-aware tokenizer, larger batch size
+  - `kor-roberta-base-morpheme-aware` (inhouse)
+
 #### Funnel
 
 - Funnel-base
@@ -191,6 +196,7 @@
 | dhaToken1.large ELECTRA-base , CLS        | 90.88        | 14.3333 / -       |            |
 | RoBERTa-base , CNN                        | 90.42        | 14.9544 / -       |            |
 | RoBERTa-base , CLS                        | 90.34        | 13.8556 / -       |            |
+| MA-RoBERTa-base , CLS                     | 90.66        | 11.3767 / -       |            |
 | XLM-RoBERTa-base , CLS                    | 89.98        | 14.8101 / -       |            |
 | XLM-RoBERTa-large , CLS                   | 91.38        | 24.5093 / -       |            |
 | KLUE-RoBERTa-base, CLS                    | 91.18        | 16.9337 / -       |            |
@@ -760,7 +766,7 @@ INFO:__main__:[Elapsed Time] : 716717.779636383ms, 14.333377548080128ms on avera
 </p>
 </details>
 
-#### RoBERTa(kor-roberta-base-bbpe, xlm-roberta-base, xlm-roberta-large, klue-roberta-base, klue-roberta-large)
+#### RoBERTa(kor-roberta-base-bbpe, xlm-roberta-base, xlm-roberta-large, klue-roberta-base, klue-roberta-large, kor-roberta-base-morpheme-aware)
  
 <details><summary><b>enc_class=cnn | cls | densenet-cnn</b></summary>
 <p>
@@ -778,6 +784,7 @@ $ python preprocess.py --config=configs/config-roberta-cls.json --bert_model_nam
 $ python train.py --config=configs/config-roberta-cls.json --bert_model_name_or_path=./embeddings/kor-roberta-base-bbpe --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments  --warmup_epoch=0 --weight_decay=0.0
 
 * enc_class=densent-cnn
+
 $ python preprocess.py --config=configs/config-roberta-densenet-cnn.json --bert_model_name_or_path=./embeddings/klue-roberta-base --data_dir=./data/clova_sentiments
 $ python train.py --config=configs/config-roberta-densenet-cnn.json --bert_model_name_or_path=./embeddings/klue-roberta-base --bert_output_dir=bert-checkpoint --lr=3e-4 --epoch=30 --batch_size=64 --data_dir=./data/clova_sentiments --bert_remove_layers=6,7,8,9,10,11 --bert_use_feature_based
 
@@ -829,6 +836,11 @@ INFO:__main__:[Elapsed Time] : 512547.13892936707ms, 10.249342314862606ms on ave
 ** --bert_model_name_or_path=./embeddings/klue-roberta-base --bert_remove_layers=3,4,5,6,7,8,9,10,11 --bert_use_finetune_last
 INFO:__main__:[Accuracy] : 0.8706, 43527/49997
 INFO:__main__:[Elapsed Time] : 330412.7221107483ms, 6.6067574357822405ms on average
+
+** --bert_model_name_or_path=./embeddings/kor-roberta-base-morpheme-aware
+INFO:__main__:[Accuracy] : 0.9066, 45329/49997
+INFO:__main__:[Elapsed Time] : 569241.5750026703ms, 11.376753646151068ms on average
+
 
 * enc_class=densenet-cnn
 
