@@ -4,103 +4,6 @@
   - 1.3.0, 1.4.0 : bad for multi-processing on CPU.
 
 
-## quantization
-
-- [dynamic quantization](https://pytorch.org/docs/stable/quantization.html#dynamic-quantization)
-  - with `--enable_dqm`
-
-- [quantization aware training](https://pytorch.org/docs/stable/quantization.html#quantization-aware-training)
-
-  - preprocessing
-  ```
-  ** glove
-  $ python preprocess.py --config=configs/config-glove-cnn.json
-
-  ** bert
-  $ python preprocess.py --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/distilbert-base-uncased
-  ```
-
-  - quantization aware training
-  ```
-  ** glove
-  $ python train.py --config=configs/config-glove-cnn.json --save_path=pytorch-model-qat.pt --enable_qat
-
-  ** bert (modified transformers code required)
-  $ python train.py --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64 --save_path=pytorch-model-qat.pt --enable_qat
-  ```
-
-  - evaluate, inference
-  ```
-  ** glove
-  $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat
-  $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat --enable_inference
-
-  ** bert (modified transformers code required)
-  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat
-  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat --enable_inference
-  ```
-
-- [(PROTOTYPE) FX GRAPH MODE POST TRAINING STATIC QUANTIZATION](https://pytorch.org/tutorials/prototype/fx_graph_mode_ptq_static.html)
-
-  - pytorch >= 1.8.0
-
-  - preprocessing
-    - same as above
-
-  - quantization aware training
-  ```
-  ** glove
-  $ python train.py --config=configs/config-glove-cnn.json --save_path=pytorch-model-qat.pt --enable_qat_fx
-
-  ** bert (not working)
-  $ python train.py --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64 --save_path=pytorch-model-qat.pt --enable_qat_fx
-  ```
-
-  - evaluate, inference
-  ```
-  ** glove
-  $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat_fx
-  $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat_fx --enable_inference
-
-  ** bert (not working)
-  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat_fx
-  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat_fx --enable_inference
-  ```
-
-- [diffq](https://github.com/facebookresearch/diffq)
-  - preprocessing
-    - same as above
-
-  - training with diffq
-  ```
-  * bert
-  $ python train.py --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64 --save_path=pytorch-model-diffq.pt --enable_diffq
-
-  ```
-
-  - evaluate, inference
-  ```
-  * bert
-  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-diffq.pt --device=cpu --num_threads=14 --enable_diffq
-  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-diffq.pt --device=cpu --num_threads=14 --enable_diffq --enable_inference
-  ```
-
-  - onnx conversion and inference
-  ```
-  $ python evaluate.py --config=configs/config-distilbert-cls.json --model_path=pytorch-model-diffq.pt --bert_output_dir=bert-checkpoint --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu --enable_diffq > onnx-graph-bert-cls.txt
-
-  # onnx quantization
-  $ python evaluate.py --config=configs/config-distilbert-cls.json --model_path=pytorch-model-diffq.pt --bert_output_dir=bert-checkpoint --convert_onnx --onnx_path=pytorch-model.onnx --quantize_onnx --quantized_onnx_path=pytorch-model.onnx-quantized --device=cpu --enable_diffq > onnx-graph-bert-cls.txt
-
-  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-diffq.pt --enable_diffq --onnx_path=pytorch-model.onnx --enable_ort --device=cpu --num_threads=14 --enable_inference
-  INFO:__main__:[Elapsed Time(total_duration_time, average)] : 8132.485866546631ms, 11.634457605932234ms
-
-  # inference with quantized onnx
-  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-diffq.pt --enable_diffq --onnx_path=pytorch-model.onnx-quantized --enable_ort --device=cpu --num_threads=14 --enable_inference
-  INFO:__main__:[Elapsed Time(total_duration_time, average)] : 3178.85422706604ms, 4.547717063041545ms
-  ```
-
-
 ## conversion pytorch model to onnx format, inference with onnxruntime
 
 - requirements
@@ -186,6 +89,106 @@ $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=ber
 $ python evaluate.py --config=configs/config-bert-cls.json --bert_output_dir=bert-checkpoint --onnx_path=pytorch-model.onnx-quantized --enable_ort --device=cpu --num_threads=14
 
 ```
+
+
+## quantization
+
+- [dynamic quantization](https://pytorch.org/docs/stable/quantization.html#dynamic-quantization)
+  - with `--enable_dqm`
+
+- [quantization aware training](https://pytorch.org/docs/stable/quantization.html#quantization-aware-training)
+
+  - preprocessing
+  ```
+  ** glove
+  $ python preprocess.py --config=configs/config-glove-cnn.json
+
+  ** bert
+  $ python preprocess.py --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/distilbert-base-uncased
+  ```
+
+  - quantization aware training
+  ```
+  ** glove
+  $ python train.py --config=configs/config-glove-cnn.json --save_path=pytorch-model-qat.pt --enable_qat
+
+  ** bert (modified transformers code required)
+  $ python train.py --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64 --save_path=pytorch-model-qat.pt --enable_qat
+  ```
+
+  - evaluate, inference
+  ```
+  ** glove
+  $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat
+  $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat --enable_inference
+
+  ** bert (modified transformers code required)
+  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat
+  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat --enable_inference
+  ```
+
+- [(PROTOTYPE) FX GRAPH MODE POST TRAINING STATIC QUANTIZATION](https://pytorch.org/tutorials/prototype/fx_graph_mode_ptq_static.html)
+
+  - pytorch >= 1.8.0
+
+  - preprocessing
+    - same as above
+
+  - quantization aware training
+  ```
+  ** glove
+  $ python train.py --config=configs/config-glove-cnn.json --save_path=pytorch-model-qat.pt --enable_qat_fx
+
+  ** bert (not working)
+  $ python train.py --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64 --save_path=pytorch-model-qat.pt --enable_qat_fx
+  ```
+
+  - evaluate, inference
+  ```
+  ** glove
+  $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat_fx
+  $ python evaluate.py --config=configs/config-glove-cnn.json --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat_fx --enable_inference
+
+  ** bert (not working)
+  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat_fx
+  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-qat.pt --device=cpu --num_threads=14 --enable_qat_fx --enable_inference
+  ```
+
+- [diffq](https://github.com/facebookresearch/diffq)
+  - preprocessing
+    - same as above
+
+  - training with diffq
+  ```
+  * bert
+  $ python train.py --config=configs/config-distilbert-cls.json --bert_model_name_or_path=./embeddings/distilbert-base-uncased --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=3 --batch_size=64 --save_path=pytorch-model-diffq.pt --enable_diffq
+
+  ```
+
+  - evaluate, inference
+  ```
+  * bert
+  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-diffq.pt --device=cpu --num_threads=14 --enable_diffq
+  ... unexpected DataLoader segmentation fault.
+
+  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-diffq.pt --device=cpu --num_threads=14 --enable_diffq --enable_inference
+  ```
+
+  - onnx conversion and inference
+  ```
+  $ python evaluate.py --config=configs/config-distilbert-cls.json --model_path=pytorch-model-diffq.pt --bert_output_dir=bert-checkpoint --convert_onnx --onnx_path=pytorch-model.onnx --device=cpu --enable_diffq > onnx-graph-bert-cls.txt
+
+  # onnx quantization
+  $ python evaluate.py --config=configs/config-distilbert-cls.json --model_path=pytorch-model-diffq.pt --bert_output_dir=bert-checkpoint --convert_onnx --onnx_path=pytorch-model.onnx --quantize_onnx --quantized_onnx_path=pytorch-model.onnx-quantized --device=cpu --enable_diffq > onnx-graph-bert-cls.txt
+
+  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-diffq.pt --enable_diffq --onnx_path=pytorch-model.onnx --enable_ort --device=cpu --num_threads=14 --enable_inference
+  INFO:__main__:[Elapsed Time(total_duration_time, average)] : 8132.485866546631ms, 11.634457605932234ms
+
+  # inference with quantized onnx
+  $ python evaluate.py --config=configs/config-distilbert-cls.json --bert_output_dir=bert-checkpoint --model_path=pytorch-model-diffq.pt --enable_diffq --onnx_path=pytorch-model.onnx-quantized --enable_ort --device=cpu --num_threads=14 --enable_inference
+  INFO:__main__:[Elapsed Time(total_duration_time, average)] : 3178.85422706604ms, 4.547717063041545ms
+  ```
+
 
 ## hyper-parameter search
 
@@ -310,4 +313,6 @@ INFO:__main__:[Elapsed Time] : 410282.794713974ms, 8.204527655280355ms on averag
   - [Compile PyTorch Models](https://tvm.apache.org/docs/tutorials/frontend/from_pytorch.html)
   - [Speed up your BERT inference by 3x on CPUs using Apache TVM](https://medium.com/apache-mxnet/speed-up-your-bert-inference-by-3x-on-cpus-using-apache-tvm-9cf7776cd7f8)
   - [TorchScript](https://huggingface.co/transformers/torchscript.html#using-torchscript-in-python)
+- quantization
+  - [LPOT](https://github.com/intel/neural-compressor)
 
