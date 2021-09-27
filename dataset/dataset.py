@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 def prepare_dataset(config, filepath, DatasetClass, sampling=False, num_workers=1, batch_size=0, hp_search_bsz=None):
     args = config['args']
-    dataset = DatasetClass(filepath)
+    dataset = DatasetClass(config, filepath)
 
     if sampling:
         sampler = RandomSampler(dataset)
@@ -29,7 +29,7 @@ def prepare_dataset(config, filepath, DatasetClass, sampling=False, num_workers=
     return loader
 
 class GloveDataset(Dataset):
-    def __init__(self, path):
+    def __init__(self, config, path):
         x,y = [],[]
         logits_as_label = False
         with open(path,'r',encoding='utf-8') as f:
@@ -57,24 +57,29 @@ class GloveDataset(Dataset):
         return self.x[idx], self.y[idx]
 
 class BertDataset(Dataset):
-    def __init__(self, path):
-        # load features from file
-        features = torch.load(path)
-        # convert to tensors and build dataset
-        all_input_ids = torch.tensor([f.input_ids for f in features], dtype=torch.long)
-        all_input_mask = torch.tensor([f.input_mask for f in features], dtype=torch.long)
-        all_segment_ids = torch.tensor([f.segment_ids for f in features], dtype=torch.long)
-        probe_label_id = features[0].label_id
-        if len(str(probe_label_id).split()) >= 2: # logits as label
-            all_label_id = torch.tensor([[float(logit) for logit in str(f.label_id).split()] for f in features])
-        else:
-            all_label_id = torch.tensor([f.label_id for f in features], dtype=torch.long)
+    def __init__(self, config, path):
+        dataset = torch.load(path)
 
-        self.x = TensorDataset(all_input_ids, all_input_mask, all_segment_ids)
-        self.y = all_label_id
+        all_input_ids = torch.tensor([f for f in dataset['input_ids']], dtype=torch.long)
+        all_attention_mask = torch.tensor([f for f in dataset['attention_mask']], dtype=torch.long)
+        probe_label_id = dataset['label'][0]
+
+        if config['emb_class'] in ['roberta', 'bart', 'distilbert', 'ibert', 't5']:
+            self.x = TensorDataset(all_input_ids, all_attention_mask)
+        else:
+            all_token_type_ids = torch.tensor([f for f in dataset['token_type_ids']], dtype=torch.long)
+            self.x = TensorDataset(all_input_ids, all_attention_mask, all_token_type_ids) 
+
+        if len(str(probe_label_id).split()) >= 2: # logits as label'
+            all_label = torch.tensor([[float(logit) for logit in str(f).split()] for f in dataset['label']])
+        else:
+            all_label = torch.tensor([f for f in dataset['label']], dtype=torch.long)
+
+        self.y = all_label
  
     def __len__(self):
         return len(self.y)
 
     def __getitem__(self, idx):
         return self.x[idx], self.y[idx]
+

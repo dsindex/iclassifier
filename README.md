@@ -1501,6 +1501,15 @@ INFO:__main__:[Elapsed Time] : 50888.68188858032ms, 27.869893299354302ms on aver
 <br>
 
 
+# Sentence Pair Classification
+
+- [SENTENCE-PAIR.md](/SENTENCE-PAIR.md)
+  - sentence pair classification
+    - KorNLI
+
+<br>
+
+
 # Citation
 
 ```

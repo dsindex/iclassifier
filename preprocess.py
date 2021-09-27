@@ -10,7 +10,8 @@ import pdb
 import logging
 
 from tqdm import tqdm
-from util import load_config, read_examples_from_file, convert_examples_to_features, Tokenizer
+from util import load_config, Tokenizer
+from datasets import Dataset
 from transformers import AutoTokenizer
 
 logging.basicConfig(level=logging.INFO)
@@ -53,6 +54,7 @@ def write_label(labels, output_path):
 
 # ---------------------------------------------------------------------------- #
 # Glove
+#   : single sentence classification
 # ---------------------------------------------------------------------------- #
 
 def build_init_vocab(config):
@@ -206,30 +208,88 @@ def preprocess_glove(config):
 
 # ---------------------------------------------------------------------------- #
 # BERT
+#  : single, pair sentence classification
 # ---------------------------------------------------------------------------- #
 
-def build_features(input_path, tokenizer, labels, config, mode='train'):
+def build_dataset(input_path, labels):
+
+    data = {'idx': [], 'label': [], 'sentence_a': [], 'sentence_b': []}
+    tot_num_line = sum(1 for _ in open(input_path, 'r'))
+    with open(input_path, 'r', encoding='utf-8') as f:
+        for idx, line in enumerate(tqdm(f, total=tot_num_line)):
+            line = line.strip()
+            tokens = line.split('\t')
+            if len(tokens) == 2:
+                sentence_a = tokens[0]
+                sentence_b = None
+            if len(tokens) == 3:
+                sentence_a = tokens[0]
+                sentence_b = tokens[1]
+            label = tokens[-1]
+            if len(label.split()) == 1:
+                if label == 'dummy': # see augment_data.py, --dummy_label
+                    label_id = 0 # no matter what
+                else:
+                    label_id = labels[label]
+            else:
+                # soft label(logit), '-0.11 -0.89'
+                label_id = label 
+            data['idx'].append(idx)
+            data['label'].append(label_id)
+            data['sentence_a'].append(sentence_a)
+            data['sentence_b'].append(sentence_b)
+    logger.info("len(data['idx']): %s", len(data['idx']))
+    dataset = Dataset.from_dict(data)
+    logger.info("dataset desc: {}".format(dataset))
+    logger.info("len(dataset): %s", len(dataset))
+    return dataset
+
+def build_encoded_dataset(input_path, tokenizer, labels, config, mode='train'):
     args = config['args']
 
-    logger.info("[Creating features from file] %s", input_path)
-    examples = read_examples_from_file(input_path, mode=mode)
-    features = convert_examples_to_features(examples, labels, config['n_ctx'], tokenizer,
-                                            cls_token=tokenizer.cls_token,
-                                            cls_token_segment_id=0,
-                                            sep_token=tokenizer.sep_token,
-                                            sep_token_extra=bool(config['emb_class'] in ['roberta']),
-                                            # roberta uses an extra separator b/w pairs of sentences, cf. github.com/pytorch/fairseq/commit/1684e166e3da03f5b600dbb7855cb98ddfcd0805
-                                            pad_token=tokenizer.pad_token,
-                                            pad_token_id=tokenizer.convert_tokens_to_ids([tokenizer.pad_token])[0],
-                                            pad_token_segment_id=0,
-                                            sequence_a_segment_id=0)
-    return features
+    logger.info("[Creating encoded_dataset from file] %s", input_path)
 
-def write_features(features, output_path):
+    dataset = build_dataset(input_path, labels)
+
+    def preprocess_function(examples):
+        # https://huggingface.co/transformers/preprocessing.html#everything-you-always-wanted-to-know-about-padding-and-truncation
+        if examples['sentence_b'][0] == None:
+            return tokenizer(examples['sentence_a'], max_length=config['n_ctx'], padding='max_length', truncation=True)
+        return tokenizer(examples['sentence_a'], examples['sentence_b'], max_length=config['n_ctx'], padding='max_length', truncation=True)
+    encoded_dataset = dataset.map(preprocess_function, batched=True)
+
+    need_token_type_ids = True
+    if config['emb_class'] in ['roberta', 'bart', 'distilbert', 'ibert', 't5']:
+        need_token_type_ids = False
+
+    # debugging
+    logger.info("len(input_ids): %s", len(encoded_dataset['input_ids']))
+    logger.info("len(attention_mask): %s", len(encoded_dataset['attention_mask']))
+    if need_token_type_ids:
+        logger.info("len(token_type_ids): %s", len(encoded_dataset['token_type_ids']))
+    logger.info("len(label): %s", len(encoded_dataset['label']))
+    logger.info("*** Example ***")
+    for idx in range(2):
+        logger.info("idx: %s", idx)
+        input_ids = encoded_dataset['input_ids'][idx]
+        attention_mask = encoded_dataset['attention_mask'][idx]
+        if need_token_type_ids:
+            token_type_ids = encoded_dataset['token_type_ids'][idx]
+        label = encoded_dataset['label'][idx]
+        logger.info("input_ids[idx]: %s", " ".join([str(x) for x in input_ids]))
+        logger.info("decode(input_ids[idx]): %s", tokenizer.decode(input_ids))
+        logger.info("attention_mask[idx]: %s", " ".join([str(x) for x in attention_mask]))
+        if need_token_type_ids:
+            logger.info("token_type_ids[idx]: %s", " ".join([str(x) for x in token_type_ids]))
+        logger.info("label[idx]: %s", label)
+
+    return encoded_dataset
+
+def write_encoded_dataset(encoded_dataset, output_path):
     import torch
 
-    logger.info("[Saving features into file] %s", output_path)
-    torch.save(features, output_path)
+    logger.info("[Saving encoded_dataset into file] %s", output_path)
+    torch.save(encoded_dataset, output_path)
    
 def preprocess_bert(config):
     args = config['args']
@@ -262,31 +322,31 @@ def preprocess_bert(config):
     path = os.path.join(args.data_dir, _TRAIN_FILE)
     labels = build_label(path)
 
-    # build features
+    # build encoded_dataset
     if args.augmented:
         path = os.path.join(args.data_dir, args.augmented_filename)
     else:
         path = os.path.join(args.data_dir, _TRAIN_FILE)
-    train_features = build_features(path, tokenizer, labels, config, mode='train')
+    train_encoded_dataset = build_encoded_dataset(path, tokenizer, labels, config, mode='train')
 
     path = os.path.join(args.data_dir, _VALID_FILE)
-    valid_features = build_features(path, tokenizer, labels, config, mode='valid')
+    valid_encoded_dataset = build_encoded_dataset(path, tokenizer, labels, config, mode='valid')
 
     path = os.path.join(args.data_dir, _TEST_FILE)
-    test_features = build_features(path, tokenizer, labels, config, mode='test')
+    test_encoded_dataset = build_encoded_dataset(path, tokenizer, labels, config, mode='test')
 
-    # write features
+    # write encoded_dataset
     if args.augmented:
         path = os.path.join(args.data_dir, args.augmented_filename + _FSUFFIX)
     else:
         path = os.path.join(args.data_dir, _TRAIN_FILE + _FSUFFIX)
-    write_features(train_features, path)
+    write_encoded_dataset(train_encoded_dataset, path)
 
     path = os.path.join(args.data_dir, _VALID_FILE + _FSUFFIX)
-    write_features(valid_features, path)
+    write_encoded_dataset(valid_encoded_dataset, path)
 
     path = os.path.join(args.data_dir, _TEST_FILE + _FSUFFIX)
-    write_features(test_features, path)
+    write_encoded_dataset(test_encoded_dataset, path)
 
     # write labels
     path = os.path.join(args.data_dir, _LABEL_FILE)
