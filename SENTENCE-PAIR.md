@@ -26,4 +26,5 @@ $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/ko
 INFO:__main__:[Accuracy] : 0.8286,  4152/ 5011
 INFO:__main__:[Elapsed Time] : 65109.9374294281ms, 12.96194004203507ms on average
 
+cp -rf bert-checkpoint embeddings/klue-roberta-base-kornli
 ```

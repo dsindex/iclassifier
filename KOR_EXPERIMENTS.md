@@ -200,6 +200,7 @@
 | XLM-RoBERTa-base , CLS                    | 89.98        | 14.8101 / -       |            |
 | XLM-RoBERTa-large , CLS                   | 91.38        | 24.5093 / -       |            |
 | KLUE-RoBERTa-base, CLS                    | 91.18        | 16.9337 / -       |            |
+| KLUE-RoBERTa-base, CLS                    | -            | -       / -       | klue-roberta-base-kornli, see [SENTENCE-PAIR.md](/SENTENCE-PAIR.md) |
 | KLUE-RoBERTa-large, CLS                   | **91.71**    | 29.2738 / -       |            |
 | KLUE-RoBERTa-base, CLS                    | 89.24        | 16.1074 / -       | BERT as finetune-last                           |
 | KLUE-RoBERTa-base, CLS                    | 88.71        | 10.2493 / -       | del 6,7,8,9,10,11, BERT as finetune-last        |
@@ -819,6 +820,9 @@ INFO:__main__:[Elapsed Time] : 1225533.9052677155ms, 24.509334780710375ms on ave
 ** --bert_model_name_or_path=./embeddings/klue-roberta-base
 INFO:__main__:[Accuracy] : 0.9118, 45586/49997
 INFO:__main__:[Elapsed Time] : 846745.1119422913ms, 16.933719881420775ms on average
+
+** --bert_model_name_or_path=./embeddings/klue-roberta-base-kornli
+
 
 ** --bert_model_name_or_path=./embeddings/klue-roberta-large
 INFO:__main__:[Accuracy] : 0.9171, 45853/49997
