@@ -200,7 +200,7 @@
 | XLM-RoBERTa-base , CLS                    | 89.98        | 14.8101 / -       |            |
 | XLM-RoBERTa-large , CLS                   | 91.38        | 24.5093 / -       |            |
 | KLUE-RoBERTa-base, CLS                    | 91.18        | 16.9337 / -       |            |
-| KLUE-RoBERTa-base, CLS                    | -            | -       / -       | klue-roberta-base-kornli, see [SENTENCE-PAIR.md](/SENTENCE-PAIR.md) |
+| KLUE-RoBERTa-base, CLS                    | 90.49        | 12.9197 / -       | klue-roberta-base-kornli, see [SENTENCE-PAIR.md](/SENTENCE-PAIR.md) |
 | KLUE-RoBERTa-large, CLS                   | **91.71**    | 29.2738 / -       |            |
 | KLUE-RoBERTa-base, CLS                    | 89.24        | 16.1074 / -       | BERT as finetune-last                           |
 | KLUE-RoBERTa-base, CLS                    | 88.71        | 10.2493 / -       | del 6,7,8,9,10,11, BERT as finetune-last        |
