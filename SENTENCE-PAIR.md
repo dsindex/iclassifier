@@ -22,5 +22,8 @@ $ python train.py --config=configs/config-roberta-cls.json --bert_model_name_or_
 
 - evaluate
 ```
+$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/kor_nli --bert_output_dir=bert-checkpoint
+INFO:__main__:[Accuracy] : 0.8286,  4152/ 5011
+INFO:__main__:[Elapsed Time] : 65109.9374294281ms, 12.96194004203507ms on average
 
 ```

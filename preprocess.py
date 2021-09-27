@@ -55,6 +55,7 @@ def write_label(labels, output_path):
 # ---------------------------------------------------------------------------- #
 # Glove
 #   : single sentence classification
+#   : sentence pair classification(TODO)
 # ---------------------------------------------------------------------------- #
 
 def build_init_vocab(config):
@@ -208,7 +209,8 @@ def preprocess_glove(config):
 
 # ---------------------------------------------------------------------------- #
 # BERT
-#  : single, pair sentence classification
+#  : single sentence classification
+#  : sentence pair classification
 # ---------------------------------------------------------------------------- #
 
 def build_dataset(input_path, labels):
