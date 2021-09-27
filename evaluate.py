@@ -207,22 +207,31 @@ def write_prediction(args, preds, labels):
         data = []
         for idx, line in enumerate(tqdm(f, total=tot_num_line)):
             line = line.strip()
-            sent, label = line.split('\t')
-            data.append((sent, label))
+            tokens = line.split('\t')
+            if len(tokens) == 2: # single sentence
+                sent_a = tokens[0]
+                sent_b = None
+            if len(tokens) == 3: # sentence pair
+                sent_a = tokens[0]
+                sent_b = tokens[1]
+            label = tokens[-1]
+            data.append((sent_a, sent_b, label))
     # write prediction
     try:
         pred_path = args.test_path + '.pred'
         with open(pred_path, 'w', encoding='utf-8') as f:
             for entry, pred in zip(data, preds):
-                sent, label = entry
+                sent_a, sent_b, label = entry
+                text = sent_a
+                if sent_b: text = sent_a + '\t' + sent_b
                 if args.augmented:
                     # print logits as label
                     logits = ['%.6f' % p for p in pred]
-                    f.write(sent + '\t' + ' '.join(logits) + '\n')
+                    f.write(text + '\t' + ' '.join(logits) + '\n')
                 else:
                     pred_id = np.argmax(pred)
                     pred_label = labels[pred_id]
-                    f.write(sent + '\t' + label + '\t' + pred_label + '\n')
+                    f.write(text + '\t' + label + '\t' + pred_label + '\n')
     except Exception as e:
         logger.warn(str(e))
 
@@ -369,8 +378,10 @@ def prepare_tokenizer(config, model):
         tokenizer = model.bert_tokenizer
     return tokenizer
 
-def encode_text(config, tokenizer, text):
+def encode_text(config, tokenizer, sent_a, sent_b):
     if config['emb_class'] == 'glove':
+        # not yet supporting for sentence pair(TODO)
+        text = sent_a
         tokens = text.split()
         # kernel size can't be greater than actual input size,
         # we should pad the sequence up to the maximum kernel size + 1.
@@ -380,7 +391,10 @@ def encode_text(config, tokenizer, text):
         # x : [batch_size, variable size]
         # batch size: 1
     else:
-        inputs = tokenizer.encode_plus(text, add_special_tokens=True, return_tensors='pt')
+        if sent_b:
+            inputs = tokenizer.encode_plus(sent_a, sent_b, add_special_tokens=True, return_tensors='pt')
+        else:
+            inputs = tokenizer.encode_plus(sent_a, add_special_tokens=True, return_tensors='pt')
         if config['emb_class'] in ['roberta', 'bart', 'distilbert', 'ibert', 't5']:
             x = [inputs['input_ids'], inputs['attention_mask']]
             # x[0], x[1] : [batch_size, variable size]
@@ -432,13 +446,19 @@ def inference(args):
     with torch.no_grad(), open(args.test_path, 'r', encoding='utf-8') as f:
         for i, line in enumerate(f):
             start_time = time.time()
-            sent, label = line.strip().split('\t')
-            x_raw = sent.split()
+            tokens = line.strip().split('\t')
+            if len(tokens) == 2: # single sentence
+                sent_a = tokens[0]
+                sent_b = None
+                text = sent_a
+            if len(tokens) == 3: # sentence pair
+                sent_a = tokens[0]
+                sent_b = tokens[1]
+                text = sent_a + '\t' + sent_b
+            label = tokens[-1]
             y_raw = label
-            text = ' '.join(x_raw)
-            x = encode_text(config, tokenizer, text)
+            x = encode_text(config, tokenizer, sent_a, sent_b)
             x = to_device(x, args.device)
-
             if args.enable_ort:
                 ort_inputs = build_onnx_input(config, ort_session, x)
                 logits = ort_session.run(None, ort_inputs)[0]
