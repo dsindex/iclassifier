@@ -225,9 +225,19 @@ def write_prediction(args, preds, labels):
                 text = sent_a
                 if sent_b: text = sent_a + '\t' + sent_b
                 if args.augmented:
-                    # print logits as label
-                    logits = ['%.6f' % p for p in pred]
-                    f.write(text + '\t' + ' '.join(logits) + '\n')
+                    if args.entropy_threshold != -1: # given threshold
+                        from scipy.stats import entropy
+                        from scipy.special import softmax
+                        prob = softmax(pred)
+                        ent = entropy(prob, base=2)
+                        # print logits as label and filtering
+                        if ent <= args.entropy_threshold:
+                            logits = ['%.6f' % p for p in pred]
+                            f.write(text + '\t' + ' '.join(logits) + '\n')
+                    else:
+                        # print logits as label
+                        logits = ['%.6f' % p for p in pred]
+                        f.write(text + '\t' + ' '.join(logits) + '\n')
                 else:
                     pred_id = np.argmax(pred)
                     pred_label = labels[pred_id]
@@ -493,6 +503,9 @@ def main():
     # for Augmentation
     parser.add_argument('--augmented', action='store_true',
                         help="Set this flag to generate augmented.raw.inference(augmented.txt) for training.")
+    parser.add_argument('--entropy_threshold', type=float, default=-1,
+                        help="Filtering out soft labeled samples of which entropy is above the threshold."
+                             "default value is negative so that filtering will not be applied.")
     # for BERT
     parser.add_argument('--bert_output_dir', type=str, default='bert-checkpoint',
                         help="The checkpoint directory of fine-tuned BERT model.")
