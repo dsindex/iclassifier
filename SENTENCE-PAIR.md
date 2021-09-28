@@ -91,6 +91,6 @@ $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/cl
 INFO:__main__:[Accuracy] : 0.6972, 34859/49997
 INFO:__main__:[Elapsed Time] : 652646.0647583008ms, 13.051110626707192ms on average
 
-# 약 4% 정도 성능 향상이 보임.
+# 약 3% 정도 성능 향상이 보임.
 
 ```
