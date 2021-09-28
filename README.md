@@ -1504,8 +1504,10 @@ INFO:__main__:[Elapsed Time] : 50888.68188858032ms, 27.869893299354302ms on aver
 # Sentence Pair Classification
 
 - [SENTENCE-PAIR.md](/SENTENCE-PAIR.md)
-  - sentence pair classification
-    - KorNLI
+  - Sentence Pair Classification
+    - KorNLI (Korean NLI)
+  - Few-Shot Learning
+    - NSMC (Korean Sentiment Analysis)
 
 <br>
 
