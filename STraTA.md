@@ -299,4 +299,28 @@ INFO:__main__:[Elapsed Time] : 77553.37882041931ms, 1.5481264591360469ms on aver
 $ cp -rf bert-checkpoint embeddings/klue-roberta-base-kornli-nsmc-few-f3
 ```
 
+- step 4
+```
+# klue-roberta-base-kornli-nsmc-few-f3를 대신 사용.
+
+# pseudo labeling
+  threshold를 조정
+$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/clova_sentiments_fewshot --bert_output_dir=./embeddings/klue-roberta-base-kornli-nsmc-few-f3 --batch_size=128 --augmented --entropy_threshold=0.2 --hard_labeling
+...
+$ wc -l data/clova_sentiments_fewshot/augmented.txt
+131841 data/clova_sentiments_fewshot/augmented.txt
+
+# train with augmented.txt
+  학습을 좀더 길게 수행. 하지만, epoch=3 이후, 변화 없음.
+...
+$ python train.py --config=configs/config-roberta-cls.json --data_dir=data/clova_sentiments_fewshot --bert_model_name_or_path=./embeddings/klue-roberta-base-kornli-nsmc-few-f3 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64 --augmented
+
+# evaluate
+$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/clova_sentiments_fewshot --bert_output_dir=bert-checkpoint --batch_size=128
+INFO:__main__:[Accuracy] : 0.7588, 37938/49997
+INFO:__main__:[Elapsed Time] : 77221.9409942627ms, 1.5405119379770238ms on average
+
+$ cp -rf bert-checkpoint embeddings/klue-roberta-base-kornli-nsmc-few-f3
+```
+
 
