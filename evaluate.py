@@ -512,8 +512,8 @@ def main():
     parser.add_argument('--augmented', action='store_true',
                         help="Set this flag to generate augmented.raw.pred(augmented.txt) for training.")
     parser.add_argument('--entropy_threshold', type=float, default=-1,
-                        help="Filtering out soft labeled samples of which entropy is above the threshold."
-                             "default value is negative so that filtering will not be applied.")
+                        help="Filtering out samples whose entropy are above the threshold."
+                             "default value '-1' means 'do not apply'.")
     parser.add_argument('--hard_labeling', action='store_true',
                         help="Hard labeling instead of soft labeling.")
     # for BERT
