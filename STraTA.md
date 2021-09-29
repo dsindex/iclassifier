@@ -64,6 +64,7 @@ $ wc -l train.txt valid.txt test.txt unlabeled.txt
    49997 test.txt
   149719 unlabeled.txt
   199992 total
+
 # NLI를 이용한 intermediate finetuning 방법이 효과적인지 실험
 
 # klue-roberta-base
@@ -115,6 +116,8 @@ $ cp -rf bert-checkpoint embeddings/klue-roberta-base-kornli-nsmc-few
 ## Self-Training
 
 #### NSMC
+
+##### Soft Labeling
 
 - base model
   - f0 : klue-roberta-base-kornli-nsmc-few
@@ -189,17 +192,111 @@ $ cp -rf bert-checkpoint embeddings/klue-roberta-base-kornli-nsmc-few-f3
   이 threshold 값은 hyper-parameter인데, 대략 0.4 이하면 적당해보임.
 $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/clova_sentiments_fewshot --bert_output_dir=./embeddings/klue-roberta-base-kornli-nsmc-few-f3 --batch_size=128 --augmented --entropy_threshold=0.4
 $ cp -rf data/clova_sentiments_fewshot/augmented.raw.pred data/clova_sentiments_fewshot/augmented.txt
-# 건수 줄어든 부분
-  필터링 이전 : 149719 data/clova_sentiments_fewshot/augmented.txt
-  필터링 이후 : 62537 data/clova_sentiments_fewshot/augmented.txt
+$ wc -l data/clova_sentiments_fewshot/augmented.txt
+62537 data/clova_sentiments_fewshot/augmented.txt
 
 # train with augmented.txt
 $ python preprocess.py --config=configs/config-roberta-cls.json --data_dir=data/clova_sentiments_fewshot --bert_model_name_or_path=./embeddings/klue-roberta-base-kornli-nsmc-few-f3 --augmented --augmented_filename=augmented.txt
-$ python train.py --config=configs/config-roberta-cls.json --data_dir=data/clova_sentiments_fewshot --bert_model_name_or_path=./embeddings/klue-roberta-base-kornli-nsmc-few-f3 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64 --augmented --criterion MSELoss
+## 학습 데이터 건수가 줄어들었으니, epoch을 좀더 길게해도 될듯.  
+$ python train.py --config=configs/config-roberta-cls.json --data_dir=data/clova_sentiments_fewshot --bert_model_name_or_path=./embeddings/klue-roberta-base-kornli-nsmc-few-f3 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=64 --augmented --criterion MSELoss
 
 # evaluate
 $ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/clova_sentiments_fewshot --bert_output_dir=bert-checkpoint --batch_size=128
+INFO:__main__:[Accuracy] : 0.7392, 36959/49997
+INFO:__main__:[Elapsed Time] : 77217.5042629242ms, 1.5403064310965433ms on average
 
 $ cp -rf bert-checkpoint embeddings/klue-roberta-base-kornli-nsmc-few-f4
 
+# 확실히 filtering 이후, 성능향상이 확인된다.
+
 ```
+
+- step 5
+```
+# klue-roberta-base-kornli-nsmc-few-f4를 대신 사용.
+
+# step4에서 보다 filtering 되지 않고 남아있는 pseudo labeled data 건수가 늘었음.
+118587 data/clova_sentiments_fewshot/augmented.txt
+
+# evaluate
+$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/clova_sentiments_fewshot --bert_output_dir=bert-checkpoint --batch_size=128
+INFO:__main__:[Accuracy] : 0.7433, 37164/49997
+INFO:__main__:[Elapsed Time] : 77656.52751922607ms, 1.5500462524451393ms on average
+
+$ cp -rf bert-checkpoint embeddings/klue-roberta-base-kornli-nsmc-few-f5
+
+```
+
+##### Hard Labeling
+
+- base model
+  - f0 : klue-roberta-base-kornli-nsmc-few
+
+- step 1
+```
+# 학습에 사용하지 않은 unlabeled.txt 데이터를 가지고 self-training 시도
+
+# pseudo labeling unlabeled.txt
+  여기서는 hard labeling 사용.
+  또한, 시작부터 entropy filtering 사용. 단, 시작시에 threshold는 좀더 강하게 적용.
+$ cp -rf data/clova_sentiments_fewshot/unlabeled.txt data/clova_sentiments_fewshot/augmented.raw
+$ python preprocess.py --config=configs/config-roberta-cls.json --data_dir=data/clova_sentiments_fewshot --bert_model_name_or_path=./embeddings/klue-roberta-base-kornli-nsmc-few --augmented --augmented_filename=augmented.raw
+$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/clova_sentiments_fewshot --bert_output_dir=./embeddings/klue-roberta-base-kornli-nsmc-few --batch_size=128 --augmented --entropy_threshold=0.25 --hard_labeling
+## STraTA의 세팅처럼, augmented.txt에 few-shot train.txt 데이터도 추가해서 사용
+$ cat data/clova_sentiments_fewshot/train.txt data/clova_sentiments_fewshot/augmented.raw.pred > data/clova_sentiments_fewshot/augmented.txt
+$ wc -l data/clova_sentiments_fewshot/augmented.txt
+56008 data/clova_sentiments_fewshot/augmented.txt
+
+# train with augmented.txt
+$ python preprocess.py --config=configs/config-roberta-cls.json --data_dir=data/clova_sentiments_fewshot --bert_model_name_or_path=./embeddings/klue-roberta-base-kornli-nsmc-few --augmented --augmented_filename=augmented.txt
+## soft label이 아니라서 MSELoss가 아니라 CrossEntropyLoss 사용
+$ python train.py --config=configs/config-roberta-cls.json --data_dir=data/clova_sentiments_fewshot --bert_model_name_or_path=./embeddings/klue-roberta-base-kornli-nsmc-few --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64 --augmented
+
+# evaluate
+$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/clova_sentiments_fewshot --bert_output_dir=bert-checkpoint --batch_size=128
+INFO:__main__:[Accuracy] : 0.7435, 37174/49997
+INFO:__main__:[Elapsed Time] : 77532.15527534485ms, 1.5475650957094502ms on average
+
+$ cp -rf bert-checkpoint embeddings/klue-roberta-base-kornli-nsmc-few-f1
+```
+
+- step 2
+```
+# klue-roberta-base-kornli-nsmc-few-f1를 대신 사용.
+
+# pseudo labeling
+  'augmented.raw'는 그대로 활용.
+$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/clova_sentiments_fewshot --bert_output_dir=./embeddings/klue-roberta-base-kornli-nsmc-few-f1 --batch_size=128 --augmented --entropy_threshold=0.25 --hard_labeling
+$ cat data/clova_sentiments_fewshot/train.txt data/clova_sentiments_fewshot/augmented.raw.pred > data/clova_sentiments_fewshot/augmented.txt
+$ wc -l data/clova_sentiments_fewshot/augmented.txt
+122184 data/clova_sentiments_fewshot/augmented.txt
+
+# train with augmented.txt
+$ python preprocess.py --config=configs/config-roberta-cls.json --data_dir=data/clova_sentiments_fewshot --bert_model_name_or_path=./embeddings/klue-roberta-base-kornli-nsmc-few-f1 --augmented --augmented_filename=augmented.txt
+$ python train.py --config=configs/config-roberta-cls.json --data_dir=data/clova_sentiments_fewshot --bert_model_name_or_path=./embeddings/klue-roberta-base-kornli-nsmc-few-f1 --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=64 --augmented
+
+# evaluate
+$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/clova_sentiments_fewshot --bert_output_dir=bert-checkpoint --batch_size=128
+INFO:__main__:[Accuracy] : 0.7515, 37574/49997
+INFO:__main__:[Elapsed Time] : 77466.94564819336ms, 1.5464924439770236ms on average
+
+$ cp -rf bert-checkpoint embeddings/klue-roberta-base-kornli-nsmc-few-f2
+```
+
+- step 3
+```
+# klue-roberta-base-kornli-nsmc-few-f2를 대신 사용.
+
+...
+$ wc -l data/clova_sentiments_fewshot/augmented.txt
+131035 data/clova_sentiments_fewshot/augmented.txt
+
+# evaluate
+$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/clova_sentiments_fewshot --bert_output_dir=bert-checkpoint --batch_size=128
+INFO:__main__:[Accuracy] : 0.7527, 37633/49997
+INFO:__main__:[Elapsed Time] : 77553.37882041931ms, 1.5481264591360469ms on average
+
+$ cp -rf bert-checkpoint embeddings/klue-roberta-base-kornli-nsmc-few-f3
+```
+
+

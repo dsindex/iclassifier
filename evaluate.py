@@ -200,6 +200,19 @@ def build_onnx_input(config, ort_session, x):
 # Evaluation
 # ---------------------------------------------------------------------------- #
 
+def get_soft_label(args, pred):
+    soft_label = None
+    if args.entropy_threshold != -1: # given threshold
+        from scipy.stats import entropy
+        from scipy.special import softmax
+        prob = softmax(pred)
+        ent = entropy(prob, base=2)
+        if ent <= args.entropy_threshold:
+            soft_label = ['%.6f' % p for p in pred]
+    else:
+        soft_label = ['%.6f' % p for p in pred]
+    return soft_label
+
 def write_prediction(args, preds, labels):
     # load test data
     tot_num_line = sum(1 for _ in open(args.test_path, 'r')) 
@@ -225,19 +238,14 @@ def write_prediction(args, preds, labels):
                 text = sent_a
                 if sent_b: text = sent_a + '\t' + sent_b
                 if args.augmented:
-                    if args.entropy_threshold != -1: # given threshold
-                        from scipy.stats import entropy
-                        from scipy.special import softmax
-                        prob = softmax(pred)
-                        ent = entropy(prob, base=2)
-                        # print logits as label and filtering
-                        if ent <= args.entropy_threshold:
-                            logits = ['%.6f' % p for p in pred]
+                    soft_label = get_soft_label(args, pred)
+                    if soft_label:
+                        if args.hard_labeling:
+                            pred_id = np.argmax(pred)
+                            pred_label = labels[pred_id]
+                            f.write(text + '\t' + pred_label + '\n')
+                        else:
                             f.write(text + '\t' + ' '.join(logits) + '\n')
-                    else:
-                        # print logits as label
-                        logits = ['%.6f' % p for p in pred]
-                        f.write(text + '\t' + ' '.join(logits) + '\n')
                 else:
                     pred_id = np.argmax(pred)
                     pred_label = labels[pred_id]
@@ -502,10 +510,12 @@ def main():
     parser.add_argument('--num_examples', default=0, type=int, help="Number of examples to evaluate, 0 means all of them.")
     # for Augmentation
     parser.add_argument('--augmented', action='store_true',
-                        help="Set this flag to generate augmented.raw.inference(augmented.txt) for training.")
+                        help="Set this flag to generate augmented.raw.pred(augmented.txt) for training.")
     parser.add_argument('--entropy_threshold', type=float, default=-1,
                         help="Filtering out soft labeled samples of which entropy is above the threshold."
                              "default value is negative so that filtering will not be applied.")
+    parser.add_argument('--hard_labeling', action='store_true',
+                        help="Hard labeling instead of soft labeling.")
     # for BERT
     parser.add_argument('--bert_output_dir', type=str, default='bert-checkpoint',
                         help="The checkpoint directory of fine-tuned BERT model.")
