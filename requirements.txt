@@ -6,7 +6,7 @@ torch
 numpy
 tqdm
 tensorboardX
-transformers
+transformers[sentencepiece]
 sklearn
 datasets
 accelerate

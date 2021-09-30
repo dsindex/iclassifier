@@ -1118,10 +1118,6 @@ INFO:__main__:[Elapsed Time] : 41405.57098388672ms, 22.681565337128692ms on aver
 $ python preprocess.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large
 $ python train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2
 
-** torch.distributed.launch
-$ export NCCL_DEBUG=INFO
-$ python -m torch.distributed.launch --nnodes 1 --nproc_per_node 2 --use_env --node_rank 0 --master_addr 127.0.0.1 --master_port 24158 train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2 
-
 ** accelerate launch, deepspeed
 
 $ accelerate config
@@ -1134,7 +1130,7 @@ How many gradient accumulation steps you're passing in your script? [1]: 1
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8
 
 # deepspeed related config
 https://github.com/huggingface/accelerate/blob/main/src/accelerate/utils.py#L595
@@ -1149,7 +1145,23 @@ self.deepspeed_config = {
   },
   "steps_per_print": float("inf"),  # this will stop deepspeed from logging @ stdout
   "zero_allow_untested_optimizer": True,
-} 
+}
+e.g.
+{
+    "train_batch_size": 256,
+    "gradient_accumulation_steps": 4,
+    "zero_optimization": {
+        "stage": 1,
+        "offload_optimizer": {
+            "device": "None"
+        }
+    },
+    "steps_per_print": inf,
+    "zero_allow_untested_optimizer": true,
+    "fp16": {
+        "enabled": false
+    }
+}
 
 
 # Error
@@ -1157,7 +1169,7 @@ RuntimeError: Function 'LogSoftmaxBackward' returned nan values in its 0th outpu
 => how to fix it? smaller learning rate? gradient clipping? not working!!
    just use `torch.autograd.set_detect_anomaly(False)` to skip 'nan values'. this yields below messages from time to time. but it works fine.
    "[deepspeed] fp16 dynamic loss scale overflow! Skipping step. Attempted loss scale: 16384.0, reducing to 8192.0"
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1 
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 
 
 ** accelerate launch, deepspeed & gpt2-xl
 $ accelerate config
@@ -1170,7 +1182,7 @@ How many gradient accumulation steps you're passing in your script? [1]: 1
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=10 --batch_size=8
 
 ** accelerate launch, deepspeed & gpt-neo-2.7B
 $ accelerate config
@@ -1183,7 +1195,7 @@ How many gradient accumulation steps you're passing in your script? [1]: 2
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2 --measure=accuracy
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --measure=accuracy
 # GPU memory footprint: 31996MiB / 32510MiB foreach 4 GPUs
 
 ** accelerate launch, deepspeed & gpt-neo-2.7B & full precision
@@ -1197,7 +1209,7 @@ How many gradient accumulation steps you're passing in your script? [1]: 8
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: NO
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=10 --batch_size=4 --gradient_accumulation_steps=8 --eval_batch_size=8
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=5e-5 --epoch=10 --batch_size=4 --eval_batch_size=8
 # GPU memory footprint: 30872MiB / 32510MiB
 
 => unstable
@@ -1233,11 +1245,11 @@ INFO:__main__:[Elapsed Time] : 130055.31454086304ms, 71.23894966565646ms on aver
 INFO:__main__:[Accuracy] : 0.7622,  1388/ 1821
 INFO:__main__:[Elapsed Time] : 130370.82743644714ms, 71.41090343286703ms on average
 
-*** --batch_size=32 --gradient_accumulation_steps=1
+*** --batch_size=32 , gradient_accumulation_steps=1
 INFO:__main__:[Accuracy] : 0.8155,  1485/ 1821
 INFO:__main__:[Elapsed Time] : 130947.47471809387ms, 71.71733798561516ms on average
 
-*** --batch_size=32 --gradient_accumulation_steps=1 --warmup_ratio=0.1 --weight_decay=0.03 --max_grad_value=1.0 --seed=31
+*** --batch_size=32 --warmup_ratio=0.1 --weight_decay=0.03 --max_grad_value=1.0 --seed=31 , gradient_accumulation_steps=1
 INFO:__main__:[Accuracy] : 0.8105,  1476/ 1821
 INFO:__main__:[Elapsed Time] : 130316.54977798462ms, 71.38844479571333ms on average
 
@@ -1272,8 +1284,13 @@ How many gradient accumulation steps you're passing in your script? [1]: 2
 How many processes in total will you use? [1]: 2
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=32 --gradient_accumulation_steps=2
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=32 
 # GPU memory footprint: 9476MiB / 32510MiB foreach 2 GPUs
+# for using torch.distributed.launch
+# edit distributed_type in accelerate_config.yaml
+  https://github.com/huggingface/accelerate/blob/120b82bfcec998c3545615579889cc7b360bc315/src/accelerate/state.py#L69
+  distributed_type: MULTI_GPU
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=4
 
 ** accelerate launch, deepspeed & t5-3b
 $ accelerate config
@@ -1286,7 +1303,7 @@ How many gradient accumulation steps you're passing in your script? [1]: 2
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-3b --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=32 --gradient_accumulation_steps=2
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-3b --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=32 
 # GPU memory footprint: 21922MiB / 32480MiB foreach 4 GPUs
 
 ** accelerate launch, deepspeed stage 2 & t5-3b & full precision
@@ -1300,7 +1317,7 @@ How many gradient accumulation steps you're passing in your script? [1]: 4
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: NO
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-3b --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=4
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-3b --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 
 # GPU memory footprint: 25826MiB / 32510MiB foreach 4 GPUs
 
 => unstable
@@ -1316,7 +1333,7 @@ How many gradient accumulation steps you're passing in your script? [1]: 4
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: NO
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-3b --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=4
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-3b --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 
 # GPU memory footprint: 29182MiB / 32510MiB foreach 4 GPUs
 
 ** accelerate launch & t5-11b
@@ -1362,7 +1379,7 @@ How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
 $ export NCCL_DEBUG=INFO
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-11b --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=8 --eval_batch_size=16
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-11b --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --eval_batch_size=16
 # GPU memory footprint: 31916MiB / 32510MiB foreach 4 GPUs 
 
 => unstable
@@ -1379,7 +1396,7 @@ How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
 $ export NCCL_DEBUG=INFO
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-11b --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=4 --gradient_accumulation_steps=8 --eval_batch_size=8
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-t5-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/t5-11b --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=4 --eval_batch_size=8
 # GPU memory footprint: 28666MiB / 32510MiB foreach 4 GPUs
 
 ```
