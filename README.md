@@ -1136,6 +1136,22 @@ Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
 $ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1
 
+# deepspeed related config
+https://github.com/huggingface/accelerate/blob/main/src/accelerate/utils.py#L595
+self.deepspeed_config = {
+  "train_batch_size": None,
+  "gradient_accumulation_steps": self.gradient_accumulation_steps,
+  "zero_optimization": {
+      "stage": self.zero_stage,
+      "offload_optimizer": {
+          "device": self.offload_optimizer_device,
+      },
+  },
+  "steps_per_print": float("inf"),  # this will stop deepspeed from logging @ stdout
+  "zero_allow_untested_optimizer": True,
+} 
+
+
 # Error
 RuntimeError: Function 'LogSoftmaxBackward' returned nan values in its 0th output.
 => how to fix it? smaller learning rate? gradient clipping? not working!!
