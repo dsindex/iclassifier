@@ -35,7 +35,7 @@ class GloveDataset(Dataset):
         with open(path,'r',encoding='utf-8') as f:
             for line in f:
                 y_data, x_data = line.strip().split('\t')
-                if len(y_data.split()) >= 2: # logits as label
+                if len(y_data.split()) >= 2: # soft label
                     yi = [float(f) for f in y_data.split()]
                     if logits_as_label is False: logits_as_label = True
                 else:
@@ -70,7 +70,7 @@ class BertDataset(Dataset):
             all_token_type_ids = torch.tensor([f for f in dataset['token_type_ids']], dtype=torch.long)
             self.x = TensorDataset(all_input_ids, all_attention_mask, all_token_type_ids) 
 
-        if len(str(probe_label_id).split()) >= 2: # logits as label'
+        if len(str(probe_label_id).split()) >= 2: # soft label
             all_label = torch.tensor([[float(logit) for logit in str(f).split()] for f in dataset['label']])
         else:
             all_label = torch.tensor([f for f in dataset['label']], dtype=torch.long)

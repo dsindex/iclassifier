@@ -304,7 +304,7 @@ def evaluate(args):
         sess_options.intra_op_num_threads = args.num_threads
         ort_session = ort.InferenceSession(args.onnx_path, sess_options=sess_options)
 
-    # enable to use dynamic quantized model (pytorch>=1.3.0)
+    # quantizing model dynamically
     if args.enable_dqm and args.device == 'cpu':
         model = torch.quantization.quantize_dynamic(model, {torch.nn.Linear}, dtype=torch.qint8)
         print(model)

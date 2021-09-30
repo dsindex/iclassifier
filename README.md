@@ -78,7 +78,7 @@
 
 ### experiments summary
 
-|                          | Accuracy (%) | GPU / CPU           | ONNX     | Dynamic   | QAT/FX/DiffQ      | Inference   | Inference+Dynamic | Inference+QAT/FX/DiffQ | Inference+ONNX           | Etc            |
+|                          | Accuracy (%) | GPU / CPU           | ONNX     | Dynamic   | QAT/FX/DiffQ      | Inference   | Inference+Dynamic | Inference+QAT/FX/DiffQ | Inference+ONNX/Quant     | Etc            |
 | ------------------------ | ------------ | ------------------- | -------- |---------- | ----------------- | ----------- | ----------------- | ---------------------- | ------------------------ | -------------- |    
 | GloVe, GNB               | 80.43        | 1.2929  / -         | -        | -         |  -                | -           | -                 | -                      | -                        |                |
 | GloVe, CNN               | 97.86        | 1.9874  / 4.1068    | 2.2263   | 4.3975    |  3.0899 / - / -   | 1.9398      | 2.9012            | 1.4329 / - / -         | 0.5270  / FAIL           | threads=14     |
@@ -105,7 +105,7 @@
 * QAT(Quantization Aware Training)/FX/DiffQ : --enable_qat / --enable_qat_fx / --enable_diffq
 * Inference+Dynamic : --enable_inference --enable_dqm
 * Inference+QAT/FX/DiffQ : --enable_inference --enable_qat / --enable_inference --enable_qat_fx / --enable_inference --enable_diffq
-* Inference+ONNX : --enable_inference --enable_ort / + --quantize_onnx
+* Inference+ONNX/Quant : --convert_onnx, --enable_inference --enable_ort / --quantize_onnx, --enable_inference --enable_ort
 * default batch size, learning rate, n_ctx(max_seq_length) : 128, 2e-4, 100
 * default epoch : 3
 * number of tokens / sentence : MEAN : 9.08, MAX:24, MIN:3, MEDIAN:9
@@ -1136,19 +1136,7 @@ Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
 $ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=1
 
-# Error 1
-$ vi /usr/local/lib/python3.6/dist-packages/accelerate/deepspeed_utils.py
-if is_apex_available():
-    #import amp
-    import torch.cuda.amp as amp
-    # or from apex import amp
-
-# Error 2
-Checking ZeRO support for optimizer=AdamW type=<class 'transformers.optimization.AdamW'>
-AssertionError: You are using an untested ZeRO Optimizer. Please add <"zero_allow_untested_optimizer": true> in the configuration file to use it.
-=> use torch.optim.AdamW instead of transformers's AdamW
-
-# Error 3
+# Error
 RuntimeError: Function 'LogSoftmaxBackward' returned nan values in its 0th output.
 => how to fix it? smaller learning rate? gradient clipping? not working!!
    just use `torch.autograd.set_detect_anomaly(False)` to skip 'nan values'. this yields below messages from time to time. but it works fine.
