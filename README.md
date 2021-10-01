@@ -417,6 +417,7 @@ INFO:__main__:[Elapsed Time] : 8580.491542816162ms, 12.148977860872327ms on aver
 | GPT2-large, CLS                         | 92.81        | 42.2791 / -       |                          | epoch=10, accelerate, deepspeed, fp16       |
 | GPT2-xlarge, CLS                        | 93.96        | 49.2241 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 1.5B |
 | GPT-NEO, CLS                            | 82.04        | 71.0937 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 2.7B |
+| GPT-J-6B, CLS                           | -            | -       / -       |                          | epoch=10, accelerate, deepspeed, fp16, 6B   |
 | T5-large, CLS                           | 95.39        | 29.3724 / -       |                          | epoch=10                                    |
 | T5-large, CLS                           | 95.55        | 30.3232 / -       |                          | epoch=10, accelerate, deepspeed, fp16       |
 | T5-3B, CLS                              | 95.99        | 34.8998 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 3B   |
@@ -1250,7 +1251,7 @@ $ accelerate launch --config_file accelerate_config.yaml train.py --config=confi
 
 => unstable
 
-** accelerate launch, deepspeed & gpt-j-6b
+** accelerate launch, deepspeed & gpt-j-6B
 $ python preprocess.py --config=configs/config-gptj-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-j-6B
 $ accelerate config
 In which compute environment are you running? ([0] This machine, [1] AWS (Amazon SageMaker)): 0
@@ -1263,7 +1264,7 @@ How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
 $ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gptj-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-j-6B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=4 --eval_batch_size=8 --gradient_accumulation_steps=4
-
+# GPU memory footprint: 30844MiB / 32510MiB
 
 ```
 
@@ -1306,6 +1307,9 @@ INFO:__main__:[Elapsed Time] : 130316.54977798462ms, 71.38844479571333ms on aver
 
 ** accelerate launch, deepspeed & gpt-neo-2.7B & full precision
 unstable!
+
+** accelerate launch, deepspeed & gpt-j-6B
+
 
 ```
 
