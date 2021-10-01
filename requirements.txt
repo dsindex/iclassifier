@@ -9,12 +9,12 @@ tensorboardX
 transformers[sentencepiece]
 sklearn
 datasets
-accelerate
-deepspeed
+deepspeed==0.4.0
 # install apex
 # git clone https://github.com/NVIDIA/apex
 # cd apex
 # pip install -v --disable-pip-version-check --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
+accelerate==0.4.0
 optuna
 onnx
 onnxruntime

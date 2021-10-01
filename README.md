@@ -1163,11 +1163,48 @@ e.g.
     }
 }
 
+## sometimes, apex is unstable for unknown reasons. use torch.cuda.amp instead.
+$ vi /opt/conda/lib/python3.7/site-packages/accelerate/deepspeed_utils.py
+if is_apex_available():
+    #from apex import amp
+    import torch.cuda.amp as amp
 
-# Error
+## debugging
+$ vi /opt/conda/lib/python3.7/site-packages/accelerate/utils.py
+  self.deepspeed_config = {
+      ...
+      "steps_per_print": 1, # for debugging
+      ...
+  }
+
+## manual modification for learning rate and warmup
+$ vi /opt/conda/lib/python3.7/site-packages/accelerate/utils.py
+  self.deepspeed_config = {
+     ...
+     "optimizer": {
+         "type": "AdamW",
+         "params": {
+             "lr": 1e-5,
+             "betas": [0.8, 0.999],
+             "eps": 1e-8,
+             "weight_decay": 3e-7
+         },
+     },
+     "scheduler": {
+       "type": "WarmupLR",
+       "params": {
+         "warmup_min_lr": 1e-7,
+         "warmup_max_lr": 0.001,
+         "warmup_num_steps": 100
+       }
+     },
+     ...
+  }
+
+## Error
 RuntimeError: Function 'LogSoftmaxBackward' returned nan values in its 0th output.
-=> how to fix it? smaller learning rate? gradient clipping? not working!!
-   just use `torch.autograd.set_detect_anomaly(False)` to skip 'nan values'. this yields below messages from time to time. but it works fine.
+=> this is due to mixed precision learning.
+   you should set `torch.autograd.set_detect_anomaly(False)` to skip 'nan values'.
    "[deepspeed] fp16 dynamic loss scale overflow! Skipping step. Attempted loss scale: 16384.0, reducing to 8192.0"
 $ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-large --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 
 
