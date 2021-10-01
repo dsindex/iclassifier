@@ -4,7 +4,7 @@
 
 - embedding
   - GloVe, BERT, DistilBERT, mDistilBERT, TinyBERT, MiniLM, MobileBERT, SpanBERT, ALBERT, RoBERTa, XLM-RoBERTa, BART, ELECTRA, DeBERTa, BORT, ConvBERT
-  - GPT-2, GPT-NEO, T5, MegatronBERT, MegatronGPT2(=GPT-2)
+  - GPT-2, GPT-NEO, GPT-J, T5, MegatronBERT, MegatronGPT2(=GPT-2)
 - encoding
   - GNB
     - Gaussian Naive Bayes(simple biased model)
@@ -420,9 +420,9 @@ INFO:__main__:[Elapsed Time] : 8580.491542816162ms, 12.148977860872327ms on aver
 | GPT-J-6B, CLS                           | -            | -       / -       |                          | epoch=10, accelerate, deepspeed, fp16, 6B   |
 | T5-large, CLS                           | 95.39        | 29.3724 / -       |                          | epoch=10                                    |
 | T5-large, CLS                           | 95.55        | 30.3232 / -       |                          | epoch=10, accelerate, deepspeed, fp16       |
-| T5-3B, CLS                              | 95.99        | 34.8998 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 3B   |
-| T5-3B, CLS                              | **96.43**    | 33.8611 / -       |                          | epoch=10, accelerate, deepspeed, 3B         |
-| T5-11B, CLS                             | 95.61        | 113.8510/ -       |                          | epoch=10, accelerate, deepspeed, fp16, 11B  |
+| T5-3B, CLS                              | 95.99        | 34.8998 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 3B/2(T5EncoderModel) |
+| T5-3B, CLS                              | **96.43**    | 33.8611 / -       |                          | epoch=10, accelerate, deepspeed, 3B/2(T5EncoderModel)       |
+| T5-11B, CLS                             | 95.61        | 113.8510/ -       |                          | epoch=10, accelerate, deepspeed, fp16, 11B/2(T5EncoderModel)|
 | MegatronBERT-345m, CLS                  | 96.21        | 31.2049 / -       |                          | epoch=10      |
 | MegatronGPT2-345m, CLS                  | 92.81        | 27.8698 / -       |                          | epoch=10      |
 
