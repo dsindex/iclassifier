@@ -344,7 +344,7 @@ def prepare_model(config, bert_model_name_or_path=None):
             bert_tokenizer.sep_token = '</s>'
             bert_tokenizer.pad_token = '<pad>'
             bert_model = BartModel.from_pretrained(get_pytorch_kobart_model())
-        elif config['emb_class'] in ['gpt']:
+        elif config['emb_class'] in ['gpt', 'gptj']:
             bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
             bert_tokenizer.bos_token = '<|startoftext|>'
             bert_tokenizer.eos_token = '<|endoftext|>'

@@ -62,7 +62,7 @@ def load_model(config, checkpoint):
             bert_tokenizer.pad_token = '<pad>'
             bert_model = BartModel.from_pretrained(get_pytorch_kobart_model())
             bert_config = bert_model.config
-        elif config['emb_class'] in ['gpt']:    
+        elif config['emb_class'] in ['gpt', 'gptj']:    
             bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir)
             bert_tokenizer.bos_token = '<|startoftext|>'
             bert_tokenizer.eos_token = '<|endoftext|>'
@@ -187,7 +187,7 @@ def build_onnx_input(config, ort_session, x):
     if config['emb_class'] == 'glove':
         ort_inputs = {ort_session.get_inputs()[0].name: x}
     else:
-        if config['emb_class'] in ['roberta', 'distilbert', 'bart', 'ibert', 't5']:
+        if config['emb_class'] in ['roberta', 'distilbert', 'bart', 'ibert', 't5', 'gptj']:
             ort_inputs = {ort_session.get_inputs()[0].name: x[0],
                           ort_session.get_inputs()[1].name: x[1]}
         else:
@@ -413,7 +413,7 @@ def encode_text(config, tokenizer, sent_a, sent_b):
             inputs = tokenizer.encode_plus(sent_a, sent_b, add_special_tokens=True, return_tensors='pt')
         else:
             inputs = tokenizer.encode_plus(sent_a, add_special_tokens=True, return_tensors='pt')
-        if config['emb_class'] in ['roberta', 'bart', 'distilbert', 'ibert', 't5']:
+        if config['emb_class'] in ['roberta', 'bart', 'distilbert', 'ibert', 't5', 'gptj']:
             x = [inputs['input_ids'], inputs['attention_mask']]
             # x[0], x[1] : [batch_size, variable size]
         else:
