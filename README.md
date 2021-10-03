@@ -1234,7 +1234,7 @@ How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
 $ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt_neo-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2
-# GPU memory footprint: 31996MiB / 32510MiB foreach 4 GPUs
+# GPU memory footprint: 26802MiB / 32510MiB foreach 4 GPUs
 
 ** accelerate launch, deepspeed & gpt-j-6B
 $ python preprocess.py --config=configs/config-gptj-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-j-6B
