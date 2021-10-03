@@ -416,7 +416,7 @@ INFO:__main__:[Elapsed Time] : 8580.491542816162ms, 12.148977860872327ms on aver
 | GPT2-large, CLS                         | 94.45        | 36.5779 / -       |                          | epoch=10      |
 | GPT2-large, CLS                         | 92.81        | 42.2791 / -       |                          | epoch=10, accelerate, deepspeed, fp16       |
 | GPT2-xlarge, CLS                        | 93.96        | 49.2241 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 1.5B |
-| GPT-NEO, CLS                            | -            | -       / -       |                          | epoch=10, accelerate, deepspeed, fp16, 2.7B |
+| GPT-NEO, CLS                            | 81.77        | 31.2430 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 2.7B |
 | GPT-J-6B, CLS                           | -            | -       / -       |                          | epoch=10, accelerate, deepspeed, fp16, 6B   |
 | T5-large, CLS                           | 95.39        | 29.3724 / -       |                          | epoch=10                                    |
 | T5-large, CLS                           | 95.55        | 30.3232 / -       |                          | epoch=10, accelerate, deepspeed, fp16       |
@@ -1244,11 +1244,11 @@ Which type of machine are you using? ([0] No distributed training, [1] multi-CPU
 How many different machines will you use (use more than 1 for multi-node training)? [1]: 1
 Do you want to use DeepSpeed? [yes/NO]: yes
 What should be your DeepSpeed's ZeRO optimization stage (0, 1, 2, 3)? [2]: 1
-How many gradient accumulation steps you're passing in your script? [1]: 4
+How many gradient accumulation steps you're passing in your script? [1]: 2
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gptj-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-j-6B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=4 --eval_batch_size=8 --gradient_accumulation_steps=4
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gptj-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-j-6B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=4 --eval_batch_size=2 --gradient_accumulation_steps=4
 # GPU memory footprint: 30844MiB / 32510MiB
 
 ```
@@ -1276,12 +1276,10 @@ INFO:__main__:[Accuracy] : 0.8160,  1486/ 1821
 INFO:__main__:[Elapsed Time] : 116692.10934638977ms, 63.68075845005748ms on average
 # GPU memory footprint: 16952MiB / 32510MiB
 
-### --use_fp16
+*** --use_fp16
 $ python evaluate.py --config=configs/config-gpt_neo-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --use_fp16
 INFO:__main__:[Accuracy] : 0.8177,  1489/ 1821
 INFO:__main__:[Elapsed Time] : 57757.81536102295ms, 31.243067259316916ms on average
-
-
 
 ** accelerate launch, deepspeed & gpt-j-6B
 $ python evaluate.py --config=configs/config-gptj-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint

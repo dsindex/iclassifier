@@ -64,11 +64,7 @@ def load_model(config, checkpoint):
             bert_config = bert_model.config
         elif config['emb_class'] in ['gpt', 'gpt_neo', 'gptj']:    
             bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir)
-            bert_tokenizer.bos_token = '<|startoftext|>'
-            bert_tokenizer.eos_token = '<|endoftext|>'
-            bert_tokenizer.cls_token = '<|startoftext|>'
-            bert_tokenizer.sep_token = '<|endoftext|>'
-            bert_tokenizer.pad_token = '<|pad|>'
+            bert_tokenizer.pad_token = bert_tokenizer.eos_token
             bert_config = AutoConfig.from_pretrained(args.bert_output_dir)
             bert_model = AutoModel.from_pretrained(args.bert_output_dir)
         elif config['emb_class'] in ['t5']:    
@@ -196,7 +192,7 @@ def build_onnx_input(config, ort_session, x):
     if config['emb_class'] == 'glove':
         ort_inputs = {ort_session.get_inputs()[0].name: x}
     else:
-        if config['emb_class'] in ['roberta', 'distilbert', 'bart', 'ibert', 't5', 'gpt_neo', 'gptj']:
+        if config['emb_class'] in ['roberta', 'distilbert', 'bart', 'ibert', 't5', 'gpt', 'gpt_neo', 'gptj']:
             ort_inputs = {ort_session.get_inputs()[0].name: x[0],
                           ort_session.get_inputs()[1].name: x[1]}
         else:
@@ -422,7 +418,7 @@ def encode_text(config, tokenizer, sent_a, sent_b):
             inputs = tokenizer.encode_plus(sent_a, sent_b, add_special_tokens=True, return_tensors='pt')
         else:
             inputs = tokenizer.encode_plus(sent_a, add_special_tokens=True, return_tensors='pt')
-        if config['emb_class'] in ['roberta', 'bart', 'distilbert', 'ibert', 't5', 'gpt_neo', 'gptj']:
+        if config['emb_class'] in ['roberta', 'bart', 'distilbert', 'ibert', 't5', 'gpt', 'gpt_neo', 'gptj']:
             x = [inputs['input_ids'], inputs['attention_mask']]
             # x[0], x[1] : [batch_size, variable size]
         else:

@@ -64,7 +64,7 @@ class BertDataset(Dataset):
         all_attention_mask = torch.tensor([f for f in dataset['attention_mask']], dtype=torch.long)
         probe_label_id = dataset['label'][0]
 
-        if config['emb_class'] in ['roberta', 'bart', 'distilbert', 'ibert', 't5', 'gpt_neo', 'gptj']:
+        if config['emb_class'] in ['roberta', 'bart', 'distilbert', 'ibert', 't5', 'gpt', 'gpt_neo', 'gptj']:
             self.x = TensorDataset(all_input_ids, all_attention_mask)
         else:
             all_token_type_ids = torch.tensor([f for f in dataset['token_type_ids']], dtype=torch.long)
