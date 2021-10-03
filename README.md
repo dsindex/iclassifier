@@ -416,7 +416,7 @@ INFO:__main__:[Elapsed Time] : 8580.491542816162ms, 12.148977860872327ms on aver
 | GPT2-large, CLS                         | 94.45        | 36.5779 / -       |                          | epoch=10      |
 | GPT2-large, CLS                         | 92.81        | 42.2791 / -       |                          | epoch=10, accelerate, deepspeed, fp16       |
 | GPT2-xlarge, CLS                        | 93.96        | 49.2241 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 1.5B |
-| GPT-NEO, CLS                            | 81.77        | 31.2430 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 2.7B |
+| GPT-NEO, CLS                            | 83.69        | 63.8012 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 2.7B |
 | GPT-J-6B, CLS                           | -            | -       / -       |                          | epoch=10, accelerate, deepspeed, fp16, 6B   |
 | T5-large, CLS                           | 95.39        | 29.3724 / -       |                          | epoch=10                                    |
 | T5-large, CLS                           | 95.55        | 30.3232 / -       |                          | epoch=10, accelerate, deepspeed, fp16       |
