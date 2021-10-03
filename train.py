@@ -344,7 +344,7 @@ def prepare_model(config, bert_model_name_or_path=None):
             bert_tokenizer.sep_token = '</s>'
             bert_tokenizer.pad_token = '<pad>'
             bert_model = BartModel.from_pretrained(get_pytorch_kobart_model())
-        elif config['emb_class'] in ['gpt', 'gptj']:
+        elif config['emb_class'] in ['gpt', 'gpt_neo', 'gptj']:
             bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
             bert_tokenizer.bos_token = '<|startoftext|>'
             bert_tokenizer.eos_token = '<|endoftext|>'
@@ -389,7 +389,7 @@ def prepare_model(config, bert_model_name_or_path=None):
                            feature_based=args.bert_use_feature_based,
                            finetune_last=args.bert_use_finetune_last)
     if args.restore_path:
-        checkpoint = load_checkpoint(args.restore_path)
+        checkpoint = load_checkpoint(args.restore_path, device='cpu')
         model.load_state_dict(checkpoint)
     if args.enable_qat:
         model.qconfig = torch.quantization.get_default_qat_qconfig('fbgemm')

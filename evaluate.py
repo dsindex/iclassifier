@@ -62,7 +62,7 @@ def load_model(config, checkpoint):
             bert_tokenizer.pad_token = '<pad>'
             bert_model = BartModel.from_pretrained(get_pytorch_kobart_model())
             bert_config = bert_model.config
-        elif config['emb_class'] in ['gpt', 'gptj']:    
+        elif config['emb_class'] in ['gpt', 'gpt_neo', 'gptj']:    
             bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir)
             bert_tokenizer.bos_token = '<|startoftext|>'
             bert_tokenizer.eos_token = '<|endoftext|>'
@@ -115,17 +115,26 @@ def load_model(config, checkpoint):
         model = quantize_fx.convert_fx(model)
 
     if args.enable_diffq:
-        quantizer = DiffQuantizer(model)
+        quantizer = DiffQuaantizer(model)
         config['quantizer'] = quantizer
         quantizer.restore_quantized_state(checkpoint)
     else:
         model.load_state_dict(checkpoint)
 
-    model = model.to(args.device)
+    if args.enable_parallelformers:
+        from parallelformers import parallelize
+        parallelize(model.bert_model, num_gpus=args.num_gpus, fp16=True, verbose='detail')
+   
+    if args.use_fp16:
+        model = model.half().to(args.device)
+    else:
+        model = model.to(args.device)
+
     ''' 
     for name, param in model.named_parameters():
-        print(name, param.data, param.device, param.requires_grad)
+        print(name, param.data, param.device, param.dtype, param.requires_grad)
     '''
+
     logger.info("[model] :\n{}".format(model.__str__()))
     logger.info("[Model loaded]")
     return model
@@ -187,7 +196,7 @@ def build_onnx_input(config, ort_session, x):
     if config['emb_class'] == 'glove':
         ort_inputs = {ort_session.get_inputs()[0].name: x}
     else:
-        if config['emb_class'] in ['roberta', 'distilbert', 'bart', 'ibert', 't5', 'gptj']:
+        if config['emb_class'] in ['roberta', 'distilbert', 'bart', 'ibert', 't5', 'gpt_neo', 'gptj']:
             ort_inputs = {ort_session.get_inputs()[0].name: x[0],
                           ort_session.get_inputs()[1].name: x[1]}
         else:
@@ -276,7 +285,7 @@ def evaluate(args):
     test_loader = prepare_datasets(config)
  
     # load pytorch model checkpoint
-    checkpoint = load_checkpoint(args.model_path, device=args.device)
+    checkpoint = load_checkpoint(args.model_path, device='cpu')
 
     # prepare model and load parameters
     model = load_model(config, checkpoint)
@@ -413,7 +422,7 @@ def encode_text(config, tokenizer, sent_a, sent_b):
             inputs = tokenizer.encode_plus(sent_a, sent_b, add_special_tokens=True, return_tensors='pt')
         else:
             inputs = tokenizer.encode_plus(sent_a, add_special_tokens=True, return_tensors='pt')
-        if config['emb_class'] in ['roberta', 'bart', 'distilbert', 'ibert', 't5', 'gptj']:
+        if config['emb_class'] in ['roberta', 'bart', 'distilbert', 'ibert', 't5', 'gpt_neo', 'gptj']:
             x = [inputs['input_ids'], inputs['attention_mask']]
             # x[0], x[1] : [batch_size, variable size]
         else:
@@ -432,7 +441,7 @@ def inference(args):
     set_path(config)
  
     # load pytorch model checkpoint
-    checkpoint = load_checkpoint(args.model_path, device=args.device)
+    checkpoint = load_checkpoint(args.model_path, device='cpu')
 
     # prepare model and load parameters
     model = load_model(config, checkpoint)
@@ -508,6 +517,8 @@ def main():
     parser.add_argument('--num_threads', type=int, default=0)
     parser.add_argument('--batch_size', type=int, default=1)
     parser.add_argument('--num_examples', default=0, type=int, help="Number of examples to evaluate, 0 means all of them.")
+    parser.add_argument('--local_rank', default=0, type=int)
+    parser.add_argument('--use_fp16', action='store_true', help="Use half precision inference.")
     # for Augmentation
     parser.add_argument('--augmented', action='store_true',
                         help="Set this flag to generate augmented.raw.pred(augmented.txt) for training.")
@@ -543,6 +554,11 @@ def main():
     # for DiffQ
     parser.add_argument('--enable_diffq', action='store_true',
                         help="Set this flag to use diffq(Differentiable Model Compression).")
+    # for parallelformers
+    parser.add_argument('--enable_parallelformers', action='store_true',
+                        help="Set this flag to use parallelformers).")
+    parser.add_argument('--num_gpus', default=1, type=int, help="Number of GPUs for parallelformers.")
+
 
     args = parser.parse_args()
 

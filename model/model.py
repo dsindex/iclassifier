@@ -532,7 +532,7 @@ class TextBertCNN(BaseModel):
             'output_attentions': True,
             'return_dict': True
         }
-        if self.bert_model.config.model_type not in ['roberta', 'bart', 'distilbert', 'ibert', 't5', 'gptj']:
+        if self.bert_model.config.model_type not in ['roberta', 'bart', 'distilbert', 'ibert', 't5', 'gpt_neo', 'gptj']:
             params['token_type_ids'] = x[2]
         if head_mask is not None:
             params['head_mask'] = head_mask
@@ -619,7 +619,7 @@ class TextBertCLS(BaseModel):
             'output_attentions': True,
             'return_dict': True
         }
-        if self.bert_model.config.model_type not in ['roberta', 'bart', 'distilbert', 'ibert', 't5', 'gptj']:
+        if self.bert_model.config.model_type not in ['roberta', 'bart', 'distilbert', 'ibert', 't5', 'gpt_neo', 'gptj']:
             params['token_type_ids'] = x[2]
         if head_mask is not None:
             params['head_mask'] = head_mask
@@ -720,7 +720,7 @@ class TextBertDensenetCNN(BaseModel):
             'output_attentions': True,
             'return_dict': True
         }
-        if self.bert_model.config.model_type not in ['roberta', 'bart', 'distilbert', 'ibert', 't5', 'gptj']:
+        if self.bert_model.config.model_type not in ['roberta', 'bart', 'distilbert', 'ibert', 't5', 'gpt_neo', 'gptj']:
             params['token_type_ids'] = x[2]
         if head_mask is not None:
             params['head_mask'] = head_mask

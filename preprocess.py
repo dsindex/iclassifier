@@ -261,7 +261,7 @@ def build_encoded_dataset(input_path, tokenizer, labels, config, mode='train'):
     encoded_dataset = dataset.map(preprocess_function, batched=True)
 
     need_token_type_ids = True
-    if config['emb_class'] in ['roberta', 'bart', 'distilbert', 'ibert', 't5', 'gptj']:
+    if config['emb_class'] in ['roberta', 'bart', 'distilbert', 'ibert', 't5', 'gpt_neo', 'gptj']:
         need_token_type_ids = False
 
     # debugging
@@ -302,7 +302,7 @@ def preprocess_bert(config):
         tokenizer.cls_token = '<s>'
         tokenizer.sep_token = '</s>'
         tokenizer.pad_token = '<pad>'
-    elif config['emb_class'] in ['gpt', 'gptj']:
+    elif config['emb_class'] in ['gpt', 'gpt_neo', 'gptj']:
         tokenizer = AutoTokenizer.from_pretrained(args.bert_model_name_or_path)
         tokenizer.bos_token = '<|startoftext|>'
         tokenizer.eos_token = '<|endoftext|>'

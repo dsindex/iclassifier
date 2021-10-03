@@ -485,7 +485,7 @@ def train(args):
     if args.do_distill:
         # prepare and load teacher model
         teacher_model = prepare_model(teacher_config, bert_model_name_or_path=args.teacher_bert_model_name_or_path)
-        teacher_checkpoint = load_checkpoint(args.teacher_model_path, device=args.device)
+        teacher_checkpoint = load_checkpoint(args.teacher_model_path, device='cpu')
         teacher_model.load_state_dict(teacher_checkpoint)
         teacher_model = teacher_model.to(args.device)
         logger.info("[prepare teacher model and loading done]")
@@ -514,7 +514,7 @@ def train(args):
     if args.do_prune:
         # restore model from '--save_path', '--bert_output_dir'
         model = prepare_model(student_config, bert_model_name_or_path=args.bert_output_dir)
-        checkpoint = load_checkpoint(args.save_path, device=args.device)
+        checkpoint = load_checkpoint(args.save_path, device='cpu')
         model.load_state_dict(checkpoint)
         model = model.to(args.device)
         logger.info("[Restore best student model] : {}, {}".format(args.bert_output_dir, args.save_path))

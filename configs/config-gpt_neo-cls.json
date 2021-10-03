@@ -1,0 +1,6 @@
+{
+    "emb_class": "gpt_neo",
+    "enc_class": "cls",
+    "n_ctx": 100,
+    "dropout": 0.1
+}
