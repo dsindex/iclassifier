@@ -1236,7 +1236,12 @@ $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
 $ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt_neo-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2
 # GPU memory footprint: 26802MiB / 32510MiB foreach 4 GPUs
 
-** accelerate launch, deepspeed & gpt-j-6B
+** accelerate launch, deepspeed & gpt-neo-2.7B & full precision
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt_neo-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=8 --gradient_accumulation_steps=4
+# GPU memory footprint: 
+
+
+** accelerate launch, deepspeed & gpt-j-6B & full precision
 $ python preprocess.py --config=configs/config-gptj-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-j-6B
 $ accelerate config
 In which compute environment are you running? ([0] This machine, [1] AWS (Amazon SageMaker)): 0
@@ -1246,10 +1251,10 @@ Do you want to use DeepSpeed? [yes/NO]: yes
 What should be your DeepSpeed's ZeRO optimization stage (0, 1, 2, 3)? [2]: 1
 How many gradient accumulation steps you're passing in your script? [1]: 2
 How many processes in total will you use? [1]: 4
-Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
+Do you wish to use FP16 (mixed precision)? [yes/NO]: NO
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
 $ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gptj-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-j-6B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=4 --eval_batch_size=2 --gradient_accumulation_steps=4
-# GPU memory footprint: 30844MiB / 32510MiB
+# GPU memory footprint:
 
 ```
 
@@ -1272,24 +1277,32 @@ INFO:__main__:[Elapsed Time] : 89949.15795326233ms, 49.22410970205789ms on avera
 
 ** accelerate launch, deepspeed & gpt-neo-2.7B
 $ python evaluate.py --config=configs/config-gpt_neo-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
-INFO:__main__:[Accuracy] : 0.8160,  1486/ 1821
-INFO:__main__:[Elapsed Time] : 116692.10934638977ms, 63.68075845005748ms on average
+INFO:__main__:[Accuracy] : 0.8369,  1524/ 1821
+INFO:__main__:[Elapsed Time] : 116804.82339859009ms, 63.80129135571993ms on average
 # GPU memory footprint: 16952MiB / 32510MiB
 
 *** --use_fp16
 $ python evaluate.py --config=configs/config-gpt_neo-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --use_fp16
-INFO:__main__:[Accuracy] : 0.8177,  1489/ 1821
-INFO:__main__:[Elapsed Time] : 57757.81536102295ms, 31.243067259316916ms on average
+INFO:__main__:[Accuracy] : 0.8358,  1522/ 1821
+INFO:__main__:[Elapsed Time] : 57958.584785461426ms, 31.44094957100166ms on average
+
+*** --enable_parallelformers --use_fp16 
+$ pip install parallelformers
+$ python evaluate.py --config=configs/config-gpt_neo-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --use_fp16 --enable_parallelformers --num_gpus=2
+INFO:__main__:[Accuracy] : 0.8358,  1522/ 1821
+INFO:__main__:[Elapsed Time] : 476620.3775405884ms, 256.33956036724885ms on average
+# GPU memory footprint : 12180MiB / 32510MiB , 5493MiB / 32510MiB
+
+** accelerate launch, deepspeed & gpt-neo-2.7B & full precision
+
 
 ** accelerate launch, deepspeed & gpt-j-6B
 $ python evaluate.py --config=configs/config-gptj-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
-CUDA out of memory. Tried to allocate 256.00 MiB (GPU 0; 31.75 GiB total capacity; 30.37 GiB already allocated; 240.00 MiB free; 30.37 GiB reserved in total by PyTorch)
-why?
 
-# pip install parallelformers
-$ python evaluate.py --config=configs/config-gptj-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --enable_parallelformers --num_gpus=2  
+
+*** --enable_parallelformers --use_fp16
+$ python evaluate.py --config=configs/config-gptj-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --use_fp16 --enable_parallelformers --num_gpus=2  
 AssertionError: GPTJ is not supported yet
-
 ```
 
 </p>

@@ -66,7 +66,7 @@ def load_model(config, checkpoint):
             bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir)
             bert_tokenizer.pad_token = bert_tokenizer.eos_token
             bert_config = AutoConfig.from_pretrained(args.bert_output_dir)
-            bert_model = AutoModel.from_pretrained(args.bert_output_dir)
+            bert_model = AutoModel.from_config(bert_config)
         elif config['emb_class'] in ['t5']:    
             from transformers import T5EncoderModel
             bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir)
