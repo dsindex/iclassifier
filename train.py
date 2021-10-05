@@ -113,7 +113,7 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
                             if not os.path.exists(args.bert_output_dir):
                                 os.makedirs(args.bert_output_dir)
                             unwrapped_model.bert_tokenizer.save_pretrained(args.bert_output_dir)
-                            unwrapped_model.bert_model.save_pretrained(args.bert_output_dir)
+                            unwrapped_model.bert_model.save_pretrained(args.bert_output_dir, save_function=accelerator.save, state_dict=accelerator.get_state_dict(model))
         # back-propagation - end
         cur_examples = y.size(0)
         total_examples += cur_examples
@@ -145,7 +145,7 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
                     if not os.path.exists(args.bert_output_dir):
                         os.makedirs(args.bert_output_dir)
                     unwrapped_model.bert_tokenizer.save_pretrained(args.bert_output_dir)
-                    unwrapped_model.bert_model.save_pretrained(args.bert_output_dir)
+                    unwrapped_model.bert_model.save_pretrained(args.bert_output_dir, save_function=accelerator.save, state_dict=accelerator.get_state_dict(model))
 
     curr_time = time.time()
     elapsed_time = (curr_time - st_time) / 60
@@ -468,7 +468,7 @@ def train(args):
     logger.info("%s", config)
 
     # create accelerator
-    accelerator = Accelerator()
+    accelerator = Accelerator(fp16=args.use_fp16)
     config['accelerator'] = accelerator
     args.device = accelerator.device
 
@@ -485,6 +485,7 @@ def train(args):
         # create optimizer, scheduler, summary writer
         model, optimizer, scheduler, writer = prepare_others(config, model, train_loader)
         train_loader = accelerator.prepare(train_loader)
+        valid_loader = accelerator.prepare(valid_loader)
         
         config['optimizer'] = optimizer
         config['scheduler'] = scheduler
@@ -530,7 +531,7 @@ def hp_search_optuna(trial: optuna.Trial):
     set_path(config)
 
     # create accelerator
-    accelerator = Accelerator()
+    accelerator = Accelerator(fp16=args.use_fp16)
     config['accelerator'] = accelerator
     args.device = accelerator.device
 
@@ -550,6 +551,7 @@ def hp_search_optuna(trial: optuna.Trial):
         # create optimizer, scheduler, summary writer
         model, optimizer, scheduler, writer = prepare_others(config, model, train_loader, lr=lr)
         train_loader = accelerator.prepare(train_loader)
+        valid_loader = accelerator.prepare(valid_loader)
 
         config['optimizer'] = optimizer
         config['scheduler'] = scheduler
@@ -614,6 +616,7 @@ def get_params():
     parser.add_argument('--measure', type=str, default='loss', help="Evaluation measure, 'loss' | 'accuracy', default 'loss'.")
     parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'LabelSmoothingCrossEntropy' | 'MSELoss' | 'KLDivLoss', default 'CrossEntropyLoss'")
     parser.add_argument('--local_rank', default=0, type=int)
+    parser.add_argument('--use_fp16', action='store_true', help="Use half precision to load model.")
     # for Augmentation
     parser.add_argument('--augmented', action='store_true',
                         help="Set this flag to use augmented.txt.ids or augmented.txt.fs for training.")
