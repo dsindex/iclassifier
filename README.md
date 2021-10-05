@@ -414,12 +414,12 @@ INFO:__main__:[Elapsed Time] : 8580.491542816162ms, 12.148977860872327ms on aver
 | BORT, CLS                               | 77.98        | 6.1346  / -       |                          | epoch=10      |
 | ConvBERT, CLS                           | 77.48        | 22.6815 / -       |                          | epoch=10      |
 | GPT2-large, CLS                         | 94.45        | 36.5779 / -       |                          | epoch=10      |
-| GPT2-large, CLS                         | 92.81        | 42.2791 / -       |                          | epoch=10, accelerate, deepspeed, fp16       |
-| GPT2-xlarge, CLS                        | 93.96        | 49.2241 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 1.5B |
-| GPT-NEO, CLS                            | 83.69        | 63.8012 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 2.7B |
-| GPT-J-6B, CLS                           | 93.36        | 85.8243 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 6B   |
-| T5-large, CLS                           | 95.39        | 29.3724 / -       |                          | epoch=10                                    |
-| T5-large, CLS                           | 95.55        | 30.3232 / -       |                          | epoch=10, accelerate, deepspeed, fp16       |
+| GPT2-large, CLS                         | 92.81        | 42.2791 / -       |                          | epoch=10, accelerate, deepspeed, fp16                       |
+| GPT2-xlarge, CLS                        | 93.96        | 49.2241 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 1.5B                 |
+| GPT-NEO, CLS                            | 83.69        | 63.8012 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 2.7B                 |
+| GPT-J-6B, CLS                           | 93.36        | 78.8771 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 6B, half()           |
+| T5-large, CLS                           | 95.39        | 29.3724 / -       |                          | epoch=10                                                    |
+| T5-large, CLS                           | 95.55        | 30.3232 / -       |                          | epoch=10, accelerate, deepspeed, fp16                       |
 | T5-3B, CLS                              | 95.99        | 34.8998 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 3B/2(T5EncoderModel) |
 | T5-3B, CLS                              | **96.43**    | 33.8611 / -       |                          | epoch=10, accelerate, deepspeed, 3B/2(T5EncoderModel)       |
 | T5-11B, CLS                             | 95.61        | 113.8510/ -       |                          | epoch=10, accelerate, deepspeed, fp16, 11B/2(T5EncoderModel)|
@@ -1309,13 +1309,13 @@ INFO:__main__:[Elapsed Time] : 117899.50394630432ms, 64.31042964641864ms on aver
 
 ** accelerate launch, deepspeed & gpt-j-6B
 $ python evaluate.py --config=configs/config-gptj-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
-INFO:__main__:[Accuracy] : 0.9325,  1698/ 1821
-INFO:__main__:[Elapsed Time] : 320550.3623485565ms, 175.74050898080344ms on average
+INFO:__main__:[Accuracy] : 0.9336,  1700/ 1821
+INFO:__main__:[Elapsed Time] : 340499.93801116943ms, 186.51898129955754ms on average
 # GPU memory footprint : 23956MiB / 32510MiB
 
 *** --use_fp16
 INFO:__main__:[Accuracy] : 0.9336,  1700/ 1821
-INFO:__main__:[Elapsed Time] : 156826.58886909485ms, 85.82439082009452ms on average
+INFO:__main__:[Elapsed Time] : 144453.00483703613ms, 78.87713149353698ms on average
 # GPU memory footprint : 12730MiB / 32510MiB
 
 *** --enable_parallelformers --use_fp16
