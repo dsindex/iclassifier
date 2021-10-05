@@ -179,8 +179,8 @@ def evaluate(model, config, valid_loader, eval_device=None):
         iterator = tqdm(valid_loader, total=len(valid_loader), desc=f"Evaluate")
         for i, (x,y) in enumerate(iterator):
             if eval_device:
-                x = to_device(x, args.device)
-                y = to_device(y, args.device)
+                x = to_device(x, eval_device)
+                y = to_device(y, eval_device)
             model.eval()
             logits = model(x)
             loss = criterion(logits, y)
