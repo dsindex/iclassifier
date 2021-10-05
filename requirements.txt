@@ -19,3 +19,4 @@ optuna
 onnx
 onnxruntime
 diffq
+# parallelformers
