@@ -485,7 +485,6 @@ def train(args):
         # create optimizer, scheduler, summary writer
         model, optimizer, scheduler, writer = prepare_others(config, model, train_loader)
         train_loader = accelerator.prepare(train_loader)
-        valid_loader = accelerator.prepare(valid_loader)
         
         config['optimizer'] = optimizer
         config['scheduler'] = scheduler
@@ -551,7 +550,6 @@ def hp_search_optuna(trial: optuna.Trial):
         # create optimizer, scheduler, summary writer
         model, optimizer, scheduler, writer = prepare_others(config, model, train_loader, lr=lr)
         train_loader = accelerator.prepare(train_loader)
-        valid_loader = accelerator.prepare(valid_loader)
 
         config['optimizer'] = optimizer
         config['scheduler'] = scheduler
