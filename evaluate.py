@@ -119,7 +119,7 @@ def load_model(config, checkpoint):
 
     if args.enable_parallelformers:
         from parallelformers import parallelize
-        parallelize(model.bert_model, num_gpus=args.num_gpus, fp16=True, verbose='detail')
+        parallelize(model.bert_model, num_gpus=args.num_gpus, fp16=args.use_fp16, verbose='detail')
    
     if args.use_fp16:
         model = model.half().to(args.device)
