@@ -416,7 +416,7 @@ INFO:__main__:[Elapsed Time] : 8580.491542816162ms, 12.148977860872327ms on aver
 | GPT2-large, CLS                         | 94.45        | 36.5779 / -       |                          | epoch=10      |
 | GPT2-large, CLS                         | 92.81        | 42.2791 / -       |                          | epoch=10, accelerate, deepspeed, fp16                       |
 | GPT2-xlarge, CLS                        | 93.96        | 49.2241 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 1.5B                 |
-| GPT-NEO, CLS                            | 83.69        | 63.8012 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 2.7B                 |
+| GPT-NEO, CLS                            | 92.31        | 36.1055 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 2.7B, half()         |
 | GPT-J-6B, CLS                           | 93.36        | 78.8771 / -       |                          | epoch=10, accelerate, deepspeed, fp16, 6B, half()           |
 | T5-large, CLS                           | 95.39        | 29.3724 / -       |                          | epoch=10                                                    |
 | T5-large, CLS                           | 95.55        | 30.3232 / -       |                          | epoch=10, accelerate, deepspeed, fp16                       |
@@ -1232,8 +1232,6 @@ $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
 $ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt2-xl --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=10 --batch_size=8
 
 ** accelerate launch, deepspeed & gpt-neo-2.7B
-H
-H
 $ python preprocess.py --config=configs/config-gpt_neo-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B
 $ accelerate config
 In which compute environment are you running? ([0] This machine, [1] AWS (Amazon SageMaker)): 0
@@ -1241,16 +1239,12 @@ Which type of machine are you using? ([0] No distributed training, [1] multi-CPU
 How many different machines will you use (use more than 1 for multi-node training)? [1]: 1
 Do you want to use DeepSpeed? [yes/NO]: yes
 What should be your DeepSpeed's ZeRO optimization stage (0, 1, 2, 3)? [2]: 1
-How many gradient accumulation steps you're passing in your script? [1]: 2
+How many gradient accumulation steps you're passing in your script? [1]: 4
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt_neo-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=16 --gradient_accumulation_steps=2
-# GPU memory footprint: 26802MiB / 32510MiB foreach 4 GPUs
-
-** accelerate launch, deepspeed & gpt-neo-2.7B & full precision
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt_neo-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-6 --epoch=10 --batch_size=4 --eval_batch_size=8 --gradient_accumulation_steps=8
-# GPU memory footprint: 29874MiB / 32510MiB foreach 4 GPUs
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt_neo-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=4 --eval_batch_size=8 --gradient_accumulation_steps=4
+# GPU memory footprint: 29614MiB / 32510MiB foreach 4 GPUs
 
 ** accelerate launch, deepspeed & gpt-j-6B
 $ python preprocess.py --config=configs/config-gptj-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-j-6B
@@ -1287,25 +1281,20 @@ INFO:__main__:[Elapsed Time] : 89949.15795326233ms, 49.22410970205789ms on avera
 
 ** accelerate launch, deepspeed & gpt-neo-2.7B
 $ python evaluate.py --config=configs/config-gpt_neo-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
-INFO:__main__:[Accuracy] : 0.8369,  1524/ 1821
-INFO:__main__:[Elapsed Time] : 116804.82339859009ms, 63.80129135571993ms on average
-# GPU memory footprint: 16952MiB / 32510MiB
+INFO:__main__:[Accuracy] : 0.9209,  1677/ 1821
+INFO:__main__:[Elapsed Time] : 119734.6019744873ms, 65.36855357033866ms on average
+# GPU memory footprint: 11776MiB / 32510MiB 
 
 *** --use_fp16
 $ python evaluate.py --config=configs/config-gpt_neo-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --use_fp16
-INFO:__main__:[Accuracy] : 0.8358,  1522/ 1821
-INFO:__main__:[Elapsed Time] : 57958.584785461426ms, 31.44094957100166ms on average
+INFO:__main__:[Accuracy] : 0.9231,  1681/ 1821
+INFO:__main__:[Elapsed Time] : 66532.00912475586ms, 36.105518550663206ms on average
 
 *** --enable_parallelformers --use_fp16 
 $ pip install parallelformers
 $ python evaluate.py --config=configs/config-gpt_neo-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint --use_fp16 --enable_parallelformers --num_gpus=2
-INFO:__main__:[Accuracy] : 0.8358,  1522/ 1821
-INFO:__main__:[Elapsed Time] : 476620.3775405884ms, 256.33956036724885ms on average
-# GPU memory footprint : 12180MiB / 32510MiB , 5493MiB / 32510MiB
 
-** accelerate launch, deepspeed & gpt-neo-2.7B & full precision
-INFO:__main__:[Accuracy] : 0.6958,  1267/ 1821
-INFO:__main__:[Elapsed Time] : 117899.50394630432ms, 64.31042964641864ms on average
+# GPU memory footprint : 12180MiB / 32510MiB , 5493MiB / 32510MiB
 
 ** accelerate launch, deepspeed & gpt-j-6B
 $ python evaluate.py --config=configs/config-gptj-cls.json --data_dir=data/sst2 --bert_output_dir=bert-checkpoint
