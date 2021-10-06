@@ -487,10 +487,7 @@ def train(args):
         teacher_model = prepare_model(teacher_config, bert_model_name_or_path=args.teacher_bert_model_name_or_path)
         teacher_checkpoint = load_checkpoint(args.teacher_model_path, device='cpu')
         teacher_model.load_state_dict(teacher_checkpoint)
-        if args.use_fp16:
-            teacher_model = teacher_model.half().to(args.device)
-        else:
-            teacher_model = teacher_model.to(args.device)
+        teacher_model = teacher_model.to(args.device)
         logger.info("[prepare teacher model and loading done]")
  
         # prepare student model
@@ -519,10 +516,7 @@ def train(args):
         model = prepare_model(student_config, bert_model_name_or_path=args.bert_output_dir)
         checkpoint = load_checkpoint(args.save_path, device='cpu')
         model.load_state_dict(checkpoint)
-        if args.use_fp16:
-            model = model.half().to(args.device)
-        else:
-            model = model.to(args.device)
+        model = model.to(args.device)
         logger.info("[Restore best student model] : {}, {}".format(args.bert_output_dir, args.save_path))
 
         eval_loss = eval_acc = 0
@@ -606,7 +600,7 @@ def get_params():
     parser.add_argument('--measure', type=str, default='loss', help="Evaluation measure, 'loss' | 'accuracy', default 'loss'.")
     parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'LabelSmoothingCrossEntropy' | 'MSELoss' | 'KLDivLoss', default 'CrossEntropyLoss'")
     parser.add_argument('--local_rank', default=0, type=int)
-    parser.add_argument('--use_fp16', action='store_true', help="Use half precision to load model.")
+    parser.add_argument('--use_fp16', action='store_true', help="Use mixed precision training via torch.cuda.amp(inside Accelerate).")
     parser.add_argument('--augmented', action='store_true',
                         help="Set this flag to use augmented.txt for training.")
     parser.add_argument('--bert_model_name_or_path', type=str, default='embeddings/distilbert-base-uncased',
