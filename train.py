@@ -101,10 +101,10 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
                 else: eval_measure = eval_acc
                 if args.measure == 'loss': is_best = eval_measure < best_eval_measure
                 else: is_best = eval_measure > best_eval_measure
+                accelerator.wait_for_everyone()
                 if is_best and accelerator.is_main_process:
                     best_eval_measure = eval_measure
                     if args.save_path and not args.hp_search_optuna:
-                        accelerator.wait_for_everyone()
                         unwrapped_model = accelerator.unwrap_model(model)
                         save_model(config, unwrapped_model, valid_loader=valid_loader)
                         logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
@@ -133,10 +133,10 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
     else: eval_measure = eval_acc
     if args.measure == 'loss': is_best = eval_measure < best_eval_measure
     else: is_best = eval_measure > best_eval_measure
+    accelerator.wait_for_everyone()
     if is_best and accelerator.is_main_process:
         best_eval_measure = eval_measure
         if args.save_path and not args.hp_search_optuna:
-            accelerator.wait_for_everyone()
             unwrapped_model = accelerator.unwrap_model(model)
             save_model(config, unwrapped_model, valid_loader=valid_loader)
             logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
