@@ -1245,7 +1245,6 @@ Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
 $ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt_neo-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=3 --batch_size=4 --eval_batch_size=8 --gradient_accumulation_steps=4
 # GPU memory footprint: 29614MiB / 32510MiB foreach 4 GPUs
-# evaluation over a split of valid set due to accelerate. so, saving the best model might be inconsistent. shorter epoch prefered! 
 
 ** accelerate launch, deepspeed & gpt-j-6B
 $ python preprocess.py --config=configs/config-gptj-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-j-6B
