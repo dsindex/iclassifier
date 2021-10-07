@@ -55,11 +55,9 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
         criterion = torch.nn.CrossEntropyLoss()
 
     # train one epoch
-    total_loss = 0
-    avg_loss = 0
+    train_losses = []
     local_best_eval_loss = float('inf')
     local_best_eval_acc = 0
-    total_examples = 0
     st_time = time.time()
     optimizer.zero_grad()
     epoch_iterator = tqdm(train_loader, total=len(train_loader), desc=f"Epoch {epoch_i}")
@@ -89,7 +87,7 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
             scheduler.step()
             curr_lr = scheduler.get_last_lr()[0] if scheduler else optimizer.param_groups[0]['lr']
             epoch_iterator.set_description(f"Process: {accelerator.process_index}, epoch: {epoch_i}, global_step: {global_step}, local_step: {local_step}, loss: {loss:.3f}, curr_lr: {curr_lr:.7f}")
-            if accelerator.is_main_process and args.eval_and_save_steps > 0 and global_step != 0 and global_step % args.eval_and_save_steps == 0:
+            if args.eval_and_save_steps > 0 and global_step != 0 and global_step % args.eval_and_save_steps == 0:
                 # evaluate
                 eval_loss, eval_acc = evaluate(model, config, valid_loader)
                 if local_best_eval_loss > eval_loss: local_best_eval_loss = eval_loss
@@ -102,9 +100,10 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
                 else: eval_measure = eval_acc
                 if args.measure == 'loss': is_best = eval_measure < best_eval_measure
                 else: is_best = eval_measure > best_eval_measure
-                if is_best:
+                if is_best and accelerator.is_main_process:
                     best_eval_measure = eval_measure
                     if args.save_path and not args.hp_search_optuna:
+                        accelerator.wait_for_everyone()
                         unwrapped_model = accelerator.unwrap_model(model)
                         save_model(config, unwrapped_model, valid_loader=valid_loader)
                         logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
@@ -113,39 +112,39 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
                             if not os.path.exists(args.bert_output_dir):
                                 os.makedirs(args.bert_output_dir)
                             unwrapped_model.bert_tokenizer.save_pretrained(args.bert_output_dir)
-                            unwrapped_model.bert_model.save_pretrained(args.bert_output_dir, save_function=accelerator.save, state_dict=accelerator.get_state_dict(model))
+                            unwrapped_model.bert_model.save_pretrained(args.bert_output_dir, save_function=accelerator.save)
         # back-propagation - end
-        cur_examples = y.size(0)
-        total_examples += cur_examples
-        total_loss += (loss.item() * cur_examples)
+        train_losses.append(loss)
         if writer: writer.add_scalar('Loss/train', loss.item(), global_step)
-    avg_loss = total_loss / total_examples
+
+    train_loss = torch.mean(torch.tensor(train_losses)).item()
 
     # evaluate at the end of epoch
-    if accelerator.is_main_process:
-        eval_loss, eval_acc = evaluate(model, config, valid_loader)
-        if local_best_eval_loss > eval_loss: local_best_eval_loss = eval_loss
-        if local_best_eval_acc < eval_acc: local_best_eval_acc = eval_acc
-        if writer:
-            writer.add_scalar('Loss/valid', eval_loss, global_step)
-            writer.add_scalar('Acc/valid', eval_acc, global_step)
-            writer.add_scalar('LearningRate/train', curr_lr, global_step)
-        if args.measure == 'loss': eval_measure = eval_loss 
-        else: eval_measure = eval_acc
-        if args.measure == 'loss': is_best = eval_measure < best_eval_measure
-        else: is_best = eval_measure > best_eval_measure
-        if is_best:
-            best_eval_measure = eval_measure
-            if args.save_path and not args.hp_search_optuna:
-                unwrapped_model = accelerator.unwrap_model(model)
-                save_model(config, unwrapped_model, valid_loader=valid_loader)
-                logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
-                # save finetuned bert model/config/tokenizer
-                if config['emb_class'] not in ['glove'] and not (config['emb_class'] == 'bart' and config['use_kobart']):
-                    if not os.path.exists(args.bert_output_dir):
-                        os.makedirs(args.bert_output_dir)
-                    unwrapped_model.bert_tokenizer.save_pretrained(args.bert_output_dir)
-                    unwrapped_model.bert_model.save_pretrained(args.bert_output_dir, save_function=accelerator.save, state_dict=accelerator.get_state_dict(model))
+    eval_loss, eval_acc = evaluate(model, config, valid_loader)
+    # gather loss across devices
+    if local_best_eval_loss > eval_loss: local_best_eval_loss = eval_loss
+    if local_best_eval_acc < eval_acc: local_best_eval_acc = eval_acc
+    if writer:
+        writer.add_scalar('Loss/valid', eval_loss, global_step)
+        writer.add_scalar('Acc/valid', eval_acc, global_step)
+        writer.add_scalar('LearningRate/train', curr_lr, global_step)
+    if args.measure == 'loss': eval_measure = eval_loss 
+    else: eval_measure = eval_acc
+    if args.measure == 'loss': is_best = eval_measure < best_eval_measure
+    else: is_best = eval_measure > best_eval_measure
+    if is_best and accelerator.is_main_process:
+        best_eval_measure = eval_measure
+        if args.save_path and not args.hp_search_optuna:
+            accelerator.wait_for_everyone()
+            unwrapped_model = accelerator.unwrap_model(model)
+            save_model(config, unwrapped_model, valid_loader=valid_loader)
+            logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
+            # save finetuned bert model/config/tokenizer
+            if config['emb_class'] not in ['glove'] and not (config['emb_class'] == 'bart' and config['use_kobart']):
+                if not os.path.exists(args.bert_output_dir):
+                    os.makedirs(args.bert_output_dir)
+                unwrapped_model.bert_tokenizer.save_pretrained(args.bert_output_dir)
+                unwrapped_model.bert_model.save_pretrained(args.bert_output_dir, save_function=accelerator.save)
 
     curr_time = time.time()
     elapsed_time = (curr_time - st_time) / 60
@@ -156,7 +155,7 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
         'epoch': epoch_i,
         'local_step': local_step+1,
         'epoch_step': len(train_loader),
-        'avg_loss': avg_loss,
+        'train_loss': train_loss,
         'local_best_eval_loss': local_best_eval_loss,
         'local_best_eval_acc': local_best_eval_acc,
         'best_eval_measure': best_eval_measure,
@@ -168,8 +167,10 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
  
 def evaluate(model, config, valid_loader, eval_device=None):
     args = config['args']
+    accelerator = None
+    if 'accelerator' in config: accelerator = config['accelerator']
 
-    total_loss = 0.
+    losses = []
     total_examples = 0 
     correct = 0
     criterion = torch.nn.CrossEntropyLoss()
@@ -184,6 +185,11 @@ def evaluate(model, config, valid_loader, eval_device=None):
             model.eval()
             logits = model(x)
             loss = criterion(logits, y)
+            # gathering loss across devices
+            if accelerator:
+                losses.append(accelerator.gather(loss))
+            else:
+                losses.append(loss)
             # softmax after computing cross entropy loss
             logits = torch.softmax(logits, dim=-1)
             logits = logits.cpu().numpy()
@@ -197,8 +203,11 @@ def evaluate(model, config, valid_loader, eval_device=None):
             predicted = np.argmax(logits, axis=1)
             correct += np.sum(np.equal(predicted, y).astype(int))
             cur_examples = y.size
-            total_loss += (loss.item() * cur_examples) 
             total_examples += cur_examples
+
+    # aggregating losses
+    eval_loss = torch.mean(torch.tensor(losses)).item()
+    eval_acc  = correct / total_examples
     # generate report
     labels = config['labels']
     label_names = [v for k, v in sorted(labels.items(), key=lambda x: x[0])] 
@@ -209,9 +218,8 @@ def evaluate(model, config, valid_loader, eval_device=None):
         print(confusion_matrix(ys, preds_ids))
     except Exception as e:
         logger.warn(str(e))
-    cur_loss = total_loss / total_examples
-    cur_acc  = correct / total_examples
-    return cur_loss, cur_acc
+    
+    return eval_loss, eval_acc
 
 def save_model(config, model, valid_loader=None, save_path=None):
     args = config['args']
