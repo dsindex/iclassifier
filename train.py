@@ -55,15 +55,16 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
         criterion = torch.nn.CrossEntropyLoss()
 
     # train one epoch
-    train_losses = []
+    train_loss = 0.
     local_best_eval_loss = float('inf')
     local_best_eval_acc = 0
     st_time = time.time()
     optimizer.zero_grad()
-    epoch_iterator = tqdm(train_loader, total=len(train_loader), desc=f"Epoch {epoch_i}")
+    n_batches = len(train_loader)
+    epoch_iterator = tqdm(train_loader, total=n_batches, desc=f"Epoch {epoch_i}")
     for local_step, (x,y) in enumerate(epoch_iterator):
         model.train()
-        global_step = (len(train_loader) * epoch_i) + local_step
+        global_step = (n_batches * epoch_i) + local_step
         output = model(x)
         if args.criterion == 'KLDivLoss':
             loss = criterion(F.log_softmax(output, dim=1), y)
@@ -114,10 +115,10 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
                             unwrapped_model.bert_tokenizer.save_pretrained(args.bert_output_dir)
                             unwrapped_model.bert_model.save_pretrained(args.bert_output_dir, save_function=accelerator.save)
         # back-propagation - end
-        train_losses.append(loss)
+        train_loss += loss.item()
         if writer: writer.add_scalar('Loss/train', loss.item(), global_step)
 
-    train_loss = torch.mean(torch.tensor(train_losses)).item()
+    train_loss = train_loss / n_batches
 
     # evaluate at the end of epoch
     eval_loss, eval_acc = evaluate(model, config, valid_loader)
