@@ -37,6 +37,19 @@ logger = logging.getLogger(__name__)
 fileHandler = logging.FileHandler('./train.log')
 logger.addHandler(fileHandler)
 
+def check_best(config, eval_loss, eval_acc, best_eval_measure):
+    args = config['args']
+
+    if args.measure == 'loss':
+        eval_measure = eval_loss 
+    else:
+        eval_measure = eval_acc
+    
+    if args.measure == 'loss':
+        return eval_measure < best_eval_measure, eval_measure
+    else:
+        return eval_measure > best_eval_measure, eval_measure
+
 def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_measure):
     args = config['args']
     accelerator = config['accelerator'] 
@@ -91,16 +104,13 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
             if args.eval_and_save_steps > 0 and global_step != 0 and global_step % args.eval_and_save_steps == 0:
                 # evaluate
                 eval_loss, eval_acc = evaluate(model, config, valid_loader)
-                if local_best_eval_loss > eval_loss: local_best_eval_loss = eval_loss
-                if local_best_eval_acc < eval_acc: local_best_eval_acc = eval_acc
-                if writer:
+                if writer and accelerator.is_main_process:
                     writer.add_scalar('Loss/valid', eval_loss, global_step)
                     writer.add_scalar('Acc/valid', eval_acc, global_step)
                     writer.add_scalar('LearningRate/train', curr_lr, global_step)
-                if args.measure == 'loss': eval_measure = eval_loss 
-                else: eval_measure = eval_acc
-                if args.measure == 'loss': is_best = eval_measure < best_eval_measure
-                else: is_best = eval_measure > best_eval_measure
+                if local_best_eval_loss > eval_loss: local_best_eval_loss = eval_loss
+                if local_best_eval_acc < eval_acc: local_best_eval_acc = eval_acc
+                is_best, eval_measure = check_best(config, eval_loss, eval_acc, best_eval_measure)
                 accelerator.wait_for_everyone()
                 if is_best and accelerator.is_main_process:
                     best_eval_measure = eval_measure
@@ -116,23 +126,19 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
                             unwrapped_model.bert_model.save_pretrained(args.bert_output_dir, save_function=accelerator.save)
         # back-propagation - end
         train_loss += loss.item()
-        if writer: writer.add_scalar('Loss/train', loss.item(), global_step)
+        if writer and accelerator.is_main_process: writer.add_scalar('Loss/train', loss.item(), global_step)
 
     train_loss = train_loss / n_batches
 
     # evaluate at the end of epoch
     eval_loss, eval_acc = evaluate(model, config, valid_loader)
-    # gather loss across devices
-    if local_best_eval_loss > eval_loss: local_best_eval_loss = eval_loss
-    if local_best_eval_acc < eval_acc: local_best_eval_acc = eval_acc
-    if writer:
+    if writer and accelerator.is_main_process:
         writer.add_scalar('Loss/valid', eval_loss, global_step)
         writer.add_scalar('Acc/valid', eval_acc, global_step)
         writer.add_scalar('LearningRate/train', curr_lr, global_step)
-    if args.measure == 'loss': eval_measure = eval_loss 
-    else: eval_measure = eval_acc
-    if args.measure == 'loss': is_best = eval_measure < best_eval_measure
-    else: is_best = eval_measure > best_eval_measure
+    if local_best_eval_loss > eval_loss: local_best_eval_loss = eval_loss
+    if local_best_eval_acc < eval_acc: local_best_eval_acc = eval_acc
+    is_best, eval_measure = check_best(config, eval_loss, eval_acc, best_eval_measure)
     accelerator.wait_for_everyone()
     if is_best and accelerator.is_main_process:
         best_eval_measure = eval_measure
@@ -191,7 +197,7 @@ def evaluate(model, config, valid_loader, eval_device=None):
                 losses.append(accelerator.gather(loss))
             else:
                 losses.append(loss)
-            # softmax after computing cross entropy loss
+            # softmax after computing loss
             logits = torch.softmax(logits, dim=-1)
             logits = logits.cpu().numpy()
             y = y.cpu().numpy()
