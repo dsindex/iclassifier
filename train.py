@@ -638,6 +638,7 @@ def get_params():
     parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'LabelSmoothingCrossEntropy' | 'MSELoss' | 'KLDivLoss' | 'IsoMaxLoss', default 'CrossEntropyLoss'")
     parser.add_argument('--local_rank', default=0, type=int)
     parser.add_argument('--use_fp16', action='store_true', help="Use mixed precision training via torch.cuda.amp(inside Accelerate).")
+    parser.add_argument('--use_isomax', action='store_true', help="Use IsoMax layer instead of Linear.")
     # for Augmentation
     parser.add_argument('--augmented', action='store_true',
                         help="Set this flag to use augmented.txt.ids or augmented.txt.fs for training.")

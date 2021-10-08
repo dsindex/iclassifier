@@ -277,7 +277,7 @@ class TextGloveCNN(BaseModel):
         self.fc_hidden = nn.Linear(len(kernel_sizes) * num_filters, fc_hidden_size)
         self.layernorm_fc_hidden = nn.LayerNorm(fc_hidden_size)
         self.fc = nn.Linear(fc_hidden_size, label_size)
-        if self.config['args'].criterion == 'IsoMaxLoss':
+        if self.config['args'].use_isomax:
             self.fc = IsoMax(fc_hidden_size, label_size)
 
     def forward(self, x):
@@ -342,7 +342,7 @@ class TextGloveDensenetCNN(BaseModel):
 
         # fully connected layer
         self.fc = nn.Linear(len(kernel_sizes) * num_filters, label_size)
-        if self.config['args'].criterion == 'IsoMaxLoss':
+        if self.config['args'].use_isomax:
             self.fc = IsoMax(len(kernel_sizes) * num_filters, label_size)
 
     def forward(self, x):
@@ -413,12 +413,12 @@ class TextGloveDensenetDSA(BaseModel):
             self.fc_hidden = nn.Linear(dsa_num_attentions * dsa_dim, fc_hidden_size)
             self.layernorm_fc_hidden = nn.LayerNorm(fc_hidden_size)
             self.fc = nn.Linear(fc_hidden_size, label_size)
-            if self.config['args'].criterion == 'IsoMaxLoss':
+            if self.config['args'].use_isomax:
                 self.fc = IsoMax(fc_hidden_size, label_size)
         else:
             self.fc_hidden = None
             self.fc = nn.Linear(dsa_num_attentions * dsa_dim, label_size)
-            if self.config['args'].criterion == 'IsoMaxLoss':
+            if self.config['args'].use_isomax:
                 self.fc = IsoMax(dsa_num_attentions * dsa_dim, label_size)
 
     def forward(self, x):
@@ -487,7 +487,7 @@ class TextBertCNN(BaseModel):
         self.fc_hidden = nn.Linear(len(kernel_sizes) * num_filters, fc_hidden_size)
         self.layernorm_fc_hidden = nn.LayerNorm(fc_hidden_size)
         self.fc = nn.Linear(fc_hidden_size, label_size)
-        if self.config['args'].criterion == 'IsoMaxLoss':
+        if self.config['args'].use_isomax:
             self.fc = IsoMax(fc_hidden_size, label_size)
 
     def _compute_bert_embedding(self, x, head_mask=None):
@@ -577,7 +577,7 @@ class TextBertCLS(BaseModel):
 
         # fully connected layer
         self.fc = nn.Linear(self.bert_hidden_size, label_size)
-        if self.config['args'].criterion == 'IsoMaxLoss':
+        if self.config['args'].use_isomax:
             self.fc = IsoMax(self.bert_hidden_size, label_size)
 
     def _compute_bert_embedding(self, x, head_mask=None):
@@ -679,7 +679,7 @@ class TextBertDensenetCNN(BaseModel):
         self.fc_hidden = nn.Linear(len(kernel_sizes) * num_filters, fc_hidden_size)
         self.layernorm_fc_hidden = nn.LayerNorm(fc_hidden_size)
         self.fc = nn.Linear(fc_hidden_size, label_size)
-        if self.config['args'].criterion == 'IsoMaxLoss':
+        if self.config['args'].use_isomax:
             self.fc = IsoMax(fc_hidden_size, label_size)
 
     def _compute_bert_embedding(self, x, head_mask=None):

@@ -515,6 +515,7 @@ def main():
     parser.add_argument('--num_examples', default=0, type=int, help="Number of examples to evaluate, 0 means all of them.")
     parser.add_argument('--local_rank', default=0, type=int)
     parser.add_argument('--use_fp16', action='store_true', help="Use half precision to load model.")
+    parser.add_argument('--use_isomax', action='store_true', help="Use IsoMax layer instead of Linear.")
     # for Augmentation
     parser.add_argument('--augmented', action='store_true',
                         help="Set this flag to generate augmented.raw.pred(augmented.txt) for training.")

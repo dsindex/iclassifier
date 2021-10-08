@@ -598,9 +598,10 @@ def get_params():
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--embedding_trainable', action='store_true', help="Set word embedding(Glove) trainable")
     parser.add_argument('--measure', type=str, default='loss', help="Evaluation measure, 'loss' | 'accuracy', default 'loss'.")
-    parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'LabelSmoothingCrossEntropy' | 'MSELoss' | 'KLDivLoss', default 'CrossEntropyLoss'")
+    parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'LabelSmoothingCrossEntropy' | 'MSELoss' | 'KLDivLoss' | 'IsoMaxLoss', default 'CrossEntropyLoss'")
     parser.add_argument('--local_rank', default=0, type=int)
     parser.add_argument('--use_fp16', action='store_true', help="Use mixed precision training via torch.cuda.amp(inside Accelerate).")
+    parser.add_argument('--use_isomax', action='store_true', help="Use IsoMax layer instead of Linear.")
     parser.add_argument('--augmented', action='store_true',
                         help="Set this flag to use augmented.txt for training.")
     parser.add_argument('--bert_model_name_or_path', type=str, default='embeddings/distilbert-base-uncased',
