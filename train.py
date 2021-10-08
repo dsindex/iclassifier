@@ -66,7 +66,7 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
     elif args.criterion == 'LabelSmoothingCrossEntropy':
         criterion = LabelSmoothingCrossEntropy(reduction='sum')
     elif args.criterion == 'IsoMaxLoss':
-        criterion = IsoMaxLoss(model.isomax)
+        criterion = IsoMaxLoss(model.fc)
     else:
         criterion = torch.nn.CrossEntropyLoss()
 
