@@ -65,6 +65,8 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
         criterion = torch.nn.KLDivLoss(reduction='sum')
     elif args.criterion == 'LabelSmoothingCrossEntropy':
         criterion = LabelSmoothingCrossEntropy(reduction='sum')
+    elif args.criterion == 'IsoMaxLoss':
+        criterion = IsoMaxLoss(model.isomax)
     else:
         criterion = torch.nn.CrossEntropyLoss()
 
@@ -633,7 +635,7 @@ def get_params():
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--embedding_trainable', action='store_true', help="Set word embedding(Glove) trainable")
     parser.add_argument('--measure', type=str, default='loss', help="Evaluation measure, 'loss' | 'accuracy', default 'loss'.")
-    parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'LabelSmoothingCrossEntropy' | 'MSELoss' | 'KLDivLoss', default 'CrossEntropyLoss'")
+    parser.add_argument('--criterion', type=str, default='CrossEntropyLoss', help="training objective, 'CrossEntropyLoss' | 'LabelSmoothingCrossEntropy' | 'MSELoss' | 'KLDivLoss' | 'IsoMaxLoss', default 'CrossEntropyLoss'")
     parser.add_argument('--local_rank', default=0, type=int)
     parser.add_argument('--use_fp16', action='store_true', help="Use mixed precision training via torch.cuda.amp(inside Accelerate).")
     # for Augmentation
