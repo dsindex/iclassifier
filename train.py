@@ -513,7 +513,7 @@ def train(args):
         logger.info(f"  Total optimization steps = {args.max_train_steps}")
 
         # training
-        early_stopping = EarlyStopping(logger, patience=args.patience, measure=args.measure, verbose=1)
+        early_stopping = EarlyStopping(logger, patience=args.patience, measure=args.measure, process_index=accelerator.process_index, verbose=1)
         local_worse_epoch = 0
         best_eval_measure = float('inf') if args.measure == 'loss' else -float('inf')
         for epoch_i in range(args.epoch):
@@ -578,7 +578,7 @@ def hp_search_optuna(trial: optuna.Trial):
         logger.info(f"  Gradient Accumulation steps = {args.gradient_accumulation_steps}")
         logger.info(f"  Total optimization steps = {args.max_train_steps}")
 
-        early_stopping = EarlyStopping(logger, patience=args.patience, measure=args.measure, verbose=1)
+        early_stopping = EarlyStopping(logger, patience=args.patience, measure=args.measure, process_index=accelerator.process_index, verbose=1)
         best_eval_measure = float('inf') if args.measure == 'loss' else -float('inf')
         for epoch in range(epochs):
             eval_loss, eval_acc, best_eval_measure = train_epoch(model, config, train_loader, valid_loader, epoch, best_eval_measure)
