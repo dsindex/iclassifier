@@ -23,8 +23,9 @@ import random
 import json
 from tqdm import tqdm
 
-from util    import load_checkpoint, load_config, load_label, to_device, EarlyStopping, LabelSmoothingCrossEntropy
+from util    import load_checkpoint, load_config, load_label, to_device, EarlyStopping
 from model   import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS, TextBertDensenetCNN
+from loss    import LabelSmoothingCrossEntropy, IsoMaxLoss
 from transformers import AutoTokenizer, AutoConfig, AutoModel
 from dataset import prepare_dataset, GloveDataset, BertDataset
 from sklearn.metrics import classification_report, confusion_matrix
