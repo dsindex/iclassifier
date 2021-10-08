@@ -209,7 +209,10 @@ def evaluate(model, config, valid_loader, eval_device=None):
     # aggregating losses
     eval_loss = torch.mean(torch.tensor(losses)).item()
     eval_acc  = correct / total_examples
+
     # generate report
+    if accelerator:
+        print(f"Process: {accelerator.process_index}")
     labels = config['labels']
     label_names = [v for k, v in sorted(labels.items(), key=lambda x: x[0])] 
     preds_ids = np.argmax(preds, axis=1)
