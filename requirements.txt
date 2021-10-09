@@ -6,7 +6,8 @@ torch
 numpy
 tqdm
 tensorboardX
-transformers[sentencepiece]
+transformers
+sentencepiece
 sklearn
 datasets
 deepspeed==0.4.0
