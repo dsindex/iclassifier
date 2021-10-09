@@ -12,8 +12,13 @@ import torch.nn.functional as F
 import torch.optim as optim
 from accelerate import Accelerator
 from transformers import AdamW, get_linear_schedule_with_warmup, get_cosine_schedule_with_warmup
+from transformers import AutoTokenizer, AutoConfig, AutoModel
+from dataset import prepare_dataset, GloveDataset, BertDataset
+from sklearn.metrics import classification_report, confusion_matrix
+from torchmetrics import AUROC
+from datasets.metric import temp_seed 
+import optuna
 from diffq import DiffQuantizer
-
 try:
     from torch.utils.tensorboard import SummaryWriter
 except ImportError:
@@ -26,12 +31,6 @@ from tqdm import tqdm
 from util    import load_checkpoint, load_config, load_label, to_device, EarlyStopping
 from model   import TextGloveGNB, TextGloveCNN, TextGloveDensenetCNN, TextGloveDensenetDSA, TextBertCNN, TextBertCLS, TextBertDensenetCNN
 from loss    import LabelSmoothingCrossEntropy, IsoMaxLoss
-from transformers import AutoTokenizer, AutoConfig, AutoModel
-from dataset import prepare_dataset, GloveDataset, BertDataset
-from sklearn.metrics import classification_report, confusion_matrix
-from datasets.metric import temp_seed 
-
-import optuna
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -180,6 +179,7 @@ def evaluate(model, config, valid_loader, eval_device=None):
     accelerator = None
     if 'accelerator' in config: accelerator = config['accelerator']
 
+    auroc = AUROC(num_classes=len(config['labels']))
     losses = []
     total_examples = 0 
     correct = 0
@@ -202,6 +202,8 @@ def evaluate(model, config, valid_loader, eval_device=None):
                 losses.append(loss)
             # softmax after computing loss
             logits = torch.softmax(logits, dim=-1)
+            # auroc
+            auroc.update(logits, y)
             logits = logits.cpu().numpy()
             y = y.cpu().numpy()
             if preds is None:
@@ -229,6 +231,7 @@ def evaluate(model, config, valid_loader, eval_device=None):
         print(classification_report(ys, preds_ids, target_names=label_names, digits=4)) 
         print(labels)
         print(confusion_matrix(ys, preds_ids))
+        print("AUROC: ", auroc.compute())
     except Exception as e:
         logger.warn(str(e))
     

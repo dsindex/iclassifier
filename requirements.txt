@@ -19,4 +19,5 @@ optuna
 onnx
 onnxruntime
 diffq
+torchmetrics
 # parallelformers
