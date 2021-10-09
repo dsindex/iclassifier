@@ -179,11 +179,21 @@ def evaluate(model, config, valid_loader, eval_device=None):
     accelerator = None
     if 'accelerator' in config: accelerator = config['accelerator']
 
+    if args.criterion == 'MSELoss':
+        criterion = torch.nn.MSELoss(reduction='sum')
+    elif args.criterion == 'KLDivLoss':
+        criterion = torch.nn.KLDivLoss(reduction='sum')
+    elif args.criterion == 'LabelSmoothingCrossEntropy':
+        criterion = LabelSmoothingCrossEntropy(reduction='sum')
+    elif args.criterion == 'IsoMaxLoss':
+        criterion = IsoMaxLoss(model.fc)
+    else:
+        criterion = torch.nn.CrossEntropyLoss()
+
     auroc = AUROC(num_classes=len(config['labels']))
     losses = []
     total_examples = 0 
     correct = 0
-    criterion = torch.nn.CrossEntropyLoss()
     preds = None
     ys    = None
     with torch.no_grad():
@@ -194,7 +204,10 @@ def evaluate(model, config, valid_loader, eval_device=None):
                 y = to_device(y, eval_device)
             model.eval()
             logits = model(x)
-            loss = criterion(logits, y)
+            if args.criterion == 'KLDivLoss':
+                loss = criterion(F.log_softmax(logits, dim=1), y)
+            else:
+                loss = criterion(logits, y)
             # gathering loss across devices
             if accelerator:
                 losses.append(accelerator.gather(loss))
