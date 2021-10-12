@@ -103,7 +103,7 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
             scheduler.step()
             curr_lr = scheduler.get_last_lr()[0] if scheduler else optimizer.param_groups[0]['lr']
             epoch_iterator.set_description(f"Process: {accelerator.process_index}, epoch: {epoch_i}, global_step: {global_step}, local_step: {local_step}, loss: {loss:.3f}, curr_lr: {curr_lr:.7f}")
-            if args.eval_and_save_steps > 0 and global_step != 0 and global_step % args.eval_and_save_steps == 0:
+            if args.eval_steps > 0 and global_step != 0 and global_step % args.eval_steps == 0:
                 # evaluate
                 eval_loss, eval_acc = evaluate(model, config, valid_loader)
                 if writer and accelerator.is_main_process:
@@ -114,12 +114,12 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
                 if local_best_eval_acc < eval_acc: local_best_eval_acc = eval_acc
                 is_best, eval_measure = check_best(config, eval_loss, eval_acc, best_eval_measure)
                 accelerator.wait_for_everyone()
-                if is_best and accelerator.is_main_process:
+                if (is_best or args.save_after_eval) and accelerator.is_main_process:
                     best_eval_measure = eval_measure
                     if args.save_path and not args.hp_search_optuna:
                         unwrapped_model = accelerator.unwrap_model(model)
                         save_model(config, unwrapped_model, valid_loader=valid_loader)
-                        logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
+                        logger.info(f"[model saved] : {eval_loss}, {eval_acc}")
                         # save finetuned bert model/config/tokenizer
                         if config['emb_class'] not in ['glove'] and not (config['emb_class'] == 'bart' and config['use_kobart']):
                             if not os.path.exists(args.bert_output_dir):
@@ -142,12 +142,12 @@ def train_epoch(model, config, train_loader, valid_loader, epoch_i, best_eval_me
     if local_best_eval_acc < eval_acc: local_best_eval_acc = eval_acc
     is_best, eval_measure = check_best(config, eval_loss, eval_acc, best_eval_measure)
     accelerator.wait_for_everyone()
-    if is_best and accelerator.is_main_process:
+    if (is_best or args.save_after_eval) and accelerator.is_main_process:
         best_eval_measure = eval_measure
         if args.save_path and not args.hp_search_optuna:
             unwrapped_model = accelerator.unwrap_model(model)
             save_model(config, unwrapped_model, valid_loader=valid_loader)
-            logger.info("[Best model saved] : {}, {}".format(eval_loss, eval_acc))
+            logger.info(f"[model saved] : {eval_loss}, {eval_acc}")
             # save finetuned bert model/config/tokenizer
             if config['emb_class'] not in ['glove'] and not (config['emb_class'] == 'bart' and config['use_kobart']):
                 if not os.path.exists(args.bert_output_dir):
@@ -633,7 +633,8 @@ def get_params():
     parser.add_argument('--eval_batch_size', type=int, default=128)
     parser.add_argument('--max_train_steps', type=int, default=None)
     parser.add_argument('--epoch', type=int, default=64)
-    parser.add_argument('--eval_and_save_steps', type=int, default=500, help="Save checkpoint every X updates steps.")
+    parser.add_argument('--eval_steps', type=int, default=500, help="Eval every X updates steps.")
+    parser.add_argument('--save_after_eval', action='store_true', help="Save checkpoint after evaluation.")
     parser.add_argument('--lr', type=float, default=2e-4)
     parser.add_argument('--num_warmup_steps', type=int, default=None)
     parser.add_argument('--warmup_epoch', type=int, default=0, help="Number of warmup epoch")

@@ -1239,11 +1239,11 @@ Which type of machine are you using? ([0] No distributed training, [1] multi-CPU
 How many different machines will you use (use more than 1 for multi-node training)? [1]: 1
 Do you want to use DeepSpeed? [yes/NO]: yes
 What should be your DeepSpeed's ZeRO optimization stage (0, 1, 2, 3)? [2]: 1
-How many gradient accumulation steps you're passing in your script? [1]: 4
+How many gradient accumulation steps you're passing in your script? [1]: 8
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt_neo-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=4 --eval_batch_size=8 --gradient_accumulation_steps=4
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt_neo-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=4 --eval_batch_size=8 --gradient_accumulation_steps=8 --save_after_eval
 # GPU memory footprint: 29614MiB / 32510MiB foreach 4 GPUs
 
 ** accelerate launch, deepspeed & gpt-j-6B

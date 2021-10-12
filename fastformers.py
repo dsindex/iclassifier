@@ -259,7 +259,7 @@ def distill(
 
             flag_eval = False
             if step == 0 and epoch_n != 0: flag_eval = True # every epoch
-            if args.eval_and_save_steps > 0 and global_step % args.eval_and_save_steps == 0: flag_eval = True
+            if args.eval_steps > 0 and global_step % args.eval_steps == 0: flag_eval = True
             if flag_eval:
                 eval_loss, eval_acc = evaluate(student_model, student_config, eval_loader, eval_device=args.device)
                 logs['eval_loss'] = eval_loss
@@ -580,7 +580,8 @@ def get_params():
     parser.add_argument('--eval_batch_size', type=int, default=128)
     parser.add_argument('--max_train_steps', type=int, default=None)
     parser.add_argument('--epoch', type=int, default=64)
-    parser.add_argument('--eval_and_save_steps', type=int, default=500, help="Save checkpoint every X updates steps.")
+    parser.add_argument('--eval_steps', type=int, default=500, help="Save checkpoint every X updates steps.")
+    parser.add_argument('--save_after_eval', action='store_true', help="Save checkpoint after evaluation.")
     parser.add_argument('--lr', type=float, default=5e-5)
     parser.add_argument('--num_warmup_steps', type=int, default=None)
     parser.add_argument('--warmup_epoch', type=int, default=0, help="Number of warmup epoch")
