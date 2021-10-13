@@ -26,6 +26,9 @@ def proc(args):
                 sentence_a = example['premise']
                 sentence_b = example['hypothesis']
                 label = example['label']
+                if label == 0: label = 'entailment'
+                if label == 1: label = 'neutral'
+                if label == 2: label = 'contradiction'
                 print(f"{sentence_a}\t{sentence_b}\t{label}")
 
 def main():

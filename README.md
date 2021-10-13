@@ -1575,11 +1575,18 @@ INFO:__main__:[Elapsed Time] : 50888.68188858032ms, 27.869893299354302ms on aver
 <br>
 
 
+# Sentence Pair Classification
+
+- [SENTENCE_PAIR.md](/SENTENCE_PAIR.md)
+  - MNLI
+  - KorNLI (Korean NLI)
+
+<br>
+
+
 # Intermediate fine-tuning and self-training
 
 - [STraTA.md](/STraTA.md)
-  - Sentence Pair Classification
-    - KorNLI (Korean NLI)
   - Few-Shot Learning
     - NSMC (Korean Sentiment Analysis)
   - Self-Training
