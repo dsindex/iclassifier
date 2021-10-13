@@ -47,9 +47,10 @@ INFO:__main__:[Accuracy] : 0.1653,    20/  121
 INFO:__main__:[Elapsed Time] : 1855.2687168121338ms, 11.679033438364664ms on average
 
 ** --use_isomax --criterion=IsoMaxLoss
-$ python train.py --config=configs/config-roberta-cls.json --bert_model_name_or_path=./embeddings/roberta-base --bert_output_dir=bert-checkpoint-mnli --save_path=pytorch-model-mnli.pt --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/mnli --eval_steps=-1 --use_isomax --criterion=IsoMaxLoss
-
-
+$ python train.py --config=configs/config-roberta-cls.json --bert_model_name_or_path=./embeddings/roberta-base --bert_output_dir=bert-checkpoint-mnli --save_path=pytorch-model-mnli.pt --lr=1e-5 --epoch=5 --batch_size=128 --data_dir=./data/mnli --eval_steps=-1 --use_isomax --criterion=IsoMaxLoss
+$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/adv_glue --model_path=pytorch-model-mnli.pt --bert_output_dir=bert-checkpoint-mnli --use_isomax
+INFO:__main__:[Accuracy] : 0.1653,    20/  121
+INFO:__main__:[Elapsed Time] : 1867.6543235778809ms, 11.727448304494223ms on average
 ```
 
 
