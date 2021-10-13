@@ -48,6 +48,7 @@
   - `data/sst2`
   - from [GLUE benchmark data](https://github.com/nyu-mll/GLUE-baselines/blob/master/download_glue_data.py)
     - `test.txt` from [pytorch-sentiment-classification](https://github.com/clairett/pytorch-sentiment-classification)
+      - label disappeared therein.
 
 <br>
 
@@ -1243,7 +1244,7 @@ How many gradient accumulation steps you're passing in your script? [1]: 8
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt_neo-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=4 --eval_batch_size=8 --gradient_accumulation_steps=8 --save_after_eval
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gpt_neo-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-neo-2.7B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=5 --batch_size=4 --eval_batch_size=8 --gradient_accumulation_steps=8 --measure=accuracy
 # GPU memory footprint: 29614MiB / 32510MiB foreach 4 GPUs
 
 ** accelerate launch, deepspeed & gpt-j-6B
@@ -1258,7 +1259,7 @@ How many gradient accumulation steps you're passing in your script? [1]: 4
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gptj-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-j-6B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=10 --batch_size=4 --eval_batch_size=8 --gradient_accumulation_steps=4
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gptj-cls.json --data_dir=data/sst2 --bert_model_name_or_path=./embeddings/gpt-j-6B --bert_output_dir=bert-checkpoint --lr=1e-5 --epoch=5 --batch_size=4 --eval_batch_size=8 --gradient_accumulation_steps=4
 # GPU memory footprint: 31544MiB / 32510MiB foreach 4 GPUs
 ```
 

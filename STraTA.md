@@ -8,6 +8,48 @@
 
 ## Sentence Pair Classification
 
+#### MNLI
+
+- data preparation
+```
+`data/mnli` from [GLUE benchmark data](https://github.com/nyu-mll/GLUE-baselines/blob/master/download_glue_data.py)
+
+$ cd data/mnli
+$ python extract.py --input_path train.tsv > train.txt
+$ python extract.py --input_path dev_matched.tsv > valid_matched.txt
+$ python extract.py --input_path dev_mismatched.tsv > valid_mismatched.txt
+$ cat valid_matched.txt valid_mismatched.txt > valid.txt
+$ cp valid.txt test.txt
+```
+
+- train
+```
+$ python preprocess.py --config=configs/config-roberta-cls.json --bert_model_name_or_path=./embeddings/roberta-base --data_dir=./data/mnli
+$ python train.py --config=configs/config-roberta-cls.json --bert_model_name_or_path=./embeddings/roberta-base --bert_output_dir=bert-checkpoint-mnli --save_path=pytorch-model-mnli.pt --lr=2e-5 --epoch=5 --batch_size=64 --data_dir=./data/mnli
+```
+
+- evaluate
+```
+$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/mnli --model_path=pytorch-model-mnli.pt --bert_output_dir=bert-checkpoint-mnli
+```
+
+- adversarial test
+```
+`data/adv_glue` from https://adversarialglue.github.io/dataset/dev.zip
+
+$ cd data/adv_glue
+$ python extract.py --input_path dev.json --dataset mnli > mnli.txt
+
+* preprocessing
+$ cp -rf data/mnli/train.txt data/adv_glue/train.txt
+$ cp -rf data/mnli/valid.txt data/adv_glue/valid.txt
+$ cp -rf data/adv_glue/mnli.txt data/adv_glue/test.txt
+$ python preprocess.py --config=configs/config-roberta-cls.json --bert_model_name_or_path=./embeddings/roberta-base --data_dir=./data/adv_glue
+
+$ python evaluate.py --config=configs/config-roberta-cls.json --data_dir=data/mnli --model_path=pytorch-model-mnli.pt --bert_output_dir=bert-checkpoint-mnli 
+```
+
+
 #### KorNLI
 
 - data preparation
