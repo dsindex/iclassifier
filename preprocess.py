@@ -260,11 +260,10 @@ def build_encoded_dataset(input_path, tokenizer, labels, config, mode='train'):
         return tokenizer(examples['sentence_a'], examples['sentence_b'], max_length=config['n_ctx'], padding='max_length', truncation=True)
     encoded_dataset = dataset.map(preprocess_function, batched=True)
 
+    # debugging
     need_token_type_ids = True
     if config['emb_class'] in ['roberta', 'bart', 'distilbert', 'ibert', 't5', 'gpt', 'gpt_neo', 'gptj']:
         need_token_type_ids = False
-
-    # debugging
     logger.info("len(input_ids): %s", len(encoded_dataset['input_ids']))
     logger.info("len(attention_mask): %s", len(encoded_dataset['attention_mask']))
     if need_token_type_ids:
