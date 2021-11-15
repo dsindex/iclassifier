@@ -380,29 +380,29 @@ def prepare_model(config, bert_model_name_or_path=None):
             bert_tokenizer.cls_token = '<s>'
             bert_tokenizer.sep_token = '</s>'
             bert_tokenizer.pad_token = '<pad>'
-            bert_model = BartModel.from_pretrained(get_pytorch_kobart_model())
+            bert_model = BartModel.from_pretrained(get_pytorch_kobart_model(), revision=args.bert_revision)
         elif config['emb_class'] in ['gpt', 'gpt_neo', 'gptj']:
-            bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
+            bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, revision=args.bert_revision)
             bert_tokenizer.pad_token = bert_tokenizer.eos_token
-            bert_model = AutoModel.from_pretrained(model_name_or_path,
+            bert_model = AutoModel.from_pretrained(model_name_or_path, revision=args.bert_revision,
                                                    from_tf=bool(".ckpt" in model_name_or_path))
         elif config['emb_class'] in ['t5']:
             from transformers import T5EncoderModel
-            bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
+            bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, revision=args.bert_revision)
             bert_tokenizer.cls_token = '<s>'
             bert_tokenizer.sep_token = '</s>'
             bert_tokenizer.pad_token = '<pad>'
-            bert_model = T5EncoderModel.from_pretrained(model_name_or_path,
+            bert_model = T5EncoderModel.from_pretrained(model_name_or_path, revision=args.bert_revision,
                                                         from_tf=bool(".ckpt" in model_name_or_path))
         elif config['emb_class'] in ['megatronbert']:
             from transformers import BertTokenizer, MegatronBertModel
-            bert_tokenizer = BertTokenizer.from_pretrained(model_name_or_path)
-            bert_model = MegatronBertModel.from_pretrained(model_name_or_path,
+            bert_tokenizer = BertTokenizer.from_pretrained(model_name_or_path, revision=args.bert_revision)
+            bert_model = MegatronBertModel.from_pretrained(model_name_or_path, revision=args.bert_revision,
                                                         from_tf=bool(".ckpt" in model_name_or_path))
 
         else:
-            bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
-            bert_model = AutoModel.from_pretrained(model_name_or_path,
+            bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, revision=args.bert_revision)
+            bert_model = AutoModel.from_pretrained(model_name_or_path, revision=args.bert_revision,
                                                    from_tf=bool(".ckpt" in model_name_or_path))
 
         bert_config = bert_model.config
@@ -662,6 +662,7 @@ def get_params():
     # for BERT
     parser.add_argument('--bert_model_name_or_path', type=str, default='embeddings/bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased)")
+    parser.add_argument('--bert_revision', type=str, default='main')
     parser.add_argument('--bert_output_dir', type=str, default='bert-checkpoint',
                         help="The output directory where the BERT model checkpoints will be written.")
     parser.add_argument('--bert_use_feature_based', action='store_true',

@@ -302,18 +302,18 @@ def preprocess_bert(config):
         tokenizer.sep_token = '</s>'
         tokenizer.pad_token = '<pad>'
     elif config['emb_class'] in ['gpt', 'gpt_neo', 'gptj']:
-        tokenizer = AutoTokenizer.from_pretrained(args.bert_model_name_or_path)
+        tokenizer = AutoTokenizer.from_pretrained(args.bert_model_name_or_path, revision=args.bert_revision)
         tokenizer.pad_token = tokenizer.eos_token
     elif config['emb_class'] in ['t5']:
-        tokenizer = AutoTokenizer.from_pretrained(args.bert_model_name_or_path)
+        tokenizer = AutoTokenizer.from_pretrained(args.bert_model_name_or_path, revision=args.bert_revision)
         tokenizer.cls_token = '<s>'
         tokenizer.sep_token = '</s>'
         tokenizer.pad_token = '<pad>'
     elif config['emb_class'] in ['megatronbert']:
         from transformers import BertTokenizer
-        tokenizer = BertTokenizer.from_pretrained(args.bert_model_name_or_path)
+        tokenizer = BertTokenizer.from_pretrained(args.bert_model_name_or_path, revision=args.bert_revision)
     else:
-        tokenizer = AutoTokenizer.from_pretrained(args.bert_model_name_or_path)
+        tokenizer = AutoTokenizer.from_pretrained(args.bert_model_name_or_path, revision=args.bert_revision)
 
     # build labels
     path = os.path.join(args.data_dir, _TRAIN_FILE)
@@ -361,9 +361,10 @@ def main():
                         help="Set this flag to use augmented.txt for training or to use augmented.raw for labeling.")
     parser.add_argument('--augmented_filename', type=str, default='augmented.raw',
                         help="Filename for augmentation, augmented.raw or augmented.txt.")
-    # for BERT, ALBERT
+    # for BERT
     parser.add_argument('--bert_model_name_or_path', type=str, default='bert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-uncased).")
+    parser.add_argument('--bert_revision', type=str, default='main')
     args = parser.parse_args()
 
     # set seed

@@ -60,29 +60,29 @@ def load_model(config, checkpoint):
             bert_tokenizer.cls_token = '<s>'
             bert_tokenizer.sep_token = '</s>'
             bert_tokenizer.pad_token = '<pad>'
-            bert_model = BartModel.from_pretrained(get_pytorch_kobart_model())
+            bert_model = BartModel.from_pretrained(get_pytorch_kobart_model(), revision=args.bert_revision)
             bert_config = bert_model.config
         elif config['emb_class'] in ['gpt', 'gpt_neo', 'gptj']:    
-            bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir)
+            bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir, revision=args.bert_revision)
             bert_tokenizer.pad_token = bert_tokenizer.eos_token
-            bert_config = AutoConfig.from_pretrained(args.bert_output_dir)
+            bert_config = AutoConfig.from_pretrained(args.bert_output_dir, revision=args.bert_revision)
             bert_model = AutoModel.from_config(bert_config)
         elif config['emb_class'] in ['t5']:    
             from transformers import T5EncoderModel
-            bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir)
+            bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir, revision=args.bert_revision)
             bert_tokenizer.cls_token = '<s>'
             bert_tokenizer.sep_token = '</s>'
             bert_tokenizer.pad_token = '<pad>'
-            bert_config = AutoConfig.from_pretrained(args.bert_output_dir)
+            bert_config = AutoConfig.from_pretrained(args.bert_output_dir, revision=args.bert_revision)
             bert_model = T5EncoderModel(bert_config)
         elif config['emb_class'] in ['megatronbert']:    
             from transformers import BertTokenizer, MegatronBertModel
-            bert_tokenizer = BertTokenizer.from_pretrained(args.bert_output_dir)
-            bert_model = MegatronBertModel.from_pretrained(args.bert_output_dir)
+            bert_tokenizer = BertTokenizer.from_pretrained(args.bert_output_dir, revision=args.bert_revision)
+            bert_model = MegatronBertModel.from_pretrained(args.bert_output_dir, revision=args.bert_revision)
             bert_config = bert_model.config
         else:
-            bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir)
-            bert_config = AutoConfig.from_pretrained(args.bert_output_dir)
+            bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir, revision=args.bert_revision)
+            bert_config = AutoConfig.from_pretrained(args.bert_output_dir, revision=args.bert_revision)
             bert_model = AutoModel.from_config(bert_config)
 
         ModelClass = TextBertCNN
@@ -527,6 +527,7 @@ def main():
     # for BERT
     parser.add_argument('--bert_output_dir', type=str, default='bert-checkpoint',
                         help="The checkpoint directory of fine-tuned BERT model.")
+    parser.add_argument('--bert_revision', type=str, default='main')
     # for ONNX
     parser.add_argument('--convert_onnx', action='store_true',
                         help="Set this flag to convert to ONNX.")

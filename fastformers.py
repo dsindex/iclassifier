@@ -607,6 +607,7 @@ def get_params():
                         help="Set this flag to use augmented.txt for training.")
     parser.add_argument('--bert_model_name_or_path', type=str, default='embeddings/distilbert-base-uncased',
                         help="Path to pre-trained model or shortcut name(ex, distilbert-base-uncased)")
+    parser.add_argument('--bert_revision', type=str, default='main')
     parser.add_argument('--bert_output_dir', type=str, default='bert-checkpoint',
                         help="The checkpoint directory of fine-tuned BERT model.")
     parser.add_argument('--bert_use_feature_based', action='store_true',
