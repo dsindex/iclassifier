@@ -15,6 +15,7 @@ def main():
     
     parser.add_argument("--model_name_or_path", type=str, default='bert-base-cased',
                         help="Path to pre-trained model or shortcut name(ex, bert-base-cased)")
+    parser.add_argument("--revision", type=str, default='main')
     parser.add_argument("--output_dir", type=str, required=True,
                         help="The output directory where the model predictions and checkpoints will be written.")
 
@@ -22,8 +23,8 @@ def main():
 
     # download
     logger.info("[Downloading transformers...]")
-    tokenizer = AutoTokenizer.from_pretrained(opt.model_name_or_path)
-    model = AutoModel.from_pretrained(opt.model_name_or_path,
+    tokenizer = AutoTokenizer.from_pretrained(opt.model_name_or_path, revision=opt.revision)
+    model = AutoModel.from_pretrained(opt.model_name_or_path, revision=opt.revision,
                                   from_tf=bool(".ckpt" in opt.model_name_or_path))
     config = model.config
     logger.info("[Done]")
