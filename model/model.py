@@ -607,11 +607,18 @@ class TextBertCLS(BaseModel):
         if self.bert_model.config.model_type in ['gpt2', 'gpt_neo', 'gptj']:
             input_ids = x[0]
             mask = x[1].to(torch.uint8).to(self.device)
-            lengths = torch.sum(mask.to(torch.long), dim=1)
-            # lengths : [batch_size]
             # last token of last layer (before padding area)
+            # reference code : https://huggingface.co/transformers/_modules/transformers/models/gpt2/modeling_gpt2.html#GPT2ForSequenceClassification
             batch_size = input_ids.shape[0]
-            pooled = bert_outputs.last_hidden_state[range(batch_size), lengths] 
+            assert (
+                self.bert_config.pad_token_id is not None or batch_size == 1
+            ), "Cannot handle batch sizes > 1 if no padding token is defined."
+            if self.bert_config.pad_token_id is None:
+                sequence_lengths = -1
+            else:
+                sequence_lengths = torch.ne(input_ids, self.bert_config.pad_token_id).sum(-1) - 1
+                # sequence_lengths : [batch_size]
+            pooled = bert_outputs.last_hidden_state[range(batch_size), sequence_lengths] 
             # pooled : [batch_size, bert_hidden_size]
         else:
             # first token of last layer == [CLS]
