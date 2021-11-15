@@ -129,6 +129,12 @@
 - KoGPT2
   - from [KoGPT2](https://github.com/SKT-AI/KoGPT2)
 
+- KoGPT-trinity
+  - from [Ko-GPT-Trinity](https://huggingface.co/skt/ko-gpt-trinity-1.2B-v0.5)
+
+- KoGPT
+  - from [KoGPT](https://github.com/kakaobrain/kogpt)
+
 #### T5
   
 - KE-T5-base, KE-T5-large
@@ -212,6 +218,8 @@
 | Funnel-base , CLS                         | 91.51        | 41.8325 / -       |            |
 | KoBART-base , CLS                         | 89.57        | 18.9681 / -       |            |
 | KoGPT2-v2 , CLS                           | 89.41        | 13.4023 / -       |            |
+| KoGPT-trinity, CLS                        | -            | -       / -       | 1.2B       |
+| KoGPT , CLS                               | -            | -       / -       | accelerate, deepspeed, fp16, 6B                 |
 | KE-T5-base, CLS                           | 90.81        | 22.5119 / -       |            |
 | KE-T5-large, CLS                          | 90.61        | 41.4601 / -       |            |
 
@@ -927,15 +935,36 @@ INFO:__main__:[Elapsed Time] : 948470.7288742065ms, 18.96814218339219ms on avera
 </details>
 
 
-#### GPT(kogpt2-base-v2)
+#### GPT(kogpt2-base-v2, kogpt)
  
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
 
 - train
 ```
-$ python preprocess.py --config=configs/config-gpt-cls.json --bert_model_name_or_path='skt/kogpt2-base-v2' --data_dir=./data/clova_sentiments
-$ python train.py --config=configs/config-gpt-cls.json --bert_model_name_or_path='skt/kogpt2-base-v2' --save_path=pytorch-model.pt --lr=1e-5 --epoch=30 --batch_size=64 --warmup_ratio=0.1 --data_dir=./data/clova_sentiments
+* enc_class=cls
+
+$ python preprocess.py --config=configs/config-gpt-cls.json --bert_model_name_or_path=embeddings/kogpt2-base-v2 --data_dir=./data/clova_sentiments
+$ python train.py --config=configs/config-gpt-cls.json --bert_model_name_or_path=embeddings/kogpt2-base-v2 --lr=1e-5 --epoch=30 --batch_size=64 --warmup_ratio=0.1 --data_dir=./data/clova_sentiments
+
+** --bert_model_name_or_path=ko-gpt-trinity-1.2B
+$ python preprocess.py --config=configs/config-gpt-cls.json --bert_model_name_or_path=embeddings/ko-gpt-trinity-1.2B --data_dir=./data/clova_sentiments 
+$ python train.py --config=configs/config-gpt-cls.json --bert_model_name_or_path=embeddings/ko-gpt-trinity-1.2B --lr=1e-5 --epoch=10 --batch_size=16 --eval_batch_size=32 --gradient_accumulation_steps=4 --data_dir=./data/clova_sentiments
+
+** --bert_model_name_or_path=embeddings/kogpt-6B
+$ python preprocess.py --config=configs/config-gptj-cls.json --bert_model_name_or_path=embeddings/kogpt-6B --data_dir=./data/clova_sentiments 
+$ accelerate config
+In which compute environment are you running? ([0] This machine, [1] AWS (Amazon SageMaker)): 0
+Which type of machine are you using? ([0] No distributed training, [1] multi-CPU, [2] multi-GPU, [3] TPU): 2
+How many different machines will you use (use more than 1 for multi-node training)? [1]: 1
+Do you want to use DeepSpeed? [yes/NO]: yes
+What should be your DeepSpeed's ZeRO optimization stage (0, 1, 2, 3)? [2]: 1
+How many gradient accumulation steps you're passing in your script? [1]: 4
+How many processes in total will you use? [1]: 4
+Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
+$ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gptj-cls.json --bert_model_name_or_path=embeddings/kogpt-6B --lr=1e-5 --epoch=5 --batch_size=4 --eval_batch_size=8 --gradient_accumulation_steps=4 --data_dir=./data/clova_sentiments --use_fp16
+# GPU memory footprint: foreach 4 GPUs
 
 ```
 
@@ -943,9 +972,15 @@ $ python train.py --config=configs/config-gpt-cls.json --bert_model_name_or_path
 ```
 * enc_class=cls
 
-$ python evaluate.py --config=configs/config-gpt-cls.json --data_dir=./data/clova_sentiments --bert_output_dir='skt/kogpt2-base-v2' --model_path=pytorch-model.pt
+$ python evaluate.py --config=configs/config-gpt-cls.json --data_dir=./data/clova_sentiments 
 INFO:__main__:[Accuracy] : 0.8941, 44700/49997
 INFO:__main__:[Elapsed Time] : 670176.3834953308ms, 13.402398638424277ms on average
+
+** --bert_model_name_or_path=embeddings/ko-gpt-trinity-1.2B
+$ python evaluate.py --config=configs/config-gpt-cls.json --data_dir=./data/clova_sentiments
+
+** --bert_model_name_or_path=embeddings/kogpt-6B, accelerate launch, deepspeed & kogpt, --use_fp16
+$ python evaluate.py --config=configs/config-gptj-cls.json --data_dir=./data/clova_sentiments
 
 ```
 
