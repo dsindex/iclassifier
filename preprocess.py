@@ -270,7 +270,7 @@ def build_encoded_dataset(input_path, tokenizer, labels, config, mode='train'):
         logger.info("len(token_type_ids): %s", len(encoded_dataset['token_type_ids']))
     logger.info("len(label): %s", len(encoded_dataset['label']))
     logger.info("*** Example ***")
-    for idx in range(2):
+    for idx in range(10):
         logger.info("idx: %s", idx)
         input_ids = encoded_dataset['input_ids'][idx]
         attention_mask = encoded_dataset['attention_mask'][idx]
@@ -303,7 +303,7 @@ def preprocess_bert(config):
         tokenizer.pad_token = '<pad>'
     elif config['emb_class'] in ['gpt', 'gpt_neo', 'gptj']:
         tokenizer = AutoTokenizer.from_pretrained(args.bert_model_name_or_path, revision=args.bert_revision)
-        tokenizer.pad_token = tokenizer.eos_token
+        tokenizer.pad_token = '<pad>'
     elif config['emb_class'] in ['t5']:
         tokenizer = AutoTokenizer.from_pretrained(args.bert_model_name_or_path, revision=args.bert_revision)
         tokenizer.cls_token = '<s>'

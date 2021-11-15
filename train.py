@@ -383,7 +383,7 @@ def prepare_model(config, bert_model_name_or_path=None):
             bert_model = BartModel.from_pretrained(get_pytorch_kobart_model(), revision=args.bert_revision)
         elif config['emb_class'] in ['gpt', 'gpt_neo', 'gptj']:
             bert_tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, revision=args.bert_revision)
-            bert_tokenizer.pad_token = bert_tokenizer.eos_token
+            bert_tokenizer.pad_token = '<pad>'
             bert_model = AutoModel.from_pretrained(model_name_or_path, revision=args.bert_revision,
                                                    from_tf=bool(".ckpt" in model_name_or_path))
         elif config['emb_class'] in ['t5']:
