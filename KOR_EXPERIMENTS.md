@@ -245,13 +245,14 @@
 | Bert-Multilingual | 87.07        |            |
 | FastText          | 85.50        |            |
 
-- [KoBERT](https://github.com/SKTBrain/KoBERT#naver-sentiment-analysis), [KoGPT2](https://github.com/SKT-AI/KoGPT2), [KoBART](https://github.com/SKT-AI/KoBART)
+- [KoBERT](https://github.com/SKTBrain/KoBERT#naver-sentiment-analysis), [KoGPT2-v2](https://github.com/SKT-AI/KoGPT2), [KoBART](https://github.com/SKT-AI/KoBART), [KoGPT](https://github.com/kakaobrain/kogpt)
 
 |                   | Accuracy (%) |
 | ----------------- | ------------ |
 | KoBERT            | 90.1         |
-| KoGPT2            | **93.3**     |
+| KoGPT2-v2         | 93.3         |
 | KoBART            | 90.24        |
+| KoGPT             | **95.7**     |
 
 - [aisolab/nlp_classification](https://github.com/aisolab/nlp_classification)
   - 비교를 위해서, 여기에서는 데이터를 동일하게 맞추고 재실험.
