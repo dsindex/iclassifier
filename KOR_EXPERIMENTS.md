@@ -966,8 +966,7 @@ How many gradient accumulation steps you're passing in your script? [1]: 4
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gptj-cls.json --bert_model_name_or_path=embeddings/kogpt-6B --lr=1e-5 --epoch=5 --batch_size=4 --eval_batch_size=8 --gradient_accumulation_steps=4 --data_dir=./data/clova_sentiments
-# GPU memory footprint: foreach 4 GPUs
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gptj-cls.json --bert_model_name_or_path=embeddings/kogpt-6B --lr=1e-5 --epoch=5 --batch_size=4 --eval_batch_size=8 --gradient_accumulation_steps=4 --data_dir=./data/clova_sentiments --use_fp16
 
 ```
 
@@ -985,7 +984,9 @@ INFO:__main__:[Accuracy] : 0.9056, 45277/49997
 INFO:__main__:[Elapsed Time] : 1442694.0159797668ms, 28.844860617909795ms on average
 
 ** --bert_model_name_or_path=embeddings/kogpt-6B, accelerate launch, deepspeed & kogpt, --use_fp16
-$ python evaluate.py --config=configs/config-gptj-cls.json --data_dir=./data/clova_sentiments
+$ python evaluate.py --config=configs/config-gptj-cls.json --data_dir=./data/clova_sentiments --use_fp16
+INFO:__main__:[Accuracy] : 0.8690, 43448/49997
+INFO:__main__:[Elapsed Time] : 1050938.3924007416ms, 21.004400629949647ms on average
 
 ```
 

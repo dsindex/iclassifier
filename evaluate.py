@@ -64,7 +64,8 @@ def load_model(config, checkpoint):
             bert_config = bert_model.config
         elif config['emb_class'] in ['gpt', 'gpt_neo', 'gptj']:    
             bert_tokenizer = AutoTokenizer.from_pretrained(args.bert_output_dir, revision=args.bert_revision)
-            bert_tokenizer.pad_token = '<pad>'
+            if not bert_tokenizer.pad_token:
+                bert_tokenizer.pad_token = '<pad>'
             bert_config = AutoConfig.from_pretrained(args.bert_output_dir, revision=args.bert_revision)
             bert_model = AutoModel.from_config(bert_config)
         elif config['emb_class'] in ['t5']:    

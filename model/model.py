@@ -610,9 +610,11 @@ class TextBertCLS(BaseModel):
             # last token of last layer (before padding area)
             # reference code : https://huggingface.co/transformers/_modules/transformers/models/gpt2/modeling_gpt2.html#GPT2ForSequenceClassification
             batch_size = input_ids.shape[0]
+            '''
             assert (
                 self.bert_config.pad_token_id is not None or batch_size == 1
             ), "Cannot handle batch sizes > 1 if no padding token is defined."
+            '''
             if self.bert_config.pad_token_id is None:
                 sequence_lengths = -1
             else:
