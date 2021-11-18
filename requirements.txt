@@ -21,4 +21,4 @@ onnx
 onnxruntime
 diffq
 torchmetrics
-# parallelformers
+parallelformers
