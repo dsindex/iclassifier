@@ -221,7 +221,7 @@
 | KoBART-base , CLS                         | 89.57        | 18.9681 / -       |            |
 | KoGPT2-v2 , CLS                           | 89.41        | 13.4023 / -       |            |
 | KoGPT-trinity, CLS                        | 90.56        | 28.8448 / -       | 1.2B       |
-| KoGPT , CLS                               | -            | -       / -       | accelerate, deepspeed, fp16, 6B                 |
+| KoGPT , CLS                               | 89.91        | 57.7705 / -       | accelerate, deepspeed, fp16, 6B                 |
 | KE-T5-base, CLS                           | 90.81        | 22.5119 / -       |            |
 | KE-T5-large, CLS                          | 90.61        | 41.4601 / -       |            |
 
@@ -955,18 +955,20 @@ $ python preprocess.py --config=configs/config-gpt-cls.json --bert_model_name_or
 $ python train.py --config=configs/config-gpt-cls.json --bert_model_name_or_path=embeddings/ko-gpt-trinity-1.2B --lr=1e-5 --epoch=10 --batch_size=16 --eval_batch_size=32 --gradient_accumulation_steps=4 --data_dir=./data/clova_sentiments
 
 ** --bert_model_name_or_path=embeddings/kogpt-6B
+# set n_ctx = 64
 $ python preprocess.py --config=configs/config-gptj-cls.json --bert_model_name_or_path=embeddings/kogpt-6B --data_dir=./data/clova_sentiments 
 $ accelerate config
 In which compute environment are you running? ([0] This machine, [1] AWS (Amazon SageMaker)): 0
 Which type of machine are you using? ([0] No distributed training, [1] multi-CPU, [2] multi-GPU, [3] TPU): 2
 How many different machines will you use (use more than 1 for multi-node training)? [1]: 1
 Do you want to use DeepSpeed? [yes/NO]: yes
-What should be your DeepSpeed's ZeRO optimization stage (0, 1, 2, 3)? [2]: 1
+What should be your DeepSpeed's ZeRO optimization stage (0, 1, 2, 3)? [2]: 2
 How many gradient accumulation steps you're passing in your script? [1]: 4
 How many processes in total will you use? [1]: 4
 Do you wish to use FP16 (mixed precision)? [yes/NO]: yes
 $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
-$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gptj-cls.json --bert_model_name_or_path=embeddings/kogpt-6B --lr=1e-5 --epoch=5 --batch_size=4 --eval_batch_size=8 --gradient_accumulation_steps=4 --data_dir=./data/clova_sentiments --use_fp16
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gptj-cls.json --bert_model_name_or_path=embeddings/kogpt-6B --lr=1e-5 --epoch=5 --batch_size=4 --eval_batch_size=8 --gradient_accumulation_steps=4 --data_dir=./data/clova_sentiments
+# GPU memory footprint: 34782MiB / 40536MiB foreach 4 GPUs (A100 40G)
 
 ```
 
@@ -983,10 +985,10 @@ $ python evaluate.py --config=configs/config-gpt-cls.json --data_dir=./data/clov
 INFO:__main__:[Accuracy] : 0.9056, 45277/49997
 INFO:__main__:[Elapsed Time] : 1442694.0159797668ms, 28.844860617909795ms on average
 
-** --bert_model_name_or_path=embeddings/kogpt-6B, accelerate launch, deepspeed & kogpt, --use_fp16
-$ python evaluate.py --config=configs/config-gptj-cls.json --data_dir=./data/clova_sentiments --use_fp16
-INFO:__main__:[Accuracy] : 0.8690, 43448/49997
-INFO:__main__:[Elapsed Time] : 1050938.3924007416ms, 21.004400629949647ms on average
+** --bert_model_name_or_path=embeddings/kogpt-6B, accelerate launch, deepspeed
+$ python evaluate.py --config=configs/config-gptj-cls.json --data_dir=./data/clova_sentiments
+INFO:__main__:[Accuracy] : 0.8991, 44951/49997
+INFO:__main__:[Elapsed Time] : 2889261.498451233ms, 57.77051012779479ms on average
 
 ```
 
