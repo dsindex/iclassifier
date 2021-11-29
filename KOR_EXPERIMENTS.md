@@ -222,6 +222,8 @@
 | KoGPT2-v2 , CLS                           | 89.41        | 13.4023 / -       |            |
 | KoGPT-trinity, CLS                        | 90.56        | 28.8448 / -       | 1.2B       |
 | KoGPT , CLS                               | 89.91        | 57.7705 / -       | accelerate, deepspeed, fp16, 6B                 |
+| KoGPT , CNN                               | -            | -       / -       | accelerate, deepspeed, fp16, 6B                 |
+| KoGPT , CNN                               | 90.03        | 60.2679 / -       | 6B, --bert_use_feature_based                    |
 | KE-T5-base, CLS                           | 90.81        | 22.5119 / -       |            |
 | KE-T5-large, CLS                          | 90.61        | 41.4601 / -       |            |
 
@@ -970,6 +972,12 @@ $ cp ~/.cache/huggingface/accelerate/default_config.yaml accelerate_config.yaml
 $ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gptj-cls.json --bert_model_name_or_path=embeddings/kogpt-6B --lr=1e-5 --epoch=5 --batch_size=4 --eval_batch_size=8 --gradient_accumulation_steps=4 --data_dir=./data/clova_sentiments
 # GPU memory footprint: 34782MiB / 40536MiB foreach 4 GPUs (A100 40G)
 
+* enc_class=cnn
+# set n_ctx = 64
+$ accelerate launch --config_file accelerate_config.yaml train.py --config=configs/config-gptj-cnn.json --bert_model_name_or_path=embeddings/kogpt-6B --lr=1e-5 --epoch=5 --batch_size=4 --eval_batch_size=8 --gradient_accumulation_steps=4 --data_dir=./data/clova_sentiments
+
+$ python train.py --config=configs/config-gptj-cnn.json --bert_model_name_or_path=embeddings/kogpt-6B --lr=1e-4 --epoch=10 --batch_size=64 --eval_batch_size=64 --gradient_accumulation_steps=1 --data_dir=./data/clova_sentiments --bert_use_feature_based
+
 ```
 
 - evaluation
@@ -986,9 +994,19 @@ INFO:__main__:[Accuracy] : 0.9056, 45277/49997
 INFO:__main__:[Elapsed Time] : 1442694.0159797668ms, 28.844860617909795ms on average
 
 ** --bert_model_name_or_path=embeddings/kogpt-6B, accelerate launch, deepspeed
-$ python evaluate.py --config=configs/config-gptj-cls.json --data_dir=./data/clova_sentiments
+$ python evaluate.py --config=configs/config-gptj-cls.json --data_dir=./data/clova_sentiments --batch_size=16
 INFO:__main__:[Accuracy] : 0.8991, 44951/49997
 INFO:__main__:[Elapsed Time] : 2889261.498451233ms, 57.77051012779479ms on average
+
+* enc_class=cnn
+
+** --bert_model_name_or_path=embeddings/kogpt-6B
+
+
+** --bert_model_name_or_path=embeddings/kogpt-6B --bert_use_feature_based
+$ python evaluate.py --config=configs/config-gptj-cnn.json --data_dir=./data/clova_sentiments --batch_size=64
+INFO:__main__:[Accuracy] : 0.9003, 45012/49997
+INFO:__main__:[Elapsed Time] : 3014168.590068817ms, 60.26797374068868ms on average
 
 ```
 
