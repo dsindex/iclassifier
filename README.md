@@ -163,7 +163,7 @@ $ python train.py --config=configs/config-glove-cnn.json --embedding_trainable
 
 * tensorboardX
 $ rm -rf runs
-$ tensorboard --logdir runs/ --port port-number --bind_all
+$ python -m tensorboard.main --logdir runs/ --port port-number --bind_all
 ```
 
 - evaluation

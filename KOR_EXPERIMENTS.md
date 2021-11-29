@@ -41,17 +41,31 @@
 
 #### BERT
 
-- bpe / dha / dha_bpe BERT, BERT-large
+- bpe / dha / dha_bpe BERT, BERT-large / MA-BERT-base
   - [google original tf code](https://github.com/google-research/bert)를 이용해서 학습.
   - 한국어 문서 데이터 준비.
     - 위 한국어 GloVe 학습에 사용한 데이터를 그대로 이용.
-  - `character-level bpe`
+  - bpe tokenizer
+    - tokenizer 학습시 원문 사용해서 bpe 적용
+    - 입력은 원문
     - vocab.txt는 [sentencepiece](https://github.com/google/sentencepiece)를 이용해서 생성.
     - `kor-bert-base-bpe.v1`, `kor-bert-large-bpe.v1, v3` (inhouse)
-  - `character-level bpe + 형태소분석기`
-    - ex) `kor-bert-base-dha_bpe.v1, v3`, `kor-bert-large-dha_bpe.v1, v3` (inhouse)
-  - `형태소분석기`
+  - 형태소분석 이후 bpe tokenizer
+    - tokenizer 학습시 원문을 형태소분석해서 bpe 적용
+    - 입력은 형태소분석된 문자열
+    - `kor-bert-base-dha_bpe.v1, v3`, `kor-bert-large-dha_bpe.v1, v3` (inhouse)
+  - 형태소분석 tokenizer
+    - 형태소분석하고 공백단위 tokenizing
+    - 입력은 형태소분석된 문자열
     - `kor-bert-base-dha.v1, v2` (inhouse)
+  - Morpheme-Aware tokenizer
+    - tokenizer 학습시 형태소분석 경계로 segmentation하고 bpe 적용
+      - segmentation은 공백제거하면 다시 원문이 되는 형태
+    - 입력은 원문
+    - 더 많은 데이터 학습
+    - whole-word masking, larger batch size
+    - `kor-bert-base-morpheme-aware` (inhouse)
+      
 
 - KcBERT 
   - from [KcBERT](https://github.com/Beomi/KcBERT)
@@ -192,6 +206,7 @@
 | dha-bpe BERT-large(v1), CLS               | 90.68        | 22.9305 / -       |            |
 | dha-bpe BERT-large(v3), CNN               | 90.44        | 28.7014 / -       |            |
 | dha-bpe BERT-large(v3), CLS               | 90.57        | 25.5458 / -       |            |
+| MA-BERT-base, CLS                         | 90.98        | 11.7397 / -       |            |
 | KoELECTRA-Base-v1, CNN                    | 89.51        | 15.5452 / -       |            |
 | KoELECTRA-Base-v1, CLS                    | 89.63        | 14.2667 / -       |            |
 | KoELECTRA-Base-v3, CNN                    | 90.72        | 15.3168 / -       |            |
@@ -398,7 +413,7 @@ $ python evaluate.py --config=configs/config-densenet-dsa-iee.json --data_dir=./
 </details>
 
 
-#### BERT(kor-bert-base-bpe, kor-bert-large-bpe, kor-distil-bpe-bert, distilbert-base-multilingual-cased, kcbert-base, kcbert-large)
+#### BERT(kor-bert-base-bpe, kor-bert-large-bpe, kor-distil-bpe-bert, distilbert-base-multilingual-cased, kcbert-base, kcbert-large, kor-bert-base-morpheme-aware)
 
 <details><summary><b>enc_class=cnn | cls</b></summary>
 <p>
@@ -510,6 +525,10 @@ INFO:__main__:[Elapsed Time] : 678645.0374126434ms, 13.571247471572018ms on aver
 ** --bert_model_name_or_path=./embeddings/kcbert-large  --warmup_epoch=0 --weight_decay=0.0 --epoch=30 --lr=1e-5
 INFO:__main__:[Accuracy] : 0.9136, 45677/49997
 INFO:__main__:[Elapsed Time] : 1124363.7096881866ms, 22.48598377803238ms on average
+
+** --bert_model_name_or_path=./embeddings/kor-bert-base-morpheme-aware --epoch=30 --lr=1e-5 --batch_size=128
+INFO:__main__:[Accuracy] : 0.9098, 45489/49997
+INFO:__main__:[Elapsed Time] : 587473.8855361938ms, 11.739789075742332ms on average
 
 ```
 
