@@ -267,9 +267,9 @@
 |                   | Accuracy (%) |
 | ----------------- | ------------ |
 | KoBERT            | 90.1         |
-| KoGPT2-v2         | 93.3         |
+| KoGPT2-v2         | 89.1         |
 | KoBART            | 90.24        |
-| KoGPT             | **95.7**     |
+| KoGPT             | **91.7**     |
 
 - [aisolab/nlp_classification](https://github.com/aisolab/nlp_classification)
   - 비교를 위해서, 여기에서는 데이터를 동일하게 맞추고 재실험.
